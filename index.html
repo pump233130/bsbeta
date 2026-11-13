@@ -3,272 +3,294 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BS Prototype - Monochrome</title>
+    <title>BS PROTOTYPE - 2-PLAYER EDITION</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #000;
-            color: #fff;
-            overflow: hidden;
-            user-select: none;
-        }
-
-        /* 隱藏捲軸 */
-        ::-webkit-scrollbar {
+        /* 隱藏捲軸但保留滾動功能 */
+        .custom-scrollbar::-webkit-scrollbar {
             display: none;
         }
-        
-        /* 自訂捲軸 (讓主畫面縮小時可滾動) */
-        .custom-scrollbar::-webkit-scrollbar {
-            display: block;
-            width: 8px;
+        .custom-scrollbar {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
         }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background-color: #333;
-            border-radius: 4px;
+        
+        .zone {
+            min-height: 100px;
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            position: relative;
         }
 
-        /* 卡牌樣式 */
         .card {
-            width: 118px;
-            height: 172px;
-            background-color: #fff;
-            color: #000;
-            border: 3px solid #000;
-            box-shadow: 0 0 0 2px #fff;
+            width: 100px;
+            height: 140px;
+            background-color: #1a1a1a;
+            border: 1px solid #444;
+            border-radius: 4px;
             display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 6px;
+            justify-content: center;
+            align-items: center;
             cursor: grab;
-            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
-            position: relative;
-            z-index: 10;
+            position: absolute; /* 重要：改為絕對定位以便自由拖曳 */
+            user-select: none;
+            transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            transform-origin: center center; /* 確保旋轉中心正確 */
         }
 
         .card:active {
             cursor: grabbing;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.8);
+            z-index: 1000 !important; /* 拖曳時顯示在最上層 */
         }
 
-        .card.dragging {
-            opacity: 0.5;
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
-            z-index: 20;
+        .card.tapped {
+            /* 在原本的 transform 上加上旋轉 */
+             transform: rotate(90deg) !important; 
         }
 
-        /* 卡牌背面 (Flip 狀態) - 純 CSS 繪製 */
-        .card.flipped {
-            background-color: #111;
-            background-image: none;
-            border: 3px solid #000;
-            box-shadow: inset 0 0 0 2px #333, 0 0 0 2px #fff;
-        }
-        .card.flipped::before {
-            content: "BS";
+        .card-controls {
             position: absolute;
-            top: 45%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 50px;
-            font-family: serif;
-            font-style: italic;
-            font-weight: 900;
-            color: #333;
-            z-index: 5;
-        }
-        .card.flipped::after {
-            content: "Battle Spirits";
-            position: absolute;
-            bottom: 15%;
+            bottom: -20px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 11px;
-            font-family: serif;
-            font-style: italic;
-            font-weight: 900;
-            color: #333;
-            z-index: 5;
-            white-space: nowrap;
-        }
-        .card.flipped .card-content {
-            visibility: hidden;
-        }
-
-        /* 手牌隱藏狀態 (防止對手觀看) */
-        .hand-obscured .card {
-            background-color: #111 !important;
-            background-image: none !important;
-            box-shadow: inset 0 0 0 2px #333, 0 0 0 2px #fff !important;
-        }
-        .hand-obscured .card::before {
-            content: "BS";
-            position: absolute;
-            top: 45%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 50px;
-            font-family: serif;
-            font-style: italic;
-            font-weight: 900;
-            color: #333;
-            z-index: 5;
-        }
-        .hand-obscured .card::after {
-            content: "Battle Spirits";
-            position: absolute;
-            bottom: 15%;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 11px;
-            font-family: serif;
-            font-style: italic;
-            font-weight: 900;
-            color: #333;
-            z-index: 5;
-            white-space: nowrap;
-        }
-        .hand-obscured .card .card-content {
-            visibility: hidden !important;
-        }
-
-        /* 指定區域隱藏 Core 計數器 */
-        #hand-p1 .card .core-ui,
-        #hand-p2 .card .core-ui,
-        #burst-p1 .card .core-ui,
-        #burst-p2 .card .core-ui,
-        #trash-p1 .card .core-ui,
-        #trash-p2 .card .core-ui,
-        #trash-modal-content .card .core-ui,
-        #deck-modal-content .card .core-ui {
-            display: none;
-        }
-
-        /* 核心計數器 UI (獨立於卡牌外) */
-        .core-ui {
-            position: absolute;
-            bottom: -26px;
-            left: -3px;
-            right: -3px;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 20;
-        }
-
-        .core-btn {
-            width: 18px;
-            height: 18px;
-            background-color: #000;
-            color: #fff;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 14px;
-            cursor: pointer;
-            line-height: 1;
-        }
-
-        .core-btn:hover {
-            background-color: #fff;
-            color: #000;
-            border: 1px solid #000;
-            transform: scale(1.1);
-        }
-
-        .core-count {
-            font-weight: 900;
-            font-size: 14px;
-        }
-
-        /* 區塊樣式 */
-        .zone {
-            border: 2px solid #555;
-            display: flex;
-            flex-direction: column;
-            padding: 8px;
-            position: relative;
-            transition: all 0.2s ease;
-            background-color: rgba(255, 255, 255, 0.02);
-        }
-        
-        .zone.dashed {
-            border-style: dashed;
-        }
-
-        .zone.drag-over {
-            border-color: #fff;
-            background-color: rgba(255, 255, 255, 0.1);
-        }
-        
-        .zone-title {
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: #aaa;
-            pointer-events: none;
-        }
-
-        .zone-btn {
-            width: 28px;
-            height: 28px;
-            background-color: #000;
-            color: #fff;
-            border: 2px solid #fff;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 18px;
-            cursor: pointer;
-            transition: all 0.2s ease;
+            gap: 2px;
+            opacity: 0;
+            transition: opacity 0.2s;
+            background: rgba(0,0,0,0.7);
+            padding: 2px;
+            border-radius: 4px;
             z-index: 10;
         }
-
-        .zone-btn:hover {
-            background-color: #fff;
-            color: #000;
-            transform: scale(1.1);
+        
+        .card:hover .card-controls {
+            opacity: 1;
+        }
+        
+        /* 當卡牌疲勞時，控制列位置調整 */
+        .card.tapped .card-controls {
+            bottom: 50%;
+            left: -20px;
+            transform: translateY(50%) rotate(-90deg);
         }
 
-        .dragging-core {
-            opacity: 0.5;
-            transform: scale(1.2);
-            z-index: 50;
-        }
-
-        .card .soul-core {
-            right: auto;
-            left: 50%;
-            margin-left: -12px;
-            bottom: 3px;
-        }
-
-        .mini-ghost {
-            border-width: 2px !important;
-            box-shadow: 0 0 15px rgba(255,255,255,0.8) !important;
-        }
-        .mini-ghost.flipped::before {
-            font-size: 24px !important;
-        }
-        .mini-ghost.flipped::after {
-            font-size: 6px !important;
-            bottom: 10% !important;
-        }
-
-        #trash-modal, #core-return-modal, #deck-return-modal, #deck-view-modal, #multiplayer-modal {
-            display: none;
-        }
-        #trash-modal.active, #core-return-modal.active, #deck-return-modal.active, #deck-view-modal.active, #multiplayer-modal.active {
+        .card-btn {
+            background: black;
+            color: white;
+            border: 1px solid white;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            font-size: 10px;
             display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
         }
+        .card-btn:hover {
+            background: white;
+            color: black;
+        }
+
+        .card-cores {
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            min-width: 12px;
+            text-align: center;
+            text-shadow: 1px 1px 2px black;
+        }
+
+        .counter-box {
+            border: 1px solid #444;
+            padding: 4px;
+            text-align: center;
+            background: #111;
+        }
+
+        .counter-title {
+            font-size: 10px;
+            color: #888;
+            font-weight: bold;
+            margin-bottom: 2px;
+            text-transform: uppercase;
+        }
+        
+        .counter-title-sm {
+            font-size: 8px;
+            color: #666;
+        }
+
+        .counter-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .counter-btn {
+            background: transparent;
+            color: white;
+            border: 1px solid white;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 12px;
+            line-height: 1;
+        }
+        .counter-btn:hover {
+            background: white;
+            color: black;
+        }
+        
+        .action-btn {
+            font-size: 8px;
+            border: 1px solid white;
+            padding: 2px 6px;
+            background: black;
+            color: white;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 2px;
+        }
+        .action-btn:hover {
+            background: white;
+            color: black;
+        }
+        
+        .small-action-btn {
+            font-size: 7px;
+            border: 1px solid #666;
+            padding: 1px 4px;
+            background: transparent;
+            color: #aaa;
+            cursor: pointer;
+            position: absolute;
+            top: 2px;
+            right: 2px;
+        }
+        .small-action-btn:hover {
+            border-color: white;
+            color: white;
+        }
+        
+        .field-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: rgba(255,255,255,0.05);
+            font-size: 48px;
+            font-weight: 900;
+            font-style: italic;
+            pointer-events: none;
+            z-index: 0;
+            white-space: nowrap;
+        }
+        
+        /* 拖曳時的目標區域提示 */
+        .drag-over {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: white;
+        }
+        
+        /* 卡牌預覽圖 */
+        #card-preview {
+            width: 300px;
+            height: 420px; /* 維持 BS 卡牌比例 1:1.4 */
+            background-color: #111;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            border: 2px solid white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+            border-radius: 8px;
+        }
+        
+        /* 輸入框樣式 */
+        input[type="number"] {
+            background: transparent;
+            border: none;
+            color: white;
+            width: 30px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            outline: none;
+            -moz-appearance: textfield;
+        }
+        input[type="number"]::-webkit-outer-spin-button,
+        input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        
+        /* 對手視角旋轉 */
+        .rotated-180 {
+            transform: rotate(180deg);
+        }
+        
+        /* 手牌區特殊樣式 */
+        .hand-zone {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 4px;
+            padding: 4px;
+            overflow-x: auto;
+            align-items: center;
+            min-height: 160px;
+        }
+        
+        .hand-zone .card {
+            position: static; /* 手牌區內的卡牌不使用絕對定位 */
+            flex-shrink: 0;
+            transform: none !important; /* 確保手牌不會因為套用 tapped 樣式或預設 transform 而亂跑 */
+        }
+        
+        /* 對手手牌預設隱藏背面 */
+        .hand-zone.opponent-hand .card {
+            background-image: none !important;
+            background-color: #333;
+            border-color: #555;
+        }
+        
+        .hand-zone.opponent-hand .card::after {
+            content: "BS";
+            color: #555;
+            font-weight: bold;
+            font-size: 24px;
+        }
+
+        .core-symbol {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background-color: #4CAF50; /* 預設綠色Core */
+            border-radius: 50%;
+            margin: 0 2px;
+            vertical-align: middle;
+        }
+        .core-symbol.soul {
+            background-color: #2196F3; /* Soul Core 藍色 */
+            border: 1px dashed white;
+        }
+
     </style>
 </head>
 <body class="h-screen w-screen flex flex-col p-2 box-border gap-2 bg-[#000] overflow-hidden">
@@ -277,1003 +299,823 @@
     <header class="flex justify-between items-center border-b-2 border-gray-800 pb-1 flex-none px-2">
         <div class="text-xl font-black tracking-wider text-gray-400 flex items-center gap-2">
             BS PROTOTYPE <span class="text-[10px] font-normal border border-gray-600 px-1 text-gray-500">2-PLAYER EDITION</span>
-            <span id="room-status-badge" class="hidden text-[10px] bg-green-900 text-green-300 px-2 py-0.5 rounded font-bold cursor-pointer hover:bg-green-700 hover:text-white transition-colors" onclick="copyRoomCode()" title="Click to copy Room Code">ONLINE</span>
+            <span id="room-status-badge" class="hidden text-[10px] bg-green-900 text-green-300 px-2 py-0.5 rounded font-bold cursor-pointer hover:bg-green-800" onclick="copyRoomCode()"></span>
         </div>
-        <div class="flex gap-2">
-            <button class="text-xs border border-green-500 px-3 py-1 bg-[#050505] text-green-500 hover:bg-green-900 hover:text-white font-bold cursor-pointer transition-colors" onclick="document.getElementById('multiplayer-modal').classList.add('active')">ONLINE SYNC</button>
-            <button id="btn-view-p1" class="text-xs border px-3 py-1 bg-white text-black font-bold cursor-pointer transition-colors" onclick="setViewer('p1')">Join as P1</button>
-            <button id="btn-view-p2" class="text-xs border px-3 py-1 text-gray-400 border-gray-600 hover:bg-gray-800 cursor-pointer transition-colors" onclick="setViewer('p2')">Join as P2</button>
+        <div class="flex gap-2 items-center">
+            <span id="mp-status-msg" class="text-xs text-red-500 mr-2"></span>
+            <button id="btn-sync" class="text-xs border border-green-500 px-3 py-1 bg-[#050505] text-green-500 hover:bg-green-900 hover:text-white font-bold cursor-pointer transition-colors" onclick="openMultiplayerModal()">ONLINE SYNC</button>
+            <button id="btn-view-p1" class="text-xs border px-3 py-1 bg-white text-black font-bold cursor-pointer transition-colors" onclick="setView('P1')">Join as P1</button>
+            <button id="btn-view-p2" class="text-xs border px-3 py-1 text-gray-400 border-gray-600 hover:bg-gray-800 cursor-pointer transition-colors" onclick="setView('P2')">Join as P2</button>
         </div>
     </header>
 
     <!-- Playmat Container -->
     <main class="flex-1 flex flex-col gap-2 min-h-0 w-full overflow-y-auto px-2 pb-4 custom-scrollbar">
-
+        
         <!-- P2 AREA (OPPONENT - TOP) -->
-        <div id="section-hand-p2" class="h-[185px] border-2 border-gray-800 p-2 flex flex-col flex-none bg-[#0a0a0a] rounded-sm transition-all duration-300" style="order: 1">
+        <div id="section-hand-p2" class="h-[185px] border-2 border-gray-800 p-2 flex flex-col flex-none bg-[#0a0a0a] rounded-sm transition-all duration-300">
             <div class="flex justify-between items-center mb-1">
                 <div class="text-[10px] font-bold tracking-widest text-red-900 uppercase" id="title-hand-p2">Opponent Hand (P2)</div>
-                <button id="btn-toggle-hand-p2" class="text-[9px] border border-gray-600 px-2 py-0.5 hover:bg-white hover:text-black cursor-pointer uppercase transition-colors" onclick="toggleHand('p2')">Show / Hide</button>
+                <button id="btn-toggle-hand-p2" class="text-[9px] border border-gray-600 px-2 py-0.5 hover:bg-white hover:text-black cursor-pointer transition-colors" onclick="toggleHand('p2')">SHOW / HIDE</button>
             </div>
-            <div id="hand-p2" class="flex-1 zone border-none p-1 flex flex-nowrap items-center justify-start gap-2 overflow-x-auto bg-transparent hand-obscured" style="flex-direction: row;"></div>
+            <div id="hand-p2" class="flex-1 zone border-none p-1 flex flex-nowrap items-center justify-start gap-2 overflow-x-auto bg-transparent hand-zone opponent-hand" ondrop="drop(event, 'hand-p2')" ondragover="allowDrop(event)">
+            </div>
         </div>
-
-        <div id="section-main-p2" class="flex-none border-2 border-gray-700 p-2 grid grid-cols-[160px_1fr_160px] gap-2 relative bg-[#050505] rounded-sm transition-all duration-300" style="min-height: 380px; order: 2">
+        
+        <div id="section-main-p2" class="flex-none border-2 border-gray-700 p-2 grid grid-cols-[160px_1fr_160px] gap-2 relative bg-[#050505] rounded-sm transition-all duration-300">
             <!-- Left -->
             <div class="flex flex-col gap-2">
-                <div id="trash-core-p2" class="zone dashed h-20 flex-none">
-                    <div class="flex justify-between items-start w-full">
-                        <div class="zone-title">Trash <span class="text-[9px] text-gray-500">(Core)</span></div>
-                        <button class="text-[9px] border border-white px-1 hover:bg-white hover:text-black z-20 uppercase font-bold cursor-pointer transition-colors" onclick="recoverTrash('p2')">Recover</button>
-                    </div>
-                    <div class="flex items-center justify-center h-full gap-4 pb-2 mt-[-10px]">
-                        <button class="zone-btn" onclick="updateZoneCount('trash-core-p2', -1)">-</button>
-                        <div class="text-2xl font-black" id="count-trash-core-p2">0</div>
-                        <button class="zone-btn" onclick="updateZoneCount('trash-core-p2', 1)">+</button>
+                <div class="counter-box relative flex-none">
+                    <div class="counter-title">Trash <span class="counter-title-sm">(Core)</span></div>
+                    <button class="small-action-btn" onclick="updateCounter('p2_trash_core', 1)">RECOVER</button>
+                    <div class="counter-value">
+                        <button class="counter-btn" onclick="updateCounter('p2_trash_core', -1)">-</button>
+                        <span id="val_p2_trash_core">0</span>
+                        <button class="counter-btn" onclick="updateCounter('p2_trash_core', 1)">+</button>
                     </div>
                 </div>
-                <div id="trash-p2" class="zone dashed flex-1 relative overflow-hidden">
-                    <div class="flex justify-between items-start w-full pointer-events-none relative z-10">
-                        <div class="zone-title">Trash <span class="text-[9px] text-gray-500">(Card)</span></div>
-                        <button class="text-[9px] border border-white px-1 hover:bg-white hover:text-black uppercase font-bold cursor-pointer pointer-events-auto" onclick="openTrashModal('p2')">View</button>
+                <div class="counter-box relative flex-none">
+                    <div class="counter-title">Trash <span class="counter-title-sm">(Card)</span></div>
+                    <button class="small-action-btn">VIEW</button>
+                    <div id="zone-trash-p2" class="zone min-h-[40px] mt-1 flex justify-center items-center text-gray-600 text-xs" ondrop="drop(event, 'zone-trash-p2')" ondragover="allowDrop(event)">
+                        Drop here
                     </div>
                 </div>
-                <div id="deck-p2" class="zone dashed flex-1 relative flex flex-col justify-between py-1">
-                    <div class="zone-title absolute top-1 left-1">Deck</div>
-                    <div class="w-full flex flex-col gap-1 mt-4 px-1 z-10">
-                        <input type="file" id="zip-upload-p2" accept=".zip" class="hidden" onchange="handleZipUpload(event, 'p2')">
-                        <button class="border border-white px-1 py-0.5 text-[9px] hover:bg-white hover:text-black uppercase font-bold w-full cursor-pointer" onclick="document.getElementById('zip-upload-p2').click()">Import</button>
-                        <div class="flex gap-1 w-full">
-                            <button class="flex-1 border border-white px-1 py-0.5 text-[9px] hover:bg-white hover:text-black uppercase font-bold cursor-pointer" onclick="shuffleDeck('p2')">Shuffle</button>
-                            <button class="flex-1 border border-white px-1 py-0.5 text-[9px] hover:bg-white hover:text-black uppercase font-bold cursor-pointer" onclick="openDeckModal('p2')">View</button>
-                        </div>
+                <div class="counter-box relative flex-1 min-h-[100px] flex flex-col">
+                    <div class="counter-title">Deck</div>
+                    <button class="small-action-btn" onclick="document.getElementById('import-zip-p2').click()">IMPORT</button>
+                    <input type="file" id="import-zip-p2" accept=".zip" class="hidden" onchange="importZip(event, 'p2')">
+                    
+                    <div class="flex gap-1 mt-1 mb-2">
+                         <button class="action-btn" onclick="alert('Shuffle function not implemented yet')">SHUFFLE</button>
+                         <button class="action-btn">VIEW</button>
                     </div>
-                    <div class="flex-1 flex items-center justify-center pointer-events-none my-1">
-                        <div class="text-4xl font-black" id="deck-count-p2">0</div>
-                    </div>
-                    <div class="w-full flex flex-col gap-1 px-1 z-10">
-                        <button class="border border-white px-1 py-0.5 text-[9px] hover:bg-white hover:text-black uppercase font-bold w-full cursor-pointer" onclick="deployTopToField('p2')">Deploy Top</button>
-                        <div class="flex gap-1 w-full">
-                            <button class="flex-1 border border-white px-1 py-0.5 text-[9px] hover:bg-white hover:text-black uppercase font-bold cursor-pointer" onclick="drawCard('top', 'p2')">Draw Top</button>
-                            <button class="flex-1 border border-white px-1 py-0.5 text-[9px] hover:bg-white hover:text-black uppercase font-bold cursor-pointer" onclick="drawCard('bottom', 'p2')">Draw Btm</button>
-                        </div>
+                    
+                    <div class="flex-1 flex justify-center items-center text-3xl font-black text-gray-300" id="val_p2_deck_count">0</div>
+                    
+                    <button class="action-btn mb-1" onclick="alert('Deploy Top function not implemented yet')">DEPLOY TOP</button>
+                    <div class="flex gap-1">
+                        <button class="action-btn" onclick="drawCard('p2', 'top')">DRAW TOP</button>
+                        <button class="action-btn" onclick="drawCard('p2', 'bottom')">DRAW BTM</button>
                     </div>
                 </div>
-                <div id="count-p2" class="zone dashed h-16 flex-none">
-                    <div class="zone-title">Count</div>
-                    <div class="flex items-center justify-center h-full gap-4 pb-2 mt-[-5px]">
-                        <button class="zone-btn" onclick="updateZoneCount('count-p2', -1)">-</button>
-                        <div class="text-2xl font-black" id="count-count-p2">0</div>
-                        <button class="zone-btn" onclick="updateZoneCount('count-p2', 1)">+</button>
+                <div class="counter-box flex-none">
+                    <div class="counter-title">Count</div>
+                    <div class="counter-value">
+                        <button class="counter-btn" onclick="updateCounter('p2_count', -1)">-</button>
+                        <span id="val_p2_count">0</span>
+                        <button class="counter-btn" onclick="updateCounter('p2_count', 1)">+</button>
                     </div>
                 </div>
             </div>
-            <!-- Center Field P2 -->
-            <div id="field-p2" class="zone border-gray-500 border-b-0 relative flex flex-wrap content-start gap-6 p-4 bg-[#0a0a0a]">
-                 <div class="absolute inset-0 pointer-events-none flex flex-col items-center justify-center opacity-[0.03]">
-                    <div id="watermark-p2" class="text-[60px] font-black leading-none italic" style="font-family: serif;">OPPONENT</div>
-                </div>
+            
+            <!-- Center Field -->
+            <div id="field-p2" class="zone border border-gray-600 bg-[#0a0a0a] relative overflow-hidden" ondrop="drop(event, 'field-p2')" ondragover="allowDrop(event)">
+                 <div class="field-label">OPPONENT</div>
             </div>
+            
             <!-- Right -->
             <div class="flex flex-col gap-2">
-                <div id="reserve-p2" class="zone h-24 flex-none relative">
-                    <div class="flex justify-between items-start w-full">
-                        <div class="zone-title">Reserve</div>
-                        <button class="text-[9px] border border-white px-1 hover:bg-white hover:text-black z-20 uppercase font-bold cursor-pointer transition-colors" onclick="payCost('p2')">Pay Cost</button>
+                <div class="counter-box relative flex-none">
+                    <div class="counter-title">Reserve</div>
+                    <button class="small-action-btn" onclick="alert('Pay Cost function not implemented yet')">PAY COST</button>
+                    <div class="counter-value">
+                        <button class="counter-btn" onclick="updateCounter('p2_reserve', -1)">-</button>
+                        <span id="val_p2_reserve">3</span>
+                        <button class="counter-btn" onclick="updateCounter('p2_reserve', 1)">+</button>
                     </div>
-                    <div class="flex items-center justify-center h-full gap-4 pb-2 mt-[-10px]">
-                        <button class="zone-btn" onclick="updateZoneCount('reserve-p2', -1)">-</button>
-                        <div class="text-2xl font-black" id="count-reserve-p2">3</div>
-                        <button class="zone-btn" onclick="updateZoneCount('reserve-p2', 1)">+</button>
-                    </div>
-                    <div id="soul-core-p2" draggable="true" class="soul-core absolute bottom-1 right-1 w-5 h-5 rounded-full bg-black border-[2px] border-dashed border-red-500 text-red-500 flex items-center justify-center font-bold text-[10px] cursor-grab z-30 shadow-[0_0_8px_rgba(255,0,0,0.5)]">S</div>
+                    <div class="absolute bottom-1 right-2 text-[10px] text-red-500 border border-red-900 rounded-full w-4 h-4 flex items-center justify-center font-bold" id="p2_soul_core" style="cursor:pointer;" onclick="toggleSoulCore('p2')">S</div>
                 </div>
-                <div id="life-p2" class="zone h-24 flex-none">
-                    <div class="flex justify-between items-start w-full">
-                        <div class="zone-title">Life</div>
-                        <button class="text-[9px] border border-white px-1 hover:bg-white hover:text-black z-20 uppercase font-bold cursor-pointer transition-colors" onclick="takeLife('p2')">Take Life</button>
-                    </div>
-                    <div class="flex items-center justify-center h-full gap-4 pb-2 mt-[-10px]">
-                        <button class="zone-btn" onclick="updateZoneCount('life-p2', -1)">-</button>
-                        <div class="text-3xl font-black" id="count-life-p2">5</div>
-                        <button class="zone-btn" onclick="updateZoneCount('life-p2', 1)">+</button>
+                <div class="counter-box relative flex-none">
+                    <div class="counter-title">Life</div>
+                    <button class="small-action-btn" onclick="updateCounter('p2_life', -1)">TAKE LIFE</button>
+                    <div class="counter-value">
+                        <button class="counter-btn" onclick="updateCounter('p2_life', -1)">-</button>
+                        <span id="val_p2_life">5</span>
+                        <button class="counter-btn" onclick="updateCounter('p2_life', 1)">+</button>
                     </div>
                 </div>
-                <div id="burst-p2" class="zone dashed flex-1"><div class="zone-title">Burst</div></div>
-            </div>
-        </div>
-
-        <!-- VS Divider -->
-        <div class="h-1 w-full bg-gray-800 rounded-full my-1 opacity-50"></div>
-
-        <!-- P1 AREA (PLAYER - BOTTOM) -->
-        <div id="section-main-p1" class="flex-none border-2 border-gray-700 p-2 grid grid-cols-[160px_1fr_160px] gap-2 relative bg-[#050505] rounded-sm transition-all duration-300" style="min-height: 380px; order: 3">
-            <!-- Left Column -->
-            <div class="flex flex-col gap-2">
-                <div id="burst-p1" class="zone dashed flex-1"><div class="zone-title">Burst</div></div>
-                <div id="life-p1" class="zone h-24 flex-none">
-                    <div class="flex justify-between items-start w-full">
-                        <div class="zone-title">Life</div>
-                        <button class="text-[9px] border border-white px-1 hover:bg-white hover:text-black z-20 uppercase font-bold cursor-pointer transition-colors" onclick="takeLife('p1')">Take Life</button>
-                    </div>
-                    <div class="flex items-center justify-center h-full gap-4 pb-2 mt-[-10px]">
-                        <button class="zone-btn" onclick="updateZoneCount('life-p1', -1)">-</button>
-                        <div class="text-3xl font-black" id="count-life-p1">5</div>
-                        <button class="zone-btn" onclick="updateZoneCount('life-p1', 1)">+</button>
-                    </div>
-                </div>
-                <div id="reserve-p1" class="zone h-24 flex-none relative">
-                    <div class="flex justify-between items-start w-full">
-                        <div class="zone-title">Reserve</div>
-                        <button class="text-[9px] border border-white px-1 hover:bg-white hover:text-black z-20 uppercase font-bold cursor-pointer transition-colors" onclick="payCost('p1')">Pay Cost</button>
-                    </div>
-                    <div class="flex items-center justify-center h-full gap-4 pb-2 mt-[-10px]">
-                        <button class="zone-btn" onclick="updateZoneCount('reserve-p1', -1)">-</button>
-                        <div class="text-2xl font-black" id="count-reserve-p1">3</div>
-                        <button class="zone-btn" onclick="updateZoneCount('reserve-p1', 1)">+</button>
-                    </div>
-                    <div id="soul-core-p1" draggable="true" class="soul-core absolute bottom-1 right-1 w-5 h-5 rounded-full bg-black border-[2px] border-dashed border-blue-400 text-blue-400 flex items-center justify-center font-bold text-[10px] cursor-grab z-30 shadow-[0_0_8px_rgba(59,130,246,0.5)]">S</div>
-                </div>
-            </div>
-            
-            <!-- Center Field P1 -->
-            <div id="field-p1" class="zone border-gray-500 border-t-0 relative flex flex-wrap content-start gap-6 p-4 bg-[#0a0a0a]">
-                 <div class="absolute inset-0 pointer-events-none flex flex-col items-center justify-center opacity-[0.03]">
-                    <div id="watermark-p1" class="text-[60px] font-black leading-none italic" style="font-family: serif;">PLAYER</div>
-                </div>
-            </div>
-            
-            <!-- Right Column -->
-            <div class="flex flex-col gap-2">
-                <div id="count-p1" class="zone dashed h-16 flex-none">
-                    <div class="zone-title">Count</div>
-                    <div class="flex items-center justify-center h-full gap-4 pb-2 mt-[-5px]">
-                        <button class="zone-btn" onclick="updateZoneCount('count-p1', -1)">-</button>
-                        <div class="text-2xl font-black" id="count-count-p1">0</div>
-                        <button class="zone-btn" onclick="updateZoneCount('count-p1', 1)">+</button>
-                    </div>
-                </div>
-                <div id="deck-p1" class="zone dashed flex-1 relative flex flex-col justify-between py-1">
-                    <div class="zone-title absolute top-1 left-1">Deck</div>
-                    <div class="w-full flex flex-col gap-1 mt-4 px-1 z-10">
-                        <input type="file" id="zip-upload-p1" accept=".zip" class="hidden" onchange="handleZipUpload(event, 'p1')">
-                        <button class="border border-white px-1 py-0.5 text-[9px] hover:bg-white hover:text-black uppercase font-bold w-full cursor-pointer" onclick="document.getElementById('zip-upload-p1').click()">Import</button>
-                        <div class="flex gap-1 w-full">
-                            <button class="flex-1 border border-white px-1 py-0.5 text-[9px] hover:bg-white hover:text-black uppercase font-bold cursor-pointer" onclick="shuffleDeck('p1')">Shuffle</button>
-                            <button class="flex-1 border border-white px-1 py-0.5 text-[9px] hover:bg-white hover:text-black uppercase font-bold cursor-pointer" onclick="openDeckModal('p1')">View</button>
-                        </div>
-                    </div>
-                    <div class="flex-1 flex items-center justify-center pointer-events-none my-1">
-                        <div class="text-4xl font-black" id="deck-count-p1">0</div>
-                    </div>
-                    <div class="w-full flex flex-col gap-1 px-1 z-10">
-                        <button class="border border-white px-1 py-0.5 text-[9px] hover:bg-white hover:text-black uppercase font-bold w-full cursor-pointer" onclick="deployTopToField('p1')">Deploy Top</button>
-                        <div class="flex gap-1 w-full">
-                            <button class="flex-1 border border-white px-1 py-0.5 text-[9px] hover:bg-white hover:text-black uppercase font-bold cursor-pointer" onclick="drawCard('top', 'p1')">Draw Top</button>
-                            <button class="flex-1 border border-white px-1 py-0.5 text-[9px] hover:bg-white hover:text-black uppercase font-bold cursor-pointer" onclick="drawCard('bottom', 'p1')">Draw Btm</button>
-                        </div>
-                    </div>
-                </div>
-                <div id="trash-p1" class="zone dashed flex-1 relative overflow-hidden">
-                    <div class="flex justify-between items-start w-full pointer-events-none relative z-10">
-                        <div class="zone-title">Trash <span class="text-[9px] text-gray-500">(Card)</span></div>
-                        <button class="text-[9px] border border-white px-1 hover:bg-white hover:text-black uppercase font-bold cursor-pointer pointer-events-auto" onclick="openTrashModal('p1')">View</button>
-                    </div>
-                </div>
-                <div id="trash-core-p1" class="zone dashed h-20 flex-none">
-                    <div class="flex justify-between items-start w-full">
-                        <div class="zone-title">Trash <span class="text-[9px] text-gray-500">(Core)</span></div>
-                        <button class="text-[9px] border border-white px-1 hover:bg-white hover:text-black z-20 uppercase font-bold cursor-pointer transition-colors" onclick="recoverTrash('p1')">Recover</button>
-                    </div>
-                    <div class="flex items-center justify-center h-full gap-4 pb-2 mt-[-10px]">
-                        <button class="zone-btn" onclick="updateZoneCount('trash-core-p1', -1)">-</button>
-                        <div class="text-2xl font-black" id="count-trash-core-p1">0</div>
-                        <button class="zone-btn" onclick="updateZoneCount('trash-core-p1', 1)">+</button>
+                <div class="counter-box relative flex-1 min-h-[100px] flex flex-col">
+                    <div class="counter-title">Burst</div>
+                    <div id="zone-burst-p2" class="zone flex-1 mt-1 border-dashed border-gray-700 flex justify-center items-center text-gray-700 text-xs" ondrop="drop(event, 'zone-burst-p2')" ondragover="allowDrop(event)">
+                        Drop here
                     </div>
                 </div>
             </div>
         </div>
 
-        <div id="section-hand-p1" class="h-[185px] border-2 border-gray-800 p-2 flex flex-col flex-none bg-[#0a0a0a] rounded-sm transition-all duration-300" style="order: 4">
+        <!-- P1 AREA (YOU - BOTTOM) -->
+        <div id="section-main-p1" class="flex-none border-2 border-gray-700 p-2 grid grid-cols-[160px_1fr_160px] gap-2 relative bg-[#050505] rounded-sm transition-all duration-300">
+            <!-- Left -->
+            <div class="flex flex-col gap-2">
+                <div class="counter-box relative flex-1 min-h-[100px] flex flex-col">
+                    <div class="counter-title">Burst</div>
+                    <div id="zone-burst-p1" class="zone flex-1 mt-1 border-dashed border-gray-700 flex justify-center items-center text-gray-700 text-xs" ondrop="drop(event, 'zone-burst-p1')" ondragover="allowDrop(event)">
+                        Drop here
+                    </div>
+                </div>
+                <div class="counter-box relative flex-none">
+                    <div class="counter-title">Life</div>
+                    <button class="small-action-btn" onclick="updateCounter('p1_life', -1)">TAKE LIFE</button>
+                    <div class="counter-value">
+                        <button class="counter-btn" onclick="updateCounter('p1_life', -1)">-</button>
+                        <span id="val_p1_life">5</span>
+                        <button class="counter-btn" onclick="updateCounter('p1_life', 1)">+</button>
+                    </div>
+                </div>
+                <div class="counter-box relative flex-none">
+                    <div class="counter-title">Reserve</div>
+                    <button class="small-action-btn" onclick="alert('Pay Cost function not implemented yet')">PAY COST</button>
+                    <div class="counter-value">
+                        <button class="counter-btn" onclick="updateCounter('p1_reserve', -1)">-</button>
+                        <span id="val_p1_reserve">3</span>
+                        <button class="counter-btn" onclick="updateCounter('p1_reserve', 1)">+</button>
+                    </div>
+                    <div class="absolute bottom-1 right-2 text-[10px] text-blue-500 border border-blue-900 rounded-full w-4 h-4 flex items-center justify-center font-bold" id="p1_soul_core" style="cursor:pointer;" onclick="toggleSoulCore('p1')">S</div>
+                </div>
+            </div>
+            
+            <!-- Center Field -->
+            <div id="field-p1" class="zone border border-gray-600 bg-[#0a0a0a] relative overflow-hidden" ondrop="drop(event, 'field-p1')" ondragover="allowDrop(event)">
+                 <div class="field-label">PLAYER (YOU)</div>
+            </div>
+            
+            <!-- Right -->
+            <div class="flex flex-col gap-2">
+                <div class="counter-box flex-none">
+                    <div class="counter-title">Count</div>
+                    <div class="counter-value">
+                        <button class="counter-btn" onclick="updateCounter('p1_count', -1)">-</button>
+                        <span id="val_p1_count">0</span>
+                        <button class="counter-btn" onclick="updateCounter('p1_count', 1)">+</button>
+                    </div>
+                </div>
+                <div class="counter-box relative flex-1 min-h-[100px] flex flex-col">
+                    <div class="counter-title">Deck</div>
+                    <button class="small-action-btn" onclick="document.getElementById('import-zip-p1').click()">IMPORT</button>
+                    <input type="file" id="import-zip-p1" accept=".zip" class="hidden" onchange="importZip(event, 'p1')">
+                    
+                    <div class="flex gap-1 mt-1 mb-2">
+                         <button class="action-btn" onclick="alert('Shuffle function not implemented yet')">SHUFFLE</button>
+                         <button class="action-btn">VIEW</button>
+                    </div>
+                    
+                    <div class="flex-1 flex justify-center items-center text-3xl font-black text-gray-300" id="val_p1_deck_count">0</div>
+                    
+                    <button class="action-btn mb-1" onclick="alert('Deploy Top function not implemented yet')">DEPLOY TOP</button>
+                    <div class="flex gap-1">
+                        <button class="action-btn" onclick="drawCard('p1', 'top')">DRAW TOP</button>
+                        <button class="action-btn" onclick="drawCard('p1', 'bottom')">DRAW BTM</button>
+                    </div>
+                </div>
+                <div class="counter-box relative flex-none">
+                    <div class="counter-title">Trash <span class="counter-title-sm">(Card)</span></div>
+                    <button class="small-action-btn">VIEW</button>
+                    <div id="zone-trash-p1" class="zone min-h-[40px] mt-1 flex justify-center items-center text-gray-600 text-xs" ondrop="drop(event, 'zone-trash-p1')" ondragover="allowDrop(event)">
+                        Drop here
+                    </div>
+                </div>
+                <div class="counter-box relative flex-none">
+                    <div class="counter-title">Trash <span class="counter-title-sm">(Core)</span></div>
+                    <button class="small-action-btn" onclick="updateCounter('p1_trash_core', 1)">RECOVER</button>
+                    <div class="counter-value">
+                        <button class="counter-btn" onclick="updateCounter('p1_trash_core', -1)">-</button>
+                        <span id="val_p1_trash_core">0</span>
+                        <button class="counter-btn" onclick="updateCounter('p1_trash_core', 1)">+</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="section-hand-p1" class="h-[185px] border-2 border-gray-800 p-2 flex flex-col flex-none bg-[#0a0a0a] rounded-sm transition-all duration-300">
             <div class="flex justify-between items-center mb-1">
-                <div class="text-[10px] font-bold tracking-widest text-blue-400 uppercase" id="title-hand-p1">Player Hand (P1)</div>
-                <button id="btn-toggle-hand-p1" class="text-[9px] border border-gray-600 px-2 py-0.5 hover:bg-white hover:text-black cursor-pointer uppercase transition-colors" onclick="toggleHand('p1')">Show / Hide</button>
+                <div class="text-[10px] font-bold tracking-widest text-blue-500 uppercase" id="title-hand-p1">Player Hand (P1)</div>
+                <button id="btn-toggle-hand-p1" class="text-[9px] border border-gray-600 px-2 py-0.5 hover:bg-white hover:text-black cursor-pointer transition-colors" onclick="toggleHand('p1')">SHOW / HIDE</button>
             </div>
-            <div id="hand-p1" class="flex-1 zone border-none p-1 flex flex-nowrap items-center justify-start gap-2 overflow-x-auto bg-transparent" style="flex-direction: row;"></div>
+            <div id="hand-p1" class="flex-1 zone border-none p-1 flex flex-nowrap items-center justify-start gap-2 overflow-x-auto bg-transparent hand-zone" ondrop="drop(event, 'hand-p1')" ondragover="allowDrop(event)">
+            </div>
         </div>
 
     </main>
 
-    <!-- Modals -->
-    <div id="trash-modal" class="fixed inset-0 bg-black bg-opacity-90 z-[100] flex-col p-8 backdrop-blur-md">
-        <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-black tracking-widest uppercase">Trash Viewer <span id="trash-modal-title-suffix" class="text-gray-500 text-sm ml-2"></span></h2>
-            <button class="border-2 border-white px-4 py-2 font-bold hover:bg-white hover:text-black transition-colors" onclick="closeTrashModal()">CLOSE</button>
-        </div>
-        <div id="trash-modal-content" class="flex-1 flex flex-wrap gap-4 content-start overflow-y-auto p-4 border border-gray-700 bg-[#0a0a0a]"></div>
-    </div>
-
-    <div id="core-return-modal" class="fixed inset-0 bg-black bg-opacity-90 z-[110] flex-col items-center justify-center p-8 backdrop-blur-md">
-        <div class="bg-[#050505] border-2 border-white p-8 max-w-md w-full text-center shadow-[0_0_20px_rgba(255,255,255,0.2)]">
-            <h2 class="text-2xl font-black tracking-widest uppercase mb-6">Return Cores</h2>
-            <div class="text-lg mb-8">Move <span id="core-return-amount" class="text-3xl font-black mx-2 text-yellow-400">0</span> cores to:</div>
-            <div class="flex gap-4 justify-center">
-                <button class="flex-1 border-2 border-white px-4 py-3 font-bold hover:bg-white hover:text-black transition-colors uppercase" onclick="confirmCoreReturn('reserve')">Reserve</button>
-                <button class="flex-1 border-2 border-white px-4 py-3 font-bold hover:bg-white hover:text-black transition-colors uppercase" onclick="confirmCoreReturn('trash-core')">Trash</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="deck-return-modal" class="fixed inset-0 bg-black bg-opacity-90 z-[120] flex-col items-center justify-center p-8 backdrop-blur-md">
-        <div class="bg-[#050505] border-2 border-white p-8 max-w-md w-full text-center shadow-[0_0_20px_rgba(255,255,255,0.2)]">
-            <h2 class="text-2xl font-black tracking-widest uppercase mb-6">Return to Deck</h2>
-            <div class="text-lg mb-8 text-gray-300">Where do you want to place this card?</div>
-            <div class="flex gap-4 justify-center">
-                <button class="flex-1 border-2 border-white px-4 py-3 font-bold hover:bg-white hover:text-black transition-colors uppercase" onclick="confirmDeckReturn('top')">Top</button>
-                <button class="flex-1 border-2 border-white px-4 py-3 font-bold hover:bg-white hover:text-black transition-colors uppercase" onclick="confirmDeckReturn('bottom')">Bottom</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="deck-view-modal" class="fixed inset-0 bg-black bg-opacity-90 z-[100] flex-col p-8 backdrop-blur-md">
-        <div class="flex justify-between items-center mb-6">
-            <h2 class="text-2xl font-black tracking-widest uppercase">Deck Viewer <span id="deck-modal-title-suffix" class="text-gray-500 text-sm ml-2"></span></h2>
-            <button class="border-2 border-white px-4 py-2 font-bold hover:bg-white hover:text-black transition-colors" onclick="closeDeckModal()">CLOSE</button>
-        </div>
-        <div id="deck-modal-content" class="flex-1 flex flex-wrap gap-4 content-start overflow-y-auto p-4 border border-gray-700 bg-[#0a0a0a]"></div>
-    </div>
-
-    <div id="multiplayer-modal" class="fixed inset-0 bg-black bg-opacity-90 z-[200] flex-col items-center justify-center p-8 backdrop-blur-md">
-        <div class="bg-[#050505] border-2 border-green-500 p-8 max-w-md w-full text-center shadow-[0_0_20px_rgba(34,197,94,0.3)]">
-            <h2 class="text-2xl font-black tracking-widest text-green-500 uppercase mb-2">Multiplayer Sync</h2>
-            <p class="text-xs text-gray-400 mb-6">Connect with a friend to play remotely.</p>
-            <div id="mp-status-msg" class="text-red-400 text-sm mb-4 h-4"></div>
-            <div class="flex flex-col gap-4">
-                <button class="border-2 border-white px-4 py-3 font-bold hover:bg-white hover:text-black transition-colors uppercase" onclick="createRoom()">Create New Room</button>
-                <div class="relative flex items-center justify-center py-2">
-                    <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-gray-700"></div></div>
-                    <div class="relative px-4 bg-[#050505] text-xs text-gray-500">OR</div>
-                </div>
-                <div class="flex gap-2">
-                    <input type="text" id="room-code-input" placeholder="ENTER ROOM CODE" class="flex-1 bg-black border border-gray-600 px-3 py-2 text-center font-bold text-white uppercase outline-none focus:border-green-500">
-                    <button class="border-2 border-green-500 text-green-500 px-4 py-2 font-bold hover:bg-green-500 hover:text-black transition-colors uppercase" onclick="joinRoom()">Join</button>
-                </div>
-                <button class="mt-4 text-xs text-gray-500 hover:text-white underline" onclick="document.getElementById('multiplayer-modal').classList.remove('active')">Cancel</button>
-            </div>
-        </div>
-    </div>
-
     <!-- Card Preview -->
-    <div id="card-preview" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-[9999] pointer-events-none opacity-0 invisible transition-all duration-200 shadow-[0_0_30px_rgba(0,0,0,0.9)] border-4 border-black bg-white rounded-md" style="width: 295px; height: 430px;"></div>
+    <div id="card-preview" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-[9999] pointer-events-none opacity-0 invisible transition-all duration-200"></div>
 
+    <!-- Multiplayer Modal -->
+    <div id="mp-modal" class="fixed inset-0 bg-black/90 z-[10000] hidden flex justify-center items-center">
+        <div class="border-2 border-green-500 p-8 w-[400px] flex flex-col gap-6 bg-[#050505]">
+            <div class="text-green-500 text-2xl font-black text-center tracking-widest">MULTIPLAYER SYNC</div>
+            <div class="text-gray-400 text-sm text-center">Connect with a friend to play remotely.</div>
+            
+            <button class="border-2 border-white py-3 text-white font-bold hover:bg-white hover:text-black transition-colors" onclick="createRoom()">CREATE NEW ROOM</button>
+            
+            <div class="relative flex items-center justify-center border-t border-gray-700 my-2">
+                <span class="absolute bg-[#050505] px-2 text-gray-500 text-xs">OR</span>
+            </div>
+            
+            <div class="flex gap-2">
+                <input type="text" id="join-room-code" placeholder="ENTER ROOM CODE" class="flex-1 bg-transparent border border-gray-600 text-white px-3 uppercase tracking-wider focus:border-green-500 outline-none text-center">
+                <button class="border border-green-500 text-green-500 px-4 font-bold hover:bg-green-900 hover:text-white transition-colors" onclick="joinRoom()">JOIN</button>
+            </div>
+            
+            <div class="text-center mt-2">
+                <button class="text-gray-500 text-xs hover:text-white underline" onclick="closeMultiplayerModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script>
-        window.draggedElement = null;
-        window.draggedType = null;
-        let syncTimeout;
-
-        window.triggerSync = () => {
-            if (!window.syncToFirebase) return;
-            clearTimeout(syncTimeout);
-            syncTimeout = setTimeout(() => { window.syncToFirebase(); }, 150);
+        /* =========================================================================
+           GLOBAL STATE
+           ========================================================================= */
+        const gameState = {
+            p1_life: 5, p1_reserve: 3, p1_count: 0, p1_trash_core: 0,
+            p2_life: 5, p2_reserve: 3, p2_count: 0, p2_trash_core: 0,
+            cards: {}, // 格式: { id: { id, owner, zone, x, y, imgBase64, isTapped, cores } }
+            p1Deck: [], // [id, id, ...]
+            p2Deck: [],
+            soulCoreLocation: { p1: 'reserve', p2: 'reserve' }, // 'reserve', 'trash', or cardId
+            viewMode: 'P1' // 'P1' or 'P2'
         };
 
-        window.extractGameState = function() {
-            const cards = [];
-            document.querySelectorAll('.card').forEach(c => {
-                cards.push({
-                    id: c.id,
-                    zone: c.parentElement.id,
-                    data: c.__cardData,
-                    cores: c.dataset.cores || 0,
-                    rotation: c.dataset.rotation || '0',
-                    flipped: c.classList.contains('flipped'),
-                    styleLeft: c.style.left,
-                    styleTop: c.style.top
-                });
+        let draggedCard = null;
+        let cardIdCounter = 0;
+        let isSyncing = false; // 是否正在套用遠端狀態，避免觸發無限迴圈
+
+        /* =========================================================================
+           UI & VIEW MANAGEMENT
+           ========================================================================= */
+        function updateAllUI() {
+            // Update counters
+            ['p1_life', 'p1_reserve', 'p1_count', 'p1_trash_core', 
+             'p2_life', 'p2_reserve', 'p2_count', 'p2_trash_core'].forEach(key => {
+                document.getElementById('val_' + key).innerText = gameState[key];
             });
-
-            const soulCores = [];
-            document.querySelectorAll('.soul-core').forEach(sc => {
-                soulCores.push({
-                    id: sc.id,
-                    zone: sc.parentElement.id,
-                    styleLeft: sc.style.left,
-                    styleTop: sc.style.top,
-                    styleBottom: sc.style.bottom,
-                    styleRight: sc.style.right
-                });
-            });
-
-            return {
-                zoneState: window.zoneState,
-                decks: window.decks,
-                cards: cards,
-                soulCores: soulCores
-            };
-        };
-
-        window.applyGameState = function(state) {
-            window.zoneState = state.zoneState;
-            for (let key in window.zoneState) {
-                const el = document.getElementById(`count-${key}`);
-                if (el) el.innerText = window.zoneState[key];
-            }
-
-            window.decks = state.decks;
-            document.getElementById('deck-count-p1').innerText = window.decks.p1.length;
-            document.getElementById('deck-count-p2').innerText = window.decks.p2.length;
-
-            const existingCards = new Map();
-            document.querySelectorAll('.card').forEach(c => existingCards.set(c.id, c));
-
-            state.cards.forEach(cardState => {
-                let card = existingCards.get(cardState.id);
-                if (card === window.draggedElement) {
-                    existingCards.delete(cardState.id);
-                    return; 
-                }
-
-                if (!card) {
-                    card = window.createCardElement(cardState.data);
-                    card.id = cardState.id;
-                } else {
-                    existingCards.delete(cardState.id);
-                }
-
-                card.dataset.cores = cardState.cores;
-                card.querySelector('.core-count').innerText = cardState.cores;
-                card.dataset.rotation = cardState.rotation;
-                card.style.transform = `rotate(${cardState.rotation}deg)`;
-
-                if (cardState.flipped) card.classList.add('flipped');
-                else card.classList.remove('flipped');
-
-                if (cardState.zone.includes('field')) {
-                    card.style.position = 'absolute';
-                    card.style.left = cardState.styleLeft;
-                    card.style.top = cardState.styleTop;
-                } else {
-                    card.style.position = '';
-                }
-
-                const targetZone = document.getElementById(cardState.zone);
-                if (targetZone && targetZone.id.startsWith('trash-p') && cardState.zone.startsWith('trash-p')) {
-                     if (card.parentElement !== targetZone) targetZone.appendChild(card);
-                     if (!card.style.transform) window.stackCardInTrash(card);
-                } else if (targetZone && card.parentElement !== targetZone) {
-                    targetZone.appendChild(card);
-                }
-            });
-
-            existingCards.forEach(c => {
-                if (c !== window.draggedElement) c.remove();
-            });
-
-            state.soulCores.forEach(scState => {
-                const sc = document.getElementById(scState.id);
-                if (sc && sc !== window.draggedElement) {
-                    const targetZone = document.getElementById(scState.zone);
-                    if (targetZone && sc.parentElement !== targetZone) {
-                        targetZone.appendChild(sc);
-                    }
-                    sc.style.left = scState.styleLeft || '';
-                    sc.style.top = scState.styleTop || '';
-                    sc.style.bottom = scState.styleBottom || '';
-                    sc.style.right = scState.styleRight || '';
-                    sc.style.position = (targetZone && targetZone.id.startsWith('field')) ? 'absolute' : '';
-                }
-            });
-        };
-
-        window.createRoom = function() {
-            const code = Math.random().toString(36).substring(2, 8).toUpperCase();
-            if (window.initMultiplayer) window.initMultiplayer(code);
-        }
-        
-        window.joinRoom = function() {
-            const code = document.getElementById('room-code-input').value.toUpperCase().trim();
-            if (code && window.initMultiplayer) window.initMultiplayer(code);
-            else document.getElementById('mp-status-msg').innerText = "Please enter a valid code.";
-        }
-
-        window.copyRoomCode = function() {
-            if (!window.currentRoomCode) return;
+            document.getElementById('val_p1_deck_count').innerText = gameState.p1Deck.length;
+            document.getElementById('val_p2_deck_count').innerText = gameState.p2Deck.length;
             
-            // 使用傳統的 execCommand 備用方案，避免因 iframe 權限限制而導致 Clipboard API 報錯
-            const textarea = document.createElement('textarea');
-            textarea.value = window.currentRoomCode;
-            textarea.style.position = 'fixed'; // 避免畫面捲動
-            document.body.appendChild(textarea);
-            textarea.focus();
-            textarea.select();
-            
-            try {
-                const successful = document.execCommand('copy');
-                if (successful) {
-                    const badge = document.getElementById('room-status-badge');
-                    const orig = badge.innerText;
-                    badge.innerText = 'COPIED!';
-                    setTimeout(() => { badge.innerText = orig; }, 1500);
-                }
-            } catch (err) {
-                console.error('Fallback copy failed', err);
-            }
-            
-            document.body.removeChild(textarea);
-        };
+            // Update Soul Core display
+            updateSoulCoreUI('p1');
+            updateSoulCoreUI('p2');
 
-        let currentViewer = 'p1';
-        
-        function setViewer(player) {
-            currentViewer = player;
+            // Apply View Mode Styling
+            const p1Section = document.getElementById('section-main-p1');
+            const p2Section = document.getElementById('section-main-p2');
+            const p1Hand = document.getElementById('section-hand-p1');
+            const p2Hand = document.getElementById('section-hand-p2');
             
-            document.getElementById('btn-view-p1').className = player === 'p1' 
-                ? 'text-xs border px-3 py-1 bg-white text-black font-bold cursor-pointer transition-colors' 
-                : 'text-xs border px-3 py-1 text-gray-400 border-gray-600 hover:bg-gray-800 cursor-pointer transition-colors';
-            document.getElementById('btn-view-p2').className = player === 'p2' 
-                ? 'text-xs border px-3 py-1 bg-white text-black font-bold cursor-pointer transition-colors' 
-                : 'text-xs border px-3 py-1 text-gray-400 border-gray-600 hover:bg-gray-800 cursor-pointer transition-colors';
-            
-            const opp = player === 'p1' ? 'p2' : 'p1';
-            
-            document.getElementById(`hand-${opp}`).classList.add('hand-obscured');
-            document.getElementById(`hand-${player}`).classList.remove('hand-obscured');
-            
-            document.getElementById(`btn-toggle-hand-${opp}`).style.display = 'none';
-            document.getElementById(`btn-toggle-hand-${player}`).style.display = 'inline-block';
-            
-            // 自動調整自己的區域在正下方，對手在正上方
-            const secMainP1 = document.getElementById('section-main-p1');
-            const secMainP2 = document.getElementById('section-main-p2');
-            const secHandP1 = document.getElementById('section-hand-p1');
-            const secHandP2 = document.getElementById('section-hand-p2');
+            const btnP1 = document.getElementById('btn-view-p1');
+            const btnP2 = document.getElementById('btn-view-p2');
 
-            if (player === 'p1') {
-                secHandP2.style.order = '1';
-                secMainP2.style.order = '2';
-                secMainP1.style.order = '3';
-                secHandP1.style.order = '4';
-
-                document.getElementById('title-hand-p2').innerText = 'OPPONENT HAND (P2)';
-                document.getElementById('title-hand-p2').className = 'text-[10px] font-bold tracking-widest text-red-900 uppercase opacity-50';
-                document.getElementById('title-hand-p1').innerText = 'PLAYER HAND (P1)';
-                document.getElementById('title-hand-p1').className = 'text-[10px] font-bold tracking-widest text-blue-400 uppercase';
+            // 處理 DOM 順序：把對手區域排在上方
+            const mainContainer = document.querySelector('main');
+            
+            if (gameState.viewMode === 'P1') {
+                btnP1.className = "text-xs border px-3 py-1 bg-white text-black font-bold cursor-pointer transition-colors";
+                btnP2.className = "text-xs border px-3 py-1 text-gray-400 border-gray-600 hover:bg-gray-800 cursor-pointer transition-colors";
                 
-                document.getElementById('watermark-p2').innerText = 'OPPONENT';
-                document.getElementById('watermark-p1').innerText = 'PLAYER (YOU)';
+                // P2 變成對手(上方, 旋轉)
+                p2Section.classList.add('rotated-180');
+                p2Hand.classList.add('rotated-180');
+                p1Section.classList.remove('rotated-180');
+                p1Hand.classList.remove('rotated-180');
+                
+                document.querySelector('#field-p1 .field-label').innerText = "PLAYER (YOU)";
+                document.querySelector('#field-p2 .field-label').innerText = "OPPONENT";
+                document.getElementById('title-hand-p1').innerText = "Player Hand (P1)";
+                document.getElementById('title-hand-p2').innerText = "Opponent Hand (P2)";
+                
+                // P2手牌變為對手視角
+                document.getElementById('hand-p2').classList.add('opponent-hand');
+                document.getElementById('hand-p1').classList.remove('opponent-hand');
+                
+                // 排序 DOM
+                mainContainer.appendChild(p2Hand);
+                mainContainer.appendChild(p2Section);
+                mainContainer.appendChild(p1Section);
+                mainContainer.appendChild(p1Hand);
+
             } else {
-                secHandP1.style.order = '1';
-                secMainP1.style.order = '2';
-                secMainP2.style.order = '3';
-                secHandP2.style.order = '4';
-
-                document.getElementById('title-hand-p1').innerText = 'OPPONENT HAND (P1)';
-                document.getElementById('title-hand-p1').className = 'text-[10px] font-bold tracking-widest text-blue-900 uppercase opacity-50';
-                document.getElementById('title-hand-p2').innerText = 'PLAYER HAND (P2)';
-                document.getElementById('title-hand-p2').className = 'text-[10px] font-bold tracking-widest text-red-400 uppercase';
-
-                document.getElementById('watermark-p1').innerText = 'OPPONENT';
-                document.getElementById('watermark-p2').innerText = 'PLAYER (YOU)';
+                btnP2.className = "text-xs border px-3 py-1 bg-white text-black font-bold cursor-pointer transition-colors";
+                btnP1.className = "text-xs border px-3 py-1 text-gray-400 border-gray-600 hover:bg-gray-800 cursor-pointer transition-colors";
+                
+                // P1 變成對手(上方, 旋轉)
+                p1Section.classList.add('rotated-180');
+                p1Hand.classList.add('rotated-180');
+                p2Section.classList.remove('rotated-180');
+                p2Hand.classList.remove('rotated-180');
+                
+                document.querySelector('#field-p2 .field-label').innerText = "PLAYER (YOU)";
+                document.querySelector('#field-p1 .field-label').innerText = "OPPONENT";
+                document.getElementById('title-hand-p2').innerText = "Player Hand (P2)";
+                document.getElementById('title-hand-p1').innerText = "Opponent Hand (P1)";
+                
+                // P1手牌變為對手視角
+                document.getElementById('hand-p1').classList.add('opponent-hand');
+                document.getElementById('hand-p2').classList.remove('opponent-hand');
+                
+                // 排序 DOM
+                mainContainer.appendChild(p1Hand);
+                mainContainer.appendChild(p1Section);
+                mainContainer.appendChild(p2Section);
+                mainContainer.appendChild(p2Hand);
             }
         }
 
-        var zoneState = {
-            'life-p1': 5, 'reserve-p1': 3, 'trash-core-p1': 0, 'count-p1': 0,
-            'life-p2': 5, 'reserve-p2': 3, 'trash-core-p2': 0, 'count-p2': 0
-        };
-        
-        let activePlayerContext = 'p1';
-
-        function updateZoneCount(zoneId, delta) {
-            if (zoneState[zoneId] + delta >= 0) {
-                zoneState[zoneId] += delta;
-                document.getElementById(`count-${zoneId}`).innerText = zoneState[zoneId];
-                window.triggerSync();
-            }
-        }
-
-        function payCost(player) {
-            if (zoneState[`reserve-${player}`] > 0) {
-                updateZoneCount(`reserve-${player}`, -1);
-                updateZoneCount(`trash-core-${player}`, 1);
-                window.triggerSync();
-            }
-        }
-
-        function takeLife(player) {
-            if (zoneState[`life-${player}`] > 0) {
-                updateZoneCount(`life-${player}`, -1);
-                updateZoneCount(`reserve-${player}`, 1);
-                window.triggerSync();
-            }
-        }
-
-        function recoverTrash(player) {
-            const trashAmount = zoneState[`trash-core-${player}`];
-            if (trashAmount > 0) {
-                updateZoneCount(`reserve-${player}`, trashAmount);
-                updateZoneCount(`trash-core-${player}`, -trashAmount);
-                window.triggerSync();
-            }
-        }
-
-        let pendingCoresToReturn = 0;
-        function confirmCoreReturn(targetType) {
-            if (pendingCoresToReturn > 0) {
-                updateZoneCount(`${targetType}-${activePlayerContext}`, pendingCoresToReturn);
-                pendingCoresToReturn = 0;
-            }
-            document.getElementById('core-return-modal').classList.remove('active');
-            window.triggerSync();
-        }
-
-        function openTrashModal(player) {
-            activePlayerContext = player;
-            document.getElementById('trash-modal-title-suffix').innerText = `(${player.toUpperCase()})`;
-            const trashZone = document.getElementById(`trash-${player}`);
-            const modalContent = document.getElementById('trash-modal-content');
-            const modal = document.getElementById('trash-modal');
-            modalContent.innerHTML = '';
-            
-            Array.from(trashZone.querySelectorAll('.card')).forEach(card => {
-                card.style.position = '';
-                card.style.left = '';
-                card.style.top = '';
-                card.style.transform = '';
-                modalContent.appendChild(card);
-            });
-            modal.classList.add('active');
-        }
-
-        function closeTrashModal() {
-            const trashZone = document.getElementById(`trash-${activePlayerContext}`);
-            const modalContent = document.getElementById('trash-modal-content');
-            const modal = document.getElementById('trash-modal');
-            
-            Array.from(modalContent.querySelectorAll('.card')).forEach(card => {
-                trashZone.appendChild(card);
-                window.stackCardInTrash(card);
-            });
-            modal.classList.remove('active');
-        }
-        
-        window.stackCardInTrash = function(card) {
-            card.style.position = 'absolute';
-            card.style.left = '50%';
-            card.style.top = '55%';
-            const randomRotation = (Math.random() * 8 - 4).toFixed(1);
-            card.style.transform = `translate(-50%, -50%) rotate(${randomRotation}deg)`;
-        }
-
-        document.getElementById('trash-modal-content').addEventListener('click', function(e) {
-            const card = e.target.closest('.card');
-            if (card) {
-                const field = document.getElementById(`field-${activePlayerContext}`);
-                field.appendChild(card);
-                card.style.position = 'absolute';
-                const fieldRect = field.getBoundingClientRect();
-                card.style.left = ((fieldRect.width - 118) / 2) + 'px';
-                card.style.top = ((fieldRect.height - 172) / 2) + 'px';
-                card.style.transform = '';
-                card.dataset.rotation = '0';
-                closeTrashModal();
-                window.triggerSync();
-            }
-        });
-
-        let decks = { p1: [], p2: [] };
-        let pendingDeckCard = null;
-
-        function confirmDeckReturn(position) {
-            if (pendingDeckCard && pendingDeckCard.__cardData) {
-                if (position === 'top') {
-                    decks[activePlayerContext].unshift(pendingDeckCard.__cardData);
-                } else {
-                    decks[activePlayerContext].push(pendingDeckCard.__cardData);
-                }
-                pendingDeckCard.remove();
-                pendingDeckCard = null;
-                document.getElementById(`deck-count-${activePlayerContext}`).innerText = decks[activePlayerContext].length;
-            }
-            document.getElementById('deck-return-modal').classList.remove('active');
-            window.triggerSync();
-        }
-
-        async function handleZipUpload(event, player) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const zip = new window.JSZip();
-            try {
-                const contents = await zip.loadAsync(file);
-                let idCounter = 1;
-                let newCards = [];
-                for (const [filename, zipEntry] of Object.entries(contents.files)) {
-                    if (!zipEntry.dir && filename.match(/\.(png|jpe?g|gif)$/i)) {
-                        const blob = await zipEntry.async("blob");
-                        const tempUrl = URL.createObjectURL(blob);
-                        const img = new Image();
-                        await new Promise((resolve) => { img.onload = resolve; img.src = tempUrl; });
-                        const canvas = document.createElement('canvas');
-                        canvas.width = 118; canvas.height = 172;
-                        const ctx = canvas.getContext('2d');
-                        ctx.fillStyle = '#ffffff';
-                        ctx.fillRect(0, 0, canvas.width, canvas.height);
-                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        const imageUrl = canvas.toDataURL('image/jpeg', 0.5);
-                        URL.revokeObjectURL(tempUrl);
-                        newCards.push({
-                            id: `zip_${player}_${Date.now()}_${idCounter++}`,
-                            name: filename,
-                            imageUrl: imageUrl
-                        });
-                    }
-                }
-                decks[player] = decks[player].concat(newCards);
-                shuffleDeck(player);
-                document.getElementById(`deck-count-${player}`).innerText = decks[player].length;
-                event.target.value = ''; 
-                window.triggerSync();
-            } catch (error) {
-                console.error("ZIP 讀取失敗", error);
-            }
-        }
-
-        function drawCard(position = 'top', player) {
-            if (decks[player].length === 0) return;
-            const cardData = position === 'top' ? decks[player].shift() : decks[player].pop(); 
-            document.getElementById(`deck-count-${player}`).innerText = decks[player].length;
-            document.getElementById(`hand-${player}`).appendChild(createCardElement(cardData));
-            window.triggerSync();
-        }
-
-        function openDeckModal(player) {
-            activePlayerContext = player;
-            document.getElementById('deck-modal-title-suffix').innerText = `(${player.toUpperCase()})`;
-            const modalContent = document.getElementById('deck-modal-content');
-            modalContent.innerHTML = '';
-            decks[player].forEach((cardData) => {
-                const card = createCardElement(cardData);
-                card.style.position = '';
-                modalContent.appendChild(card);
-            });
-            document.getElementById('deck-view-modal').classList.add('active');
-        }
-
-        function closeDeckModal() {
-            document.getElementById('deck-view-modal').classList.remove('active');
-        }
-
-        document.getElementById('deck-modal-content').addEventListener('click', function(e) {
-            const card = e.target.closest('.card');
-            if (card) {
-                const cardData = card.__cardData;
-                const index = decks[activePlayerContext].findIndex(c => c.id === cardData.id);
-                if(index > -1) {
-                    decks[activePlayerContext].splice(index, 1);
-                    document.getElementById(`deck-count-${activePlayerContext}`).innerText = decks[activePlayerContext].length;
-                    document.getElementById(`hand-${activePlayerContext}`).appendChild(card);
-                    window.triggerSync();
-                }
-            }
-        });
-
-        function shuffleDeck(player) {
-            decks[player].sort(() => Math.random() - 0.5);
-            const deckCount = document.getElementById(`deck-count-${player}`);
-            deckCount.style.color = '#00ff00';
-            setTimeout(() => { deckCount.style.color = ''; }, 300);
-            window.triggerSync();
-        }
-
-        function deployTopToField(player) {
-            if (decks[player].length === 0) return;
-            const cardData = decks[player].shift(); 
-            document.getElementById(`deck-count-${player}`).innerText = decks[player].length;
-            const field = document.getElementById(`field-${player}`);
-            const card = createCardElement(cardData);
-            field.appendChild(card);
-            card.style.position = 'absolute';
-            const fieldRect = field.getBoundingClientRect();
-            card.style.left = ((fieldRect.width - 118) / 2) + 'px';
-            card.style.top = ((fieldRect.height - 172) / 2) + 'px';
-            window.triggerSync();
+        function setView(player) {
+            gameState.viewMode = player;
+            updateAllUI();
         }
 
         function toggleHand(player) {
-            if (player !== currentViewer) return;
-            document.getElementById(`hand-${player}`).classList.toggle('hand-obscured');
-        }
-
-        function showCardPreview(cardElement, cardData) {
-            if (window.draggedElement) return;
-            const preview = document.getElementById('card-preview');
-            preview.innerHTML = '';
-            const isObscured = cardElement.closest('.hand-obscured') !== null;
-            
-            if (cardElement.classList.contains('flipped') || isObscured) {
-                preview.style.background = '#fff';
-                preview.innerHTML = `
-                    <div class="w-full h-full bg-[#111] relative border-[8px] border-[#333] flex flex-col items-center justify-center p-1" style="border-style: double;">
-                        <div class="text-[110px] font-black italic text-[#333] mb-12" style="font-family: serif;">BS</div>
-                        <div class="absolute bottom-12 text-[26px] font-black tracking-widest text-[#333] italic" style="font-family: serif;">Battle Spirits</div>
-                    </div>
-                `;
+            const handZone = document.getElementById(`hand-${player}`);
+            if (handZone.style.display === 'none') {
+                handZone.style.display = 'flex';
+                document.getElementById(`section-hand-${player}`).classList.remove('h-auto');
             } else {
-                preview.style.background = '#fff';
-                if (cardData.imageUrl) {
-                    preview.innerHTML = `<img src="${cardData.imageUrl}" class="w-full h-full object-cover p-1" />`;
-                } else {
-                    preview.innerHTML = `<div class="flex items-center justify-center h-full text-black font-bold">Text Card Mockup</div>`;
+                handZone.style.display = 'none';
+                document.getElementById(`section-hand-${player}`).classList.add('h-auto');
+            }
+        }
+
+        function updateCounter(key, delta) {
+            gameState[key] += delta;
+            // Life/Count can be negative? Usually not in BS, but let's prevent < 0 for reserve/trash
+            if (['p1_reserve', 'p1_trash_core', 'p2_reserve', 'p2_trash_core'].includes(key) && gameState[key] < 0) {
+                gameState[key] = 0;
+            }
+            updateAllUI();
+            updateRoomState();
+        }
+        
+        function toggleSoulCore(player) {
+             const loc = gameState.soulCoreLocation[player];
+             if(loc === 'reserve') {
+                 gameState.soulCoreLocation[player] = 'trash';
+             } else {
+                 gameState.soulCoreLocation[player] = 'reserve';
+             }
+             updateAllUI();
+             updateRoomState();
+        }
+        
+        function updateSoulCoreUI(player) {
+             const btn = document.getElementById(`${player}_soul_core`);
+             const loc = gameState.soulCoreLocation[player];
+             if(loc === 'reserve') {
+                  btn.style.opacity = '1';
+                  btn.title = "Soul Core (in Reserve)";
+             } else if(loc === 'trash') {
+                  btn.style.opacity = '0.3';
+                  btn.title = "Soul Core (in Trash / On Field)";
+             } else {
+                  btn.style.opacity = '0'; // On a card
+             }
+             
+             // Update all cards for this player to show/hide soul core badge if needed
+             // This requires rendering logic in createCardElement
+        }
+
+        /* =========================================================================
+           CARD MECHANICS
+           ========================================================================= */
+        async function importZip(event, player) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            try {
+                const zip = new JSZip();
+                const contents = await zip.loadAsync(file);
+                
+                let count = 0;
+                for (const [filename, zipEntry] of Object.entries(contents.files)) {
+                    if (zipEntry.dir || !filename.match(/\.(jpg|jpeg|png)$/i)) continue;
+                    
+                    const blob = await zipEntry.async("blob");
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        const base64 = e.target.result;
+                        const cardId = `c_${Date.now()}_${cardIdCounter++}`;
+                        
+                        gameState.cards[cardId] = {
+                            id: cardId,
+                            owner: player,
+                            zone: `deck-${player}`, // start in deck
+                            x: 0,
+                            y: 0,
+                            imgBase64: base64,
+                            isTapped: false,
+                            cores: 0,
+                            hasSoulCore: false
+                        };
+                        gameState[`${player}Deck`].push(cardId);
+                        updateAllUI();
+                    };
+                    reader.readAsDataURL(blob);
+                    count++;
                 }
+                alert(`Successfully imported ${count} cards to ${player}'s deck!`);
+                updateRoomState();
+            } catch (err) {
+                console.error("Error reading zip", err);
+                alert("Failed to read zip file.");
             }
-            preview.classList.remove('opacity-0', 'invisible');
-            preview.classList.add('opacity-100', 'visible');
+            event.target.value = ''; // Reset input
         }
 
-        function hideCardPreview() {
-            const preview = document.getElementById('card-preview');
-            preview.classList.remove('opacity-100', 'visible');
-            preview.classList.add('opacity-0', 'invisible');
+        function drawCard(player, from) {
+            const deck = gameState[`${player}Deck`];
+            if (deck.length === 0) return alert('Deck is empty!');
+            
+            const cardId = from === 'top' ? deck.shift() : deck.pop();
+            const cardData = gameState.cards[cardId];
+            
+            cardData.zone = `hand-${player}`;
+            
+            const el = createCardElement(cardData);
+            document.getElementById(`hand-${player}`).appendChild(el);
+            
+            updateAllUI();
+            updateRoomState();
         }
 
-        window.createCardElement = function(cardData) {
-            const card = document.createElement('div');
-            card.className = 'card flex-shrink-0';
-            card.id = cardData.id;
-            card.draggable = true;
-            card.dataset.cores = 0; 
-            card.__cardData = cardData;
+        function createCardElement(cardData) {
+            const el = document.createElement('div');
+            el.className = 'card';
+            el.id = cardData.id;
+            el.draggable = true;
+            
+            // 重要：我們在這裡將圖片設定為 background-image
+            if (cardData.imgBase64) {
+                 el.style.backgroundImage = `url(${cardData.imgBase64})`;
+            } else {
+                 el.innerText = "NO IMG";
+            }
+            
+            if (cardData.isTapped) el.classList.add('tapped');
+            
+            // Controls
+            const controls = document.createElement('div');
+            controls.className = 'card-controls';
+            
+            const btnTap = document.createElement('button');
+            btnTap.className = 'card-btn';
+            btnTap.innerHTML = '⟳';
+            btnTap.onclick = (e) => { e.stopPropagation(); toggleTap(cardData.id); };
+            
+            const btnCoreMinus = document.createElement('button');
+            btnCoreMinus.className = 'card-btn';
+            btnCoreMinus.innerText = '-';
+            btnCoreMinus.onclick = (e) => { e.stopPropagation(); addCoreToCard(cardData.id, -1); };
+            
+            const coreCount = document.createElement('div');
+            coreCount.className = 'card-cores';
+            coreCount.innerText = cardData.cores;
+            
+            const btnCorePlus = document.createElement('button');
+            btnCorePlus.className = 'card-btn';
+            btnCorePlus.innerText = '+';
+            btnCorePlus.onclick = (e) => { e.stopPropagation(); addCoreToCard(cardData.id, 1); };
+            
+            controls.appendChild(btnTap);
+            controls.appendChild(btnCoreMinus);
+            controls.appendChild(coreCount);
+            controls.appendChild(btnCorePlus);
+            
+            el.appendChild(controls);
 
-            let contentHTML = cardData.imageUrl ? `<img src="${cardData.imageUrl}" class="card-content absolute inset-0 w-full h-full object-cover z-0 pointer-events-none" style="padding: 2px;" />` : '';
-
-            card.innerHTML = `
-                ${contentHTML}
-                <div class="core-ui" draggable="false">
-                    <div class="core-btn btn-minus border border-white">-</div>
-                    <div class="flex items-center bg-black text-white border border-white px-2 py-0.5 rounded-full shadow-lg">
-                        <span class="w-2.5 h-2.5 bg-white rounded-full inline-block mr-1.5"></span>
-                        <span class="core-count">0</span>
-                    </div>
-                    <div class="core-btn btn-plus border border-white">+</div>
-                </div>
-            `;
-
-            let rotateTimeout;
-            card.addEventListener('click', (e) => {
-                if (e.target.closest('.core-ui')) return;
-                if (!card.parentElement.id.includes('field')) return;
-                if (rotateTimeout) clearTimeout(rotateTimeout);
-                rotateTimeout = setTimeout(() => {
-                    const rect = card.getBoundingClientRect();
-                    let currentRot = parseInt(card.dataset.rotation || '0');
-                    if (e.clientX < rect.left + rect.width / 2) currentRot -= 90;
-                    else currentRot += 90;
-                    card.dataset.rotation = currentRot;
-                    card.style.transform = `rotate(${currentRot}deg)`;
-                    window.triggerSync();
-                }, 200);
+            // Drag Events
+            el.addEventListener('dragstart', (e) => {
+                draggedCard = cardData.id;
+                e.dataTransfer.setData('text/plain', cardData.id);
+                el.style.opacity = '0.5';
+            });
+            
+            el.addEventListener('dragend', () => {
+                el.style.opacity = '1';
+                draggedCard = null;
+                // 清除所有 hover 效果
+                document.querySelectorAll('.drag-over').forEach(z => z.classList.remove('drag-over'));
+            });
+            
+            // Hover Events for Preview
+            const previewPanel = document.getElementById('card-preview');
+            el.addEventListener('mouseenter', () => {
+                // 如果是在對手手牌區且當前是玩家視角，不顯示預覽
+                const isOpponentHand = el.closest('.opponent-hand');
+                if (isOpponentHand) return;
+                
+                previewPanel.style.backgroundImage = `url(${cardData.imgBase64})`;
+                previewPanel.style.opacity = '1';
+                previewPanel.style.visibility = 'visible';
+            });
+            
+            el.addEventListener('mouseleave', () => {
+                previewPanel.style.opacity = '0';
+                previewPanel.style.visibility = 'hidden';
             });
 
-            card.querySelector('.btn-plus').addEventListener('click', (e) => {
-                e.stopPropagation();
-                let c = parseInt(card.dataset.cores || 0) + 1;
-                card.dataset.cores = c;
-                card.querySelector('.core-count').innerText = c;
-                window.triggerSync();
-            });
-
-            card.querySelector('.btn-minus').addEventListener('click', (e) => {
-                e.stopPropagation();
-                let c = parseInt(card.dataset.cores || 0);
-                if (c > 0) c--;
-                card.dataset.cores = c;
-                card.querySelector('.core-count').innerText = c;
-                window.triggerSync();
-            });
-
-            card.querySelector('.core-ui').addEventListener('mousedown', (e) => e.stopPropagation());
-
-            card.addEventListener('dblclick', () => {
-                if (rotateTimeout) clearTimeout(rotateTimeout);
-                card.classList.toggle('flipped');
-                showCardPreview(card, cardData);
-                window.triggerSync();
-            });
-
-            card.addEventListener('mouseenter', () => showCardPreview(card, cardData));
-            card.addEventListener('mouseleave', hideCardPreview);
-            card.addEventListener('dragstart', handleDragStart);
-            card.addEventListener('dragend', handleDragEnd);
-
-            return card;
+            return el;
         }
 
-        let dragOffsetX = 0, dragOffsetY = 0, currentDragGhost = null;
+        function toggleTap(cardId) {
+            const cardData = gameState.cards[cardId];
+            cardData.isTapped = !cardData.isTapped;
+            const el = document.getElementById(cardId);
+            if (el) {
+                if (cardData.isTapped) el.classList.add('tapped');
+                else el.classList.remove('tapped');
+            }
+            updateRoomState();
+        }
+        
+        function addCoreToCard(cardId, delta) {
+             const cardData = gameState.cards[cardId];
+             const player = cardData.owner;
+             
+             // Check if enough cores in reserve
+             if (delta > 0 && gameState[`${player}_reserve`] < delta) {
+                  return; // Not enough cores
+             }
+             
+             if (cardData.cores + delta < 0) return;
+             
+             cardData.cores += delta;
+             gameState[`${player}_reserve`] -= delta;
+             
+             // Update UI directly for speed
+             const el = document.getElementById(cardId);
+             if(el) {
+                  el.querySelector('.card-cores').innerText = cardData.cores;
+             }
+             updateAllUI();
+             updateRoomState();
+        }
 
-        function handleDragStart(e) {
-            hideCardPreview();
-            window.draggedElement = this;
-            window.draggedType = 'card';
-            setTimeout(() => this.classList.add('dragging'), 0);
-            e.dataTransfer.effectAllowed = 'move';
-            e.dataTransfer.setData('text/plain', this.id);
+        /* =========================================================================
+           DRAG & DROP
+           ========================================================================= */
+        function allowDrop(ev) {
+            ev.preventDefault();
+            const zone = ev.target.closest('.zone');
+            if (zone) zone.classList.add('drag-over');
+        }
 
-            const dragGhost = this.cloneNode(true);
-            dragGhost.id = '';
-            dragGhost.style.width = '59px';
-            dragGhost.style.height = '86px';
-            dragGhost.style.position = 'absolute';
-            dragGhost.style.top = '-1000px';
-            dragGhost.style.left = '-1000px';
-            dragGhost.style.transform = 'none';
-            dragGhost.style.opacity = '0.9';
-            dragGhost.classList.remove('dragging');
-            dragGhost.classList.add('mini-ghost');
+        function drop(ev, targetZoneId) {
+            ev.preventDefault();
+            document.querySelectorAll('.drag-over').forEach(z => z.classList.remove('drag-over'));
+            
+            const cardId = ev.dataTransfer.getData('text/plain');
+            if (!cardId || !gameState.cards[cardId]) return;
+            
+            const cardData = gameState.cards[cardId];
+            const el = document.getElementById(cardId);
+            const targetZone = document.getElementById(targetZoneId);
+            
+            if (!el || !targetZone) return;
 
-            const coreUi = dragGhost.querySelector('.core-ui');
-            if (coreUi) coreUi.remove();
+            // Handle coordinate calculation for free-positioning zones (fields)
+            if (targetZoneId.startsWith('field-')) {
+                // 取得區域的邊界矩形
+                const rect = targetZone.getBoundingClientRect();
+                
+                // 計算相對於區域左上角的座標，並減去卡牌寬高的一半讓滑鼠指在卡牌中心
+                let x = ev.clientX - rect.left - 50; 
+                let y = ev.clientY - rect.top - 70;
+                
+                // 限制範圍不超出邊界
+                x = Math.max(0, Math.min(x, rect.width - 100));
+                y = Math.max(0, Math.min(y, rect.height - 140));
 
-            if (this.closest('.hand-obscured') !== null) {
-                dragGhost.classList.add('flipped');
+                cardData.x = x;
+                cardData.y = y;
+                
+                el.style.position = 'absolute';
+                el.style.left = `${x}px`;
+                el.style.top = `${y}px`;
+            } else {
+                // 對於手牌、Burst、廢棄區等，不使用絕對定位
+                el.style.position = 'static';
+                el.style.left = 'auto';
+                el.style.top = 'auto';
+                cardData.x = 0;
+                cardData.y = 0;
             }
 
-            currentDragGhost = dragGhost;
-            document.body.appendChild(dragGhost);
-            e.dataTransfer.setDragImage(dragGhost, 29.5, 43);
-
-            dragOffsetX = 59;
-            dragOffsetY = 86;
+            cardData.zone = targetZoneId;
+            targetZone.appendChild(el);
+            
+            updateRoomState();
         }
-
-        function handleDragEnd(e) {
-            this.classList.remove('dragging');
-            window.draggedElement = null;
-            window.draggedType = null;
-            document.querySelectorAll('.zone, .card').forEach(el => el.classList.remove('drag-over'));
-            if (currentDragGhost && currentDragGhost.parentNode) {
-                currentDragGhost.parentNode.removeChild(currentDragGhost);
-                currentDragGhost = null;
-            }
-        }
-
-        document.querySelectorAll('.soul-core').forEach(core => {
-            core.addEventListener('dragstart', function(e) {
-                window.draggedElement = this;
-                window.draggedType = 'core';
-                setTimeout(() => this.classList.add('dragging-core'), 0);
-                e.dataTransfer.effectAllowed = 'move';
-                e.dataTransfer.setData('text/plain', 'soul-core');
-                const rect = this.getBoundingClientRect();
-                dragOffsetX = e.clientX - rect.left;
-                dragOffsetY = e.clientY - rect.top;
-            });
-            core.addEventListener('dragend', function(e) {
-                this.classList.remove('dragging-core');
-                window.draggedElement = null;
-                window.draggedType = null;
-                document.querySelectorAll('.zone, .card').forEach(el => el.classList.remove('drag-over'));
-            });
+        
+        // Remove drag-over styling when leaving a zone
+        document.addEventListener('dragleave', (ev) => {
+             const zone = ev.target.closest('.zone');
+             if (zone) zone.classList.remove('drag-over');
         });
 
-        document.querySelectorAll('.zone').forEach(zone => {
-            zone.addEventListener('dragover', function(e) {
-                const isCoreZone = this.id.includes('reserve') || this.id.includes('life') || this.id.includes('trash-core') || this.id.includes('count');
-                const isDeckOrHand = this.id.includes('deck') || this.id.includes('hand');
-                if (window.draggedType === 'card' && isCoreZone) return;
-                if (window.draggedType === 'core' && isDeckOrHand) return;
-                e.preventDefault();
-                this.classList.add('drag-over');
+        /* =========================================================================
+           MULTIPLAYER & FIREBASE (Placeholder for actual implementation)
+           ========================================================================= */
+        function openMultiplayerModal() {
+             document.getElementById('mp-modal').classList.remove('hidden');
+        }
+        
+        function closeMultiplayerModal() {
+             document.getElementById('mp-modal').classList.add('hidden');
+        }
+        
+        function generateRoomCode() {
+             const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+             let code = '';
+             for(let i=0; i<6; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
+             return code;
+        }
+        
+        async function createRoom() {
+             const code = generateRoomCode();
+             document.getElementById('mp-status-msg').innerText = "Creating room...";
+             
+             // Initialize Firestore Sync here
+             if (window.initMultiplayer) {
+                  await window.initMultiplayer(code);
+                  
+                  // Setup initial empty state
+                  updateRoomState();
+             }
+             
+             document.getElementById('mp-status-msg').innerText = "";
+             const badge = document.getElementById('room-status-badge');
+             badge.innerText = `ROOM: ${code}`;
+             badge.classList.remove('hidden');
+             closeMultiplayerModal();
+        }
+        
+        async function joinRoom() {
+             const code = document.getElementById('join-room-code').value.trim().toUpperCase();
+             if(!code) return alert("Please enter a room code.");
+             
+             document.getElementById('mp-status-msg').innerText = "Joining room...";
+             
+             if (window.initMultiplayer) {
+                  await window.initMultiplayer(code);
+             }
+             
+             document.getElementById('mp-status-msg').innerText = "";
+             const badge = document.getElementById('room-status-badge');
+             badge.innerText = `ROOM: ${code}`;
+             badge.classList.remove('hidden');
+             closeMultiplayerModal();
+        }
+        
+        function copyRoomCode() {
+             const txt = document.getElementById('room-status-badge').innerText.replace('ROOM: ', '');
+             navigator.clipboard.writeText(txt).then(() => alert('Room code copied!'));
+        }
+
+        // 定義應用遠端狀態的函數 (被 Firebase onSnapshot 呼叫)
+        window.applyGameState = (newState) => {
+            isSyncing = true;
+            
+            // Update primitives
+            ['p1_life', 'p1_reserve', 'p1_count', 'p1_trash_core', 
+             'p2_life', 'p2_reserve', 'p2_count', 'p2_trash_core', 'soulCoreLocation'].forEach(key => {
+                if (newState[key] !== undefined) gameState[key] = newState[key];
             });
+            
+            if (newState.p1Deck) gameState.p1Deck = newState.p1Deck;
+            if (newState.p2Deck) gameState.p2Deck = newState.p2Deck;
 
-            zone.addEventListener('dragleave', function() { this.classList.remove('drag-over'); });
-
-            zone.addEventListener('drop', function(e) {
-                e.preventDefault();
-                this.classList.remove('drag-over');
-                const targetZoneId = this.id;
-                let targetPlayer = targetZoneId.includes('-p2') ? 'p2' : 'p1';
-
-                if (window.draggedType === 'card' && window.draggedElement) {
-                    const previousZoneId = window.draggedElement.parentElement ? window.draggedElement.parentElement.id : null;
-
-                    if (targetZoneId.startsWith('deck')) {
-                        activePlayerContext = targetPlayer;
-                        pendingDeckCard = window.draggedElement;
-                        document.getElementById('deck-return-modal').classList.add('active');
-                        if (previousZoneId && previousZoneId.startsWith('field')) {
-                            let cores = parseInt(window.draggedElement.dataset.cores || 0);
-                            if (cores > 0) {
-                                window.draggedElement.dataset.cores = 0;
-                                pendingCoresToReturn = cores;
-                                document.getElementById('core-return-amount').innerText = cores;
-                                document.getElementById('core-return-modal').classList.add('active');
-                            }
-                        }
-                        window.draggedElement.style.display = 'none';
-                        return; 
-                    } else if (targetZoneId.startsWith('trash-p')) {
-                        window.draggedElement.dataset.rotation = '0';
-                        this.appendChild(window.draggedElement);
-                        window.stackCardInTrash(window.draggedElement);
-                    } else if (!targetZoneId.startsWith('field')) {
-                        window.draggedElement.dataset.rotation = '0';
-                        window.draggedElement.style.position = '';
-                        window.draggedElement.style.left = '';
-                        window.draggedElement.style.top = '';
-                        window.draggedElement.style.transform = '';
-                        this.appendChild(window.draggedElement);
+            // 處理卡牌狀態同步
+            if (newState.cards) {
+                // 如果遠端有我們沒有的卡，先用假圖片建立起來 (因為移除了圖片上傳)
+                newState.cards.forEach(remoteCard => {
+                    if (!gameState.cards[remoteCard.id]) {
+                        gameState.cards[remoteCard.id] = {
+                            id: remoteCard.id,
+                            owner: remoteCard.owner,
+                            zone: remoteCard.zone,
+                            x: remoteCard.x,
+                            y: remoteCard.y,
+                            imgBase64: "", // 沒有圖片
+                            isTapped: remoteCard.isTapped,
+                            cores: remoteCard.cores || 0
+                        };
                     } else {
-                        window.draggedElement.style.position = 'absolute';
-                        const rect = this.getBoundingClientRect();
-                        let newLeft = Math.max(0, Math.min(e.clientX - rect.left - dragOffsetX, rect.width - 118));
-                        let newTop = Math.max(0, Math.min(e.clientY - rect.top - dragOffsetY, rect.height - 172));
-                        window.draggedElement.style.left = newLeft + 'px';
-                        window.draggedElement.style.top = newTop + 'px';
-                        this.appendChild(window.draggedElement);
+                        // 如果已經有，更新位置和狀態，保留本地的圖片！
+                        const localCard = gameState.cards[remoteCard.id];
+                        localCard.zone = remoteCard.zone;
+                        localCard.x = remoteCard.x;
+                        localCard.y = remoteCard.y;
+                        localCard.isTapped = remoteCard.isTapped;
+                        localCard.cores = remoteCard.cores || 0;
                     }
+                });
 
-                    if (previousZoneId && previousZoneId.startsWith('field') && (targetZoneId.startsWith('trash-p') || targetZoneId.startsWith('hand'))) {
-                        let cores = parseInt(window.draggedElement.dataset.cores || 0);
-                        if (cores > 0) {
-                            activePlayerContext = targetPlayer;
-                            window.draggedElement.dataset.cores = 0;
-                            window.draggedElement.querySelector('.core-count').innerText = 0;
-                            pendingCoresToReturn = cores;
-                            document.getElementById('core-return-amount').innerText = cores;
-                            document.getElementById('core-return-modal').classList.add('active');
-                        }
+                // 更新 DOM
+                Object.values(gameState.cards).forEach(cardData => {
+                    let el = document.getElementById(cardData.id);
+                    if (!el) {
+                        el = createCardElement(cardData);
                     }
-                } else if (window.draggedType === 'core' && window.draggedElement) {
-                    if (targetZoneId.startsWith('field')) {
-                        window.draggedElement.style.position = 'absolute';
-                        const rect = this.getBoundingClientRect();
-                        window.draggedElement.style.left = Math.max(0, Math.min(e.clientX - rect.left - dragOffsetX, rect.width - 20)) + 'px';
-                        window.draggedElement.style.top = Math.max(0, Math.min(e.clientY - rect.top - dragOffsetY, rect.height - 20)) + 'px';
+                    
+                    // 確保卡牌在正確的區域
+                    const targetZone = document.getElementById(cardData.zone);
+                    if (targetZone && el.parentElement !== targetZone) {
+                        targetZone.appendChild(el);
+                    }
+                    
+                    // 應用座標 (只有在 field 時)
+                    if (cardData.zone && cardData.zone.startsWith('field-')) {
+                        el.style.position = 'absolute';
+                        el.style.left = `${cardData.x}px`;
+                        el.style.top = `${cardData.y}px`;
                     } else {
-                        window.draggedElement.style.position = '';
-                        window.draggedElement.style.left = '';
-                        window.draggedElement.style.top = '';
+                        el.style.position = 'static';
                     }
-                    this.appendChild(window.draggedElement);
-                }
-                window.triggerSync();
-            });
-        });
+                    
+                    // 應用翻轉
+                    if (cardData.isTapped) el.classList.add('tapped');
+                    else el.classList.remove('tapped');
+                    
+                    // 應用 core
+                    const coreEl = el.querySelector('.card-cores');
+                    if (coreEl) coreEl.innerText = cardData.cores;
+                });
+            }
+            
+            updateAllUI();
+            isSyncing = false;
+        };
 
-        setViewer('p1');
+        // 打包狀態傳給 Firebase
+        function updateRoomState() {
+             if (isSyncing) return; // 避免接收更新時又觸發上傳
+             if (window.sendGameState) {
+                  // 準備乾淨的狀態物件 (移除巨大圖片資料)
+                  const stateToSave = {
+                      p1_life: gameState.p1_life,
+                      p1_reserve: gameState.p1_reserve,
+                      p1_count: gameState.p1_count,
+                      p1_trash_core: gameState.p1_trash_core,
+                      p2_life: gameState.p2_life,
+                      p2_reserve: gameState.p2_reserve,
+                      p2_count: gameState.p2_count,
+                      p2_trash_core: gameState.p2_trash_core,
+                      p1Deck: gameState.p1Deck,
+                      p2Deck: gameState.p2Deck,
+                      soulCoreLocation: gameState.soulCoreLocation,
+                      // 精簡化卡牌資料 (不包含 imgBase64)
+                      cards: Object.values(gameState.cards).map(card => ({
+                          id: card.id,
+                          owner: card.owner,
+                          zone: card.zone,
+                          x: card.x,
+                          y: card.y,
+                          isTapped: card.isTapped,
+                          cores: card.cores
+                      }))
+                  };
+                  window.sendGameState(stateToSave);
+             }
+        }
+
     </script>
-
+    
     <!-- Firebase Realtime Sync Module -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-const appId = "bsbeta-52f46";
-const firebaseConfig = {
-  apiKey: "AIzaSyCVxbd8WGayDHWQ8OSDBu-3-tfG6nJZM4s",
-  authDomain: "bsbeta-52f46.firebaseapp.com",
-  projectId: "bsbeta-52f46",
-  storageBucket: "bsbeta-52f46.firebasestorage.app",
-  messagingSenderId: "174223783079",
-  appId: "1:174223783079:web:33c1b8542ced38e7831782",
-  measurementId: "G-WHRBTBPMEQ"
-};
-
+        
+        const appId = "bsbeta-52f46";
+        const firebaseConfig = {
+          apiKey: "AIzaSyCVxbd8WGayDHWQ8OSDBu-3-tfG6nJZM4s",
+          authDomain: "bsbeta-52f46.firebaseapp.com",
+          projectId: "bsbeta-52f46",
+          storageBucket: "bsbeta-52f46.firebasestorage.app",
+          messagingSenderId: "174223783079",
+          appId: "1:174223783079:web:33c1b8542ced38e7831782",
+          measurementId: "G-WHRBTBPMEQ"
+        };
+        
         let db, auth, currentUser, unsubscribe;
-
+        
         window.initMultiplayer = async (roomCode) => {
             if (!firebaseConfig) {
                 document.getElementById('mp-status-msg').innerText = "Firebase not configured.";
                 return;
             }
             document.getElementById('mp-status-msg').innerText = "Connecting...";
-
+            
             try {
                 const app = initializeApp(firebaseConfig);
                 db = getFirestore(app);
                 auth = getAuth(app);
-
+                
                 if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                     await signInWithCustomToken(auth, __initial_auth_token);
                 } else {
@@ -1281,9 +1123,9 @@ const firebaseConfig = {
                 }
                 currentUser = auth.currentUser;
                 window.currentRoomCode = roomCode;
-
+                
                 const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', roomCode);
-
+                
                 unsubscribe = onSnapshot(roomRef, (snapshot) => {
                     if (snapshot.exists()) {
                         const data = snapshot.data();
@@ -1291,43 +1133,25 @@ const firebaseConfig = {
                             window.applyGameState(JSON.parse(data.stateJson));
                         }
                     }
-                }, (error) => {
-                    console.error("Sync error:", error);
-                    document.getElementById('mp-status-msg').innerText = "Sync disconnected.";
                 });
-
-                document.getElementById('multiplayer-modal').classList.remove('active');
-                const badge = document.getElementById('room-status-badge');
-                badge.classList.remove('hidden');
-                badge.innerText = `ROOM: ${roomCode}`;
-                window.triggerSync();
-
+                
             } catch (err) {
-                console.error(err);
+                console.error("Firebase init failed", err);
                 document.getElementById('mp-status-msg').innerText = "Connection failed.";
             }
         };
-
-        window.syncToFirebase = async () => {
-            if (!db || !currentUser || !window.currentRoomCode) return;
-            const stateJson = JSON.stringify(window.extractGameState());
-            const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', window.currentRoomCode);
-
+        
+        window.sendGameState = async (stateObj) => {
+            if (!db || !window.currentRoomCode || !currentUser) return;
             try {
-                if (new Blob([stateJson]).size > 950000) {
-                    const msg = document.getElementById('mp-status-msg');
-                    if(msg) msg.innerText = "⚠️ Sync Failed: Images too large (>1MB)!";
-                    return;
-                }
+                const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', window.currentRoomCode);
                 await setDoc(roomRef, {
-                    stateJson: stateJson,
+                    stateJson: JSON.stringify(stateObj),
                     lastUpdatedBy: currentUser.uid,
                     timestamp: Date.now()
-                });
-                const msg = document.getElementById('mp-status-msg');
-                if(msg && msg.innerText.includes("Failed")) msg.innerText = "";
-            } catch (e) {
-                console.error("Failed to sync:", e);
+                }, { merge: true });
+            } catch (err) {
+                console.error("Sync failed", err);
             }
         };
     </script>
