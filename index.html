@@ -1249,8 +1249,16 @@
         import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'bs-prototype';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
+const appId = "bsbeta-52f46";
+const firebaseConfig = {
+  apiKey: "AIzaSyCVxbd8WGayDHWQ8OSDBu-3-tfG6nJZM4s",
+  authDomain: "bsbeta-52f46.firebaseapp.com",
+  projectId: "bsbeta-52f46",
+  storageBucket: "bsbeta-52f46.firebasestorage.app",
+  messagingSenderId: "174223783079",
+  appId: "1:174223783079:web:33c1b8542ced38e7831782",
+  measurementId: "G-WHRBTBPMEQ"
+};
 
         let db, auth, currentUser, unsubscribe;
 
