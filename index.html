@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>BS PROTOTYPE - 2-PLAYER EDITION</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -34,6 +34,8 @@
             cursor: grab;
             position: absolute;
             user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
             transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, opacity 0.15s;
             box-shadow: 2px 2px 5px rgba(0,0,0,0.6);
             background-size: cover;
@@ -236,6 +238,8 @@
             justify-content: center;
             cursor: grab;
             user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
             transition: transform 0.15s, box-shadow 0.15s;
             z-index: 40;
         }
@@ -384,8 +388,11 @@
         /* 4. 卡牌高清放大預覽 (放大 25%：375px x 525px) */
         #card-preview {
             display: flex;
-            flex-direction: row;
-            align-items: stretch;
+            flex-direction: column;
+            align-items: center;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
         }
 
         #card-preview-img {
@@ -399,6 +406,70 @@
             box-shadow: 0 0 28px rgba(0,0,0,0.95);
             border-radius: 8px;
             flex-shrink: 0;
+            position: relative;
+            transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #card-preview-img.face-down {
+            background-image: none !important;
+            background-color: #222 !important;
+            border-color: #888;
+        }
+        #card-preview-img.face-down::after {
+            content: "BS";
+            color: #666;
+            font-weight: 900;
+            font-size: 72px;
+            letter-spacing: 4px;
+            pointer-events: none;
+        }
+
+        /* 手機/iPad模式下放大卡牌可點擊互動提示與熱區 */
+        #card-preview.mobile-interactive {
+            pointer-events: auto !important;
+            cursor: pointer;
+        }
+
+        .mobile-preview-hint {
+            display: none;
+            margin-top: 8px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 1px solid #60a5fa;
+            color: #e5e7eb;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 4px 12px;
+            border-radius: 999px;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.85);
+            pointer-events: none;
+            z-index: 20;
+        }
+        #card-preview.mobile-interactive .mobile-preview-hint {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* 手機/iPad 長撳拖動時的浮動卡牌分身 */
+        #touch-drag-ghost {
+            position: fixed;
+            pointer-events: none;
+            z-index: 15000;
+            width: 100px;
+            height: 140px;
+            border: 2px solid #facc15;
+            border-radius: 4px;
+            background-color: #1a1a1a;
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0 12px 28px rgba(0,0,0,0.9), 0 0 16px rgba(250, 204, 21, 0.7);
+            opacity: 0.92;
+            transform: translate(-50%, -50%) scale(1.08);
+            display: none;
         }
         
         /* 手牌區樣式 */
@@ -625,13 +696,18 @@
 <body class="h-screen w-screen flex flex-col p-2 box-border gap-2 bg-[#000] overflow-hidden">
 
     <!-- 頂部資訊區 -->
-    <header class="flex justify-between items-center border-b-2 border-gray-800 pb-1 flex-none px-2">
+    <header class="flex flex-wrap justify-between items-center border-b-2 border-gray-800 pb-1 flex-none px-2 gap-1">
         <div class="text-xl font-black tracking-wider text-gray-400 flex items-center gap-2">
             BS PROTOTYPE <span class="text-[10px] font-normal border border-gray-600 px-1 text-gray-500">2-PLAYER EDITION</span>
             <span id="room-status-badge" class="hidden text-[10px] bg-green-900 text-green-300 px-2 py-0.5 rounded font-bold cursor-pointer hover:bg-green-800" onclick="copyRoomCode()" title="點擊複製房間代碼"></span>
         </div>
-        <div class="flex gap-2 items-center">
-            <span id="mp-status-msg" class="text-xs text-gray-400 mr-2"></span>
+        <div class="flex flex-wrap gap-1.5 items-center">
+            <span id="mp-status-msg" class="text-xs text-gray-400 mr-1"></span>
+            <!-- 電腦 / 手機(iPad) 操作模式切換按鈕 -->
+            <div class="flex items-center border border-gray-700 rounded overflow-hidden mr-1">
+                <button id="btn-mode-pc" class="text-[11px] px-2.5 py-1 bg-blue-600 text-white font-bold cursor-pointer transition-colors" onclick="setControlMode('PC')" title="電腦模式：滑鼠懸停放大、單擊旋轉、雙擊翻轉、直接拖曳">💻 電腦模式</button>
+                <button id="btn-mode-mobile" class="text-[11px] px-2.5 py-1 bg-[#111] text-gray-400 hover:bg-gray-800 font-bold cursor-pointer transition-colors" onclick="setControlMode('MOBILE')" title="手機/iPad模式：單擊卡牌放大、點擊放大卡左右旋轉90度、雙擊放大卡翻轉、直接滑動拖曳卡牌">📱 手機/iPad模式</button>
+            </div>
             <button id="btn-reset" class="text-xs border border-red-500 px-3 py-1 bg-[#050505] text-red-400 hover:bg-red-900 hover:text-white font-bold cursor-pointer transition-colors" onclick="openResetModal()" title="重設場上所有卡片與 Core 至初始狀態 (保留牌組)">RESET</button>
             <button id="btn-sync" class="text-xs border border-green-500 px-3 py-1 bg-[#050505] text-green-500 hover:bg-green-900 hover:text-white font-bold cursor-pointer transition-colors" onclick="openMultiplayerModal()">ONLINE SYNC</button>
             <button id="btn-view-p1" class="text-xs border px-3 py-1 text-gray-400 border-gray-600 hover:bg-gray-800 cursor-pointer transition-colors" onclick="setView('P1')">Join as P1</button>
@@ -909,10 +985,20 @@
 
     </main>
 
-    <!-- 4. Card Preview (高清放大預覽 25%，動態顯示在鼠標指定的卡牌旁邊) -->
+    <!-- 4. Card Preview (高清放大預覽 25%，電腦模式滑鼠懸停顯示，手機/iPad模式單擊顯示並支援左右點擊旋轉、雙擊翻轉) -->
     <div id="card-preview" class="fixed z-[11000] pointer-events-none opacity-0 invisible transition-opacity duration-150">
         <div id="card-preview-img"></div>
+        <div class="mobile-preview-hint">
+            <span>↺ 點左側轉 -90°</span>
+            <span class="text-gray-500">|</span>
+            <span>連點兩下翻面</span>
+            <span class="text-gray-500">|</span>
+            <span>點右側轉 +90° ↻</span>
+        </div>
     </div>
+
+    <!-- 手機/iPad模式長撳拖曳時的浮動視覺分身 -->
+    <div id="touch-drag-ghost"></div>
 
     <!-- 1. 當卡牌放到 Trash / Deck / Burst / Hand 時，選擇將卡片上的 Core 歸還至預備區或廢棄區的視窗 -->
     <div id="core-return-modal" class="fixed inset-0 bg-black/85 z-[12000] hidden flex justify-center items-center">
@@ -952,7 +1038,7 @@
                 <div id="zone-view-title" class="text-white font-black tracking-widest text-lg uppercase">ZONE VIEW</div>
                 <button class="border border-gray-500 text-gray-300 hover:bg-white hover:text-black px-3 py-1 text-xs font-bold cursor-pointer" onclick="closeZoneModal()">CLOSE (✕)</button>
             </div>
-            <div class="text-[11px] text-gray-400">將滑鼠移到卡牌上可在卡牌旁放大預覽；點擊卡牌下方的按鈕可將該卡移至指定區域。</div>
+            <div class="text-[11px] text-gray-400">電腦模式將滑鼠移到卡牌上（手機/iPad模式單擊卡牌）可在卡牌旁放大預覽；點擊卡牌下方的按鈕可將該卡移至指定區域。</div>
             <div id="zone-view-list" class="flex-1 overflow-y-auto grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4 p-2 custom-scrollbar">
             </div>
         </div>
@@ -1037,6 +1123,36 @@
         let lotteryStepTimer = null;
         const shuffleFlashTimers = { p1: null, p2: null };
         const zeroLifeTimers = { p1: null, p2: null };
+
+        /* =========================================================================
+           CONTROL MODE: 電腦模式 ('PC') vs 手機/iPad模式 ('MOBILE')
+           ========================================================================= */
+        // 自動偵測是否為 iPad / iPhone / Android 觸控裝置，並允許隨時在頂部手動切換
+        const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || /iPad|iPhone|Android/i.test(navigator.userAgent);
+        let controlMode = isTouchDevice ? 'MOBILE' : 'PC';
+        let activePreviewCardId = null; // 目前在手機/iPad模式下放大顯示中的卡牌 ID
+        let touchDragState = null;      // 長撳拖動狀態 { type: 'card'|'soul', id, owner, active, timer, startX, startY }
+
+        function setControlMode(mode) {
+            controlMode = mode;
+            hideCardPreview();
+            const btnPc = document.getElementById('btn-mode-pc');
+            const btnMobile = document.getElementById('btn-mode-mobile');
+            if (btnPc && btnMobile) {
+                if (mode === 'PC') {
+                    btnPc.className = "text-[11px] px-2.5 py-1 bg-blue-600 text-white font-bold cursor-pointer transition-colors";
+                    btnMobile.className = "text-[11px] px-2.5 py-1 bg-[#111] text-gray-400 hover:bg-gray-800 font-bold cursor-pointer transition-colors";
+                } else {
+                    btnMobile.className = "text-[11px] px-2.5 py-1 bg-blue-600 text-white font-bold cursor-pointer transition-colors";
+                    btnPc.className = "text-[11px] px-2.5 py-1 bg-[#111] text-gray-400 hover:bg-gray-800 font-bold cursor-pointer transition-colors";
+                }
+            }
+            // 更新所有卡片的原生 draggable 屬性 (手機模式改用長撳拖動，避免系統長按選單或誤觸捲動)
+            Object.keys(gameState.cards).forEach(cid => {
+                const el = document.getElementById(cid);
+                if (el) el.draggable = (mode === 'PC');
+            });
+        }
 
         function showNotice(msg) {
             const modal = document.getElementById('notice-modal');
@@ -1240,19 +1356,67 @@
             updateRoomState();
         }
 
-        // 4. 將卡牌高清放大預覽 (375x525，放大25%) 顯示在鼠標指定的卡牌旁邊 (自動判斷左右空間)
-        function showCardPreviewNextToElement(targetEl, imgSrc, cardId = null) {
-            if (!targetEl || !imgSrc) return;
+        // 同步更新放大預覽圖的旋轉與正反面狀態 (供手機/iPad模式直接操作放大卡片時即時回饋)
+        function syncPreviewVisualWithCard(cardId) {
+            if (!cardId || activePreviewCardId !== cardId) return;
+            const cardData = gameState.cards[cardId];
+            const previewImg = document.getElementById('card-preview-img');
+            if (!cardData || !previewImg) return;
+
+            const isFieldOrGod = cardData.zone && (cardData.zone.startsWith('field-') || cardData.zone.startsWith('zone-god-'));
+            const rot = isFieldOrGod ? (cardData.rotation || 0) : 0;
+            previewImg.style.transform = `rotate(${rot}deg)`;
+
+            const imgSrc = cardData.imgBase64 || cardImageCache[cardId] || '';
+            const hdSrc = cardHighResCache[cardId] || imgSrc;
+            if (cardData.isFaceDown) {
+                previewImg.classList.add('face-down');
+                previewImg.style.backgroundImage = 'none';
+            } else {
+                previewImg.classList.remove('face-down');
+                if (hdSrc) {
+                    previewImg.style.backgroundImage = `url(${hdSrc})`;
+                } else {
+                    previewImg.style.backgroundImage = 'none';
+                }
+            }
+        }
+
+        // 4. 將卡牌高清放大預覽 (375x525，放大25%) 顯示在卡牌旁邊 (手機/iPad模式支援點擊互動)
+        function showCardPreviewNextToElement(targetEl, imgSrc, cardId = null, interactive = false) {
+            if (!targetEl) return;
+            const cardData = cardId ? gameState.cards[cardId] : null;
+            const isFaceDown = cardData ? !!cardData.isFaceDown : false;
+            if (!imgSrc && !isFaceDown) return;
+
             const previewPanel = document.getElementById('card-preview');
             const previewImg = document.getElementById('card-preview-img');
 
+            activePreviewCardId = cardId;
+
+            if (interactive) {
+                previewPanel.classList.add('mobile-interactive');
+            } else {
+                previewPanel.classList.remove('mobile-interactive');
+            }
+
             // 優先使用本機無損高清原圖，其次使用高清同步圖
             const hdSrc = (cardId && cardHighResCache[cardId]) ? cardHighResCache[cardId] : imgSrc;
-            previewImg.style.backgroundImage = `url(${hdSrc})`;
+            if (isFaceDown) {
+                previewImg.classList.add('face-down');
+                previewImg.style.backgroundImage = 'none';
+            } else {
+                previewImg.classList.remove('face-down');
+                previewImg.style.backgroundImage = `url(${hdSrc})`;
+            }
+
+            const isFieldOrGod = cardData && cardData.zone && (cardData.zone.startsWith('field-') || cardData.zone.startsWith('zone-god-'));
+            const rot = (interactive && isFieldOrGod) ? (cardData.rotation || 0) : 0;
+            previewImg.style.transform = `rotate(${rot}deg)`;
 
             const rect = targetEl.getBoundingClientRect();
             const pw = 375;
-            const ph = 525;
+            const ph = interactive ? 560 : 525;
             const gap = 14;
 
             let left = rect.right + gap;
@@ -1272,10 +1436,73 @@
 
         function hideCardPreview() {
             const previewPanel = document.getElementById('card-preview');
+            const previewImg = document.getElementById('card-preview-img');
+            activePreviewCardId = null;
             if (!previewPanel) return;
+            previewPanel.classList.remove('mobile-interactive');
             previewPanel.style.opacity = '0';
             previewPanel.style.visibility = 'hidden';
+            if (previewImg) {
+                previewImg.style.transform = 'rotate(0deg)';
+                previewImg.classList.remove('face-down');
+            }
         }
+
+        // 手機/iPad模式下：點擊放大後卡牌的左右旋轉 90 度，快速連點兩下放大後卡牌翻轉，點擊放大卡片以外位置取消放大
+        (function setupMobilePreviewInteractions() {
+            const previewPanel = document.getElementById('card-preview');
+            const previewImg = document.getElementById('card-preview-img');
+            if (!previewPanel || !previewImg) return;
+
+            let previewTapTimer = null;
+            let lastPreviewTapTime = 0;
+
+            previewImg.addEventListener('pointerup', (e) => {
+                if (controlMode !== 'MOBILE' || !activePreviewCardId) return;
+                e.stopPropagation();
+                e.preventDefault();
+
+                const now = Date.now();
+                const rect = previewImg.getBoundingClientRect();
+                const clickX = e.clientX - rect.left;
+                const isRightSide = clickX >= (rect.width / 2);
+                const targetCardId = activePreviewCardId;
+
+                // 快速連點兩下放大後卡牌：翻轉卡牌
+                if (now - lastPreviewTapTime < 280) {
+                    if (previewTapTimer) {
+                        clearTimeout(previewTapTimer);
+                        previewTapTimer = null;
+                    }
+                    lastPreviewTapTime = 0;
+                    flipCardFace(targetCardId, true);
+                    syncPreviewVisualWithCard(targetCardId);
+                    return;
+                }
+
+                lastPreviewTapTime = now;
+                previewTapTimer = setTimeout(() => {
+                    previewTapTimer = null;
+                    const currentCard = gameState.cards[targetCardId];
+                    if (currentCard && currentCard.zone && (currentCard.zone.startsWith('field-') || currentCard.zone.startsWith('zone-god-'))) {
+                        rotateCardBySide(targetCardId, isRightSide);
+                        syncPreviewVisualWithCard(targetCardId);
+                    }
+                }, 260);
+            });
+
+            // 點擊放大卡片以外的其他位置取消放大卡片
+            document.addEventListener('pointerdown', (e) => {
+                if (controlMode !== 'MOBILE' || !activePreviewCardId) return;
+                if (e.target.closest('#card-preview')) return;
+                // 若點到的是同一張正在放大的卡片本身，交由卡片自身的 pointerup 處理
+                const clickedCardEl = e.target.closest('.card');
+                if (clickedCardEl && clickedCardEl.id === activePreviewCardId && !e.target.closest('.card-controls')) {
+                    return;
+                }
+                hideCardPreview();
+            }, true);
+        })();
 
         function runLotteryAnimation(winner) {
             if (lotteryStepTimer) {
@@ -2188,7 +2415,7 @@
         }
 
         // 快速連點兩下反轉卡牌 (場上、創界神區、手牌、Burst 區皆可使用)
-        function flipCardFace(cardId) {
+        function flipCardFace(cardId, keepPreview = false) {
             const cardData = gameState.cards[cardId];
             if (!cardData || !cardData.zone) return;
             const isFlippable = cardData.zone.startsWith('field-') || cardData.zone.startsWith('zone-god-') || cardData.zone.startsWith('hand-') || cardData.zone.startsWith('zone-burst-');
@@ -2196,15 +2423,109 @@
             cardData.isFaceDown = !cardData.isFaceDown;
             const el = document.getElementById(cardId);
             if (el) applyCardVisualState(cardData, el);
-            if (cardData.isFaceDown) hideCardPreview();
+            if (cardData.isFaceDown && !keepPreview) hideCardPreview();
             updateRoomState();
+        }
+
+        /* =========================================================================
+           手機 / iPad 模式專屬：長撳卡片進入拖動 (拖動時不顯示放大卡片)
+           ========================================================================= */
+        function startTouchCardDrag(cardId, clientX, clientY) {
+            const cardData = gameState.cards[cardId];
+            const el = document.getElementById(cardId);
+            if (!cardData || !el) return;
+
+            // 拖動時不需要顯示放大卡片
+            hideCardPreview();
+            draggedCard = cardId;
+            draggedSoulOwner = null;
+            el.style.opacity = '0.45';
+
+            const ghost = document.getElementById('touch-drag-ghost');
+            if (ghost) {
+                const imgSrc = cardData.imgBase64 || cardImageCache[cardId] || '';
+                if (cardData.isFaceDown || !imgSrc) {
+                    ghost.style.backgroundImage = 'none';
+                    ghost.style.backgroundColor = '#222';
+                } else {
+                    ghost.style.backgroundImage = `url(${imgSrc})`;
+                }
+                ghost.style.left = `${clientX}px`;
+                ghost.style.top = `${clientY}px`;
+                ghost.style.display = 'block';
+            }
+        }
+
+        function moveTouchCardDrag(clientX, clientY) {
+            const ghost = document.getElementById('touch-drag-ghost');
+            if (ghost) {
+                ghost.style.left = `${clientX}px`;
+                ghost.style.top = `${clientY}px`;
+            }
+
+            document.querySelectorAll('.drag-over').forEach(z => z.classList.remove('drag-over'));
+            const underEl = document.elementFromPoint(clientX, clientY);
+            if (!underEl) return;
+            const dropTarget = underEl.closest('.god-zone-wrapper') || underEl.closest('#deck-box-p1, #deck-box-p2') || underEl.closest('.zone');
+            if (dropTarget) {
+                dropTarget.classList.add('drag-over');
+            }
+        }
+
+        function endTouchCardDrag(cardId, clientX, clientY) {
+            const el = document.getElementById(cardId);
+            if (el) el.style.opacity = '1';
+            const ghost = document.getElementById('touch-drag-ghost');
+            if (ghost) ghost.style.display = 'none';
+            document.querySelectorAll('.drag-over').forEach(z => z.classList.remove('drag-over'));
+
+            const underEl = document.elementFromPoint(clientX, clientY);
+            draggedCard = null;
+            if (!underEl) return;
+
+            // 1. 檢查是否拖到創界神區域
+            const godWrapper = underEl.closest('#god-wrapper-p1, #god-wrapper-p2');
+            if (godWrapper) {
+                const player = godWrapper.id.endsWith('p2') ? 'p2' : 'p1';
+                triggerGodZoneConfirmForCard(cardId, player);
+                return;
+            }
+
+            // 2. 檢查是否拖到牌組區 (Deck)
+            const deckBox = underEl.closest('#deck-box-p1, #deck-box-p2');
+            if (deckBox) {
+                const player = deckBox.id.endsWith('p2') ? 'p2' : 'p1';
+                triggerDeckChoiceForCard(cardId, player);
+                return;
+            }
+
+            // 3. 檢查是否拖到一般區域 (Field / Hand / Trash / Burst)
+            const zoneEl = underEl.closest('.zone');
+            if (zoneEl && zoneEl.id) {
+                const targetZoneId = zoneEl.id;
+                if (targetZoneId.startsWith('zone-god-')) {
+                    const player = targetZoneId.endsWith('p2') ? 'p2' : 'p1';
+                    triggerGodZoneConfirmForCard(cardId, player);
+                    return;
+                }
+                if (targetZoneId.startsWith('field-')) {
+                    const rect = zoneEl.getBoundingClientRect();
+                    let x = clientX - rect.left - 50;
+                    let y = clientY - rect.top - 70;
+                    x = Math.max(10, Math.min(x, rect.width - 110));
+                    y = Math.max(10, Math.min(y, rect.height - 180));
+                    moveCardToZone(cardId, targetZoneId, { x: Math.round(x), y: Math.round(y) });
+                } else {
+                    moveCardToZone(cardId, targetZoneId);
+                }
+            }
         }
 
         function createCardElement(cardData) {
             const el = document.createElement('div');
             el.className = 'card';
             el.id = cardData.id;
-            el.draggable = true;
+            el.draggable = (controlMode === 'PC');
 
             // 專用標籤顯示無卡圖時的 ID，避免覆蓋 .card 內部的 .card-controls
             const labelSpan = document.createElement('span');
@@ -2216,6 +2537,7 @@
             controls.addEventListener('click', (e) => e.stopPropagation());
             controls.addEventListener('dblclick', (e) => e.stopPropagation());
             controls.addEventListener('mousedown', (e) => e.stopPropagation());
+            controls.addEventListener('pointerdown', (e) => e.stopPropagation());
             controls.addEventListener('dragstart', (e) => e.stopPropagation());
             
             const btnCoreMinus = document.createElement('button');
@@ -2269,9 +2591,10 @@
             
             el.appendChild(controls);
 
-            // 處理單擊(場上或創界神區左右旋轉 90 度) 與 雙擊(反轉)
+            // ================= 電腦模式 (PC)：單擊旋轉、雙擊翻面、滑鼠移入預覽 =================
             let clickTimer = null;
             el.addEventListener('click', (e) => {
+                if (controlMode !== 'PC') return;
                 if (e.target.closest('.card-controls')) return;
                 const rect = el.getBoundingClientRect();
                 const clickX = e.clientX - rect.left;
@@ -2288,6 +2611,7 @@
             });
 
             el.addEventListener('dblclick', (e) => {
+                if (controlMode !== 'PC') return;
                 if (e.target.closest('.card-controls')) return;
                 e.preventDefault();
                 e.stopPropagation();
@@ -2296,6 +2620,87 @@
                     clickTimer = null;
                 }
                 flipCardFace(cardData.id);
+            });
+
+            // ================= 手機/iPad模式 (MOBILE)：單擊放大卡牌、無延遲直接拖動 =================
+            let isPointerDown = false;
+            let startX = 0;
+            let startY = 0;
+            let isTouchDragging = false;
+
+            el.style.touchAction = 'none';
+
+            el.addEventListener('pointerdown', (e) => {
+                if (controlMode !== 'MOBILE') return;
+                if (e.target.closest('.card-controls')) return;
+
+                isPointerDown = true;
+                startX = e.clientX;
+                startY = e.clientY;
+                isTouchDragging = false;
+                try { el.setPointerCapture(e.pointerId); } catch (err) {}
+            });
+
+            el.addEventListener('pointermove', (e) => {
+                if (controlMode !== 'MOBILE' || !isPointerDown) return;
+                const dx = e.clientX - startX;
+                const dy = e.clientY - startY;
+
+                // 只要手指移動超過極小距離 (6px) 即立刻進入拖動，無需任何長按等待時間
+                if (!isTouchDragging) {
+                    if (Math.hypot(dx, dy) > 6) {
+                        isTouchDragging = true;
+                        startTouchCardDrag(cardData.id, e.clientX, e.clientY);
+                    } else {
+                        return;
+                    }
+                }
+
+                e.preventDefault();
+                e.stopPropagation();
+                moveTouchCardDrag(e.clientX, e.clientY);
+            });
+
+            const finishPointerInteraction = (e, isCancel = false) => {
+                if (controlMode !== 'MOBILE' || !isPointerDown) return;
+                isPointerDown = false;
+                try { el.releasePointerCapture(e.pointerId); } catch (err) {}
+
+                if (isTouchDragging) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    isTouchDragging = false;
+                    if (!isCancel) {
+                        endTouchCardDrag(cardData.id, e.clientX, e.clientY);
+                    } else {
+                        const ghost = document.getElementById('touch-drag-ghost');
+                        if (ghost) ghost.style.display = 'none';
+                        el.style.opacity = '1';
+                        document.querySelectorAll('.drag-over').forEach(z => z.classList.remove('drag-over'));
+                    }
+                    return;
+                }
+
+                // 若為單擊 (未移動進入拖動)：放大顯示該卡牌 (再點一次同一張則取消放大)
+                if (!isCancel && !e.target.closest('.card-controls')) {
+                    e.stopPropagation();
+                    const isOpponentHand = el.closest('.opponent-hand');
+                    if (isOpponentHand) return;
+
+                    if (activePreviewCardId === cardData.id) {
+                        hideCardPreview();
+                    } else {
+                        const currentCard = gameState.cards[cardData.id];
+                        const currentImg = currentCard?.imgBase64 || cardImageCache[cardData.id];
+                        showCardPreviewNextToElement(el, currentImg, cardData.id, true);
+                    }
+                }
+            };
+
+            el.addEventListener('pointerup', (e) => finishPointerInteraction(e, false));
+            el.addEventListener('pointercancel', (e) => finishPointerInteraction(e, true));
+            el.addEventListener('contextmenu', (e) => {
+                if (controlMode === 'MOBILE') e.preventDefault();
             });
 
             // 支援直接把 Soul Core 拖曳丟到這張卡牌上
@@ -2315,6 +2720,10 @@
             });
 
             el.addEventListener('dragstart', (e) => {
+                if (controlMode !== 'PC') {
+                    e.preventDefault();
+                    return;
+                }
                 if (e.target.closest('.card-controls')) {
                     e.preventDefault();
                     return;
@@ -2336,18 +2745,20 @@
                 document.querySelectorAll('.drag-over').forEach(z => z.classList.remove('drag-over'));
             });
 
-            // 4. 滑鼠移上卡牌時，在該卡牌旁邊放大顯示高清預覽
+            // 4. 電腦模式滑鼠移上卡牌時，在該卡牌旁邊放大顯示高清預覽
             el.addEventListener('mouseenter', (e) => {
+                if (controlMode !== 'PC') return;
                 if (e.target.closest('.card-controls')) return;
                 const isOpponentHand = el.closest('.opponent-hand');
                 const currentCard = gameState.cards[cardData.id];
                 if (isOpponentHand || (currentCard && currentCard.isFaceDown)) return;
                 const currentImg = currentCard?.imgBase64 || cardImageCache[cardData.id];
                 if (!currentImg) return;
-                showCardPreviewNextToElement(el, currentImg, cardData.id);
+                showCardPreviewNextToElement(el, currentImg, cardData.id, false);
             });
             
             el.addEventListener('mouseleave', () => {
+                if (controlMode !== 'PC') return;
                 hideCardPreview();
             });
 
@@ -2399,19 +2810,8 @@
         /* =========================================================================
            拖曳卡牌至創界神區域時彈出確認視窗
            ========================================================================= */
-        function dropOnGodZone(ev, player) {
-            ev.preventDefault();
-            ev.stopPropagation();
-            document.querySelectorAll('.drag-over').forEach(z => z.classList.remove('drag-over'));
-
-            const rawData = ev.dataTransfer.getData('text/plain');
-            if ((rawData && rawData.startsWith('SOUL:')) || draggedSoulOwner) {
-                return;
-            }
-
-            const cardId = rawData || draggedCard;
+        function triggerGodZoneConfirmForCard(cardId, player) {
             if (!cardId || !gameState.cards[cardId]) return;
-
             // 若該卡已經在同一個創界神區域內，不重複彈出視窗
             if (gameState.cards[cardId].zone === `zone-god-${player}`) return;
 
@@ -2429,16 +2829,7 @@
             };
         }
 
-        function closeGodConfirmModal() {
-            pendingGodDrop = null;
-            const modal = document.getElementById('god-confirm-modal');
-            if (modal) modal.classList.add('hidden');
-        }
-
-        /* =========================================================================
-           拖動卡牌至 DECK 時選擇放到牌組頂或牌組底
-           ========================================================================= */
-        function dropOnDeck(ev, player) {
+        function dropOnGodZone(ev, player) {
             ev.preventDefault();
             ev.stopPropagation();
             document.querySelectorAll('.drag-over').forEach(z => z.classList.remove('drag-over'));
@@ -2449,6 +2840,19 @@
             }
 
             const cardId = rawData || draggedCard;
+            triggerGodZoneConfirmForCard(cardId, player);
+        }
+
+        function closeGodConfirmModal() {
+            pendingGodDrop = null;
+            const modal = document.getElementById('god-confirm-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        /* =========================================================================
+           拖動卡牌至 DECK 時選擇放到牌組頂或牌組底
+           ========================================================================= */
+        function triggerDeckChoiceForCard(cardId, player) {
             if (!cardId || !gameState.cards[cardId]) return;
 
             pendingDeckDrop = { cardId, player };
@@ -2470,6 +2874,20 @@
                     moveCardToZone(dropInfo.cardId, `deck-${dropInfo.player}-bottom`);
                 }
             };
+        }
+
+        function dropOnDeck(ev, player) {
+            ev.preventDefault();
+            ev.stopPropagation();
+            document.querySelectorAll('.drag-over').forEach(z => z.classList.remove('drag-over'));
+
+            const rawData = ev.dataTransfer.getData('text/plain');
+            if ((rawData && rawData.startsWith('SOUL:')) || draggedSoulOwner) {
+                return;
+            }
+
+            const cardId = rawData || draggedCard;
+            triggerDeckChoiceForCard(cardId, player);
         }
 
         function closeDeckChoiceModal() {
@@ -2531,11 +2949,21 @@
                 if (imgSrc) thumb.style.backgroundImage = `url(${imgSrc})`;
 
                 thumb.addEventListener('mouseenter', () => {
-                    if (!imgSrc) return;
-                    showCardPreviewNextToElement(thumb, imgSrc, cid);
+                    if (controlMode !== 'PC' || !imgSrc) return;
+                    showCardPreviewNextToElement(thumb, imgSrc, cid, false);
                 });
                 thumb.addEventListener('mouseleave', () => {
+                    if (controlMode !== 'PC') return;
                     hideCardPreview();
+                });
+                thumb.addEventListener('click', (e) => {
+                    if (controlMode !== 'MOBILE' || !imgSrc) return;
+                    e.stopPropagation();
+                    if (activePreviewCardId === cid) {
+                        hideCardPreview();
+                    } else {
+                        showCardPreviewNextToElement(thumb, imgSrc, cid, false);
+                    }
                 });
 
                 const btnGrid = document.createElement('div');
@@ -2881,6 +3309,7 @@
             }
         }
 
+        setControlMode(controlMode);
         updateAllUI();
     </script>
     
