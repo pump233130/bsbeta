@@ -39,6 +39,7 @@
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
+            image-rendering: -webkit-optimize-contrast;
             transform-origin: center center;
             color: #666;
             font-size: 10px;
@@ -380,17 +381,24 @@
             border-color: white !important;
         }
         
-        /* 4. 卡牌放大預覽：動態跟隨在鼠標指定的卡牌旁邊 */
+        /* 4. 卡牌高清放大預覽 (放大 25%：375px x 525px) */
         #card-preview {
-            width: 250px;
-            height: 350px;
+            display: flex;
+            flex-direction: row;
+            align-items: stretch;
+        }
+
+        #card-preview-img {
+            width: 375px;
+            height: 525px;
             background-color: #111;
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
             border: 2px solid white;
-            box-shadow: 0 0 25px rgba(0,0,0,0.95);
+            box-shadow: 0 0 28px rgba(0,0,0,0.95);
             border-radius: 8px;
+            flex-shrink: 0;
         }
         
         /* 手牌區樣式 */
@@ -901,8 +909,10 @@
 
     </main>
 
-    <!-- 4. Card Preview (動態顯示在鼠標指定的卡牌旁邊) -->
-    <div id="card-preview" class="fixed z-[11000] pointer-events-none opacity-0 invisible transition-opacity duration-150"></div>
+    <!-- 4. Card Preview (高清放大預覽 25%，動態顯示在鼠標指定的卡牌旁邊) -->
+    <div id="card-preview" class="fixed z-[11000] pointer-events-none opacity-0 invisible transition-opacity duration-150">
+        <div id="card-preview-img"></div>
+    </div>
 
     <!-- 1. 當卡牌放到 Trash / Deck / Burst / Hand 時，選擇將卡片上的 Core 歸還至預備區或廢棄區的視窗 -->
     <div id="core-return-modal" class="fixed inset-0 bg-black/85 z-[12000] hidden flex justify-center items-center">
@@ -1013,6 +1023,7 @@
         };
 
         const cardImageCache = {};
+        const cardHighResCache = {}; // 本機原圖無損高清快取，供本機放大預覽最清晰呈現
         let draggedCard = null;
         let draggedSoulOwner = null;
         let zOrderCounter = 1;
@@ -1136,59 +1147,60 @@
             elementFlashTimers.set(el, timer);
         }
 
-        // 1. 卡片移至 Trash (僅卡片邊緣閃紅光)、移至 Deck (牌組閃白光)、移至場上及 Burst (僅卡片邊緣閃綠光)、手牌增加時閃綠光
+        // 1. 卡片移動至不同區域時的顏色閃光提示
         function triggerCardZoneMoveFlash(cardId, targetZoneId) {
             if (!targetZoneId) return;
-            const cardEl = cardId ? document.getElementById(cardId) : null;
             if (targetZoneId.startsWith('zone-trash-')) {
+                const cardEl = document.getElementById(cardId);
                 if (cardEl) triggerElementColorFlash(cardEl, 'red');
             } else if (targetZoneId.startsWith('deck-')) {
-                const player = targetZoneId.includes('p2') ? 'p2' : 'p1';
-                triggerElementColorFlash(document.getElementById(`deck-box-${player}`), 'white');
+                const p = targetZoneId.includes('p2') ? 'p2' : 'p1';
+                const deckBox = document.getElementById(`deck-box-${p}`);
+                if (deckBox) triggerElementColorFlash(deckBox, 'white');
             } else if (targetZoneId.startsWith('field-') || targetZoneId.startsWith('zone-god-') || targetZoneId.startsWith('zone-burst-')) {
+                const cardEl = document.getElementById(cardId);
                 if (cardEl) triggerElementColorFlash(cardEl, 'green');
             } else if (targetZoneId.startsWith('hand-')) {
-                const player = targetZoneId.endsWith('p2') ? 'p2' : 'p1';
+                const cardEl = document.getElementById(cardId);
+                const handZone = document.getElementById(targetZoneId);
                 if (cardEl) triggerElementColorFlash(cardEl, 'green');
-                triggerElementColorFlash(document.getElementById(`section-hand-${player}`), 'green');
+                if (handZone) triggerElementColorFlash(handZone, 'green');
             }
         }
 
-        // 2. 當生命值清零時：歸零方閃紅光並震動 2 秒，另一方顯示勝利，2 秒後恢復正常
+        // 2. 生命值歸零時：歸零方閃紅光並震動 2 秒，另一方顯示 VICTORY 勝利 2 秒後恢復正常
         function triggerZeroLifeSequence(loserPlayer) {
             const winnerPlayer = loserPlayer === 'p1' ? 'p2' : 'p1';
             const loserSection = document.getElementById(`section-main-${loserPlayer}`);
             const loserLifeBox = document.getElementById(`life-box-${loserPlayer}`);
             const winnerOverlay = document.getElementById(`victory-overlay-${winnerPlayer}`);
-            const winnerSection = document.getElementById(`section-main-${winnerPlayer}`);
 
             if (zeroLifeTimers[loserPlayer]) {
                 clearTimeout(zeroLifeTimers[loserPlayer]);
+                zeroLifeTimers[loserPlayer] = null;
             }
 
             if (loserSection) loserSection.classList.add('zero-life-shake');
             if (loserLifeBox) loserLifeBox.classList.add('zero-life-shake');
             if (winnerOverlay) winnerOverlay.classList.remove('hidden');
-            if (winnerSection) winnerSection.classList.add('flash-border-green');
 
             zeroLifeTimers[loserPlayer] = setTimeout(() => {
                 if (loserSection) loserSection.classList.remove('zero-life-shake');
                 if (loserLifeBox) loserLifeBox.classList.remove('zero-life-shake');
                 if (winnerOverlay) winnerOverlay.classList.add('hidden');
-                if (winnerSection) winnerSection.classList.remove('flash-border-green');
                 zeroLifeTimers[loserPlayer] = null;
             }, 2000);
         }
 
-        // 4. 畫面正中央隨機抽籤功能：總長約 3 秒、閃爍速度由快到慢遞減，結束時中選區域保持黃色高亮並需點擊確認才取消
+        // 4. 隨機抽籤決定玩家：由快到慢閃爍 3 秒，結束時停在獲選區域呈現黃色並顯示確認按鈕
         function startPlayerLottery() {
-            if (isLotteryRunning) return;
+            if (isLotteryRunning || gameState.lotteryUsed) return;
             const winner = Math.random() < 0.5 ? 'p1' : 'p2';
             const now = Date.now();
             lastSeenLotteryTime = now;
-            gameState.lastLottery = { winner, timestamp: now };
-            gameState.lotteryPendingWinner = winner;
             gameState.lotteryUsed = true;
+            gameState.lotteryPendingWinner = winner;
+            gameState.lastLottery = { winner, timestamp: now };
             runLotteryAnimation(winner);
             updateRoomState();
         }
@@ -1201,21 +1213,19 @@
             const confirmContainer = document.getElementById('lottery-confirm-container');
             const winnerText = document.getElementById('lottery-winner-text');
 
-            if (isLotteryRunning) return;
-
             p1Sec?.classList.remove('lottery-winner-yellow');
             p2Sec?.classList.remove('lottery-winner-yellow');
             p1Field?.classList.remove('lottery-winner-yellow');
             p2Field?.classList.remove('lottery-winner-yellow');
 
-            const winner = gameState.lotteryPendingWinner;
-            if (winner === 'p1' || winner === 'p2') {
-                const winSec = document.getElementById(`section-main-${winner}`);
-                const winField = document.getElementById(`field-${winner}`);
+            if (!isLotteryRunning && gameState.lotteryPendingWinner) {
+                const w = gameState.lotteryPendingWinner;
+                const winSec = w === 'p1' ? p1Sec : p2Sec;
+                const winField = w === 'p1' ? p1Field : p2Field;
                 winSec?.classList.add('lottery-winner-yellow');
                 winField?.classList.add('lottery-winner-yellow');
                 if (winnerText) {
-                    winnerText.innerText = `🎯 抽籤結果：${winner.toUpperCase()} 區域獲選！`;
+                    winnerText.innerText = `🎯 抽籤結果：${w.toUpperCase()} 獲選！`;
                 }
                 if (confirmContainer) confirmContainer.classList.remove('hidden');
             } else {
@@ -1228,6 +1238,43 @@
             applyLotteryPendingUI();
             updateAllUI();
             updateRoomState();
+        }
+
+        // 4. 將卡牌高清放大預覽 (375x525，放大25%) 顯示在鼠標指定的卡牌旁邊 (自動判斷左右空間)
+        function showCardPreviewNextToElement(targetEl, imgSrc, cardId = null) {
+            if (!targetEl || !imgSrc) return;
+            const previewPanel = document.getElementById('card-preview');
+            const previewImg = document.getElementById('card-preview-img');
+
+            // 優先使用本機無損高清原圖，其次使用高清同步圖
+            const hdSrc = (cardId && cardHighResCache[cardId]) ? cardHighResCache[cardId] : imgSrc;
+            previewImg.style.backgroundImage = `url(${hdSrc})`;
+
+            const rect = targetEl.getBoundingClientRect();
+            const pw = 375;
+            const ph = 525;
+            const gap = 14;
+
+            let left = rect.right + gap;
+            if (left + pw > window.innerWidth - 10) {
+                left = rect.left - pw - gap;
+            }
+            left = Math.max(10, Math.min(left, window.innerWidth - pw - 10));
+
+            let top = rect.top + (rect.height - ph) / 2;
+            top = Math.max(10, Math.min(top, window.innerHeight - ph - 10));
+
+            previewPanel.style.left = `${Math.round(left)}px`;
+            previewPanel.style.top = `${Math.round(top)}px`;
+            previewPanel.style.opacity = '1';
+            previewPanel.style.visibility = 'visible';
+        }
+
+        function hideCardPreview() {
+            const previewPanel = document.getElementById('card-preview');
+            if (!previewPanel) return;
+            previewPanel.style.opacity = '0';
+            previewPanel.style.visibility = 'hidden';
         }
 
         function runLotteryAnimation(winner) {
@@ -1412,38 +1459,6 @@
                 zoneEl.style.display = 'none';
                 btnEl.innerText = '▲';
             }
-        }
-
-        // 4. 將卡牌放大預覽顯示在鼠標指定的卡牌旁邊 (自動判斷左右空間)
-        function showCardPreviewNextToElement(targetEl, imgSrc) {
-            if (!targetEl || !imgSrc) return;
-            const previewPanel = document.getElementById('card-preview');
-            const rect = targetEl.getBoundingClientRect();
-            const pw = 250;
-            const ph = 350;
-            const gap = 14;
-
-            let left = rect.right + gap;
-            if (left + pw > window.innerWidth - 10) {
-                left = rect.left - pw - gap;
-            }
-            left = Math.max(10, Math.min(left, window.innerWidth - pw - 10));
-
-            let top = rect.top + (rect.height - ph) / 2;
-            top = Math.max(10, Math.min(top, window.innerHeight - ph - 10));
-
-            previewPanel.style.left = `${Math.round(left)}px`;
-            previewPanel.style.top = `${Math.round(top)}px`;
-            previewPanel.style.backgroundImage = `url(${imgSrc})`;
-            previewPanel.style.opacity = '1';
-            previewPanel.style.visibility = 'visible';
-        }
-
-        function hideCardPreview() {
-            const previewPanel = document.getElementById('card-preview');
-            if (!previewPanel) return;
-            previewPanel.style.opacity = '0';
-            previewPanel.style.visibility = 'hidden';
         }
 
         /* =========================================================================
@@ -1891,19 +1906,28 @@
         }
 
         /* =========================================================================
-           CARD MECHANICS & IMAGE COMPRESSION
+           CARD MECHANICS & IMAGE COMPRESSION (高清化 500x700 + 本機無損快取)
            ========================================================================= */
-        function compressImageBlob(blob, maxWidth = 180, maxHeight = 252, quality = 0.65) {
+        function compressImageBlob(blob, maxWidth = 500, maxHeight = 700, quality = 0.86) {
             return new Promise((resolve, reject) => {
                 const url = URL.createObjectURL(blob);
                 const img = new Image();
                 img.onload = () => {
                     URL.revokeObjectURL(url);
+                    // 等比例縮放但維持高清解析度 (最高 500x700，單張約 65~110KB，遠低於 Firestore 1MB 限制)
+                    let targetW = img.naturalWidth || maxWidth;
+                    let targetH = img.naturalHeight || maxHeight;
+                    const ratio = Math.min(maxWidth / targetW, maxHeight / targetH, 1);
+                    targetW = Math.round(targetW * ratio);
+                    targetH = Math.round(targetH * ratio);
+
                     const canvas = document.createElement('canvas');
-                    canvas.width = maxWidth;
-                    canvas.height = maxHeight;
+                    canvas.width = targetW;
+                    canvas.height = targetH;
                     const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, maxWidth, maxHeight);
+                    ctx.imageSmoothingEnabled = true;
+                    ctx.imageSmoothingQuality = 'high';
+                    ctx.drawImage(img, 0, 0, targetW, targetH);
                     resolve(canvas.toDataURL('image/jpeg', quality));
                 };
                 img.onerror = (err) => {
@@ -1931,18 +1955,19 @@
                 });
                 gameState[`${player}Deck`] = [];
 
-                const entries = Object.entries(contents.files).filter(([filename, zipEntry]) => {
-                    return !zipEntry.dir && /\.(jpg|jpeg|png|webp)$/i.test(filename) && !filename.includes('__MACOSX');
-                });
+                const allFiles = Object.entries(contents.files).filter(([filename, zipEntry]) => !zipEntry.dir && !filename.includes('__MACOSX'));
+                const entries = allFiles.filter(([filename]) => /\.(jpg|jpeg|png|webp)$/i.test(filename));
 
                 const newCardsForUpload = {};
                 let index = 0;
 
                 for (const [filename, zipEntry] of entries) {
                     const blob = await zipEntry.async("blob");
-                    const compressedBase64 = await compressImageBlob(blob);
+                    const compressedBase64 = await compressImageBlob(blob, 500, 700, 0.86);
                     const cardId = `${player}_card_${index++}`;
 
+                    // 保留本機無損高清 ObjectURL 供自己預覽
+                    cardHighResCache[cardId] = URL.createObjectURL(blob);
                     cardImageCache[cardId] = compressedBase64;
                     newCardsForUpload[cardId] = compressedBase64;
 
@@ -1968,7 +1993,7 @@
                     window.uploadPlayerCardImages(player, newCardsForUpload);
                 }
 
-                showNotice(`已成功匯入 ${entries.length} 張卡牌至 ${player.toUpperCase()} 牌組！`);
+                showNotice(`已成功匯入 ${entries.length} 張高清卡牌至 ${player.toUpperCase()} 牌組！`);
             } catch (err) {
                 console.error("Error reading zip", err);
                 showNotice("讀取 ZIP 檔案失敗。");
@@ -2304,14 +2329,14 @@
                 e.dataTransfer.setData('text/plain', cardData.id);
                 el.style.opacity = '0.5';
             });
-            
+
             el.addEventListener('dragend', () => {
                 el.style.opacity = '1';
                 draggedCard = null;
                 document.querySelectorAll('.drag-over').forEach(z => z.classList.remove('drag-over'));
             });
-            
-            // 4. 滑鼠移上卡牌時，在該卡牌旁邊放大顯示預覽
+
+            // 4. 滑鼠移上卡牌時，在該卡牌旁邊放大顯示高清預覽
             el.addEventListener('mouseenter', (e) => {
                 if (e.target.closest('.card-controls')) return;
                 const isOpponentHand = el.closest('.opponent-hand');
@@ -2319,7 +2344,7 @@
                 if (isOpponentHand || (currentCard && currentCard.isFaceDown)) return;
                 const currentImg = currentCard?.imgBase64 || cardImageCache[cardData.id];
                 if (!currentImg) return;
-                showCardPreviewNextToElement(el, currentImg);
+                showCardPreviewNextToElement(el, currentImg, cardData.id);
             });
             
             el.addEventListener('mouseleave', () => {
@@ -2507,7 +2532,7 @@
 
                 thumb.addEventListener('mouseenter', () => {
                     if (!imgSrc) return;
-                    showCardPreviewNextToElement(thumb, imgSrc);
+                    showCardPreviewNextToElement(thumb, imgSrc, cid);
                 });
                 thumb.addEventListener('mouseleave', () => {
                     hideCardPreview();
