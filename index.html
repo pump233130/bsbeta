@@ -43,6 +43,7 @@
             color: #666;
             font-size: 10px;
             font-weight: bold;
+            overflow: visible;
         }
 
         .card:active {
@@ -74,24 +75,7 @@
             pointer-events: none;
         }
 
-        /* 卡片正上方的 Soul Core 專屬顯示槽 */
-        .card-soul-top-slot {
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%) translateY(-86px);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 45;
-            pointer-events: auto;
-        }
-
-        .field-zone .card.has-soul-core .card-soul-top-slot {
-            display: flex !important;
-        }
-
-        /* 卡片下方的 Core 計數控制列 (常駐顯示在場上卡片正下方，絕不與卡片重疊) */
+        /* 1. 卡牌下方的 Core 計數控制列 (常駐顯示在場上卡片正下方，絕不與卡片重疊) */
         .card-controls {
             position: absolute;
             left: 50%;
@@ -100,12 +84,12 @@
             display: none;
             align-items: center;
             gap: 5px;
-            background: rgba(10, 10, 10, 0.95);
-            padding: 3px 7px;
+            background: rgba(12, 12, 12, 0.96);
+            padding: 3px 8px;
             border-radius: 999px;
-            border: 1px solid #666;
-            box-shadow: 0 3px 8px rgba(0,0,0,0.85);
-            z-index: 35;
+            border: 1px solid #60a5fa;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.9);
+            z-index: 60;
             white-space: nowrap;
             pointer-events: auto;
         }
@@ -114,16 +98,83 @@
         .field-zone .card .card-controls {
             display: flex !important;
             opacity: 1 !important;
+            visibility: visible !important;
+        }
+
+        /* 創界神 (Grandwalker Nexus) 左下角專屬區域樣式：緊湊自動縮放、不特別配色 */
+        .god-zone-wrapper {
+            position: absolute;
+            left: 8px;
+            bottom: 8px;
+            width: fit-content;
+            max-width: calc(100% - 16px);
+            background: rgba(12, 12, 12, 0.9);
+            border: 1px solid #444;
+            border-radius: 4px;
+            padding: 4px 6px;
+            z-index: 5;
+            display: inline-flex;
+            flex-direction: column;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+            transition: border-color 0.2s, background-color 0.2s;
+        }
+
+        .god-zone-wrapper.drag-over {
+            background-color: rgba(255, 255, 255, 0.12) !important;
+            border-color: white !important;
+        }
+
+        .god-zone {
+            display: inline-flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            align-items: flex-start;
+            gap: 10px;
+            width: fit-content;
+            max-width: 100%;
+            min-width: 104px;
+            min-height: 146px;
+            padding: 3px 4px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            position: relative;
+        }
+
+        /* 有放入創界神時，底部才預留下方 Core 控制列的高度，平時保持最迷你尺寸 */
+        .god-zone.has-cards {
+            padding-bottom: 34px;
+        }
+
+        .god-zone .card {
+            position: relative !important;
+            left: auto !important;
+            top: auto !important;
+            flex-shrink: 0;
+            margin: 0 !important;
+        }
+
+        /* 創界神區域內的卡牌同樣常駐顯示下方獨立 Core 計數器，且隱藏 Soul Core 按鈕避免連動混淆 */
+        .god-zone .card .card-controls {
+            display: flex !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            border-color: #666;
+        }
+
+        .god-zone .card .card-soul-btn {
+            display: none !important;
         }
 
         .card-btn {
-            background: #000;
+            background: #111;
             color: #fff;
-            border: 1px solid #fff;
+            border: 1px solid #aaa;
             border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            font-size: 12px;
+            width: 20px;
+            height: 20px;
+            font-size: 13px;
             font-weight: bold;
             display: flex;
             justify-content: center;
@@ -132,11 +183,12 @@
             padding: 0;
             line-height: 1;
             flex-shrink: 0;
-            transition: background 0.15s, color 0.15s;
+            transition: background 0.15s, color 0.15s, border-color 0.15s;
         }
         .card-btn:hover {
             background: #fff;
             color: #000;
+            border-color: #fff;
         }
 
         .card-btn.soul-active {
@@ -158,7 +210,7 @@
             height: 8px;
             border-radius: 50%;
             background: #38bdf8;
-            box-shadow: 0 0 4px #38bdf8;
+            box-shadow: 0 0 5px #38bdf8;
             flex-shrink: 0;
         }
 
@@ -166,17 +218,17 @@
             color: white;
             font-size: 13px;
             font-weight: 900;
-            min-width: 12px;
+            min-width: 14px;
             text-align: center;
             text-shadow: 1px 1px 2px black;
         }
 
         /* Soul Core 標記徽章 (可拖曳、可點擊) */
         .soul-core-token {
-            width: 24px;
-            height: 24px;
+            width: 20px;
+            height: 20px;
             border-radius: 999px;
-            font-size: 11px;
+            font-size: 10px;
             font-weight: 900;
             display: inline-flex;
             align-items: center;
@@ -184,10 +236,10 @@
             cursor: grab;
             user-select: none;
             transition: transform 0.15s, box-shadow 0.15s;
-            z-index: 50;
+            z-index: 40;
         }
         .soul-core-token:hover {
-            transform: scale(1.18);
+            transform: scale(1.15);
         }
         .soul-core-token:active {
             cursor: grabbing;
@@ -195,14 +247,14 @@
         .soul-core-p1 {
             background: radial-gradient(circle at 30% 30%, #60a5fa, #1d4ed8);
             color: white;
-            border: 2px solid #bfdbfe;
-            box-shadow: 0 0 10px rgba(59, 130, 246, 0.95);
+            border: 1.5px solid #bfdbfe;
+            box-shadow: 0 0 8px rgba(59, 130, 246, 0.8);
         }
         .soul-core-p2 {
             background: radial-gradient(circle at 30% 30%, #f87171, #b91c1c);
             color: white;
-            border: 2px solid #fecaca;
-            box-shadow: 0 0 10px rgba(239, 68, 68, 0.95);
+            border: 1.5px solid #fecaca;
+            box-shadow: 0 0 8px rgba(239, 68, 68, 0.8);
         }
 
         .soul-core-slot-empty {
@@ -328,7 +380,7 @@
             border-color: white !important;
         }
         
-        /* 卡牌放大預覽：動態跟隨在鼠標指定的卡牌旁邊 */
+        /* 4. 卡牌放大預覽：動態跟隨在鼠標指定的卡牌旁邊 */
         #card-preview {
             width: 250px;
             height: 350px;
@@ -360,8 +412,7 @@
             transform: none !important;
         }
 
-        .hand-zone .card .card-controls,
-        .hand-zone .card .card-soul-top-slot {
+        .hand-zone .card .card-controls {
             display: none !important;
         }
         
@@ -378,7 +429,7 @@
             font-size: 24px;
         }
 
-        /* TRASH (CARD) 單一居中堆疊區樣式 */
+        /* TRASH (CARD) 與 BURST 堆疊區樣式 */
         .stack-zone {
             position: relative;
             height: 150px;
@@ -396,34 +447,31 @@
             margin: 0 !important;
         }
 
-        .stack-zone .card .card-controls,
-        .stack-zone .card .card-soul-top-slot {
+        /* 堆疊區的卡牌隱藏下方控制列，避免遮擋 */
+        .stack-zone .card .card-controls {
             display: none !important;
         }
 
-        /* BURST 錯位堆疊區樣式 (支援多張卡牌錯位疊放顯示) */
+        /* BURST 堆疊區：多張卡牌時每張遮蓋前一張卡牌的一半 */
         .burst-zone {
             position: relative;
-            height: 165px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: visible;
+            min-height: 150px;
+            overflow-y: auto;
+            overflow-x: hidden;
         }
 
         .burst-zone .card {
             position: absolute !important;
             left: 50% !important;
-            top: 50% !important;
+            transform: translateX(-50%) !important;
             margin: 0 !important;
         }
 
-        .burst-zone .card .card-controls,
-        .burst-zone .card .card-soul-top-slot {
+        .burst-zone .card .card-controls {
             display: none !important;
         }
 
-        /* 洗牌時 Deck 數字著光閃爍動畫 */
+        /* 2. 洗牌時 Deck 數字著光閃爍動畫 */
         @keyframes deckShuffleGlow {
             0% {
                 color: #ffffff;
@@ -450,7 +498,7 @@
             animation: deckShuffleGlow 0.75s cubic-bezier(0.22, 1, 0.36, 1);
         }
 
-        /* 生命值減少(閃紅光) 與 增加(閃綠光) 區域邊框特效 */
+        /* 3. 生命值減少(閃紅光) 與 增加(閃綠光) 區域邊框特效 */
         @keyframes lifeDecreaseFlash {
             0% {
                 border-color: #ef4444 !important;
@@ -517,13 +565,12 @@
         <div id="section-main-p2" class="flex-none border-2 border-gray-700 p-2 grid grid-cols-[160px_1fr_160px] gap-2 relative bg-[#050505] rounded-sm transition-all duration-300">
             <!-- Left: Burst -> Life -> Reserve -->
             <div class="flex flex-col gap-2">
-                <div class="counter-box relative flex-1 min-h-[175px] flex flex-col">
-                    <div class="counter-title flex items-center gap-1">
+                <div class="counter-box relative flex-1 min-h-[150px] flex flex-col">
+                    <div class="counter-title flex items-center justify-between pr-1">
                         <span>Burst</span>
                         <span id="val_p2_burst_card_count" class="bg-gray-800 text-white border border-gray-600 px-1.5 py-0 rounded text-[10px] font-black">0</span>
                     </div>
-                    <button class="small-action-btn" onclick="openZoneModal('p2', 'burst')">VIEW</button>
-                    <div id="zone-burst-p2" class="zone burst-zone flex-1 mt-1 border-dashed border-gray-700 text-gray-700 text-xs" ondrop="drop(event, 'zone-burst-p2')" ondragover="allowDrop(event)" title="可堆疊多張卡牌；單擊切換上下層，雙擊翻面">
+                    <div id="zone-burst-p2" class="zone burst-zone custom-scrollbar flex-1 mt-1 border-dashed border-gray-700 text-gray-700 text-xs flex justify-center items-center" ondrop="drop(event, 'zone-burst-p2')" ondragover="allowDrop(event)">
                         <span class="pointer-events-none select-none">Drop here</span>
                     </div>
                 </div>
@@ -536,7 +583,7 @@
                         <button class="counter-btn" onclick="updateCounter('p2_life', 1)">+</button>
                     </div>
                 </div>
-                <div class="counter-box relative flex-none" ondrop="dropSoulCore(event, 'p2', 'reserve')" ondragover="allowDrop(event)">
+                <div id="reserve-box-p2" class="counter-box relative flex-none" ondrop="dropSoulCore(event, 'p2', 'reserve')" ondragover="allowDrop(event)">
                     <div class="counter-title">Reserve</div>
                     <button class="small-action-btn" onclick="payCost('p2')">PAY COST</button>
                     <div class="counter-value">
@@ -551,11 +598,21 @@
             <!-- Center Field -->
             <div id="field-p2" class="zone field-zone border border-gray-600 bg-[#0a0a0a] relative overflow-hidden min-h-[380px]" ondrop="drop(event, 'field-p2')" ondragover="allowDrop(event)">
                  <div class="field-label">OPPONENT</div>
+                 <!-- P2 創界神區域 (左下角迷你自適應，附展開/收起箭頭) -->
+                 <div id="god-wrapper-p2" class="god-zone-wrapper" ondrop="dropOnGodZone(event, 'p2')" ondragover="allowDrop(event)">
+                     <div class="flex items-center justify-between gap-2 mb-0.5">
+                         <div class="counter-title mb-0">創界神</div>
+                         <button id="btn-toggle-god-p2" class="text-[9px] text-gray-400 hover:text-white border border-gray-700 hover:border-white px-1.5 py-0 rounded leading-tight cursor-pointer transition-colors" onclick="toggleGodZone('p2')" title="收起 / 展開創界神區域">▼</button>
+                     </div>
+                     <div id="zone-god-p2" class="zone god-zone custom-scrollbar">
+                         <span class="god-placeholder pointer-events-none select-none text-gray-600 text-[10px] m-auto">Drop here</span>
+                     </div>
+                 </div>
             </div>
             
             <!-- Right: Count -> Deck -> Trash (Card) -> Trash (Core) -->
             <div class="flex flex-col gap-2">
-                <div class="counter-box relative flex-none" ondrop="dropSoulCore(event, 'p2', 'count')" ondragover="allowDrop(event)">
+                <div id="count-box-p2" class="counter-box relative flex-none" ondrop="dropSoulCore(event, 'p2', 'count')" ondragover="allowDrop(event)">
                     <div class="counter-title">Count</div>
                     <div class="counter-value">
                         <button class="counter-btn" onclick="updateCounter('p2_count', -1)">-</button>
@@ -592,9 +649,12 @@
                         <span class="pointer-events-none select-none">Drop here</span>
                     </div>
                 </div>
-                <div class="counter-box relative flex-none" ondrop="dropSoulCore(event, 'p2', 'trash')" ondragover="allowDrop(event)">
+                <div id="trash-core-box-p2" class="counter-box relative flex-none" ondrop="dropSoulCore(event, 'p2', 'trash')" ondragover="allowDrop(event)">
                     <div class="counter-title">Trash <span class="counter-title-sm">(Core)</span></div>
-                    <button class="small-action-btn" onclick="recoverCore('p2')">RECOVER</button>
+                    <div class="absolute top-0.5 right-0.5 flex gap-0.5">
+                        <button class="text-[7px] border border-[#666] px-1 py-0.5 bg-transparent text-[#aaa] hover:border-white hover:text-white cursor-pointer" onclick="recoverCore('p2')" title="將 1 個 Core 移回預備區">RECOVER</button>
+                        <button class="text-[7px] border border-[#666] px-1 py-0.5 bg-transparent text-[#aaa] hover:border-white hover:text-white cursor-pointer font-bold" onclick="recoverAllCores('p2')" title="將所有 Trash Core 移回預備區">ALL</button>
+                    </div>
                     <div class="counter-value">
                         <button class="counter-btn" onclick="updateCounter('p2_trash_core', -1)">-</button>
                         <span id="val_p2_trash_core">0</span>
@@ -609,13 +669,12 @@
         <div id="section-main-p1" class="flex-none border-2 border-gray-700 p-2 grid grid-cols-[160px_1fr_160px] gap-2 relative bg-[#050505] rounded-sm transition-all duration-300">
             <!-- Left: Burst -> Life -> Reserve -->
             <div class="flex flex-col gap-2">
-                <div class="counter-box relative flex-1 min-h-[175px] flex flex-col">
-                    <div class="counter-title flex items-center gap-1">
+                <div class="counter-box relative flex-1 min-h-[150px] flex flex-col">
+                    <div class="counter-title flex items-center justify-between pr-1">
                         <span>Burst</span>
                         <span id="val_p1_burst_card_count" class="bg-gray-800 text-white border border-gray-600 px-1.5 py-0 rounded text-[10px] font-black">0</span>
                     </div>
-                    <button class="small-action-btn" onclick="openZoneModal('p1', 'burst')">VIEW</button>
-                    <div id="zone-burst-p1" class="zone burst-zone flex-1 mt-1 border-dashed border-gray-700 text-gray-700 text-xs" ondrop="drop(event, 'zone-burst-p1')" ondragover="allowDrop(event)" title="可堆疊多張卡牌；單擊切換上下層，雙擊翻面">
+                    <div id="zone-burst-p1" class="zone burst-zone custom-scrollbar flex-1 mt-1 border-dashed border-gray-700 text-gray-700 text-xs flex justify-center items-center" ondrop="drop(event, 'zone-burst-p1')" ondragover="allowDrop(event)">
                         <span class="pointer-events-none select-none">Drop here</span>
                     </div>
                 </div>
@@ -628,7 +687,7 @@
                         <button class="counter-btn" onclick="updateCounter('p1_life', 1)">+</button>
                     </div>
                 </div>
-                <div class="counter-box relative flex-none" ondrop="dropSoulCore(event, 'p1', 'reserve')" ondragover="allowDrop(event)">
+                <div id="reserve-box-p1" class="counter-box relative flex-none" ondrop="dropSoulCore(event, 'p1', 'reserve')" ondragover="allowDrop(event)">
                     <div class="counter-title">Reserve</div>
                     <button class="small-action-btn" onclick="payCost('p1')">PAY COST</button>
                     <div class="counter-value">
@@ -643,11 +702,21 @@
             <!-- Center Field -->
             <div id="field-p1" class="zone field-zone border border-gray-600 bg-[#0a0a0a] relative overflow-hidden min-h-[380px]" ondrop="drop(event, 'field-p1')" ondragover="allowDrop(event)">
                  <div class="field-label">PLAYER (YOU)</div>
+                 <!-- P1 創界神區域 (左下角迷你自適應，附展開/收起箭頭) -->
+                 <div id="god-wrapper-p1" class="god-zone-wrapper" ondrop="dropOnGodZone(event, 'p1')" ondragover="allowDrop(event)">
+                     <div class="flex items-center justify-between gap-2 mb-0.5">
+                         <div class="counter-title mb-0">創界神</div>
+                         <button id="btn-toggle-god-p1" class="text-[9px] text-gray-400 hover:text-white border border-gray-700 hover:border-white px-1.5 py-0 rounded leading-tight cursor-pointer transition-colors" onclick="toggleGodZone('p1')" title="收起 / 展開創界神區域">▼</button>
+                     </div>
+                     <div id="zone-god-p1" class="zone god-zone custom-scrollbar">
+                         <span class="god-placeholder pointer-events-none select-none text-gray-600 text-[10px] m-auto">Drop here</span>
+                     </div>
+                 </div>
             </div>
             
             <!-- Right: Count -> Deck -> Trash (Card) -> Trash (Core) -->
             <div class="flex flex-col gap-2">
-                <div class="counter-box relative flex-none" ondrop="dropSoulCore(event, 'p1', 'count')" ondragover="allowDrop(event)">
+                <div id="count-box-p1" class="counter-box relative flex-none" ondrop="dropSoulCore(event, 'p1', 'count')" ondragover="allowDrop(event)">
                     <div class="counter-title">Count</div>
                     <div class="counter-value">
                         <button class="counter-btn" onclick="updateCounter('p1_count', -1)">-</button>
@@ -684,9 +753,12 @@
                         <span class="pointer-events-none select-none">Drop here</span>
                     </div>
                 </div>
-                <div class="counter-box relative flex-none" ondrop="dropSoulCore(event, 'p1', 'trash')" ondragover="allowDrop(event)">
+                <div id="trash-core-box-p1" class="counter-box relative flex-none" ondrop="dropSoulCore(event, 'p1', 'trash')" ondragover="allowDrop(event)">
                     <div class="counter-title">Trash <span class="counter-title-sm">(Core)</span></div>
-                    <button class="small-action-btn" onclick="recoverCore('p1')">RECOVER</button>
+                    <div class="absolute top-0.5 right-0.5 flex gap-0.5">
+                        <button class="text-[7px] border border-[#666] px-1 py-0.5 bg-transparent text-[#aaa] hover:border-white hover:text-white cursor-pointer" onclick="recoverCore('p1')" title="將 1 個 Core 移回預備區">RECOVER</button>
+                        <button class="text-[7px] border border-[#666] px-1 py-0.5 bg-transparent text-[#aaa] hover:border-white hover:text-white cursor-pointer font-bold" onclick="recoverAllCores('p1')" title="將所有 Trash Core 移回預備區">ALL</button>
+                    </div>
                     <div class="counter-value">
                         <button class="counter-btn" onclick="updateCounter('p1_trash_core', -1)">-</button>
                         <span id="val_p1_trash_core">0</span>
@@ -709,16 +781,16 @@
 
     </main>
 
-    <!-- Card Preview (動態顯示在鼠標指定的卡牌旁邊) -->
+    <!-- 4. Card Preview (動態顯示在鼠標指定的卡牌旁邊) -->
     <div id="card-preview" class="fixed z-[11000] pointer-events-none opacity-0 invisible transition-opacity duration-150"></div>
 
-    <!-- 當卡牌離開場上(移至 Trash/Deck/Burst/Hand)時，選擇將卡片上的 Core 歸還至預備區或廢棄區的視窗 -->
-    <div id="core-return-modal" class="fixed inset-0 bg-black/80 z-[10600] hidden flex justify-center items-center">
-        <div class="border-2 border-blue-400 bg-[#050505] p-6 w-[340px] flex flex-col gap-4 shadow-2xl">
+    <!-- 1. 當卡牌放到 Trash / Deck / Burst / Hand 時，選擇將卡片上的 Core 歸還至預備區或廢棄區的視窗 -->
+    <div id="core-return-modal" class="fixed inset-0 bg-black/85 z-[12000] hidden flex justify-center items-center">
+        <div class="border-2 border-blue-400 bg-[#050505] p-6 w-[350px] flex flex-col gap-4 shadow-2xl rounded">
             <div class="text-blue-400 font-black tracking-widest text-center text-sm uppercase border-b border-gray-800 pb-2">歸還 Core (Return Cores)</div>
             <div id="core-return-desc" class="text-gray-300 text-xs text-center leading-relaxed">此卡上有 Core，請選擇要將歸還的 Core 放到哪個區域：</div>
-            <button id="btn-core-return-reserve" class="border-2 border-white py-2.5 text-white font-bold hover:bg-white hover:text-black transition-colors cursor-pointer text-xs tracking-wider">● 放到預備區 (RESERVE)</button>
-            <button id="btn-core-return-trash" class="border-2 border-gray-400 py-2.5 text-gray-200 font-bold hover:bg-white hover:text-black transition-colors cursor-pointer text-xs tracking-wider">● 放到廢棄區 (TRASH)</button>
+            <button id="btn-core-return-reserve" class="border-2 border-blue-400 bg-blue-950/40 py-2.5 text-white font-bold hover:bg-blue-500 hover:text-black transition-colors cursor-pointer text-xs tracking-wider rounded">● 放到預備區 (RESERVE)</button>
+            <button id="btn-core-return-trash" class="border-2 border-gray-400 bg-gray-900/40 py-2.5 text-gray-200 font-bold hover:bg-white hover:text-black transition-colors cursor-pointer text-xs tracking-wider rounded">● 放到廢棄區 (TRASH)</button>
         </div>
     </div>
 
@@ -727,4 +799,1712 @@
         <div class="border-2 border-white bg-[#050505] p-6 w-[320px] flex flex-col gap-4 shadow-2xl">
             <div class="text-white font-black tracking-widest text-center text-sm uppercase border-b border-gray-800 pb-2">放回牌組 (Return to Deck)</div>
             <div class="text-gray-400 text-xs text-center">請選擇要將卡牌放到牌組的哪個位置：</div>
-            <button id="btn-
+            <button id="btn-deck-choice-top" class="border-2 border-white py-2.5 text-white font-bold hover:bg-white hover:text-black transition-colors cursor-pointer text-xs tracking-wider">▲ 放到牌組頂 (DECK TOP)</button>
+            <button id="btn-deck-choice-bottom" class="border-2 border-white py-2.5 text-white font-bold hover:bg-white hover:text-black transition-colors cursor-pointer text-xs tracking-wider">▼ 放到牌組底 (DECK BOTTOM)</button>
+            <button class="text-gray-500 text-xs hover:text-white underline cursor-pointer mt-1" onclick="closeDeckChoiceModal()">取消 (Cancel)</button>
+        </div>
+    </div>
+
+    <!-- 拖曳卡牌至創界神區域時的確認設置視窗 -->
+    <div id="god-confirm-modal" class="fixed inset-0 bg-black/85 z-[11500] hidden flex justify-center items-center">
+        <div class="border-2 border-white bg-[#050505] p-6 w-[320px] flex flex-col gap-4 shadow-2xl rounded">
+            <div class="text-white font-black tracking-widest text-center text-sm uppercase border-b border-gray-800 pb-2">設置創界神</div>
+            <div class="text-gray-300 text-xs text-center leading-relaxed">是否將此卡設置為創界神？</div>
+            <button id="btn-god-confirm-yes" class="border-2 border-white py-2.5 text-white font-bold hover:bg-white hover:text-black transition-colors cursor-pointer text-xs tracking-wider rounded">✓ 確認設置 (CONFIRM)</button>
+            <button class="border border-gray-600 py-2 text-gray-400 text-xs hover:bg-gray-800 hover:text-white transition-colors cursor-pointer rounded" onclick="closeGodConfirmModal()">✕ 取消 (CANCEL)</button>
+        </div>
+    </div>
+
+    <!-- Deck / Trash VIEW Modal -->
+    <div id="zone-view-modal" class="fixed inset-0 bg-black/90 z-[10000] hidden flex justify-center items-center p-6">
+        <div class="border-2 border-white bg-[#050505] w-full max-w-4xl max-h-[85vh] flex flex-col p-4 gap-3 shadow-2xl">
+            <div class="flex justify-between items-center border-b border-gray-700 pb-2">
+                <div id="zone-view-title" class="text-white font-black tracking-widest text-lg uppercase">ZONE VIEW</div>
+                <button class="border border-gray-500 text-gray-300 hover:bg-white hover:text-black px-3 py-1 text-xs font-bold cursor-pointer" onclick="closeZoneModal()">CLOSE (✕)</button>
+            </div>
+            <div class="text-[11px] text-gray-400">將滑鼠移到卡牌上可在卡牌旁放大預覽；點擊卡牌下方的按鈕可將該卡移至指定區域。</div>
+            <div id="zone-view-list" class="flex-1 overflow-y-auto grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4 p-2 custom-scrollbar">
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Notification Modal (避免使用瀏覽器原生 alert) -->
+    <div id="notice-modal" class="fixed inset-0 bg-black/80 z-[13000] hidden flex justify-center items-center">
+        <div class="border-2 border-white bg-[#050505] p-6 w-[320px] flex flex-col gap-4 shadow-2xl text-center">
+            <div id="notice-modal-text" class="text-white text-sm font-bold leading-relaxed"></div>
+            <button class="border border-white py-2 text-xs text-white font-bold hover:bg-white hover:text-black transition-colors cursor-pointer uppercase" onclick="closeNoticeModal()">OK</button>
+        </div>
+    </div>
+
+    <!-- Multiplayer Modal -->
+    <div id="mp-modal" class="fixed inset-0 bg-black/90 z-[10000] hidden flex justify-center items-center">
+        <div class="border-2 border-green-500 p-8 w-[400px] flex flex-col gap-6 bg-[#050505]">
+            <div class="text-green-500 text-2xl font-black text-center tracking-widest">MULTIPLAYER SYNC</div>
+            <div class="text-gray-400 text-sm text-center">Connect with a friend to play remotely.</div>
+            
+            <button class="border-2 border-white py-3 text-white font-bold hover:bg-white hover:text-black transition-colors cursor-pointer" onclick="createRoom()">CREATE NEW ROOM</button>
+            
+            <div class="relative flex items-center justify-center border-t border-gray-700 my-2">
+                <span class="absolute bg-[#050505] px-2 text-gray-500 text-xs">OR</span>
+            </div>
+            
+            <div class="flex gap-2">
+                <input type="text" id="join-room-code" placeholder="ENTER ROOM CODE" class="flex-1 bg-transparent border border-gray-600 text-white px-3 py-2 uppercase tracking-wider focus:border-green-500 outline-none text-center">
+                <button class="border border-green-500 text-green-500 px-4 font-bold hover:bg-green-900 hover:text-white transition-colors cursor-pointer" onclick="joinRoom()">JOIN</button>
+            </div>
+            
+            <div class="text-center mt-2">
+                <button class="text-gray-500 text-xs hover:text-white underline cursor-pointer" onclick="closeMultiplayerModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script>
+        /* =========================================================================
+           GLOBAL STATE
+           ========================================================================= */
+        const gameState = {
+            p1_life: 5, p1_reserve: 3, p1_count: 0, p1_trash_core: 0,
+            p2_life: 5, p2_reserve: 3, p2_count: 0, p2_trash_core: 0,
+            cards: {}, // { id: { id, owner, zone, x, y, imgBase64, rotation, isFaceDown, cores, zOrder } }
+            p1Deck: [],
+            p2Deck: [],
+            soulCoreLocation: { p1: 'reserve', p2: 'reserve' }, // 'reserve' | 'trash' | 'count' | cardId
+            lastShuffle: null, // { player, timestamp }
+            viewMode: 'P1' // 'P1' | 'P2' | 'SPECTATOR'
+        };
+
+        const cardImageCache = {};
+        let draggedCard = null;
+        let draggedSoulOwner = null;
+        let zOrderCounter = 1;
+        let isSyncing = false;
+        let currentModalInfo = null; // { player, type }
+        let pendingDeckDrop = null; // { cardId, player }
+        let pendingGodDrop = null; // { cardId, player }
+        let lastSeenShuffleTime = Date.now();
+        const shuffleFlashTimers = { p1: null, p2: null };
+
+        function showNotice(msg) {
+            const modal = document.getElementById('notice-modal');
+            const txt = document.getElementById('notice-modal-text');
+            if (txt && modal) {
+                txt.innerText = msg;
+                modal.classList.remove('hidden');
+            }
+        }
+
+        function closeNoticeModal() {
+            const modal = document.getElementById('notice-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        /* =========================================================================
+           VISUAL EFFECTS: 2. 洗牌閃光 & 3. 生命值增減紅/綠邊框閃爍 & 4. 卡牌旁放大預覽
+           ========================================================================= */
+        function triggerDeckShuffleFlash(player) {
+            const countEl = document.getElementById(`val_${player}_deck_count`);
+            const boxEl = document.getElementById(`deck-box-${player}`);
+
+            if (shuffleFlashTimers[player]) {
+                clearTimeout(shuffleFlashTimers[player]);
+                shuffleFlashTimers[player] = null;
+            }
+
+            if (countEl) {
+                countEl.classList.remove('deck-shuffle-flash');
+                void countEl.offsetWidth;
+                countEl.classList.add('deck-shuffle-flash');
+                countEl.addEventListener('animationend', () => {
+                    countEl.classList.remove('deck-shuffle-flash');
+                }, { once: true });
+            }
+            if (boxEl) {
+                boxEl.style.borderColor = '#fde047';
+                boxEl.style.boxShadow = '0 0 18px rgba(253, 224, 71, 0.8)';
+            }
+
+            shuffleFlashTimers[player] = setTimeout(() => {
+                if (countEl) countEl.classList.remove('deck-shuffle-flash');
+                if (boxEl) {
+                    boxEl.style.borderColor = '';
+                    boxEl.style.boxShadow = '';
+                }
+                shuffleFlashTimers[player] = null;
+            }, 760);
+        }
+
+        function triggerLifeChangeFlash(player, delta) {
+            if (!delta) return;
+            const sectionEl = document.getElementById(`section-main-${player}`);
+            const fieldEl = document.getElementById(`field-${player}`);
+            const lifeBoxEl = document.getElementById(`life-box-${player}`);
+            const flashClass = delta < 0 ? 'flash-border-red' : 'flash-border-green';
+
+            [sectionEl, fieldEl, lifeBoxEl].forEach(el => {
+                if (!el) return;
+                el.classList.remove('flash-border-red', 'flash-border-green');
+                void el.offsetWidth;
+                el.classList.add(flashClass);
+                setTimeout(() => {
+                    el.classList.remove(flashClass);
+                }, 780);
+            });
+        }
+
+        // 通用區域或卡牌 Core 增減紅/綠閃光效果 (delta > 0 閃綠光，delta < 0 閃紅光)
+        const elementFlashTimers = new WeakMap();
+        function triggerElementCoreFlash(el, delta) {
+            if (!el || !delta) return;
+            const prevTimer = elementFlashTimers.get(el);
+            if (prevTimer) clearTimeout(prevTimer);
+
+            const flashClass = delta < 0 ? 'flash-border-red' : 'flash-border-green';
+            el.classList.remove('flash-border-red', 'flash-border-green');
+            void el.offsetWidth;
+            el.classList.add(flashClass);
+
+            const timer = setTimeout(() => {
+                el.classList.remove('flash-border-red', 'flash-border-green');
+            }, 750);
+            elementFlashTimers.set(el, timer);
+        }
+
+        function triggerCounterKeyFlash(key, delta) {
+            if (!delta) return;
+            const boxMap = {
+                p1_life: 'life-box-p1',
+                p2_life: 'life-box-p2',
+                p1_reserve: 'reserve-box-p1',
+                p2_reserve: 'reserve-box-p2',
+                p1_count: 'count-box-p1',
+                p2_count: 'count-box-p2',
+                p1_trash_core: 'trash-core-box-p1',
+                p2_trash_core: 'trash-core-box-p2'
+            };
+            const boxId = boxMap[key];
+            if (boxId) {
+                triggerElementCoreFlash(document.getElementById(boxId), delta);
+            }
+            if (key === 'p1_life') triggerLifeChangeFlash('p1', delta);
+            if (key === 'p2_life') triggerLifeChangeFlash('p2', delta);
+        }
+
+        function triggerCardCoreFlash(cardId, delta) {
+            if (!delta) return;
+            const cardEl = document.getElementById(cardId);
+            if (!cardEl) return;
+            triggerElementCoreFlash(cardEl, delta);
+            const controlsEl = cardEl.querySelector('.card-controls');
+            if (controlsEl) triggerElementCoreFlash(controlsEl, delta);
+        }
+
+        // 創界神區域展開 / 收起切換
+        function toggleGodZone(player, forceExpand = false) {
+            const zoneEl = document.getElementById(`zone-god-${player}`);
+            const btnEl = document.getElementById(`btn-toggle-god-${player}`);
+            if (!zoneEl || !btnEl) return;
+
+            if (forceExpand || zoneEl.style.display === 'none') {
+                zoneEl.style.display = 'inline-flex';
+                btnEl.innerText = '▼';
+            } else {
+                zoneEl.style.display = 'none';
+                btnEl.innerText = '▲';
+            }
+        }
+
+        // 4. 將卡牌放大預覽顯示在鼠標指定的卡牌旁邊 (自動判斷左右空間)
+        function showCardPreviewNextToElement(targetEl, imgSrc) {
+            if (!targetEl || !imgSrc) return;
+            const previewPanel = document.getElementById('card-preview');
+            const rect = targetEl.getBoundingClientRect();
+            const pw = 250;
+            const ph = 350;
+            const gap = 14;
+
+            let left = rect.right + gap;
+            if (left + pw > window.innerWidth - 10) {
+                left = rect.left - pw - gap;
+            }
+            left = Math.max(10, Math.min(left, window.innerWidth - pw - 10));
+
+            let top = rect.top + (rect.height - ph) / 2;
+            top = Math.max(10, Math.min(top, window.innerHeight - ph - 10));
+
+            previewPanel.style.left = `${Math.round(left)}px`;
+            previewPanel.style.top = `${Math.round(top)}px`;
+            previewPanel.style.backgroundImage = `url(${imgSrc})`;
+            previewPanel.style.opacity = '1';
+            previewPanel.style.visibility = 'visible';
+        }
+
+        function hideCardPreview() {
+            const previewPanel = document.getElementById('card-preview');
+            if (!previewPanel) return;
+            previewPanel.style.opacity = '0';
+            previewPanel.style.visibility = 'hidden';
+        }
+
+        /* =========================================================================
+           UI & VIEW MANAGEMENT
+           ========================================================================= */
+        function getTrashCards(player) {
+            const targetZone = `zone-trash-${player}`;
+            return Object.values(gameState.cards)
+                .filter(c => c.zone === targetZone)
+                .sort((a, b) => (a.zOrder || 0) - (b.zOrder || 0));
+        }
+
+        function getBurstCards(player) {
+            const targetZone = `zone-burst-${player}`;
+            return Object.values(gameState.cards)
+                .filter(c => c.zone === targetZone)
+                .sort((a, b) => (a.zOrder || 0) - (b.zOrder || 0));
+        }
+
+        function getGodCards(player) {
+            const targetZone = `zone-god-${player}`;
+            return Object.values(gameState.cards)
+                .filter(c => c.zone === targetZone)
+                .sort((a, b) => (a.zOrder || 0) - (b.zOrder || 0));
+        }
+
+        // 1. 套用單張卡牌的旋轉、反轉與下方 Core 計數控制列位置 (使用獨立 .card-label 避免清空 .card-controls)
+        function applyCardVisualState(cardData, el) {
+            if (!el || !cardData) return;
+
+            const isField = cardData.zone && cardData.zone.startsWith('field-');
+            const isGod = cardData.zone && cardData.zone.startsWith('zone-god-');
+            const rot = (isField || isGod) ? (cardData.rotation || 0) : 0;
+
+            if (isField || isGod) {
+                el.style.transform = `rotate(${rot}deg)`;
+            } else {
+                el.style.transform = '';
+            }
+
+            // 計算控制列反旋轉與向下偏移距離，使其永遠保持在卡牌視覺正下方且絕不與卡牌重疊
+            const controls = el.querySelector('.card-controls');
+            if (controls && (isField || isGod)) {
+                const normRot = ((rot % 360) + 360) % 360;
+                // 0度/180度時卡牌半高為 70px，向下偏移 90px 留出 20px 間距；90度/270度時視覺半高為 50px，向下偏移 70px 留出 20px 間距
+                const offsetY = (normRot === 90 || normRot === 270) ? 70 : 90;
+                controls.style.transform = `translate(-50%, -50%) rotate(${-rot}deg) translateY(${offsetY}px)`;
+            }
+
+            // 透過專用 .card-label 更新文字，絕對不覆蓋 el.innerText 以保護 .card-controls
+            const labelEl = el.querySelector('.card-label');
+            const imgSrc = cardData.imgBase64 || cardImageCache[cardData.id] || "";
+            if (cardData.isFaceDown) {
+                el.classList.add('face-down');
+                el.style.backgroundImage = 'none';
+                if (labelEl) labelEl.innerText = '';
+            } else {
+                el.classList.remove('face-down');
+                if (imgSrc) {
+                    el.style.backgroundImage = `url(${imgSrc})`;
+                    if (labelEl) labelEl.innerText = '';
+                } else {
+                    el.style.backgroundImage = 'none';
+                    if (labelEl) labelEl.innerText = cardData.id;
+                }
+            }
+
+            const coreEl = el.querySelector('.card-cores');
+            if (coreEl) coreEl.innerText = cardData.cores || 0;
+        }
+
+        function updateAllUI() {
+            ['p1_life', 'p1_reserve', 'p1_count', 'p1_trash_core', 
+             'p2_life', 'p2_reserve', 'p2_count', 'p2_trash_core'].forEach(key => {
+                const el = document.getElementById('val_' + key);
+                if (el) el.innerText = gameState[key];
+            });
+            document.getElementById('val_p1_deck_count').innerText = gameState.p1Deck.length;
+            document.getElementById('val_p2_deck_count').innerText = gameState.p2Deck.length;
+
+            // 更新 Trash (Card) 張數顯示與堆疊順序
+            ['p1', 'p2'].forEach(player => {
+                const trashList = getTrashCards(player);
+                const countBadge = document.getElementById(`val_${player}_trash_card_count`);
+                if (countBadge) countBadge.innerText = trashList.length;
+
+                trashList.forEach((cardData, idx) => {
+                    const el = document.getElementById(cardData.id);
+                    if (el) {
+                        el.style.zIndex = String(10 + idx);
+                    }
+                });
+
+                // 更新 Burst 區的卡牌堆疊 (每張新卡牌遮住前一張卡牌的一半：垂直偏移 70px = 140px 卡高的一半)
+                const burstList = getBurstCards(player);
+                const burstBadge = document.getElementById(`val_${player}_burst_card_count`);
+                if (burstBadge) burstBadge.innerText = burstList.length;
+
+                const burstZoneEl = document.getElementById(`zone-burst-${player}`);
+                const stepY = 70; // 卡牌高度 140px 的一半
+                const totalHeight = burstList.length > 0 ? (140 + (burstList.length - 1) * stepY) : 0;
+
+                burstList.forEach((cardData, idx) => {
+                    const el = document.getElementById(cardData.id);
+                    if (el) {
+                        el.style.zIndex = String(10 + idx);
+                        if (burstList.length === 1) {
+                            el.style.top = `calc(50% - 70px)`;
+                        } else {
+                            const startTop = Math.max(6, Math.floor((150 - totalHeight) / 2));
+                            el.style.top = `${startTop + idx * stepY}px`;
+                        }
+                    }
+                });
+
+                if (burstZoneEl) {
+                    const placeholder = burstZoneEl.querySelector('span');
+                    if (placeholder) {
+                        placeholder.style.display = burstList.length > 0 ? 'none' : '';
+                    }
+                }
+
+                // 更新創界神 (Grandwalker) 區域：不統計張數，並依卡牌數量自動縮放寬高
+                const godList = getGodCards(player);
+                const godZoneEl = document.getElementById(`zone-god-${player}`);
+                if (godZoneEl) {
+                    godZoneEl.classList.toggle('has-cards', godList.length > 0);
+                    const godPlaceholder = godZoneEl.querySelector('.god-placeholder');
+                    if (godPlaceholder) {
+                        godPlaceholder.style.display = godList.length > 0 ? 'none' : '';
+                    }
+                    godList.forEach((cardData, idx) => {
+                        const el = document.getElementById(cardData.id);
+                        if (el) {
+                            el.style.zIndex = String(15 + idx);
+                        }
+                    });
+                }
+            });
+            
+            updateSoulCoreUI('p1');
+            updateSoulCoreUI('p2');
+
+            const p1Section = document.getElementById('section-main-p1');
+            const p2Section = document.getElementById('section-main-p2');
+            const p1Hand = document.getElementById('section-hand-p1');
+            const p2Hand = document.getElementById('section-hand-p2');
+            
+            const btnP1 = document.getElementById('btn-view-p1');
+            const btnP2 = document.getElementById('btn-view-p2');
+            const btnSpec = document.getElementById('btn-view-spec');
+            const mainContainer = document.querySelector('main');
+
+            const activeBtnClass = "text-xs border px-3 py-1 bg-white text-black font-bold cursor-pointer transition-colors";
+            const inactiveBtnClass = "text-xs border px-3 py-1 text-gray-400 border-gray-600 hover:bg-gray-800 cursor-pointer transition-colors";
+            
+            if (gameState.viewMode === 'P1') {
+                btnP1.className = activeBtnClass;
+                btnP2.className = inactiveBtnClass;
+                btnSpec.className = inactiveBtnClass;
+                
+                document.querySelector('#field-p1 .field-label').innerText = "PLAYER (YOU)";
+                document.querySelector('#field-p2 .field-label').innerText = "OPPONENT";
+                document.getElementById('title-hand-p1').innerText = "Player Hand (P1)";
+                document.getElementById('title-hand-p2').innerText = "Opponent Hand (P2)";
+                
+                document.getElementById('hand-p2').classList.add('opponent-hand');
+                document.getElementById('hand-p1').classList.remove('opponent-hand');
+                
+                mainContainer.appendChild(p2Hand);
+                mainContainer.appendChild(p2Section);
+                mainContainer.appendChild(p1Section);
+                mainContainer.appendChild(p1Hand);
+            } else if (gameState.viewMode === 'P2') {
+                btnP2.className = activeBtnClass;
+                btnP1.className = inactiveBtnClass;
+                btnSpec.className = inactiveBtnClass;
+                
+                document.querySelector('#field-p2 .field-label').innerText = "PLAYER (YOU)";
+                document.querySelector('#field-p1 .field-label').innerText = "OPPONENT";
+                document.getElementById('title-hand-p2').innerText = "Player Hand (P2)";
+                document.getElementById('title-hand-p1').innerText = "Opponent Hand (P1)";
+                
+                document.getElementById('hand-p1').classList.add('opponent-hand');
+                document.getElementById('hand-p2').classList.remove('opponent-hand');
+                
+                mainContainer.appendChild(p1Hand);
+                mainContainer.appendChild(p1Section);
+                mainContainer.appendChild(p2Section);
+                mainContainer.appendChild(p2Hand);
+            } else {
+                btnSpec.className = activeBtnClass;
+                btnP1.className = inactiveBtnClass;
+                btnP2.className = inactiveBtnClass;
+
+                document.querySelector('#field-p1 .field-label').innerText = "PLAYER 1";
+                document.querySelector('#field-p2 .field-label').innerText = "PLAYER 2";
+                document.getElementById('title-hand-p1').innerText = "Player 1 Hand (P1 - 觀戰公開)";
+                document.getElementById('title-hand-p2').innerText = "Player 2 Hand (P2 - 觀戰公開)";
+
+                document.getElementById('hand-p1').classList.remove('opponent-hand');
+                document.getElementById('hand-p2').classList.remove('opponent-hand');
+
+                mainContainer.appendChild(p2Hand);
+                mainContainer.appendChild(p2Section);
+                mainContainer.appendChild(p1Section);
+                mainContainer.appendChild(p1Hand);
+            }
+
+            if (currentModalInfo) {
+                renderZoneModalContent();
+            }
+        }
+
+        function setView(mode) {
+            gameState.viewMode = mode;
+            updateAllUI();
+        }
+
+        function toggleHand(player) {
+            const handZone = document.getElementById(`hand-${player}`);
+            if (handZone.style.display === 'none') {
+                handZone.style.display = 'flex';
+                document.getElementById(`section-hand-${player}`).classList.remove('h-auto');
+            } else {
+                handZone.style.display = 'none';
+                document.getElementById(`section-hand-${player}`).classList.add('h-auto');
+            }
+        }
+
+        function updateCounter(key, delta) {
+            const currentVal = parseInt(gameState[key], 10) || 0;
+            let nextVal = currentVal + delta;
+            if (['p1_reserve', 'p1_trash_core', 'p2_reserve', 'p2_trash_core', 'p1_life', 'p2_life', 'p1_count', 'p2_count'].includes(key) && nextVal < 0) {
+                nextVal = 0;
+            }
+            const actualDelta = nextVal - currentVal;
+            gameState[key] = nextVal;
+
+            if (actualDelta !== 0) {
+                triggerCounterKeyFlash(key, actualDelta);
+            }
+
+            updateAllUI();
+            updateRoomState();
+        }
+
+        function payCost(player) {
+            if (gameState[`${player}_reserve`] <= 0) return;
+            gameState[`${player}_reserve`] -= 1;
+            gameState[`${player}_trash_core`] += 1;
+            triggerCounterKeyFlash(`${player}_reserve`, -1);
+            triggerCounterKeyFlash(`${player}_trash_core`, 1);
+            updateAllUI();
+            updateRoomState();
+        }
+
+        function recoverCore(player) {
+            if (gameState[`${player}_trash_core`] <= 0) return;
+            gameState[`${player}_trash_core`] -= 1;
+            gameState[`${player}_reserve`] += 1;
+            triggerCounterKeyFlash(`${player}_trash_core`, -1);
+            triggerCounterKeyFlash(`${player}_reserve`, 1);
+            updateAllUI();
+            updateRoomState();
+        }
+
+        // 將廢棄區 (Trash Core) 的所有 Core 一鍵全部移回預備區 (Reserve)
+        function recoverAllCores(player) {
+            const trashAmount = parseInt(gameState[`${player}_trash_core`], 10) || 0;
+            const soulInTrash = gameState.soulCoreLocation[player] === 'trash';
+            if (trashAmount <= 0 && !soulInTrash) return;
+
+            if (trashAmount > 0) {
+                gameState[`${player}_trash_core`] = 0;
+                gameState[`${player}_reserve`] = (parseInt(gameState[`${player}_reserve`], 10) || 0) + trashAmount;
+                triggerCounterKeyFlash(`${player}_trash_core`, -trashAmount);
+                triggerCounterKeyFlash(`${player}_reserve`, trashAmount);
+            }
+            if (soulInTrash) {
+                gameState.soulCoreLocation[player] = 'reserve';
+                if (trashAmount === 0) {
+                    triggerCounterKeyFlash(`${player}_trash_core`, -1);
+                    triggerCounterKeyFlash(`${player}_reserve`, 1);
+                }
+            }
+            updateAllUI();
+            updateRoomState();
+        }
+
+        function takeLife(player) {
+            if (gameState[`${player}_life`] <= 0) return;
+            gameState[`${player}_life`] -= 1;
+            gameState[`${player}_reserve`] += 1;
+            triggerCounterKeyFlash(`${player}_life`, -1);
+            triggerCounterKeyFlash(`${player}_reserve`, 1);
+            updateAllUI();
+            updateRoomState();
+        }
+
+        /* =========================================================================
+           SOUL CORE MECHANICS (支援拖曳與點擊，卡牌邊緣發光)
+           ========================================================================= */
+        function createSoulCoreTokenElement(player) {
+            const token = document.createElement('div');
+            token.className = `soul-core-token soul-core-${player}`;
+            token.innerText = 'S';
+            token.draggable = true;
+            token.title = "Soul Core (可拖曳至卡牌/Reserve/Trash/Count，或直接點擊切換)";
+            token.addEventListener('dragstart', (e) => {
+                e.stopPropagation();
+                draggedSoulOwner = player;
+                draggedCard = null;
+                e.dataTransfer.setData('text/plain', `SOUL:${player}`);
+            });
+            token.addEventListener('dragend', () => {
+                draggedSoulOwner = null;
+                document.querySelectorAll('.drag-over').forEach(z => z.classList.remove('drag-over'));
+            });
+            token.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const currentLoc = gameState.soulCoreLocation[player];
+                if (currentLoc === 'reserve') {
+                    setSoulCoreLocation(player, 'trash');
+                } else {
+                    setSoulCoreLocation(player, 'reserve');
+                }
+            });
+            return token;
+        }
+
+        function setSoulCoreLocation(player, destination) {
+            const prevLoc = gameState.soulCoreLocation[player];
+            if (prevLoc !== destination) {
+                if (['reserve', 'trash', 'count'].includes(prevLoc)) {
+                    const prevKey = prevLoc === 'trash' ? `${player}_trash_core` : `${player}_${prevLoc}`;
+                    triggerCounterKeyFlash(prevKey, -1);
+                } else if (prevLoc && gameState.cards[prevLoc]) {
+                    triggerCardCoreFlash(prevLoc, -1);
+                }
+
+                if (['reserve', 'trash', 'count'].includes(destination)) {
+                    const nextKey = destination === 'trash' ? `${player}_trash_core` : `${player}_${destination}`;
+                    triggerCounterKeyFlash(nextKey, 1);
+                } else if (destination && gameState.cards[destination]) {
+                    triggerCardCoreFlash(destination, 1);
+                }
+            }
+            gameState.soulCoreLocation[player] = destination;
+            updateAllUI();
+            updateRoomState();
+        }
+
+        function dropSoulCore(ev, player, targetPlace) {
+            const raw = ev.dataTransfer.getData('text/plain');
+            if ((raw && raw.startsWith('SOUL:')) || draggedSoulOwner) {
+                ev.preventDefault();
+                ev.stopPropagation();
+                document.querySelectorAll('.drag-over').forEach(z => z.classList.remove('drag-over'));
+                const soulOwner = (raw && raw.startsWith('SOUL:')) ? raw.split(':')[1] : draggedSoulOwner;
+                if (soulOwner === player) {
+                    setSoulCoreLocation(player, targetPlace);
+                }
+            }
+        }
+
+        function updateSoulCoreUI(player) {
+            const loc = gameState.soulCoreLocation[player] || 'reserve';
+            const places = ['reserve', 'trash', 'count'];
+
+            places.forEach(place => {
+                const slot = document.getElementById(`slot_${player}_soul_${place}`);
+                if (!slot) return;
+                slot.innerHTML = '';
+                if (loc === place) {
+                    slot.appendChild(createSoulCoreTokenElement(player));
+                } else if (place === 'reserve' || place === 'trash') {
+                    const emptyBtn = document.createElement('div');
+                    emptyBtn.className = 'soul-core-slot-empty';
+                    emptyBtn.innerText = 'S';
+                    emptyBtn.title = `點擊將 Soul Core 移至 ${place.toUpperCase()}`;
+                    emptyBtn.onclick = (e) => {
+                        e.stopPropagation();
+                        setSoulCoreLocation(player, place);
+                    };
+                    slot.appendChild(emptyBtn);
+                }
+            });
+
+            Object.values(gameState.cards).forEach(cardData => {
+                if (cardData.owner !== player) return;
+                const el = document.getElementById(cardData.id);
+                if (!el) return;
+                const soulBtn = el.querySelector('.card-soul-btn');
+                if (loc === cardData.id) {
+                    el.classList.add('has-soul-core');
+                    if (soulBtn) {
+                        soulBtn.classList.add('soul-active');
+                        soulBtn.title = "Soul Core 目前在此卡上 (點擊移回 Reserve，或直接拖曳)";
+                    }
+                } else {
+                    el.classList.remove('has-soul-core');
+                    if (soulBtn) {
+                        soulBtn.classList.remove('soul-active');
+                        soulBtn.title = "點擊將 Soul Core 放置到此卡上";
+                    }
+                }
+            });
+        }
+
+        /* =========================================================================
+           CARD MECHANICS & IMAGE COMPRESSION
+           ========================================================================= */
+        function compressImageBlob(blob, maxWidth = 180, maxHeight = 252, quality = 0.65) {
+            return new Promise((resolve, reject) => {
+                const url = URL.createObjectURL(blob);
+                const img = new Image();
+                img.onload = () => {
+                    URL.revokeObjectURL(url);
+                    const canvas = document.createElement('canvas');
+                    canvas.width = maxWidth;
+                    canvas.height = maxHeight;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, maxWidth, maxHeight);
+                    resolve(canvas.toDataURL('image/jpeg', quality));
+                };
+                img.onerror = (err) => {
+                    URL.revokeObjectURL(url);
+                    reject(err);
+                };
+                img.src = url;
+            });
+        }
+
+        async function importZip(event, player) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            try {
+                const zip = new JSZip();
+                const contents = await zip.loadAsync(file);
+
+                Object.keys(gameState.cards).forEach(cid => {
+                    if (gameState.cards[cid].owner === player) {
+                        const oldEl = document.getElementById(cid);
+                        if (oldEl) oldEl.remove();
+                        delete gameState.cards[cid];
+                    }
+                });
+                gameState[`${player}Deck`] = [];
+
+                const entries = Object.entries(contents.files).filter(([filename, zipEntry]) => {
+                    return !zipEntry.dir && /\.(jpg|jpeg|png|webp)$/i.test(filename) && !filename.includes('__MACOSX');
+                });
+
+                const newCardsForUpload = {};
+                let index = 0;
+
+                for (const [filename, zipEntry] of entries) {
+                    const blob = await zipEntry.async("blob");
+                    const compressedBase64 = await compressImageBlob(blob);
+                    const cardId = `${player}_card_${index++}`;
+
+                    cardImageCache[cardId] = compressedBase64;
+                    newCardsForUpload[cardId] = compressedBase64;
+
+                    gameState.cards[cardId] = {
+                        id: cardId,
+                        owner: player,
+                        zone: `deck-${player}`,
+                        x: 0,
+                        y: 0,
+                        imgBase64: compressedBase64,
+                        rotation: 0,
+                        isFaceDown: false,
+                        cores: 0,
+                        zOrder: zOrderCounter++
+                    };
+                    gameState[`${player}Deck`].push(cardId);
+                }
+
+                updateAllUI();
+                updateRoomState();
+
+                if (window.uploadPlayerCardImages) {
+                    window.uploadPlayerCardImages(player, newCardsForUpload);
+                }
+
+                showNotice(`已成功匯入 ${entries.length} 張卡牌至 ${player.toUpperCase()} 牌組！`);
+            } catch (err) {
+                console.error("Error reading zip", err);
+                showNotice("讀取 ZIP 檔案失敗。");
+            }
+            event.target.value = '';
+        }
+
+        // 2. 洗牌功能並觸發 Deck 數字著光閃一下
+        function shuffleDeck(player) {
+            const deck = gameState[`${player}Deck`];
+            if (!deck || deck.length === 0) return;
+            for (let i = deck.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [deck[i], deck[j]] = [deck[j], deck[i]];
+            }
+            const now = Date.now();
+            lastSeenShuffleTime = now;
+            gameState.lastShuffle = { player, timestamp: now };
+            updateAllUI();
+            triggerDeckShuffleFlash(player);
+            updateRoomState();
+        }
+
+        // 1. 當卡牌放到 Trash / Deck / Burst / Hand 時，若卡上有 Core 或 Soul Core，彈出視窗讓玩家選擇歸還至預備區或廢棄區
+        function promptReturnCores(owner, regularCores, hadSoulCore) {
+            const modal = document.getElementById('core-return-modal');
+            const desc = document.getElementById('core-return-desc');
+            const parts = [];
+            if (regularCores > 0) parts.push(`${regularCores} 個 Core`);
+            if (hadSoulCore) parts.push(`Soul Core`);
+            desc.innerText = `此卡上有 ${parts.join(' 與 ')}，請選擇要將歸還的 Core 放到哪個區域：`;
+
+            modal.classList.remove('hidden');
+
+            document.getElementById('btn-core-return-reserve').onclick = () => {
+                if (regularCores > 0) {
+                    gameState[`${owner}_reserve`] += regularCores;
+                    triggerCounterKeyFlash(`${owner}_reserve`, regularCores);
+                }
+                if (hadSoulCore) {
+                    gameState.soulCoreLocation[owner] = 'reserve';
+                    if (regularCores === 0) triggerCounterKeyFlash(`${owner}_reserve`, 1);
+                }
+                modal.classList.add('hidden');
+                updateAllUI();
+                updateRoomState();
+            };
+
+            document.getElementById('btn-core-return-trash').onclick = () => {
+                if (regularCores > 0) {
+                    gameState[`${owner}_trash_core`] += regularCores;
+                    triggerCounterKeyFlash(`${owner}_trash_core`, regularCores);
+                }
+                if (hadSoulCore) {
+                    gameState.soulCoreLocation[owner] = 'trash';
+                    if (regularCores === 0) triggerCounterKeyFlash(`${owner}_trash_core`, 1);
+                }
+                modal.classList.add('hidden');
+                updateAllUI();
+                updateRoomState();
+            };
+        }
+
+        function moveCardToZone(cardId, targetZoneId, options = {}) {
+            const cardData = gameState.cards[cardId];
+            if (!cardData) return;
+            const owner = cardData.owner;
+            const prevZone = cardData.zone || '';
+            const wasInGodZone = prevZone.startsWith('zone-god-');
+            const isGoingToGodZone = targetZoneId.startsWith('zone-god-');
+            hideCardPreview();
+
+            // 若該卡原本在牌組中，先從牌組陣列移除
+            ['p1', 'p2'].forEach(p => {
+                const idx = gameState[`${p}Deck`].indexOf(cardId);
+                if (idx !== -1) gameState[`${p}Deck`].splice(idx, 1);
+            });
+
+            // 處理 Core 歸還與創界神獨立 Core 重置邏輯：
+            // - 若原本在創界神區 (zone-god-*)，其 Core 為獨立計算，離開創界神區時直接歸零，不與預備區或廢棄區連動。
+            // - 若原本在一般場上 (field-*) 且移往非一般場上區域 (包含 Trash/Deck/Burst/Hand/創界神區)，則歸還一般 Core 並彈窗詢問。
+            let returningCores = 0;
+            let returningSoul = false;
+            if (wasInGodZone && targetZoneId !== prevZone) {
+                cardData.cores = 0;
+                cardData.rotation = 0;
+            } else if (!targetZoneId.startsWith('field-')) {
+                if ((cardData.cores || 0) > 0) {
+                    returningCores = cardData.cores;
+                    cardData.cores = 0;
+                }
+                if (gameState.soulCoreLocation[owner] === cardId) {
+                    returningSoul = true;
+                    gameState.soulCoreLocation[owner] = 'reserve';
+                }
+                cardData.rotation = 0;
+            }
+
+            if (isGoingToGodZone && !wasInGodZone) {
+                cardData.cores = 0;
+                cardData.rotation = 0;
+                cardData.isFaceDown = false;
+            }
+
+            if (targetZoneId === `deck-${owner}-top` || targetZoneId.endsWith('-top')) {
+                const deckPlayer = targetZoneId.startsWith('deck-p2') ? 'p2' : (targetZoneId.startsWith('deck-p1') ? 'p1' : owner);
+                cardData.zone = `deck-${deckPlayer}`;
+                cardData.x = 0;
+                cardData.y = 0;
+                cardData.rotation = 0;
+                cardData.isFaceDown = false;
+                gameState[`${deckPlayer}Deck`].unshift(cardId);
+                const el = document.getElementById(cardId);
+                if (el) el.remove();
+            } else if (targetZoneId === `deck-${owner}-bottom` || targetZoneId.endsWith('-bottom')) {
+                const deckPlayer = targetZoneId.startsWith('deck-p2') ? 'p2' : (targetZoneId.startsWith('deck-p1') ? 'p1' : owner);
+                cardData.zone = `deck-${deckPlayer}`;
+                cardData.x = 0;
+                cardData.y = 0;
+                cardData.rotation = 0;
+                cardData.isFaceDown = false;
+                gameState[`${deckPlayer}Deck`].push(cardId);
+                const el = document.getElementById(cardId);
+                if (el) el.remove();
+            } else {
+                cardData.zone = targetZoneId;
+                cardData.zOrder = zOrderCounter++;
+                if (targetZoneId.startsWith('zone-trash-')) {
+                    cardData.isFaceDown = false;
+                }
+
+                let el = document.getElementById(cardId);
+                if (!el) el = createCardElement(cardData);
+
+                if (targetZoneId.startsWith('field-')) {
+                    cardData.x = (options.x !== undefined) ? options.x : (40 + Math.floor(Math.random() * 140));
+                    cardData.y = (options.y !== undefined) ? options.y : (40 + Math.floor(Math.random() * 80));
+                    el.style.position = 'absolute';
+                    el.style.left = `${cardData.x}px`;
+                    el.style.top = `${cardData.y}px`;
+                    el.style.zIndex = String(cardData.zOrder);
+                } else {
+                    cardData.x = 0;
+                    cardData.y = 0;
+                    el.style.position = '';
+                    el.style.left = '';
+                    el.style.top = '';
+                }
+
+                const targetContainer = document.getElementById(targetZoneId);
+                if (targetContainer) targetContainer.appendChild(el);
+                applyCardVisualState(cardData, el);
+            }
+
+            updateAllUI();
+            updateRoomState();
+
+            // 若有需要歸還的一般場上 Core 或 Soul Core，彈出選擇視窗讓玩家選擇放到預備區或廢棄區
+            if (returningCores > 0 || returningSoul) {
+                promptReturnCores(owner, returningCores, returningSoul);
+            }
+        }
+
+        function drawCard(player, from) {
+            const deck = gameState[`${player}Deck`];
+            if (!deck || deck.length === 0) return showNotice('牌組已經空了！');
+            const cardId = from === 'top' ? deck[0] : deck[deck.length - 1];
+            moveCardToZone(cardId, `hand-${player}`);
+        }
+
+        function deployTop(player) {
+            const deck = gameState[`${player}Deck`];
+            if (!deck || deck.length === 0) return showNotice('牌組已經空了！');
+            const cardId = deck[0];
+            moveCardToZone(cardId, `field-${player}`);
+        }
+
+        // 場上或創界神區點擊卡牌左/右半邊旋轉 -90 / +90 度 (以螢幕實際視覺邊界計算)
+        function rotateCardBySide(cardId, isRightSide) {
+            const cardData = gameState.cards[cardId];
+            if (!cardData || !cardData.zone) return;
+            const canRotate = cardData.zone.startsWith('field-') || cardData.zone.startsWith('zone-god-');
+            if (!canRotate) return;
+            const deltaDeg = isRightSide ? 90 : -90;
+            cardData.rotation = (cardData.rotation || 0) + deltaDeg;
+            const el = document.getElementById(cardId);
+            if (el) applyCardVisualState(cardData, el);
+            updateRoomState();
+        }
+
+        // 快速連點兩下反轉卡牌 (場上、創界神區、手牌、Burst 區皆可使用)
+        function flipCardFace(cardId) {
+            const cardData = gameState.cards[cardId];
+            if (!cardData || !cardData.zone) return;
+            const isFlippable = cardData.zone.startsWith('field-') || cardData.zone.startsWith('zone-god-') || cardData.zone.startsWith('hand-') || cardData.zone.startsWith('zone-burst-');
+            if (!isFlippable) return;
+            cardData.isFaceDown = !cardData.isFaceDown;
+            const el = document.getElementById(cardId);
+            if (el) applyCardVisualState(cardData, el);
+            if (cardData.isFaceDown) hideCardPreview();
+            updateRoomState();
+        }
+
+        function createCardElement(cardData) {
+            const el = document.createElement('div');
+            el.className = 'card';
+            el.id = cardData.id;
+            el.draggable = true;
+
+            // 專用標籤顯示無卡圖時的 ID，避免覆蓋 .card 內部的 .card-controls
+            const labelSpan = document.createElement('span');
+            labelSpan.className = 'card-label pointer-events-none select-none';
+            el.appendChild(labelSpan);
+            
+            const controls = document.createElement('div');
+            controls.className = 'card-controls';
+            controls.addEventListener('click', (e) => e.stopPropagation());
+            controls.addEventListener('dblclick', (e) => e.stopPropagation());
+            controls.addEventListener('mousedown', (e) => e.stopPropagation());
+            controls.addEventListener('dragstart', (e) => e.stopPropagation());
+            
+            const btnCoreMinus = document.createElement('button');
+            btnCoreMinus.className = 'card-btn';
+            btnCoreMinus.innerText = '-';
+            btnCoreMinus.title = "減少 1 個 Core (歸還至 Reserve)";
+            btnCoreMinus.onclick = (e) => { e.stopPropagation(); addCoreToCard(cardData.id, -1); };
+            
+            const corePill = document.createElement('div');
+            corePill.className = 'card-core-pill';
+            const coreDot = document.createElement('span');
+            coreDot.className = 'card-core-dot';
+            const coreCount = document.createElement('div');
+            coreCount.className = 'card-cores';
+            coreCount.innerText = cardData.cores || 0;
+            corePill.appendChild(coreDot);
+            corePill.appendChild(coreCount);
+            
+            const btnCorePlus = document.createElement('button');
+            btnCorePlus.className = 'card-btn';
+            btnCorePlus.innerText = '+';
+            btnCorePlus.title = "增加 1 個 Core (優先從 Reserve 拿取)";
+            btnCorePlus.onclick = (e) => { e.stopPropagation(); addCoreToCard(cardData.id, 1); };
+
+            const btnSoul = document.createElement('button');
+            btnSoul.className = 'card-btn card-soul-btn font-black';
+            btnSoul.innerText = 'S';
+            btnSoul.draggable = true;
+            btnSoul.addEventListener('dragstart', (e) => {
+                if (gameState.soulCoreLocation[cardData.owner] === cardData.id) {
+                    e.stopPropagation();
+                    draggedSoulOwner = cardData.owner;
+                    draggedCard = null;
+                    e.dataTransfer.setData('text/plain', `SOUL:${cardData.owner}`);
+                }
+            });
+            btnSoul.onclick = (e) => {
+                e.stopPropagation();
+                const owner = cardData.owner;
+                if (gameState.soulCoreLocation[owner] === cardData.id) {
+                    setSoulCoreLocation(owner, 'reserve');
+                } else {
+                    setSoulCoreLocation(owner, cardData.id);
+                }
+            };
+            
+            controls.appendChild(btnCoreMinus);
+            controls.appendChild(corePill);
+            controls.appendChild(btnCorePlus);
+            controls.appendChild(btnSoul);
+            
+            el.appendChild(controls);
+
+            // 處理單擊(場上或創界神區左右旋轉 90 度) 與 雙擊(反轉)
+            let clickTimer = null;
+            el.addEventListener('click', (e) => {
+                if (e.target.closest('.card-controls')) return;
+                const rect = el.getBoundingClientRect();
+                const clickX = e.clientX - rect.left;
+                const isRightSide = clickX >= (rect.width / 2);
+
+                if (clickTimer !== null) return;
+                clickTimer = setTimeout(() => {
+                    clickTimer = null;
+                    const currentCard = gameState.cards[cardData.id];
+                    if (currentCard && currentCard.zone && (currentCard.zone.startsWith('field-') || currentCard.zone.startsWith('zone-god-'))) {
+                        rotateCardBySide(cardData.id, isRightSide);
+                    }
+                }, 210);
+            });
+
+            el.addEventListener('dblclick', (e) => {
+                if (e.target.closest('.card-controls')) return;
+                e.preventDefault();
+                e.stopPropagation();
+                if (clickTimer !== null) {
+                    clearTimeout(clickTimer);
+                    clickTimer = null;
+                }
+                flipCardFace(cardData.id);
+            });
+
+            // 支援直接把 Soul Core 拖曳丟到這張卡牌上
+            el.addEventListener('dragover', (e) => {
+                e.preventDefault();
+            });
+            el.addEventListener('drop', (e) => {
+                const raw = e.dataTransfer.getData('text/plain');
+                if ((raw && raw.startsWith('SOUL:')) || draggedSoulOwner) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const soulOwner = (raw && raw.startsWith('SOUL:')) ? raw.split(':')[1] : draggedSoulOwner;
+                    if (soulOwner === cardData.owner && cardData.zone && cardData.zone.startsWith('field-')) {
+                        setSoulCoreLocation(soulOwner, cardData.id);
+                    }
+                }
+            });
+
+            el.addEventListener('dragstart', (e) => {
+                if (e.target.closest('.card-controls')) {
+                    e.preventDefault();
+                    return;
+                }
+                if (clickTimer !== null) {
+                    clearTimeout(clickTimer);
+                    clickTimer = null;
+                }
+                hideCardPreview();
+                draggedCard = cardData.id;
+                draggedSoulOwner = null;
+                e.dataTransfer.setData('text/plain', cardData.id);
+                el.style.opacity = '0.5';
+            });
+            
+            el.addEventListener('dragend', () => {
+                el.style.opacity = '1';
+                draggedCard = null;
+                document.querySelectorAll('.drag-over').forEach(z => z.classList.remove('drag-over'));
+            });
+            
+            // 4. 滑鼠移上卡牌時，在該卡牌旁邊放大顯示預覽
+            el.addEventListener('mouseenter', (e) => {
+                if (e.target.closest('.card-controls')) return;
+                const isOpponentHand = el.closest('.opponent-hand');
+                const currentCard = gameState.cards[cardData.id];
+                if (isOpponentHand || (currentCard && currentCard.isFaceDown)) return;
+                const currentImg = currentCard?.imgBase64 || cardImageCache[cardData.id];
+                if (!currentImg) return;
+                showCardPreviewNextToElement(el, currentImg);
+            });
+            
+            el.addEventListener('mouseleave', () => {
+                hideCardPreview();
+            });
+
+            applyCardVisualState(cardData, el);
+            return el;
+        }
+        
+        function addCoreToCard(cardId, delta) {
+            const cardData = gameState.cards[cardId];
+            if (!cardData) return;
+            const player = cardData.owner;
+            const isGodZone = cardData.zone && cardData.zone.startsWith('zone-god-');
+
+            // 創界神區域內的卡牌 Core 獨立計算，不與預備區或廢棄區連動
+            if (isGodZone) {
+                if ((cardData.cores || 0) + delta < 0) return;
+                cardData.cores = (cardData.cores || 0) + delta;
+                const el = document.getElementById(cardId);
+                if (el) {
+                    const coreEl = el.querySelector('.card-cores');
+                    if (coreEl) coreEl.innerText = cardData.cores;
+                }
+                triggerCardCoreFlash(cardId, delta);
+                triggerElementCoreFlash(document.getElementById(`god-wrapper-${player}`), delta);
+                updateAllUI();
+                updateRoomState();
+                return;
+            }
+            
+            if (delta > 0 && gameState[`${player}_reserve`] < delta) {
+                return;
+            }
+            if ((cardData.cores || 0) + delta < 0) return;
+            
+            cardData.cores = (cardData.cores || 0) + delta;
+            gameState[`${player}_reserve`] -= delta;
+            
+            const el = document.getElementById(cardId);
+            if (el) {
+                const coreEl = el.querySelector('.card-cores');
+                if (coreEl) coreEl.innerText = cardData.cores;
+            }
+            triggerCardCoreFlash(cardId, delta);
+            triggerCounterKeyFlash(`${player}_reserve`, -delta);
+            updateAllUI();
+            updateRoomState();
+        }
+
+        /* =========================================================================
+           拖曳卡牌至創界神區域時彈出確認視窗
+           ========================================================================= */
+        function dropOnGodZone(ev, player) {
+            ev.preventDefault();
+            ev.stopPropagation();
+            document.querySelectorAll('.drag-over').forEach(z => z.classList.remove('drag-over'));
+
+            const rawData = ev.dataTransfer.getData('text/plain');
+            if ((rawData && rawData.startsWith('SOUL:')) || draggedSoulOwner) {
+                return;
+            }
+
+            const cardId = rawData || draggedCard;
+            if (!cardId || !gameState.cards[cardId]) return;
+
+            // 若該卡已經在同一個創界神區域內，不重複彈出視窗
+            if (gameState.cards[cardId].zone === `zone-god-${player}`) return;
+
+            pendingGodDrop = { cardId, player };
+            const modal = document.getElementById('god-confirm-modal');
+            modal.classList.remove('hidden');
+
+            document.getElementById('btn-god-confirm-yes').onclick = () => {
+                const info = pendingGodDrop;
+                closeGodConfirmModal();
+                if (info) {
+                    toggleGodZone(info.player, true);
+                    moveCardToZone(info.cardId, `zone-god-${info.player}`);
+                }
+            };
+        }
+
+        function closeGodConfirmModal() {
+            pendingGodDrop = null;
+            const modal = document.getElementById('god-confirm-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        /* =========================================================================
+           拖動卡牌至 DECK 時選擇放到牌組頂或牌組底
+           ========================================================================= */
+        function dropOnDeck(ev, player) {
+            ev.preventDefault();
+            ev.stopPropagation();
+            document.querySelectorAll('.drag-over').forEach(z => z.classList.remove('drag-over'));
+
+            const rawData = ev.dataTransfer.getData('text/plain');
+            if ((rawData && rawData.startsWith('SOUL:')) || draggedSoulOwner) {
+                return;
+            }
+
+            const cardId = rawData || draggedCard;
+            if (!cardId || !gameState.cards[cardId]) return;
+
+            pendingDeckDrop = { cardId, player };
+            const modal = document.getElementById('deck-choice-modal');
+            modal.classList.remove('hidden');
+
+            document.getElementById('btn-deck-choice-top').onclick = () => {
+                const dropInfo = pendingDeckDrop;
+                closeDeckChoiceModal();
+                if (dropInfo) {
+                    moveCardToZone(dropInfo.cardId, `deck-${dropInfo.player}-top`);
+                }
+            };
+
+            document.getElementById('btn-deck-choice-bottom').onclick = () => {
+                const dropInfo = pendingDeckDrop;
+                closeDeckChoiceModal();
+                if (dropInfo) {
+                    moveCardToZone(dropInfo.cardId, `deck-${dropInfo.player}-bottom`);
+                }
+            };
+        }
+
+        function closeDeckChoiceModal() {
+            pendingDeckDrop = null;
+            document.getElementById('deck-choice-modal').classList.add('hidden');
+        }
+
+        /* =========================================================================
+           DECK & TRASH VIEW MODAL (檢視與操作牌組/廢棄區卡牌)
+           ========================================================================= */
+        function openZoneModal(player, type) {
+            currentModalInfo = { player, type };
+            document.getElementById('zone-view-modal').classList.remove('hidden');
+            renderZoneModalContent();
+        }
+
+        function closeZoneModal() {
+            currentModalInfo = null;
+            document.getElementById('zone-view-modal').classList.add('hidden');
+            hideCardPreview();
+        }
+
+        function renderZoneModalContent() {
+            if (!currentModalInfo) return;
+            const { player, type } = currentModalInfo;
+            const titleEl = document.getElementById('zone-view-title');
+            const listEl = document.getElementById('zone-view-list');
+            listEl.innerHTML = '';
+
+            let cardIds = [];
+            if (type === 'deck') {
+                cardIds = [...gameState[`${player}Deck`]];
+                titleEl.innerText = `${player.toUpperCase()} DECK (${cardIds.length} CARDS)`;
+            } else {
+                const trashCards = getTrashCards(player).slice().reverse();
+                cardIds = trashCards.map(c => c.id);
+                titleEl.innerText = `${player.toUpperCase()} TRASH (${cardIds.length} CARDS)`;
+            }
+
+            if (cardIds.length === 0) {
+                listEl.innerHTML = `<div class="col-span-full text-center text-gray-500 py-12 font-bold">目前此區域沒有任何卡牌。</div>`;
+                return;
+            }
+
+            cardIds.forEach((cid, idx) => {
+                const cardData = gameState.cards[cid];
+                if (!cardData) return;
+                const imgSrc = cardData.imgBase64 || cardImageCache[cid] || '';
+
+                const item = document.createElement('div');
+                item.className = 'flex flex-col items-center border border-gray-700 bg-[#111] p-2 rounded gap-1.5';
+
+                const label = document.createElement('div');
+                label.className = 'text-[10px] text-gray-400 font-bold';
+                label.innerText = type === 'deck' ? `TOP #${idx + 1}` : `TRASH #${idx + 1}`;
+
+                const thumb = document.createElement('div');
+                thumb.className = 'w-[100px] h-[140px] bg-black border border-gray-600 rounded bg-cover bg-center cursor-pointer';
+                if (imgSrc) thumb.style.backgroundImage = `url(${imgSrc})`;
+
+                thumb.addEventListener('mouseenter', () => {
+                    if (!imgSrc) return;
+                    showCardPreviewNextToElement(thumb, imgSrc);
+                });
+                thumb.addEventListener('mouseleave', () => {
+                    hideCardPreview();
+                });
+
+                const btnGrid = document.createElement('div');
+                btnGrid.className = 'grid grid-cols-2 gap-1 w-full mt-1';
+
+                const actions = [
+                    { label: 'HAND', target: `hand-${player}` },
+                    { label: 'FIELD', target: `field-${player}` },
+                    { label: 'BURST', target: `zone-burst-${player}` },
+                    type === 'deck'
+                        ? { label: 'TRASH', target: `zone-trash-${player}` }
+                        : { label: 'DECK TOP', target: `deck-${player}-top` },
+                    { label: 'DECK BTM', target: `deck-${player}-bottom` }
+                ];
+
+                actions.forEach(act => {
+                    const b = document.createElement('button');
+                    b.className = 'text-[9px] border border-gray-500 bg-black text-white hover:bg-white hover:text-black py-0.5 font-bold cursor-pointer';
+                    b.innerText = act.label;
+                    b.onclick = () => {
+                        moveCardToZone(cid, act.target);
+                    };
+                    btnGrid.appendChild(b);
+                });
+
+                item.appendChild(label);
+                item.appendChild(thumb);
+                item.appendChild(btnGrid);
+                listEl.appendChild(item);
+            });
+        }
+
+        /* =========================================================================
+           DRAG & DROP
+           ========================================================================= */
+        function allowDrop(ev) {
+            ev.preventDefault();
+            const zone = ev.target.closest('.god-zone-wrapper') || ev.target.closest('.zone') || ev.target.closest('.counter-box');
+            if (zone) zone.classList.add('drag-over');
+        }
+
+        function drop(ev, targetZoneId) {
+            ev.preventDefault();
+            document.querySelectorAll('.drag-over').forEach(z => z.classList.remove('drag-over'));
+            
+            const rawData = ev.dataTransfer.getData('text/plain');
+            if ((rawData && rawData.startsWith('SOUL:')) || draggedSoulOwner) {
+                return;
+            }
+
+            const cardId = rawData || draggedCard;
+            if (!cardId || !gameState.cards[cardId]) return;
+            
+            const targetZone = document.getElementById(targetZoneId);
+            if (!targetZone) return;
+
+            if (targetZoneId.startsWith('field-')) {
+                const rect = targetZone.getBoundingClientRect();
+                let x = ev.clientX - rect.left - 50; 
+                let y = ev.clientY - rect.top - 70;
+                
+                // 底部預留 180px 空間，確保卡片下方的 Core 計數器不會超出邊界被裁切
+                x = Math.max(10, Math.min(x, rect.width - 110));
+                y = Math.max(10, Math.min(y, rect.height - 180));
+
+                moveCardToZone(cardId, targetZoneId, { x: Math.round(x), y: Math.round(y) });
+            } else {
+                moveCardToZone(cardId, targetZoneId);
+            }
+        }
+        
+        document.addEventListener('dragleave', (ev) => {
+            const zone = ev.target.closest('.god-zone-wrapper') || ev.target.closest('.zone') || ev.target.closest('.counter-box');
+            if (zone) zone.classList.remove('drag-over');
+        });
+
+        /* =========================================================================
+           MULTIPLAYER & STATE SYNC
+           ========================================================================= */
+        function openMultiplayerModal() {
+            document.getElementById('mp-modal').classList.remove('hidden');
+        }
+        
+        function closeMultiplayerModal() {
+            document.getElementById('mp-modal').classList.add('hidden');
+        }
+        
+        function generateRoomCode() {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+            let code = '';
+            for (let i = 0; i < 6; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
+            return code;
+        }
+        
+        async function createRoom() {
+            const code = generateRoomCode();
+            closeMultiplayerModal();
+            if (window.initMultiplayer) {
+                const ok = await window.initMultiplayer(code, true);
+                if (ok) {
+                    const badge = document.getElementById('room-status-badge');
+                    badge.innerText = `ROOM: ${code}`;
+                    badge.classList.remove('hidden');
+                }
+            }
+        }
+        
+        async function joinRoom() {
+            const code = document.getElementById('join-room-code').value.trim().toUpperCase();
+            if (!code) return showNotice("請輸入房間代碼 (Room Code)！");
+            closeMultiplayerModal();
+            if (window.initMultiplayer) {
+                const ok = await window.initMultiplayer(code, false);
+                if (ok) {
+                    const badge = document.getElementById('room-status-badge');
+                    badge.innerText = `ROOM: ${code}`;
+                    badge.classList.remove('hidden');
+                }
+            }
+        }
+        
+        function copyRoomCode() {
+            const txt = document.getElementById('room-status-badge').innerText.replace('ROOM: ', '');
+            const tempInput = document.createElement('input');
+            tempInput.value = txt;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            showNotice('房間代碼已複製：' + txt);
+        }
+
+        window.applyGameState = (newState) => {
+            if (!newState) return;
+            isSyncing = true;
+
+            ['p1_life', 'p1_reserve', 'p1_count', 'p1_trash_core',
+             'p2_life', 'p2_reserve', 'p2_count', 'p2_trash_core'].forEach(key => {
+                if (newState[key] !== undefined && newState[key] !== gameState[key]) {
+                    triggerCounterKeyFlash(key, newState[key] - gameState[key]);
+                }
+            });
+
+            let remoteShufflePlayer = null;
+            if (newState.lastShuffle && newState.lastShuffle.timestamp > lastSeenShuffleTime) {
+                lastSeenShuffleTime = newState.lastShuffle.timestamp;
+                gameState.lastShuffle = newState.lastShuffle;
+                remoteShufflePlayer = newState.lastShuffle.player;
+            }
+            
+            ['p1_life', 'p1_reserve', 'p1_count', 'p1_trash_core', 
+             'p2_life', 'p2_reserve', 'p2_count', 'p2_trash_core', 'soulCoreLocation'].forEach(key => {
+                if (newState[key] !== undefined) gameState[key] = newState[key];
+            });
+            
+            if (Array.isArray(newState.p1Deck)) gameState.p1Deck = newState.p1Deck;
+            if (Array.isArray(newState.p2Deck)) gameState.p2Deck = newState.p2Deck;
+
+            const remoteCoreChanges = [];
+            if (Array.isArray(newState.cards)) {
+                const remoteIds = new Set(newState.cards.map(c => c.id));
+                Object.keys(gameState.cards).forEach(localId => {
+                    if (!remoteIds.has(localId)) {
+                        const oldEl = document.getElementById(localId);
+                        if (oldEl) oldEl.remove();
+                        delete gameState.cards[localId];
+                    }
+                });
+
+                newState.cards.forEach(remoteCard => {
+                    const cachedImg = cardImageCache[remoteCard.id] || gameState.cards[remoteCard.id]?.imgBase64 || "";
+                    if ((remoteCard.zOrder || 0) >= zOrderCounter) {
+                        zOrderCounter = (remoteCard.zOrder || 0) + 1;
+                    }
+                    const parsedRotation = (remoteCard.rotation !== undefined)
+                        ? remoteCard.rotation
+                        : (remoteCard.isTapped ? 90 : 0);
+
+                    if (!gameState.cards[remoteCard.id]) {
+                        gameState.cards[remoteCard.id] = {
+                            id: remoteCard.id,
+                            owner: remoteCard.owner,
+                            zone: remoteCard.zone,
+                            x: remoteCard.x || 0,
+                            y: remoteCard.y || 0,
+                            imgBase64: cachedImg,
+                            rotation: parsedRotation,
+                            isFaceDown: !!remoteCard.isFaceDown,
+                            cores: remoteCard.cores || 0,
+                            zOrder: remoteCard.zOrder || 1
+                        };
+                    } else {
+                        const localCard = gameState.cards[remoteCard.id];
+                        const oldCores = localCard.cores || 0;
+                        const newCores = remoteCard.cores || 0;
+                        if (newCores !== oldCores) {
+                            remoteCoreChanges.push({ id: remoteCard.id, owner: remoteCard.owner, zone: remoteCard.zone, delta: newCores - oldCores });
+                        }
+                        localCard.zone = remoteCard.zone;
+                        localCard.x = remoteCard.x || 0;
+                        localCard.y = remoteCard.y || 0;
+                        localCard.rotation = parsedRotation;
+                        localCard.isFaceDown = !!remoteCard.isFaceDown;
+                        localCard.cores = newCores;
+                        localCard.zOrder = remoteCard.zOrder || localCard.zOrder || 1;
+                        if (cachedImg) localCard.imgBase64 = cachedImg;
+                    }
+                });
+
+                Object.values(gameState.cards)
+                    .sort((a, b) => (a.zOrder || 0) - (b.zOrder || 0))
+                    .forEach(cardData => {
+                        if (cardData.zone && cardData.zone.startsWith('deck-')) {
+                            const existingEl = document.getElementById(cardData.id);
+                            if (existingEl) existingEl.remove();
+                            return;
+                        }
+
+                        let el = document.getElementById(cardData.id);
+                        if (!el) {
+                            el = createCardElement(cardData);
+                        }
+                        
+                        const targetZone = document.getElementById(cardData.zone);
+                        if (targetZone && el.parentElement !== targetZone) {
+                            targetZone.appendChild(el);
+                        }
+                        
+                        if (cardData.zone && cardData.zone.startsWith('field-')) {
+                            el.style.position = 'absolute';
+                            el.style.left = `${cardData.x}px`;
+                            el.style.top = `${cardData.y}px`;
+                            el.style.zIndex = String(cardData.zOrder || 1);
+                        } else {
+                            el.style.position = '';
+                            el.style.left = '';
+                            el.style.top = '';
+                        }
+                        
+                        applyCardVisualState(cardData, el);
+                    });
+            }
+            
+            updateAllUI();
+            remoteCoreChanges.forEach(change => {
+                triggerCardCoreFlash(change.id, change.delta);
+                if (change.zone && change.zone.startsWith('zone-god-')) {
+                    triggerElementCoreFlash(document.getElementById(`god-wrapper-${change.owner}`), change.delta);
+                }
+            });
+            if (remoteShufflePlayer) {
+                triggerDeckShuffleFlash(remoteShufflePlayer);
+            }
+            isSyncing = false;
+        };
+
+        window.applyCardImages = (imagesMap) => {
+            if (!imagesMap) return;
+            Object.entries(imagesMap).forEach(([cardId, base64]) => {
+                cardImageCache[cardId] = base64;
+                if (gameState.cards[cardId]) {
+                    gameState.cards[cardId].imgBase64 = base64;
+                }
+                const el = document.getElementById(cardId);
+                if (el && gameState.cards[cardId]) {
+                    applyCardVisualState(gameState.cards[cardId], el);
+                }
+            });
+            if (currentModalInfo) renderZoneModalContent();
+        };
+
+        function buildStatePayload() {
+            return {
+                p1_life: gameState.p1_life,
+                p1_reserve: gameState.p1_reserve,
+                p1_count: gameState.p1_count,
+                p1_trash_core: gameState.p1_trash_core,
+                p2_life: gameState.p2_life,
+                p2_reserve: gameState.p2_reserve,
+                p2_count: gameState.p2_count,
+                p2_trash_core: gameState.p2_trash_core,
+                p1Deck: gameState.p1Deck,
+                p2Deck: gameState.p2Deck,
+                soulCoreLocation: gameState.soulCoreLocation,
+                lastShuffle: gameState.lastShuffle,
+                cards: Object.values(gameState.cards).map(card => ({
+                    id: card.id,
+                    owner: card.owner,
+                    zone: card.zone,
+                    x: card.x,
+                    y: card.y,
+                    rotation: card.rotation || 0,
+                    isFaceDown: !!card.isFaceDown,
+                    cores: card.cores,
+                    zOrder: card.zOrder || 1
+                }))
+            };
+        }
+
+        function updateRoomState() {
+            if (isSyncing) return;
+            if (window.sendGameState) {
+                window.sendGameState(buildStatePayload());
+            }
+        }
+
+        updateAllUI();
+    </script>
+    
+    <!-- Firebase Realtime Sync Module -->
+    <script type="module">
+        import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getFirestore, doc, setDoc, getDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        
+        const appId = "bsbeta-52f46";
+        const firebaseConfig = {
+            apiKey: "AIzaSyCVxbd8WGayDHWQ8OSDBu-3-tfG6nJZM4s",
+            authDomain: "bsbeta-52f46.firebaseapp.com",
+            projectId: "bsbeta-52f46",
+            storageBucket: "bsbeta-52f46.firebasestorage.app",
+            messagingSenderId: "174223783079",
+            appId: "1:174223783079:web:33c1b8542ced38e7831782",
+            measurementId: "G-WHRBTBPMEQ"
+        };
+        
+        const clientId = "client_" + Math.random().toString(36).substring(2, 10) + "_" + Date.now();
+        const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        let unsubscribeRoom = null;
+        let unsubscribeImages = null;
+        window.currentRoomCode = null;
+        
+        window.initMultiplayer = async (roomCode, isCreator = false) => {
+            const statusEl = document.getElementById('mp-status-msg');
+            statusEl.className = "text-xs text-yellow-400 mr-2";
+            statusEl.innerText = "Connecting...";
+            
+            try {
+                if (unsubscribeRoom) unsubscribeRoom();
+                if (unsubscribeImages) unsubscribeImages();
+
+                window.currentRoomCode = roomCode;
+                const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', roomCode);
+
+                if (isCreator) {
+                    await window.sendGameState(buildStatePayload());
+                } else {
+                    const existingSnap = await getDoc(roomRef);
+                    if (existingSnap.exists()) {
+                        const data = existingSnap.data();
+                        if (data.stateJson) {
+                            window.applyGameState(JSON.parse(data.stateJson));
+                        }
+                    }
+                }
+                
+                unsubscribeRoom = onSnapshot(roomRef, (snapshot) => {
+                    if (snapshot.exists()) {
+                        const data = snapshot.data();
+                        if (data.lastUpdatedBy !== clientId && data.stateJson) {
+                            window.applyGameState(JSON.parse(data.stateJson));
+                        }
+                    }
+                }, (err) => {
+                    console.error("Room listener error:", err);
+                    statusEl.className = "text-xs text-red-500 mr-2";
+                    statusEl.innerText = "Sync Error: " + err.code;
+                });
+
+                const imagesColRef = collection(db, 'artifacts', appId, 'public', 'data', 'rooms', roomCode, 'cardImages');
+                unsubscribeImages = onSnapshot(imagesColRef, (querySnapshot) => {
+                    const imgMap = {};
+                    querySnapshot.forEach((docSnap) => {
+                        const d = docSnap.data();
+                        if (d && d.base64) {
+                            imgMap[docSnap.id] = d.base64;
+                        }
+                    });
+                    window.applyCardImages(imgMap);
+                });
+
+                const existingLocalImages = {};
+                Object.values(gameState.cards).forEach(c => {
+                    if (c.imgBase64) existingLocalImages[c.id] = c.imgBase64;
+                });
+                if (Object.keys(existingLocalImages).length > 0) {
+                    window.uploadPlayerCardImages('all', existingLocalImages);
+                }
+
+                statusEl.className = "text-xs text-green-400 mr-2";
+                statusEl.innerText = "SYNCED";
+                return true;
+            } catch (err) {
+                console.error("Firebase init failed:", err);
+                statusEl.className = "text-xs text-red-500 mr-2";
+                statusEl.innerText = "Connection failed: " + (err.code || err.message);
+                return false;
+            }
+        };
+        
+        window.sendGameState = async (stateObj) => {
+            if (!db || !window.currentRoomCode) return;
+            try {
+                const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', window.currentRoomCode);
+                await setDoc(roomRef, {
+                    stateJson: JSON.stringify(stateObj),
+                    lastUpdatedBy: clientId,
+                    timestamp: Date.now()
+                }, { merge: true });
+            } catch (err) {
+                console.error("Sync failed:", err);
+                const statusEl = document.getElementById('mp-status-msg');
+                if (statusEl) {
+                    statusEl.className = "text-xs text-red-500 mr-2";
+                    statusEl.innerText = "Sync failed: " + (err.code || err.message);
+                }
+            }
+        };
+
+        window.uploadPlayerCardImages = async (player, cardsMap) => {
+            if (!db || !window.currentRoomCode) return;
+            try {
+                const entries = Object.entries(cardsMap);
+                for (const [cardId, base64] of entries) {
+                    const imgRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', window.currentRoomCode, 'cardImages', cardId);
+                    await setDoc(imgRef, { owner: player, base64: base64 });
+                }
+            } catch (err) {
+                console.error("Card image upload failed:", err);
+            }
+        };
+    </script>
+</body>
+</html>
