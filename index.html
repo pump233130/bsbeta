@@ -244,6 +244,15 @@
         /* 對手視角旋轉 */
         .rotated-180 {
             transform: rotate(180deg);
+            transform-origin: center center;
+        }
+        
+        /* 修正旋轉後內部文字也顛倒的問題 */
+        .rotated-180 .field-label, 
+        .rotated-180 .counter-title,
+        .rotated-180 .counter-value,
+        .rotated-180 button {
+            transform: rotate(180deg);
         }
         
         /* 手牌區特殊樣式 */
@@ -647,6 +656,10 @@
                 gameState[key] = 0;
             }
             updateAllUI();
+            
+            // 加入這個 log 來追蹤狀態是否真的有觸發更新
+            console.log("updateCounter triggered, state:", gameState); 
+            
             updateRoomState();
         }
         
