@@ -51,7 +51,7 @@
             z-index: 1000 !important;
         }
 
-        /* 4. 卡牌擁有 Soul Core 時邊緣發出一圈光芒 */
+        /* 卡牌擁有 Soul Core 時邊緣發出一圈光芒 */
         .card.has-soul-core {
             border: 2px solid #60a5fa !important;
             box-shadow: 0 0 12px 3px rgba(59, 130, 246, 0.95),
@@ -59,7 +59,7 @@
                         inset 0 0 10px rgba(147, 197, 253, 0.55) !important;
         }
 
-        /* 2. 卡牌反轉 (背面表示) 樣式 */
+        /* 卡牌反轉 (背面表示) 樣式 */
         .card.face-down {
             background-image: none !important;
             background-color: #222 !important;
@@ -74,38 +74,40 @@
             pointer-events: none;
         }
 
-        /* 卡牌下方的控制列 (透過中心對消旋轉，確保不論轉幾度都維持在卡牌正下方且正向) */
+        /* 1. 卡牌下方的 Core 計數控制列 (常駐顯示在場上卡片正下方，絕不與卡片重疊) */
         .card-controls {
             position: absolute;
             left: 50%;
             top: 50%;
-            transform: translate(-50%, -50%) translateY(84px);
-            display: flex;
+            transform: translate(-50%, -50%) translateY(92px);
+            display: none;
             align-items: center;
-            gap: 3px;
-            opacity: 0;
-            transition: opacity 0.15s, transform 0.18s ease;
-            background: rgba(0,0,0,0.9);
-            padding: 2px 5px;
+            gap: 5px;
+            background: rgba(10, 10, 10, 0.95);
+            padding: 3px 7px;
             border-radius: 999px;
-            border: 1px solid #555;
-            z-index: 30;
+            border: 1px solid #666;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.85);
+            z-index: 35;
             white-space: nowrap;
+            pointer-events: auto;
         }
         
-        .card:hover .card-controls,
+        /* 在場上時常駐顯示 Core 計數器 */
         .field-zone .card .card-controls {
-            opacity: 1;
+            display: flex !important;
+            opacity: 1 !important;
         }
 
         .card-btn {
-            background: black;
-            color: white;
-            border: 1px solid white;
+            background: #000;
+            color: #fff;
+            border: 1px solid #fff;
             border-radius: 50%;
-            width: 16px;
-            height: 16px;
-            font-size: 10px;
+            width: 18px;
+            height: 18px;
+            font-size: 12px;
+            font-weight: bold;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -113,10 +115,11 @@
             padding: 0;
             line-height: 1;
             flex-shrink: 0;
+            transition: background 0.15s, color 0.15s;
         }
         .card-btn:hover {
-            background: white;
-            color: black;
+            background: #fff;
+            color: #000;
         }
 
         .card-btn.soul-active {
@@ -126,11 +129,27 @@
             box-shadow: 0 0 6px #3b82f6;
         }
 
+        .card-core-pill {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 0 4px;
+        }
+
+        .card-core-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #38bdf8;
+            box-shadow: 0 0 4px #38bdf8;
+            flex-shrink: 0;
+        }
+
         .card-cores {
             color: white;
-            font-size: 12px;
-            font-weight: bold;
-            min-width: 14px;
+            font-size: 13px;
+            font-weight: 900;
+            min-width: 12px;
             text-align: center;
             text-shadow: 1px 1px 2px black;
         }
@@ -193,6 +212,7 @@
             padding: 4px;
             text-align: center;
             background: #111;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
         .counter-title {
@@ -291,15 +311,16 @@
             border-color: white !important;
         }
         
+        /* 4. 卡牌放大預覽：改為動態跟隨在鼠標指定的卡牌旁邊 */
         #card-preview {
-            width: 300px;
-            height: 420px;
+            width: 250px;
+            height: 350px;
             background-color: #111;
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
             border: 2px solid white;
-            box-shadow: 0 0 25px rgba(0,0,0,0.9);
+            box-shadow: 0 0 25px rgba(0,0,0,0.95);
             border-radius: 8px;
         }
         
@@ -361,6 +382,65 @@
         .stack-zone .card .card-controls {
             display: none !important;
         }
+
+        /* 2. 洗牌時 Deck 數字著光閃爍動畫 */
+        @keyframes deckShuffleGlow {
+            0% {
+                color: #ffffff;
+                text-shadow: 0 0 0px rgba(255,255,255,0);
+                transform: scale(1);
+            }
+            30% {
+                color: #fde047;
+                text-shadow: 0 0 18px #fde047, 0 0 32px #38bdf8, 0 0 48px #ffffff;
+                transform: scale(1.38);
+            }
+            65% {
+                color: #38bdf8;
+                text-shadow: 0 0 20px #38bdf8, 0 0 35px #ffffff;
+                transform: scale(1.18);
+            }
+            100% {
+                color: #d1d5db;
+                text-shadow: 0 0 0px rgba(255,255,255,0);
+                transform: scale(1);
+            }
+        }
+        .deck-shuffle-flash {
+            animation: deckShuffleGlow 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        /* 3. 生命值減少(閃紅光) 與 增加(閃綠光) 區域邊框特效 */
+        @keyframes lifeDecreaseFlash {
+            0% {
+                border-color: #ef4444 !important;
+                box-shadow: 0 0 28px 6px rgba(239, 68, 68, 0.95), inset 0 0 22px rgba(239, 68, 68, 0.55) !important;
+            }
+            100% {
+                border-color: #374151;
+                box-shadow: none;
+            }
+        }
+        @keyframes lifeIncreaseFlash {
+            0% {
+                border-color: #22c55e !important;
+                box-shadow: 0 0 28px 6px rgba(34, 197, 94, 0.95), inset 0 0 22px rgba(34, 197, 94, 0.55) !important;
+            }
+            100% {
+                border-color: #374151;
+                box-shadow: none;
+            }
+        }
+        .flash-border-red {
+            border-color: #ef4444 !important;
+            box-shadow: 0 0 25px 4px rgba(239, 68, 68, 0.9), inset 0 0 18px rgba(239, 68, 68, 0.45) !important;
+            animation: lifeDecreaseFlash 0.75s ease-out;
+        }
+        .flash-border-green {
+            border-color: #22c55e !important;
+            box-shadow: 0 0 25px 4px rgba(34, 197, 94, 0.9), inset 0 0 18px rgba(34, 197, 94, 0.45) !important;
+            animation: lifeIncreaseFlash 0.75s ease-out;
+        }
     </style>
 </head>
 <body class="h-screen w-screen flex flex-col p-2 box-border gap-2 bg-[#000] overflow-hidden">
@@ -403,7 +483,7 @@
                         <span class="pointer-events-none select-none">Drop here</span>
                     </div>
                 </div>
-                <div class="counter-box relative flex-none">
+                <div id="life-box-p2" class="counter-box relative flex-none">
                     <div class="counter-title">Life</div>
                     <button class="small-action-btn" onclick="takeLife('p2')">TAKE LIFE</button>
                     <div class="counter-value">
@@ -450,7 +530,7 @@
                          <button class="action-btn" onclick="openZoneModal('p2', 'deck')">VIEW</button>
                     </div>
                     
-                    <div class="py-1 flex justify-center items-center text-3xl font-black text-gray-300" id="val_p2_deck_count">0</div>
+                    <div class="py-1 flex justify-center items-center text-3xl font-black text-gray-300 transition-transform" id="val_p2_deck_count">0</div>
                     
                     <button class="action-btn mb-1" onclick="deployTop('p2')">DEPLOY TOP</button>
                     <div class="flex gap-1">
@@ -491,7 +571,7 @@
                         <span class="pointer-events-none select-none">Drop here</span>
                     </div>
                 </div>
-                <div class="counter-box relative flex-none">
+                <div id="life-box-p1" class="counter-box relative flex-none">
                     <div class="counter-title">Life</div>
                     <button class="small-action-btn" onclick="takeLife('p1')">TAKE LIFE</button>
                     <div class="counter-value">
@@ -538,7 +618,7 @@
                          <button class="action-btn" onclick="openZoneModal('p1', 'deck')">VIEW</button>
                     </div>
                     
-                    <div class="py-1 flex justify-center items-center text-3xl font-black text-gray-300" id="val_p1_deck_count">0</div>
+                    <div class="py-1 flex justify-center items-center text-3xl font-black text-gray-300 transition-transform" id="val_p1_deck_count">0</div>
                     
                     <button class="action-btn mb-1" onclick="deployTop('p1')">DEPLOY TOP</button>
                     <div class="flex gap-1">
@@ -581,10 +661,20 @@
 
     </main>
 
-    <!-- Card Preview -->
-    <div id="card-preview" class="fixed bottom-4 left-1/2 -translate-x-1/2 z-[11000] pointer-events-none opacity-0 invisible transition-all duration-200"></div>
+    <!-- 4. Card Preview (動態顯示在鼠標指定的卡牌旁邊) -->
+    <div id="card-preview" class="fixed z-[11000] pointer-events-none opacity-0 invisible transition-opacity duration-150"></div>
 
-    <!-- 5. 拖曳卡牌至 Deck 時選擇放到頂或底的視窗 -->
+    <!-- 1. 當卡牌離開場上(移至 Trash/Deck/Burst/Hand)時，選擇將卡片上的 Core 歸還至預備區或廢棄區的視窗 -->
+    <div id="core-return-modal" class="fixed inset-0 bg-black/80 z-[10600] hidden flex justify-center items-center">
+        <div class="border-2 border-blue-400 bg-[#050505] p-6 w-[340px] flex flex-col gap-4 shadow-2xl">
+            <div class="text-blue-400 font-black tracking-widest text-center text-sm uppercase border-b border-gray-800 pb-2">歸還 Core (Return Cores)</div>
+            <div id="core-return-desc" class="text-gray-300 text-xs text-center leading-relaxed">此卡上有 Core，請選擇要將歸還的 Core 放到哪個區域：</div>
+            <button id="btn-core-return-reserve" class="border-2 border-white py-2.5 text-white font-bold hover:bg-white hover:text-black transition-colors cursor-pointer text-xs tracking-wider">● 放到預備區 (RESERVE)</button>
+            <button id="btn-core-return-trash" class="border-2 border-gray-400 py-2.5 text-gray-200 font-bold hover:bg-white hover:text-black transition-colors cursor-pointer text-xs tracking-wider">● 放到廢棄區 (TRASH)</button>
+        </div>
+    </div>
+
+    <!-- 拖曳卡牌至 Deck 時選擇放到頂或底的視窗 -->
     <div id="deck-choice-modal" class="fixed inset-0 bg-black/80 z-[10500] hidden flex justify-center items-center">
         <div class="border-2 border-white bg-[#050505] p-6 w-[320px] flex flex-col gap-4 shadow-2xl">
             <div class="text-white font-black tracking-widest text-center text-sm uppercase border-b border-gray-800 pb-2">放回牌組 (Return to Deck)</div>
@@ -602,7 +692,7 @@
                 <div id="zone-view-title" class="text-white font-black tracking-widest text-lg uppercase">ZONE VIEW</div>
                 <button class="border border-gray-500 text-gray-300 hover:bg-white hover:text-black px-3 py-1 text-xs font-bold cursor-pointer" onclick="closeZoneModal()">CLOSE (✕)</button>
             </div>
-            <div class="text-[11px] text-gray-400">將滑鼠移到卡牌上可預覽大圖；點擊卡牌下方的按鈕可將該卡移至指定區域。</div>
+            <div class="text-[11px] text-gray-400">將滑鼠移到卡牌上可在卡牌旁放大預覽；點擊卡牌下方的按鈕可將該卡移至指定區域。</div>
             <div id="zone-view-list" class="flex-1 overflow-y-auto grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-4 p-2 custom-scrollbar">
             </div>
         </div>
@@ -643,6 +733,7 @@
             p1Deck: [],
             p2Deck: [],
             soulCoreLocation: { p1: 'reserve', p2: 'reserve' }, // 'reserve' | 'trash' | 'count' | cardId
+            lastShuffle: null, // { player, timestamp }
             viewMode: 'P1' // 'P1' | 'P2' | 'SPECTATOR'
         };
 
@@ -653,6 +744,80 @@
         let isSyncing = false;
         let currentModalInfo = null; // { player, type }
         let pendingDeckDrop = null; // { cardId, player }
+        let lastSeenShuffleTime = 0;
+
+        /* =========================================================================
+           VISUAL EFFECTS: 2. 洗牌閃光 & 3. 生命值增減紅/綠邊框閃爍 & 4. 卡牌旁放大預覽
+           ========================================================================= */
+        function triggerDeckShuffleFlash(player) {
+            const countEl = document.getElementById(`val_${player}_deck_count`);
+            const boxEl = document.getElementById(`deck-box-${player}`);
+            if (countEl) {
+                countEl.classList.remove('deck-shuffle-flash');
+                void countEl.offsetWidth; // 強制重繪以重新觸發動畫
+                countEl.classList.add('deck-shuffle-flash');
+            }
+            if (boxEl) {
+                boxEl.style.borderColor = '#fde047';
+                boxEl.style.boxShadow = '0 0 18px rgba(253, 224, 71, 0.8)';
+                setTimeout(() => {
+                    boxEl.style.borderColor = '';
+                    boxEl.style.boxShadow = '';
+                }, 700);
+            }
+        }
+
+        function triggerLifeChangeFlash(player, delta) {
+            if (!delta) return;
+            const sectionEl = document.getElementById(`section-main-${player}`);
+            const fieldEl = document.getElementById(`field-${player}`);
+            const lifeBoxEl = document.getElementById(`life-box-${player}`);
+            const flashClass = delta < 0 ? 'flash-border-red' : 'flash-border-green';
+
+            [sectionEl, fieldEl, lifeBoxEl].forEach(el => {
+                if (!el) return;
+                el.classList.remove('flash-border-red', 'flash-border-green');
+                void el.offsetWidth;
+                el.classList.add(flashClass);
+                setTimeout(() => {
+                    el.classList.remove(flashClass);
+                }, 780);
+            });
+        }
+
+        // 4. 將卡牌放大預覽顯示在鼠標指定的卡牌旁邊 (自動判斷左右空間)
+        function showCardPreviewNextToElement(targetEl, imgSrc) {
+            if (!targetEl || !imgSrc) return;
+            const previewPanel = document.getElementById('card-preview');
+            const rect = targetEl.getBoundingClientRect();
+            const pw = 250;
+            const ph = 350;
+            const gap = 14;
+
+            // 預設顯示在卡牌右側；若右側空間不足則顯示在卡牌左側
+            let left = rect.right + gap;
+            if (left + pw > window.innerWidth - 10) {
+                left = rect.left - pw - gap;
+            }
+            left = Math.max(10, Math.min(left, window.innerWidth - pw - 10));
+
+            // 垂直方向與卡牌中心對齊，並限制不超出視窗上下邊界
+            let top = rect.top + (rect.height - ph) / 2;
+            top = Math.max(10, Math.min(top, window.innerHeight - ph - 10));
+
+            previewPanel.style.left = `${Math.round(left)}px`;
+            previewPanel.style.top = `${Math.round(top)}px`;
+            previewPanel.style.backgroundImage = `url(${imgSrc})`;
+            previewPanel.style.opacity = '1';
+            previewPanel.style.visibility = 'visible';
+        }
+
+        function hideCardPreview() {
+            const previewPanel = document.getElementById('card-preview');
+            if (!previewPanel) return;
+            previewPanel.style.opacity = '0';
+            previewPanel.style.visibility = 'hidden';
+        }
 
         /* =========================================================================
            UI & VIEW MANAGEMENT
@@ -664,7 +829,7 @@
                 .sort((a, b) => (a.zOrder || 0) - (b.zOrder || 0));
         }
 
-        // 套用單張卡牌的旋轉、反轉與控制列位置
+        // 套用單張卡牌的旋轉、反轉與下方 Core 計數控制列位置 (確保不重疊)
         function applyCardVisualState(cardData, el) {
             if (!el || !cardData) return;
 
@@ -677,11 +842,12 @@
                 el.style.transform = '';
             }
 
-            // 計算控制列反旋轉，使其永遠保持在卡牌視覺下方且水平正向
+            // 1. 計算控制列反旋轉與向下偏移距離，使其永遠保持在卡牌視覺下方且絕不與卡牌重疊
             const controls = el.querySelector('.card-controls');
             if (controls && isField) {
                 const normRot = ((rot % 360) + 360) % 360;
-                const offsetY = (normRot === 90 || normRot === 270) ? 66 : 84;
+                // 0度/180度時卡牌半高為 70px，偏移 92px 留出清晰間距；90度/270度時卡牌視覺半高為 50px，偏移 72px 留出清晰間距
+                const offsetY = (normRot === 90 || normRot === 270) ? 72 : 92;
                 controls.style.transform = `translate(-50%, -50%) rotate(${-rot}deg) translateY(${offsetY}px)`;
             }
 
@@ -701,6 +867,9 @@
                     el.innerText = cardData.id;
                 }
             }
+
+            const coreEl = el.querySelector('.card-cores');
+            if (coreEl) coreEl.innerText = cardData.cores || 0;
         }
 
         function updateAllUI() {
@@ -777,7 +946,6 @@
                 mainContainer.appendChild(p2Section);
                 mainContainer.appendChild(p2Hand);
             } else {
-                // 3. 觀戰模式 (SPECTATOR)：同時檢視雙方手牌，且不限制任何操作
                 btnSpec.className = activeBtnClass;
                 btnP1.className = inactiveBtnClass;
                 btnP2.className = inactiveBtnClass;
@@ -823,7 +991,16 @@
             if (['p1_reserve', 'p1_trash_core', 'p2_reserve', 'p2_trash_core', 'p1_life', 'p2_life', 'p1_count', 'p2_count'].includes(key) && nextVal < 0) {
                 nextVal = 0;
             }
+            const actualDelta = nextVal - currentVal;
             gameState[key] = nextVal;
+
+            // 3. 若為生命值變動，觸發對應區域邊框紅/綠閃光
+            if (key === 'p1_life' && actualDelta !== 0) {
+                triggerLifeChangeFlash('p1', actualDelta);
+            } else if (key === 'p2_life' && actualDelta !== 0) {
+                triggerLifeChangeFlash('p2', actualDelta);
+            }
+
             updateAllUI();
             updateRoomState();
         }
@@ -848,6 +1025,7 @@
             if (gameState[`${player}_life`] <= 0) return;
             gameState[`${player}_life`] -= 1;
             gameState[`${player}_reserve`] += 1;
+            triggerLifeChangeFlash(player, -1);
             updateAllUI();
             updateRoomState();
         }
@@ -925,7 +1103,6 @@
                 }
             });
 
-            // 4. 更新該玩家所有卡牌上的 Soul Core 狀態與卡牌邊緣發光效果
             Object.values(gameState.cards).forEach(cardData => {
                 if (cardData.owner !== player) return;
                 const el = document.getElementById(cardData.id);
@@ -1033,6 +1210,7 @@
             event.target.value = '';
         }
 
+        // 2. 洗牌功能並觸發 Deck 數字著光閃一下
         function shuffleDeck(player) {
             const deck = gameState[`${player}Deck`];
             if (!deck || deck.length === 0) return;
@@ -1040,14 +1218,47 @@
                 const j = Math.floor(Math.random() * (i + 1));
                 [deck[i], deck[j]] = [deck[j], deck[i]];
             }
+            const now = Date.now();
+            lastSeenShuffleTime = now;
+            gameState.lastShuffle = { player, timestamp: now };
+            triggerDeckShuffleFlash(player);
             updateAllUI();
             updateRoomState();
+        }
+
+        // 1. 當卡牌離開場上時，若卡上有 Core 或 Soul Core，彈出視窗讓玩家選擇歸還至預備區或廢棄區
+        function promptReturnCores(owner, regularCores, hadSoulCore) {
+            const modal = document.getElementById('core-return-modal');
+            const desc = document.getElementById('core-return-desc');
+            const parts = [];
+            if (regularCores > 0) parts.push(`${regularCores} 個 Core`);
+            if (hadSoulCore) parts.push(`Soul Core`);
+            desc.innerText = `此卡上有 ${parts.join(' 與 ')}，請選擇要將歸還的 Core 放到哪個區域：`;
+
+            modal.classList.remove('hidden');
+
+            document.getElementById('btn-core-return-reserve').onclick = () => {
+                if (regularCores > 0) gameState[`${owner}_reserve`] += regularCores;
+                if (hadSoulCore) gameState.soulCoreLocation[owner] = 'reserve';
+                modal.classList.add('hidden');
+                updateAllUI();
+                updateRoomState();
+            };
+
+            document.getElementById('btn-core-return-trash').onclick = () => {
+                if (regularCores > 0) gameState[`${owner}_trash_core`] += regularCores;
+                if (hadSoulCore) gameState.soulCoreLocation[owner] = 'trash';
+                modal.classList.add('hidden');
+                updateAllUI();
+                updateRoomState();
+            };
         }
 
         function moveCardToZone(cardId, targetZoneId, options = {}) {
             const cardData = gameState.cards[cardId];
             if (!cardData) return;
             const owner = cardData.owner;
+            hideCardPreview();
 
             // 若該卡原本在牌組中，先從牌組陣列移除
             ['p1', 'p2'].forEach(p => {
@@ -1055,14 +1266,16 @@
                 if (idx !== -1) gameState[`${p}Deck`].splice(idx, 1);
             });
 
-            // 若卡牌離開場上，將該卡上的 Core 歸還至 Reserve，Soul Core 也歸還至 Reserve，並重置旋轉角度
+            // 1. 若卡牌離開場上 (移至 Trash / Deck / Burst / Hand)，檢查是否需要歸還 Core
+            let returningCores = 0;
+            let returningSoul = false;
             if (!targetZoneId.startsWith('field-')) {
-                if (cardData.cores > 0) {
-                    gameState[`${owner}_reserve`] += cardData.cores;
+                if ((cardData.cores || 0) > 0) {
+                    returningCores = cardData.cores;
                     cardData.cores = 0;
                 }
                 if (gameState.soulCoreLocation[owner] === cardId) {
-                    gameState.soulCoreLocation[owner] = 'reserve';
+                    returningSoul = true;
                 }
                 cardData.rotation = 0;
             }
@@ -1112,9 +1325,6 @@
                     el.style.top = '';
                 }
 
-                const coreEl = el.querySelector('.card-cores');
-                if (coreEl) coreEl.innerText = cardData.cores || 0;
-
                 const targetContainer = document.getElementById(targetZoneId);
                 if (targetContainer) targetContainer.appendChild(el);
                 applyCardVisualState(cardData, el);
@@ -1122,6 +1332,11 @@
 
             updateAllUI();
             updateRoomState();
+
+            // 若有需要歸還的 Core 或 Soul Core，彈出選擇視窗讓玩家選擇放到預備區或廢棄區
+            if (returningCores > 0 || returningSoul) {
+                promptReturnCores(owner, returningCores, returningSoul);
+            }
         }
 
         function drawCard(player, from) {
@@ -1138,7 +1353,7 @@
             moveCardToZone(cardId, `field-${player}`);
         }
 
-        // 1. 場上點擊卡牌左/右半邊旋轉 -90 / +90 度 (以螢幕實際視覺邊界計算，因此旋轉 90 度後依然精準分辨左右)
+        // 場上點擊卡牌左/右半邊旋轉 -90 / +90 度 (以螢幕實際視覺邊界計算)
         function rotateCardBySide(cardId, isRightSide) {
             const cardData = gameState.cards[cardId];
             if (!cardData || !cardData.zone || !cardData.zone.startsWith('field-')) return;
@@ -1149,7 +1364,7 @@
             updateRoomState();
         }
 
-        // 2. 快速連點兩下反轉卡牌 (場上與手牌皆可使用)
+        // 快速連點兩下反轉卡牌 (場上與手牌皆可使用)
         function flipCardFace(cardId) {
             const cardData = gameState.cards[cardId];
             if (!cardData || !cardData.zone) return;
@@ -1158,6 +1373,7 @@
             cardData.isFaceDown = !cardData.isFaceDown;
             const el = document.getElementById(cardId);
             if (el) applyCardVisualState(cardData, el);
+            if (cardData.isFaceDown) hideCardPreview();
             updateRoomState();
         }
 
@@ -1171,6 +1387,7 @@
             controls.className = 'card-controls';
             controls.addEventListener('click', (e) => e.stopPropagation());
             controls.addEventListener('dblclick', (e) => e.stopPropagation());
+            controls.addEventListener('mousedown', (e) => e.stopPropagation());
             
             const btnCoreMinus = document.createElement('button');
             btnCoreMinus.className = 'card-btn';
@@ -1178,9 +1395,15 @@
             btnCoreMinus.title = "減少 1 個 Core (回 Reserve)";
             btnCoreMinus.onclick = (e) => { e.stopPropagation(); addCoreToCard(cardData.id, -1); };
             
+            const corePill = document.createElement('div');
+            corePill.className = 'card-core-pill';
+            const coreDot = document.createElement('span');
+            coreDot.className = 'card-core-dot';
             const coreCount = document.createElement('div');
             coreCount.className = 'card-cores';
             coreCount.innerText = cardData.cores || 0;
+            corePill.appendChild(coreDot);
+            corePill.appendChild(coreCount);
             
             const btnCorePlus = document.createElement('button');
             btnCorePlus.className = 'card-btn';
@@ -1211,7 +1434,7 @@
             };
             
             controls.appendChild(btnCoreMinus);
-            controls.appendChild(coreCount);
+            controls.appendChild(corePill);
             controls.appendChild(btnCorePlus);
             controls.appendChild(btnSoul);
             
@@ -1221,7 +1444,6 @@
             let clickTimer = null;
             el.addEventListener('click', (e) => {
                 if (e.target.closest('.card-controls')) return;
-                // 立即以螢幕視覺矩形 (getBoundingClientRect) 判斷點擊的是當前視覺上的左半邊還是右半邊
                 const rect = el.getBoundingClientRect();
                 const clickX = e.clientX - rect.left;
                 const isRightSide = clickX >= (rect.width / 2);
@@ -1268,6 +1490,7 @@
                     clearTimeout(clickTimer);
                     clickTimer = null;
                 }
+                hideCardPreview();
                 draggedCard = cardData.id;
                 draggedSoulOwner = null;
                 e.dataTransfer.setData('text/plain', cardData.id);
@@ -1280,21 +1503,19 @@
                 document.querySelectorAll('.drag-over').forEach(z => z.classList.remove('drag-over'));
             });
             
-            const previewPanel = document.getElementById('card-preview');
-            el.addEventListener('mouseenter', () => {
+            // 4. 滑鼠移上卡牌時，在該卡牌旁邊放大顯示預覽
+            el.addEventListener('mouseenter', (e) => {
+                if (e.target.closest('.card-controls')) return;
                 const isOpponentHand = el.closest('.opponent-hand');
                 const currentCard = gameState.cards[cardData.id];
                 if (isOpponentHand || (currentCard && currentCard.isFaceDown)) return;
                 const currentImg = currentCard?.imgBase64 || cardImageCache[cardData.id];
                 if (!currentImg) return;
-                previewPanel.style.backgroundImage = `url(${currentImg})`;
-                previewPanel.style.opacity = '1';
-                previewPanel.style.visibility = 'visible';
+                showCardPreviewNextToElement(el, currentImg);
             });
             
             el.addEventListener('mouseleave', () => {
-                previewPanel.style.opacity = '0';
-                previewPanel.style.visibility = 'hidden';
+                hideCardPreview();
             });
 
             applyCardVisualState(cardData, el);
@@ -1324,7 +1545,7 @@
         }
 
         /* =========================================================================
-           5. 拖動卡牌至 DECK 時選擇放到牌組頂或牌組底
+           拖動卡牌至 DECK 時選擇放到牌組頂或牌組底
            ========================================================================= */
         function dropOnDeck(ev, player) {
             ev.preventDefault();
@@ -1375,9 +1596,7 @@
         function closeZoneModal() {
             currentModalInfo = null;
             document.getElementById('zone-view-modal').classList.add('hidden');
-            const previewPanel = document.getElementById('card-preview');
-            previewPanel.style.opacity = '0';
-            previewPanel.style.visibility = 'hidden';
+            hideCardPreview();
         }
 
         function renderZoneModalContent() {
@@ -1402,8 +1621,6 @@
                 return;
             }
 
-            const previewPanel = document.getElementById('card-preview');
-
             cardIds.forEach((cid, idx) => {
                 const cardData = gameState.cards[cid];
                 if (!cardData) return;
@@ -1422,13 +1639,10 @@
 
                 thumb.addEventListener('mouseenter', () => {
                     if (!imgSrc) return;
-                    previewPanel.style.backgroundImage = `url(${imgSrc})`;
-                    previewPanel.style.opacity = '1';
-                    previewPanel.style.visibility = 'visible';
+                    showCardPreviewNextToElement(thumb, imgSrc);
                 });
                 thumb.addEventListener('mouseleave', () => {
-                    previewPanel.style.opacity = '0';
-                    previewPanel.style.visibility = 'hidden';
+                    hideCardPreview();
                 });
 
                 const btnGrid = document.createElement('div');
@@ -1490,8 +1704,9 @@
                 let x = ev.clientX - rect.left - 50; 
                 let y = ev.clientY - rect.top - 70;
                 
-                x = Math.max(0, Math.min(x, rect.width - 100));
-                y = Math.max(0, Math.min(y, rect.height - 140));
+                // 底部預留 175px 空間，確保卡片下方的 Core 計數器不會超出邊界被裁切
+                x = Math.max(10, Math.min(x, rect.width - 110));
+                y = Math.max(10, Math.min(y, rect.height - 175));
 
                 moveCardToZone(cardId, targetZoneId, { x: Math.round(x), y: Math.round(y) });
             } else {
@@ -1557,6 +1772,21 @@
         window.applyGameState = (newState) => {
             if (!newState) return;
             isSyncing = true;
+
+            // 3. 檢查遠端同步過來的生命值是否有增減，並觸發紅/綠邊框閃爍
+            if (newState.p1_life !== undefined && newState.p1_life !== gameState.p1_life) {
+                triggerLifeChangeFlash('p1', newState.p1_life - gameState.p1_life);
+            }
+            if (newState.p2_life !== undefined && newState.p2_life !== gameState.p2_life) {
+                triggerLifeChangeFlash('p2', newState.p2_life - gameState.p2_life);
+            }
+
+            // 2. 檢查遠端是否觸發了洗牌，同步閃爍 Deck 數字
+            if (newState.lastShuffle && newState.lastShuffle.timestamp > lastSeenShuffleTime) {
+                lastSeenShuffleTime = newState.lastShuffle.timestamp;
+                gameState.lastShuffle = newState.lastShuffle;
+                triggerDeckShuffleFlash(newState.lastShuffle.player);
+            }
             
             ['p1_life', 'p1_reserve', 'p1_count', 'p1_trash_core', 
              'p2_life', 'p2_reserve', 'p2_count', 'p2_trash_core', 'soulCoreLocation'].forEach(key => {
@@ -1643,9 +1873,6 @@
                         }
                         
                         applyCardVisualState(cardData, el);
-                        
-                        const coreEl = el.querySelector('.card-cores');
-                        if (coreEl) coreEl.innerText = cardData.cores || 0;
                     });
             }
             
@@ -1681,6 +1908,7 @@
                 p1Deck: gameState.p1Deck,
                 p2Deck: gameState.p2Deck,
                 soulCoreLocation: gameState.soulCoreLocation,
+                lastShuffle: gameState.lastShuffle,
                 cards: Object.values(gameState.cards).map(card => ({
                     id: card.id,
                     owner: card.owner,
