@@ -11,8 +11,8 @@
             display: none;
         }
         .custom-scrollbar {
-            -ms-overflow-style: none;  /* IE and Edge */
-            scrollbar-width: none;  /* Firefox */
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
         
         .zone {
@@ -32,50 +32,53 @@
             justify-content: center;
             align-items: center;
             cursor: grab;
-            position: absolute; /* 重要：改為絕對定位以便自由拖曳 */
+            position: absolute;
             user-select: none;
             transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
             box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            transform-origin: center center; /* 確保旋轉中心正確 */
+            transform-origin: center center;
+            color: #666;
+            font-size: 10px;
+            font-weight: bold;
         }
 
         .card:active {
             cursor: grabbing;
             box-shadow: 5px 5px 15px rgba(0,0,0,0.8);
-            z-index: 1000 !important; /* 拖曳時顯示在最上層 */
+            z-index: 1000 !important;
         }
 
         .card.tapped {
-            /* 在原本的 transform 上加上旋轉 */
-             transform: rotate(90deg) !important; 
+            transform: rotate(90deg) !important;
         }
 
         .card-controls {
             position: absolute;
-            bottom: -20px;
+            bottom: -22px;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
-            gap: 2px;
+            align-items: center;
+            gap: 4px;
             opacity: 0;
             transition: opacity 0.2s;
-            background: rgba(0,0,0,0.7);
-            padding: 2px;
-            border-radius: 4px;
-            z-index: 10;
+            background: rgba(0,0,0,0.85);
+            padding: 2px 6px;
+            border-radius: 999px;
+            border: 1px solid #444;
+            z-index: 20;
         }
         
         .card:hover .card-controls {
             opacity: 1;
         }
         
-        /* 當卡牌疲勞時，控制列位置調整 */
         .card.tapped .card-controls {
             bottom: 50%;
-            left: -20px;
+            left: -24px;
             transform: translateY(50%) rotate(-90deg);
         }
 
@@ -103,7 +106,7 @@
             color: white;
             font-size: 12px;
             font-weight: bold;
-            min-width: 12px;
+            min-width: 14px;
             text-align: center;
             text-shadow: 1px 1px 2px black;
         }
@@ -121,6 +124,8 @@
             font-weight: bold;
             margin-bottom: 2px;
             text-transform: uppercase;
+            text-align: left;
+            padding-left: 2px;
         }
         
         .counter-title-sm {
@@ -204,16 +209,14 @@
             white-space: nowrap;
         }
         
-        /* 拖曳時的目標區域提示 */
         .drag-over {
             background-color: rgba(255, 255, 255, 0.1);
             border-color: white;
         }
         
-        /* 卡牌預覽圖 */
         #card-preview {
             width: 300px;
-            height: 420px; /* 維持 BS 卡牌比例 1:1.4 */
+            height: 420px;
             background-color: #111;
             background-size: cover;
             background-position: center;
@@ -223,59 +226,27 @@
             border-radius: 8px;
         }
         
-        /* 輸入框樣式 */
-        input[type="number"] {
-            background: transparent;
-            border: none;
-            color: white;
-            width: 30px;
-            text-align: center;
-            font-size: 20px;
-            font-weight: bold;
-            outline: none;
-            -moz-appearance: textfield;
-        }
-        input[type="number"]::-webkit-outer-spin-button,
-        input[type="number"]::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        
-        /* 對手視角旋轉 */
-        .rotated-180 {
-            transform: rotate(180deg);
-            transform-origin: center center;
-        }
-        
-        /* 修正旋轉後內部文字也顛倒的問題 */
-        .rotated-180 .field-label, 
-        .rotated-180 .counter-title,
-        .rotated-180 .counter-value,
-        .rotated-180 button {
-            transform: rotate(180deg);
-        }
-        
-        /* 手牌區特殊樣式 */
         .hand-zone {
             display: flex;
             flex-wrap: nowrap;
-            gap: 4px;
+            gap: 8px;
             padding: 4px;
             overflow-x: auto;
             align-items: center;
-            min-height: 160px;
+            min-height: 150px;
         }
         
         .hand-zone .card {
-            position: static; /* 手牌區內的卡牌不使用絕對定位 */
+            position: relative !important;
+            left: auto !important;
+            top: auto !important;
             flex-shrink: 0;
-            transform: none !important; /* 確保手牌不會因為套用 tapped 樣式或預設 transform 而亂跑 */
+            transform: none !important;
         }
         
-        /* 對手手牌預設隱藏背面 */
         .hand-zone.opponent-hand .card {
             background-image: none !important;
-            background-color: #333;
+            background-color: #222;
             border-color: #555;
         }
         
@@ -285,21 +256,6 @@
             font-weight: bold;
             font-size: 24px;
         }
-
-        .core-symbol {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            background-color: #4CAF50; /* 預設綠色Core */
-            border-radius: 50%;
-            margin: 0 2px;
-            vertical-align: middle;
-        }
-        .core-symbol.soul {
-            background-color: #2196F3; /* Soul Core 藍色 */
-            border: 1px dashed white;
-        }
-
     </style>
 </head>
 <body class="h-screen w-screen flex flex-col p-2 box-border gap-2 bg-[#000] overflow-hidden">
@@ -308,10 +264,10 @@
     <header class="flex justify-between items-center border-b-2 border-gray-800 pb-1 flex-none px-2">
         <div class="text-xl font-black tracking-wider text-gray-400 flex items-center gap-2">
             BS PROTOTYPE <span class="text-[10px] font-normal border border-gray-600 px-1 text-gray-500">2-PLAYER EDITION</span>
-            <span id="room-status-badge" class="hidden text-[10px] bg-green-900 text-green-300 px-2 py-0.5 rounded font-bold cursor-pointer hover:bg-green-800" onclick="copyRoomCode()"></span>
+            <span id="room-status-badge" class="hidden text-[10px] bg-green-900 text-green-300 px-2 py-0.5 rounded font-bold cursor-pointer hover:bg-green-800" onclick="copyRoomCode()" title="點擊複製房間代碼"></span>
         </div>
         <div class="flex gap-2 items-center">
-            <span id="mp-status-msg" class="text-xs text-red-500 mr-2"></span>
+            <span id="mp-status-msg" class="text-xs text-gray-400 mr-2"></span>
             <button id="btn-sync" class="text-xs border border-green-500 px-3 py-1 bg-[#050505] text-green-500 hover:bg-green-900 hover:text-white font-bold cursor-pointer transition-colors" onclick="openMultiplayerModal()">ONLINE SYNC</button>
             <button id="btn-view-p1" class="text-xs border px-3 py-1 bg-white text-black font-bold cursor-pointer transition-colors" onclick="setView('P1')">Join as P1</button>
             <button id="btn-view-p2" class="text-xs border px-3 py-1 text-gray-400 border-gray-600 hover:bg-gray-800 cursor-pointer transition-colors" onclick="setView('P2')">Join as P2</button>
@@ -321,22 +277,23 @@
     <!-- Playmat Container -->
     <main class="flex-1 flex flex-col gap-2 min-h-0 w-full overflow-y-auto px-2 pb-4 custom-scrollbar">
         
-        <!-- P2 AREA (OPPONENT - TOP) -->
+        <!-- P2 HAND -->
         <div id="section-hand-p2" class="h-[185px] border-2 border-gray-800 p-2 flex flex-col flex-none bg-[#0a0a0a] rounded-sm transition-all duration-300">
             <div class="flex justify-between items-center mb-1">
-                <div class="text-[10px] font-bold tracking-widest text-red-900 uppercase" id="title-hand-p2">Opponent Hand (P2)</div>
-                <button id="btn-toggle-hand-p2" class="text-[9px] border border-gray-600 px-2 py-0.5 hover:bg-white hover:text-black cursor-pointer transition-colors" onclick="toggleHand('p2')">SHOW / HIDE</button>
+                <div class="text-[10px] font-bold tracking-widest text-red-500 uppercase" id="title-hand-p2">Opponent Hand (P2)</div>
+                <button id="btn-toggle-hand-p2" class="text-[9px] border border-gray-600 px-2 py-0.5 text-gray-300 hover:bg-white hover:text-black cursor-pointer transition-colors" onclick="toggleHand('p2')">SHOW / HIDE</button>
             </div>
             <div id="hand-p2" class="flex-1 zone border-none p-1 flex flex-nowrap items-center justify-start gap-2 overflow-x-auto bg-transparent hand-zone opponent-hand" ondrop="drop(event, 'hand-p2')" ondragover="allowDrop(event)">
             </div>
         </div>
         
+        <!-- P2 MAIN AREA -->
         <div id="section-main-p2" class="flex-none border-2 border-gray-700 p-2 grid grid-cols-[160px_1fr_160px] gap-2 relative bg-[#050505] rounded-sm transition-all duration-300">
             <!-- Left -->
             <div class="flex flex-col gap-2">
                 <div class="counter-box relative flex-none">
                     <div class="counter-title">Trash <span class="counter-title-sm">(Core)</span></div>
-                    <button class="small-action-btn" onclick="updateCounter('p2_trash_core', 1)">RECOVER</button>
+                    <button class="small-action-btn" onclick="recoverCore('p2')">RECOVER</button>
                     <div class="counter-value">
                         <button class="counter-btn" onclick="updateCounter('p2_trash_core', -1)">-</button>
                         <span id="val_p2_trash_core">0</span>
@@ -346,7 +303,7 @@
                 <div class="counter-box relative flex-none">
                     <div class="counter-title">Trash <span class="counter-title-sm">(Card)</span></div>
                     <button class="small-action-btn">VIEW</button>
-                    <div id="zone-trash-p2" class="zone min-h-[40px] mt-1 flex justify-center items-center text-gray-600 text-xs" ondrop="drop(event, 'zone-trash-p2')" ondragover="allowDrop(event)">
+                    <div id="zone-trash-p2" class="zone min-h-[40px] mt-1 flex justify-center items-center text-gray-600 text-xs overflow-hidden" ondrop="drop(event, 'zone-trash-p2')" ondragover="allowDrop(event)">
                         Drop here
                     </div>
                 </div>
@@ -356,13 +313,13 @@
                     <input type="file" id="import-zip-p2" accept=".zip" class="hidden" onchange="importZip(event, 'p2')">
                     
                     <div class="flex gap-1 mt-1 mb-2">
-                         <button class="action-btn" onclick="alert('Shuffle function not implemented yet')">SHUFFLE</button>
+                         <button class="action-btn" onclick="shuffleDeck('p2')">SHUFFLE</button>
                          <button class="action-btn">VIEW</button>
                     </div>
                     
                     <div class="flex-1 flex justify-center items-center text-3xl font-black text-gray-300" id="val_p2_deck_count">0</div>
                     
-                    <button class="action-btn mb-1" onclick="alert('Deploy Top function not implemented yet')">DEPLOY TOP</button>
+                    <button class="action-btn mb-1" onclick="deployTop('p2')">DEPLOY TOP</button>
                     <div class="flex gap-1">
                         <button class="action-btn" onclick="drawCard('p2', 'top')">DRAW TOP</button>
                         <button class="action-btn" onclick="drawCard('p2', 'bottom')">DRAW BTM</button>
@@ -379,7 +336,7 @@
             </div>
             
             <!-- Center Field -->
-            <div id="field-p2" class="zone border border-gray-600 bg-[#0a0a0a] relative overflow-hidden" ondrop="drop(event, 'field-p2')" ondragover="allowDrop(event)">
+            <div id="field-p2" class="zone border border-gray-600 bg-[#0a0a0a] relative overflow-hidden min-h-[320px]" ondrop="drop(event, 'field-p2')" ondragover="allowDrop(event)">
                  <div class="field-label">OPPONENT</div>
             </div>
             
@@ -387,7 +344,7 @@
             <div class="flex flex-col gap-2">
                 <div class="counter-box relative flex-none">
                     <div class="counter-title">Reserve</div>
-                    <button class="small-action-btn" onclick="alert('Pay Cost function not implemented yet')">PAY COST</button>
+                    <button class="small-action-btn" onclick="payCost('p2')">PAY COST</button>
                     <div class="counter-value">
                         <button class="counter-btn" onclick="updateCounter('p2_reserve', -1)">-</button>
                         <span id="val_p2_reserve">3</span>
@@ -397,7 +354,7 @@
                 </div>
                 <div class="counter-box relative flex-none">
                     <div class="counter-title">Life</div>
-                    <button class="small-action-btn" onclick="updateCounter('p2_life', -1)">TAKE LIFE</button>
+                    <button class="small-action-btn" onclick="takeLife('p2')">TAKE LIFE</button>
                     <div class="counter-value">
                         <button class="counter-btn" onclick="updateCounter('p2_life', -1)">-</button>
                         <span id="val_p2_life">5</span>
@@ -406,26 +363,26 @@
                 </div>
                 <div class="counter-box relative flex-1 min-h-[100px] flex flex-col">
                     <div class="counter-title">Burst</div>
-                    <div id="zone-burst-p2" class="zone flex-1 mt-1 border-dashed border-gray-700 flex justify-center items-center text-gray-700 text-xs" ondrop="drop(event, 'zone-burst-p2')" ondragover="allowDrop(event)">
+                    <div id="zone-burst-p2" class="zone flex-1 mt-1 border-dashed border-gray-700 flex justify-center items-center text-gray-700 text-xs overflow-hidden" ondrop="drop(event, 'zone-burst-p2')" ondragover="allowDrop(event)">
                         Drop here
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- P1 AREA (YOU - BOTTOM) -->
+        <!-- P1 MAIN AREA -->
         <div id="section-main-p1" class="flex-none border-2 border-gray-700 p-2 grid grid-cols-[160px_1fr_160px] gap-2 relative bg-[#050505] rounded-sm transition-all duration-300">
             <!-- Left -->
             <div class="flex flex-col gap-2">
                 <div class="counter-box relative flex-1 min-h-[100px] flex flex-col">
                     <div class="counter-title">Burst</div>
-                    <div id="zone-burst-p1" class="zone flex-1 mt-1 border-dashed border-gray-700 flex justify-center items-center text-gray-700 text-xs" ondrop="drop(event, 'zone-burst-p1')" ondragover="allowDrop(event)">
+                    <div id="zone-burst-p1" class="zone flex-1 mt-1 border-dashed border-gray-700 flex justify-center items-center text-gray-700 text-xs overflow-hidden" ondrop="drop(event, 'zone-burst-p1')" ondragover="allowDrop(event)">
                         Drop here
                     </div>
                 </div>
                 <div class="counter-box relative flex-none">
                     <div class="counter-title">Life</div>
-                    <button class="small-action-btn" onclick="updateCounter('p1_life', -1)">TAKE LIFE</button>
+                    <button class="small-action-btn" onclick="takeLife('p1')">TAKE LIFE</button>
                     <div class="counter-value">
                         <button class="counter-btn" onclick="updateCounter('p1_life', -1)">-</button>
                         <span id="val_p1_life">5</span>
@@ -434,7 +391,7 @@
                 </div>
                 <div class="counter-box relative flex-none">
                     <div class="counter-title">Reserve</div>
-                    <button class="small-action-btn" onclick="alert('Pay Cost function not implemented yet')">PAY COST</button>
+                    <button class="small-action-btn" onclick="payCost('p1')">PAY COST</button>
                     <div class="counter-value">
                         <button class="counter-btn" onclick="updateCounter('p1_reserve', -1)">-</button>
                         <span id="val_p1_reserve">3</span>
@@ -445,7 +402,7 @@
             </div>
             
             <!-- Center Field -->
-            <div id="field-p1" class="zone border border-gray-600 bg-[#0a0a0a] relative overflow-hidden" ondrop="drop(event, 'field-p1')" ondragover="allowDrop(event)">
+            <div id="field-p1" class="zone border border-gray-600 bg-[#0a0a0a] relative overflow-hidden min-h-[320px]" ondrop="drop(event, 'field-p1')" ondragover="allowDrop(event)">
                  <div class="field-label">PLAYER (YOU)</div>
             </div>
             
@@ -465,13 +422,13 @@
                     <input type="file" id="import-zip-p1" accept=".zip" class="hidden" onchange="importZip(event, 'p1')">
                     
                     <div class="flex gap-1 mt-1 mb-2">
-                         <button class="action-btn" onclick="alert('Shuffle function not implemented yet')">SHUFFLE</button>
+                         <button class="action-btn" onclick="shuffleDeck('p1')">SHUFFLE</button>
                          <button class="action-btn">VIEW</button>
                     </div>
                     
                     <div class="flex-1 flex justify-center items-center text-3xl font-black text-gray-300" id="val_p1_deck_count">0</div>
                     
-                    <button class="action-btn mb-1" onclick="alert('Deploy Top function not implemented yet')">DEPLOY TOP</button>
+                    <button class="action-btn mb-1" onclick="deployTop('p1')">DEPLOY TOP</button>
                     <div class="flex gap-1">
                         <button class="action-btn" onclick="drawCard('p1', 'top')">DRAW TOP</button>
                         <button class="action-btn" onclick="drawCard('p1', 'bottom')">DRAW BTM</button>
@@ -480,13 +437,13 @@
                 <div class="counter-box relative flex-none">
                     <div class="counter-title">Trash <span class="counter-title-sm">(Card)</span></div>
                     <button class="small-action-btn">VIEW</button>
-                    <div id="zone-trash-p1" class="zone min-h-[40px] mt-1 flex justify-center items-center text-gray-600 text-xs" ondrop="drop(event, 'zone-trash-p1')" ondragover="allowDrop(event)">
+                    <div id="zone-trash-p1" class="zone min-h-[40px] mt-1 flex justify-center items-center text-gray-600 text-xs overflow-hidden" ondrop="drop(event, 'zone-trash-p1')" ondragover="allowDrop(event)">
                         Drop here
                     </div>
                 </div>
                 <div class="counter-box relative flex-none">
                     <div class="counter-title">Trash <span class="counter-title-sm">(Core)</span></div>
-                    <button class="small-action-btn" onclick="updateCounter('p1_trash_core', 1)">RECOVER</button>
+                    <button class="small-action-btn" onclick="recoverCore('p1')">RECOVER</button>
                     <div class="counter-value">
                         <button class="counter-btn" onclick="updateCounter('p1_trash_core', -1)">-</button>
                         <span id="val_p1_trash_core">0</span>
@@ -496,10 +453,11 @@
             </div>
         </div>
         
+        <!-- P1 HAND -->
         <div id="section-hand-p1" class="h-[185px] border-2 border-gray-800 p-2 flex flex-col flex-none bg-[#0a0a0a] rounded-sm transition-all duration-300">
             <div class="flex justify-between items-center mb-1">
                 <div class="text-[10px] font-bold tracking-widest text-blue-500 uppercase" id="title-hand-p1">Player Hand (P1)</div>
-                <button id="btn-toggle-hand-p1" class="text-[9px] border border-gray-600 px-2 py-0.5 hover:bg-white hover:text-black cursor-pointer transition-colors" onclick="toggleHand('p1')">SHOW / HIDE</button>
+                <button id="btn-toggle-hand-p1" class="text-[9px] border border-gray-600 px-2 py-0.5 text-gray-300 hover:bg-white hover:text-black cursor-pointer transition-colors" onclick="toggleHand('p1')">SHOW / HIDE</button>
             </div>
             <div id="hand-p1" class="flex-1 zone border-none p-1 flex flex-nowrap items-center justify-start gap-2 overflow-x-auto bg-transparent hand-zone" ondrop="drop(event, 'hand-p1')" ondragover="allowDrop(event)">
             </div>
@@ -516,23 +474,22 @@
             <div class="text-green-500 text-2xl font-black text-center tracking-widest">MULTIPLAYER SYNC</div>
             <div class="text-gray-400 text-sm text-center">Connect with a friend to play remotely.</div>
             
-            <button class="border-2 border-white py-3 text-white font-bold hover:bg-white hover:text-black transition-colors" onclick="createRoom()">CREATE NEW ROOM</button>
+            <button class="border-2 border-white py-3 text-white font-bold hover:bg-white hover:text-black transition-colors cursor-pointer" onclick="createRoom()">CREATE NEW ROOM</button>
             
             <div class="relative flex items-center justify-center border-t border-gray-700 my-2">
                 <span class="absolute bg-[#050505] px-2 text-gray-500 text-xs">OR</span>
             </div>
             
             <div class="flex gap-2">
-                <input type="text" id="join-room-code" placeholder="ENTER ROOM CODE" class="flex-1 bg-transparent border border-gray-600 text-white px-3 uppercase tracking-wider focus:border-green-500 outline-none text-center">
-                <button class="border border-green-500 text-green-500 px-4 font-bold hover:bg-green-900 hover:text-white transition-colors" onclick="joinRoom()">JOIN</button>
+                <input type="text" id="join-room-code" placeholder="ENTER ROOM CODE" class="flex-1 bg-transparent border border-gray-600 text-white px-3 py-2 uppercase tracking-wider focus:border-green-500 outline-none text-center">
+                <button class="border border-green-500 text-green-500 px-4 font-bold hover:bg-green-900 hover:text-white transition-colors cursor-pointer" onclick="joinRoom()">JOIN</button>
             </div>
             
             <div class="text-center mt-2">
-                <button class="text-gray-500 text-xs hover:text-white underline" onclick="closeMultiplayerModal()">Cancel</button>
+                <button class="text-gray-500 text-xs hover:text-white underline cursor-pointer" onclick="closeMultiplayerModal()">Cancel</button>
             </div>
         </div>
     </div>
-
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script>
@@ -542,34 +499,34 @@
         const gameState = {
             p1_life: 5, p1_reserve: 3, p1_count: 0, p1_trash_core: 0,
             p2_life: 5, p2_reserve: 3, p2_count: 0, p2_trash_core: 0,
-            cards: {}, // 格式: { id: { id, owner, zone, x, y, imgBase64, isTapped, cores } }
-            p1Deck: [], // [id, id, ...]
+            cards: {}, // { id: { id, owner, zone, x, y, imgBase64, isTapped, cores } }
+            p1Deck: [],
             p2Deck: [],
-            soulCoreLocation: { p1: 'reserve', p2: 'reserve' }, // 'reserve', 'trash', or cardId
-            viewMode: 'P1' // 'P1' or 'P2'
+            soulCoreLocation: { p1: 'reserve', p2: 'reserve' },
+            viewMode: 'P1'
         };
 
+        // 儲存各張卡片壓縮後的圖片快取 (避免每次同步狀態都重複傳送圖片)
+        const cardImageCache = {};
         let draggedCard = null;
         let cardIdCounter = 0;
-        let isSyncing = false; // 是否正在套用遠端狀態，避免觸發無限迴圈
+        let isSyncing = false;
 
         /* =========================================================================
            UI & VIEW MANAGEMENT
            ========================================================================= */
         function updateAllUI() {
-            // Update counters
             ['p1_life', 'p1_reserve', 'p1_count', 'p1_trash_core', 
              'p2_life', 'p2_reserve', 'p2_count', 'p2_trash_core'].forEach(key => {
-                document.getElementById('val_' + key).innerText = gameState[key];
+                const el = document.getElementById('val_' + key);
+                if (el) el.innerText = gameState[key];
             });
             document.getElementById('val_p1_deck_count').innerText = gameState.p1Deck.length;
             document.getElementById('val_p2_deck_count').innerText = gameState.p2Deck.length;
             
-            // Update Soul Core display
             updateSoulCoreUI('p1');
             updateSoulCoreUI('p2');
 
-            // Apply View Mode Styling
             const p1Section = document.getElementById('section-main-p1');
             const p2Section = document.getElementById('section-main-p2');
             const p1Hand = document.getElementById('section-hand-p1');
@@ -577,55 +534,36 @@
             
             const btnP1 = document.getElementById('btn-view-p1');
             const btnP2 = document.getElementById('btn-view-p2');
-
-            // 處理 DOM 順序：把對手區域排在上方
             const mainContainer = document.querySelector('main');
             
             if (gameState.viewMode === 'P1') {
                 btnP1.className = "text-xs border px-3 py-1 bg-white text-black font-bold cursor-pointer transition-colors";
                 btnP2.className = "text-xs border px-3 py-1 text-gray-400 border-gray-600 hover:bg-gray-800 cursor-pointer transition-colors";
                 
-                // P2 變成對手(上方, 旋轉)
-                p2Section.classList.add('rotated-180');
-                p2Hand.classList.add('rotated-180');
-                p1Section.classList.remove('rotated-180');
-                p1Hand.classList.remove('rotated-180');
-                
                 document.querySelector('#field-p1 .field-label').innerText = "PLAYER (YOU)";
                 document.querySelector('#field-p2 .field-label').innerText = "OPPONENT";
                 document.getElementById('title-hand-p1').innerText = "Player Hand (P1)";
                 document.getElementById('title-hand-p2').innerText = "Opponent Hand (P2)";
                 
-                // P2手牌變為對手視角
                 document.getElementById('hand-p2').classList.add('opponent-hand');
                 document.getElementById('hand-p1').classList.remove('opponent-hand');
                 
-                // 排序 DOM
                 mainContainer.appendChild(p2Hand);
                 mainContainer.appendChild(p2Section);
                 mainContainer.appendChild(p1Section);
                 mainContainer.appendChild(p1Hand);
-
             } else {
                 btnP2.className = "text-xs border px-3 py-1 bg-white text-black font-bold cursor-pointer transition-colors";
                 btnP1.className = "text-xs border px-3 py-1 text-gray-400 border-gray-600 hover:bg-gray-800 cursor-pointer transition-colors";
-                
-                // P1 變成對手(上方, 旋轉)
-                p1Section.classList.add('rotated-180');
-                p1Hand.classList.add('rotated-180');
-                p2Section.classList.remove('rotated-180');
-                p2Hand.classList.remove('rotated-180');
                 
                 document.querySelector('#field-p2 .field-label').innerText = "PLAYER (YOU)";
                 document.querySelector('#field-p1 .field-label').innerText = "OPPONENT";
                 document.getElementById('title-hand-p2').innerText = "Player Hand (P2)";
                 document.getElementById('title-hand-p1').innerText = "Opponent Hand (P1)";
                 
-                // P1手牌變為對手視角
                 document.getElementById('hand-p1').classList.add('opponent-hand');
                 document.getElementById('hand-p2').classList.remove('opponent-hand');
                 
-                // 排序 DOM
                 mainContainer.appendChild(p1Hand);
                 mainContainer.appendChild(p1Section);
                 mainContainer.appendChild(p2Section);
@@ -650,50 +588,85 @@
         }
 
         function updateCounter(key, delta) {
-            gameState[key] += delta;
-            // Life/Count can be negative? Usually not in BS, but let's prevent < 0 for reserve/trash
-            if (['p1_reserve', 'p1_trash_core', 'p2_reserve', 'p2_trash_core'].includes(key) && gameState[key] < 0) {
-                gameState[key] = 0;
+            const currentVal = parseInt(gameState[key], 10) || 0;
+            let nextVal = currentVal + delta;
+            if (['p1_reserve', 'p1_trash_core', 'p2_reserve', 'p2_trash_core', 'p1_life', 'p2_life', 'p1_count', 'p2_count'].includes(key) && nextVal < 0) {
+                nextVal = 0;
             }
+            gameState[key] = nextVal;
             updateAllUI();
-            
-            // 加入這個 log 來追蹤狀態是否真的有觸發更新
-            console.log("updateCounter triggered, state:", gameState); 
-            
+            updateRoomState();
+        }
+
+        function payCost(player) {
+            if (gameState[`${player}_reserve`] <= 0) return;
+            gameState[`${player}_reserve`] -= 1;
+            gameState[`${player}_trash_core`] += 1;
+            updateAllUI();
+            updateRoomState();
+        }
+
+        function recoverCore(player) {
+            if (gameState[`${player}_trash_core`] <= 0) return;
+            gameState[`${player}_trash_core`] -= 1;
+            gameState[`${player}_reserve`] += 1;
+            updateAllUI();
+            updateRoomState();
+        }
+
+        function takeLife(player) {
+            if (gameState[`${player}_life`] <= 0) return;
+            gameState[`${player}_life`] -= 1;
+            gameState[`${player}_reserve`] += 1;
+            updateAllUI();
             updateRoomState();
         }
         
         function toggleSoulCore(player) {
-             const loc = gameState.soulCoreLocation[player];
-             if(loc === 'reserve') {
-                 gameState.soulCoreLocation[player] = 'trash';
-             } else {
-                 gameState.soulCoreLocation[player] = 'reserve';
-             }
-             updateAllUI();
-             updateRoomState();
+            const loc = gameState.soulCoreLocation[player];
+            gameState.soulCoreLocation[player] = (loc === 'reserve') ? 'trash' : 'reserve';
+            updateAllUI();
+            updateRoomState();
         }
         
         function updateSoulCoreUI(player) {
-             const btn = document.getElementById(`${player}_soul_core`);
-             const loc = gameState.soulCoreLocation[player];
-             if(loc === 'reserve') {
-                  btn.style.opacity = '1';
-                  btn.title = "Soul Core (in Reserve)";
-             } else if(loc === 'trash') {
-                  btn.style.opacity = '0.3';
-                  btn.title = "Soul Core (in Trash / On Field)";
-             } else {
-                  btn.style.opacity = '0'; // On a card
-             }
-             
-             // Update all cards for this player to show/hide soul core badge if needed
-             // This requires rendering logic in createCardElement
+            const btn = document.getElementById(`${player}_soul_core`);
+            if (!btn) return;
+            const loc = gameState.soulCoreLocation[player];
+            if (loc === 'reserve') {
+                btn.style.opacity = '1';
+                btn.title = "Soul Core (in Reserve)";
+            } else {
+                btn.style.opacity = '0.25';
+                btn.title = "Soul Core (Used / In Trash)";
+            }
         }
 
         /* =========================================================================
-           CARD MECHANICS
+           CARD MECHANICS & IMAGE COMPRESSION
            ========================================================================= */
+        // 將匯入的卡圖壓縮為輕量 JPEG (約 8~12KB)，讓對手也能自動看到卡圖且絕不超過 Firebase 限制
+        function compressImageBlob(blob, maxWidth = 180, maxHeight = 252, quality = 0.65) {
+            return new Promise((resolve, reject) => {
+                const url = URL.createObjectURL(blob);
+                const img = new Image();
+                img.onload = () => {
+                    URL.revokeObjectURL(url);
+                    const canvas = document.createElement('canvas');
+                    canvas.width = maxWidth;
+                    canvas.height = maxHeight;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, maxWidth, maxHeight);
+                    resolve(canvas.toDataURL('image/jpeg', quality));
+                };
+                img.onerror = (err) => {
+                    URL.revokeObjectURL(url);
+                    reject(err);
+                };
+                img.src = url;
+            });
+        }
+
         async function importZip(event, player) {
             const file = event.target.files[0];
             if (!file) return;
@@ -701,56 +674,117 @@
             try {
                 const zip = new JSZip();
                 const contents = await zip.loadAsync(file);
-                
-                let count = 0;
-                for (const [filename, zipEntry] of Object.entries(contents.files)) {
-                    if (zipEntry.dir || !filename.match(/\.(jpg|jpeg|png)$/i)) continue;
-                    
+
+                // 先清除該玩家舊的卡牌資料與 DOM
+                Object.keys(gameState.cards).forEach(cid => {
+                    if (gameState.cards[cid].owner === player) {
+                        const oldEl = document.getElementById(cid);
+                        if (oldEl) oldEl.remove();
+                        delete gameState.cards[cid];
+                    }
+                });
+                gameState[`${player}Deck`] = [];
+
+                const entries = Object.entries(contents.files).filter(([filename, zipEntry]) => {
+                    return !zipEntry.dir && /\.(jpg|jpeg|png|webp)$/i.test(filename) && !filename.includes('__MACOSX');
+                });
+
+                const newCardsForUpload = {};
+                let index = 0;
+
+                for (const [filename, zipEntry] of entries) {
                     const blob = await zipEntry.async("blob");
-                    const reader = new FileReader();
-                    
-                    reader.onload = function(e) {
-                        const base64 = e.target.result;
-                        const cardId = `c_${Date.now()}_${cardIdCounter++}`;
-                        
-                        gameState.cards[cardId] = {
-                            id: cardId,
-                            owner: player,
-                            zone: `deck-${player}`, // start in deck
-                            x: 0,
-                            y: 0,
-                            imgBase64: base64,
-                            isTapped: false,
-                            cores: 0,
-                            hasSoulCore: false
-                        };
-                        gameState[`${player}Deck`].push(cardId);
-                        updateAllUI();
+                    const compressedBase64 = await compressImageBlob(blob);
+                    const cardId = `${player}_card_${index++}`;
+
+                    cardImageCache[cardId] = compressedBase64;
+                    newCardsForUpload[cardId] = compressedBase64;
+
+                    gameState.cards[cardId] = {
+                        id: cardId,
+                        owner: player,
+                        zone: `deck-${player}`,
+                        x: 0,
+                        y: 0,
+                        imgBase64: compressedBase64,
+                        isTapped: false,
+                        cores: 0
                     };
-                    reader.readAsDataURL(blob);
-                    count++;
+                    gameState[`${player}Deck`].push(cardId);
                 }
-                alert(`Successfully imported ${count} cards to ${player}'s deck!`);
+
+                updateAllUI();
                 updateRoomState();
+
+                // 若在房間內，將壓縮後的卡圖非同步上傳到子集合供對手顯示
+                if (window.uploadPlayerCardImages) {
+                    window.uploadPlayerCardImages(player, newCardsForUpload);
+                }
+
+                alert(`已成功匯入 ${entries.length} 張卡牌至 ${player.toUpperCase()} 牌組！`);
             } catch (err) {
                 console.error("Error reading zip", err);
-                alert("Failed to read zip file.");
+                alert("讀取 ZIP 檔案失敗。");
             }
-            event.target.value = ''; // Reset input
+            event.target.value = '';
+        }
+
+        function shuffleDeck(player) {
+            const deck = gameState[`${player}Deck`];
+            if (!deck || deck.length === 0) return;
+            for (let i = deck.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [deck[i], deck[j]] = [deck[j], deck[i]];
+            }
+            updateAllUI();
+            updateRoomState();
         }
 
         function drawCard(player, from) {
             const deck = gameState[`${player}Deck`];
-            if (deck.length === 0) return alert('Deck is empty!');
+            if (!deck || deck.length === 0) return alert('牌組已經空了！');
             
             const cardId = from === 'top' ? deck.shift() : deck.pop();
             const cardData = gameState.cards[cardId];
+            if (!cardData) return;
             
             cardData.zone = `hand-${player}`;
+            cardData.x = 0;
+            cardData.y = 0;
+            cardData.isTapped = false;
             
-            const el = createCardElement(cardData);
+            let el = document.getElementById(cardData.id);
+            if (!el) el = createCardElement(cardData);
+            el.style.position = 'relative';
+            el.style.left = 'auto';
+            el.style.top = 'auto';
+            el.classList.remove('tapped');
             document.getElementById(`hand-${player}`).appendChild(el);
             
+            updateAllUI();
+            updateRoomState();
+        }
+
+        function deployTop(player) {
+            const deck = gameState[`${player}Deck`];
+            if (!deck || deck.length === 0) return alert('牌組已經空了！');
+
+            const cardId = deck.shift();
+            const cardData = gameState.cards[cardId];
+            if (!cardData) return;
+
+            cardData.zone = `field-${player}`;
+            cardData.x = 40 + Math.floor(Math.random() * 120);
+            cardData.y = 40 + Math.floor(Math.random() * 60);
+            cardData.isTapped = false;
+
+            let el = document.getElementById(cardData.id);
+            if (!el) el = createCardElement(cardData);
+            el.style.position = 'absolute';
+            el.style.left = `${cardData.x}px`;
+            el.style.top = `${cardData.y}px`;
+            document.getElementById(`field-${player}`).appendChild(el);
+
             updateAllUI();
             updateRoomState();
         }
@@ -761,16 +795,16 @@
             el.id = cardData.id;
             el.draggable = true;
             
-            // 重要：我們在這裡將圖片設定為 background-image
-            if (cardData.imgBase64) {
-                 el.style.backgroundImage = `url(${cardData.imgBase64})`;
+            const imgSrc = cardData.imgBase64 || cardImageCache[cardData.id] || "";
+            if (imgSrc) {
+                el.style.backgroundImage = `url(${imgSrc})`;
+                el.innerText = "";
             } else {
-                 el.innerText = "NO IMG";
+                el.innerText = cardData.id;
             }
             
             if (cardData.isTapped) el.classList.add('tapped');
             
-            // Controls
             const controls = document.createElement('div');
             controls.className = 'card-controls';
             
@@ -786,7 +820,7 @@
             
             const coreCount = document.createElement('div');
             coreCount.className = 'card-cores';
-            coreCount.innerText = cardData.cores;
+            coreCount.innerText = cardData.cores || 0;
             
             const btnCorePlus = document.createElement('button');
             btnCorePlus.className = 'card-btn';
@@ -800,7 +834,6 @@
             
             el.appendChild(controls);
 
-            // Drag Events
             el.addEventListener('dragstart', (e) => {
                 draggedCard = cardData.id;
                 e.dataTransfer.setData('text/plain', cardData.id);
@@ -810,18 +843,16 @@
             el.addEventListener('dragend', () => {
                 el.style.opacity = '1';
                 draggedCard = null;
-                // 清除所有 hover 效果
                 document.querySelectorAll('.drag-over').forEach(z => z.classList.remove('drag-over'));
             });
             
-            // Hover Events for Preview
             const previewPanel = document.getElementById('card-preview');
             el.addEventListener('mouseenter', () => {
-                // 如果是在對手手牌區且當前是玩家視角，不顯示預覽
                 const isOpponentHand = el.closest('.opponent-hand');
                 if (isOpponentHand) return;
-                
-                previewPanel.style.backgroundImage = `url(${cardData.imgBase64})`;
+                const currentImg = gameState.cards[cardData.id]?.imgBase64 || cardImageCache[cardData.id];
+                if (!currentImg) return;
+                previewPanel.style.backgroundImage = `url(${currentImg})`;
                 previewPanel.style.opacity = '1';
                 previewPanel.style.visibility = 'visible';
             });
@@ -836,6 +867,7 @@
 
         function toggleTap(cardId) {
             const cardData = gameState.cards[cardId];
+            if (!cardData) return;
             cardData.isTapped = !cardData.isTapped;
             const el = document.getElementById(cardId);
             if (el) {
@@ -846,26 +878,25 @@
         }
         
         function addCoreToCard(cardId, delta) {
-             const cardData = gameState.cards[cardId];
-             const player = cardData.owner;
-             
-             // Check if enough cores in reserve
-             if (delta > 0 && gameState[`${player}_reserve`] < delta) {
-                  return; // Not enough cores
-             }
-             
-             if (cardData.cores + delta < 0) return;
-             
-             cardData.cores += delta;
-             gameState[`${player}_reserve`] -= delta;
-             
-             // Update UI directly for speed
-             const el = document.getElementById(cardId);
-             if(el) {
-                  el.querySelector('.card-cores').innerText = cardData.cores;
-             }
-             updateAllUI();
-             updateRoomState();
+            const cardData = gameState.cards[cardId];
+            if (!cardData) return;
+            const player = cardData.owner;
+            
+            if (delta > 0 && gameState[`${player}_reserve`] < delta) {
+                return;
+            }
+            if ((cardData.cores || 0) + delta < 0) return;
+            
+            cardData.cores = (cardData.cores || 0) + delta;
+            gameState[`${player}_reserve`] -= delta;
+            
+            const el = document.getElementById(cardId);
+            if (el) {
+                const coreEl = el.querySelector('.card-cores');
+                if (coreEl) coreEl.innerText = cardData.cores;
+            }
+            updateAllUI();
+            updateRoomState();
         }
 
         /* =========================================================================
@@ -881,41 +912,37 @@
             ev.preventDefault();
             document.querySelectorAll('.drag-over').forEach(z => z.classList.remove('drag-over'));
             
-            const cardId = ev.dataTransfer.getData('text/plain');
+            const cardId = ev.dataTransfer.getData('text/plain') || draggedCard;
             if (!cardId || !gameState.cards[cardId]) return;
             
             const cardData = gameState.cards[cardId];
-            const el = document.getElementById(cardId);
+            let el = document.getElementById(cardId);
             const targetZone = document.getElementById(targetZoneId);
-            
-            if (!el || !targetZone) return;
+            if (!targetZone) return;
+            if (!el) el = createCardElement(cardData);
 
-            // Handle coordinate calculation for free-positioning zones (fields)
             if (targetZoneId.startsWith('field-')) {
-                // 取得區域的邊界矩形
                 const rect = targetZone.getBoundingClientRect();
-                
-                // 計算相對於區域左上角的座標，並減去卡牌寬高的一半讓滑鼠指在卡牌中心
                 let x = ev.clientX - rect.left - 50; 
                 let y = ev.clientY - rect.top - 70;
                 
-                // 限制範圍不超出邊界
                 x = Math.max(0, Math.min(x, rect.width - 100));
                 y = Math.max(0, Math.min(y, rect.height - 140));
 
-                cardData.x = x;
-                cardData.y = y;
+                cardData.x = Math.round(x);
+                cardData.y = Math.round(y);
                 
                 el.style.position = 'absolute';
-                el.style.left = `${x}px`;
-                el.style.top = `${y}px`;
+                el.style.left = `${cardData.x}px`;
+                el.style.top = `${cardData.y}px`;
             } else {
-                // 對於手牌、Burst、廢棄區等，不使用絕對定位
-                el.style.position = 'static';
+                el.style.position = 'relative';
                 el.style.left = 'auto';
                 el.style.top = 'auto';
                 cardData.x = 0;
                 cardData.y = 0;
+                cardData.isTapped = false;
+                el.classList.remove('tapped');
             }
 
             cardData.zone = targetZoneId;
@@ -924,139 +951,144 @@
             updateRoomState();
         }
         
-        // Remove drag-over styling when leaving a zone
         document.addEventListener('dragleave', (ev) => {
-             const zone = ev.target.closest('.zone');
-             if (zone) zone.classList.remove('drag-over');
+            const zone = ev.target.closest('.zone');
+            if (zone) zone.classList.remove('drag-over');
         });
 
         /* =========================================================================
-           MULTIPLAYER & FIREBASE (Placeholder for actual implementation)
+           MULTIPLAYER & STATE SYNC
            ========================================================================= */
         function openMultiplayerModal() {
-             document.getElementById('mp-modal').classList.remove('hidden');
+            document.getElementById('mp-modal').classList.remove('hidden');
         }
         
         function closeMultiplayerModal() {
-             document.getElementById('mp-modal').classList.add('hidden');
+            document.getElementById('mp-modal').classList.add('hidden');
         }
         
         function generateRoomCode() {
-             const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-             let code = '';
-             for(let i=0; i<6; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
-             return code;
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+            let code = '';
+            for (let i = 0; i < 6; i++) code += chars.charAt(Math.floor(Math.random() * chars.length));
+            return code;
         }
         
         async function createRoom() {
-             const code = generateRoomCode();
-             document.getElementById('mp-status-msg').innerText = "Creating room...";
-             
-             // Initialize Firestore Sync here
-             if (window.initMultiplayer) {
-                  await window.initMultiplayer(code);
-                  
-                  // Setup initial empty state
-                  updateRoomState();
-             }
-             
-             document.getElementById('mp-status-msg').innerText = "";
-             const badge = document.getElementById('room-status-badge');
-             badge.innerText = `ROOM: ${code}`;
-             badge.classList.remove('hidden');
-             closeMultiplayerModal();
+            const code = generateRoomCode();
+            closeMultiplayerModal();
+            if (window.initMultiplayer) {
+                const ok = await window.initMultiplayer(code, true);
+                if (ok) {
+                    const badge = document.getElementById('room-status-badge');
+                    badge.innerText = `ROOM: ${code}`;
+                    badge.classList.remove('hidden');
+                }
+            }
         }
         
         async function joinRoom() {
-             const code = document.getElementById('join-room-code').value.trim().toUpperCase();
-             if(!code) return alert("Please enter a room code.");
-             
-             document.getElementById('mp-status-msg').innerText = "Joining room...";
-             
-             if (window.initMultiplayer) {
-                  await window.initMultiplayer(code);
-             }
-             
-             document.getElementById('mp-status-msg').innerText = "";
-             const badge = document.getElementById('room-status-badge');
-             badge.innerText = `ROOM: ${code}`;
-             badge.classList.remove('hidden');
-             closeMultiplayerModal();
+            const code = document.getElementById('join-room-code').value.trim().toUpperCase();
+            if (!code) return alert("請輸入房間代碼 (Room Code)！");
+            closeMultiplayerModal();
+            if (window.initMultiplayer) {
+                const ok = await window.initMultiplayer(code, false);
+                if (ok) {
+                    const badge = document.getElementById('room-status-badge');
+                    badge.innerText = `ROOM: ${code}`;
+                    badge.classList.remove('hidden');
+                }
+            }
         }
         
         function copyRoomCode() {
-             const txt = document.getElementById('room-status-badge').innerText.replace('ROOM: ', '');
-             navigator.clipboard.writeText(txt).then(() => alert('Room code copied!'));
+            const txt = document.getElementById('room-status-badge').innerText.replace('ROOM: ', '');
+            navigator.clipboard.writeText(txt).then(() => alert('房間代碼已複製：' + txt));
         }
 
-        // 定義應用遠端狀態的函數 (被 Firebase onSnapshot 呼叫)
+        // 當收到遠端狀態時套用至本地畫面
         window.applyGameState = (newState) => {
+            if (!newState) return;
             isSyncing = true;
             
-            // Update primitives
             ['p1_life', 'p1_reserve', 'p1_count', 'p1_trash_core', 
              'p2_life', 'p2_reserve', 'p2_count', 'p2_trash_core', 'soulCoreLocation'].forEach(key => {
                 if (newState[key] !== undefined) gameState[key] = newState[key];
             });
             
-            if (newState.p1Deck) gameState.p1Deck = newState.p1Deck;
-            if (newState.p2Deck) gameState.p2Deck = newState.p2Deck;
+            if (Array.isArray(newState.p1Deck)) gameState.p1Deck = newState.p1Deck;
+            if (Array.isArray(newState.p2Deck)) gameState.p2Deck = newState.p2Deck;
 
-            // 處理卡牌狀態同步
-            if (newState.cards) {
-                // 如果遠端有我們沒有的卡，先用假圖片建立起來 (因為移除了圖片上傳)
+            if (Array.isArray(newState.cards)) {
+                const remoteIds = new Set(newState.cards.map(c => c.id));
+                // 清理已被移除的舊卡片
+                Object.keys(gameState.cards).forEach(localId => {
+                    if (!remoteIds.has(localId)) {
+                        const oldEl = document.getElementById(localId);
+                        if (oldEl) oldEl.remove();
+                        delete gameState.cards[localId];
+                    }
+                });
+
                 newState.cards.forEach(remoteCard => {
+                    const cachedImg = cardImageCache[remoteCard.id] || gameState.cards[remoteCard.id]?.imgBase64 || "";
                     if (!gameState.cards[remoteCard.id]) {
                         gameState.cards[remoteCard.id] = {
                             id: remoteCard.id,
                             owner: remoteCard.owner,
                             zone: remoteCard.zone,
-                            x: remoteCard.x,
-                            y: remoteCard.y,
-                            imgBase64: "", // 沒有圖片
-                            isTapped: remoteCard.isTapped,
+                            x: remoteCard.x || 0,
+                            y: remoteCard.y || 0,
+                            imgBase64: cachedImg,
+                            isTapped: !!remoteCard.isTapped,
                             cores: remoteCard.cores || 0
                         };
                     } else {
-                        // 如果已經有，更新位置和狀態，保留本地的圖片！
                         const localCard = gameState.cards[remoteCard.id];
                         localCard.zone = remoteCard.zone;
-                        localCard.x = remoteCard.x;
-                        localCard.y = remoteCard.y;
-                        localCard.isTapped = remoteCard.isTapped;
+                        localCard.x = remoteCard.x || 0;
+                        localCard.y = remoteCard.y || 0;
+                        localCard.isTapped = !!remoteCard.isTapped;
                         localCard.cores = remoteCard.cores || 0;
+                        if (cachedImg) localCard.imgBase64 = cachedImg;
                     }
                 });
 
-                // 更新 DOM
                 Object.values(gameState.cards).forEach(cardData => {
+                    if (cardData.zone && cardData.zone.startsWith('deck-')) {
+                        const existingEl = document.getElementById(cardData.id);
+                        if (existingEl) existingEl.remove();
+                        return;
+                    }
+
                     let el = document.getElementById(cardData.id);
                     if (!el) {
                         el = createCardElement(cardData);
+                    } else if (cardData.imgBase64) {
+                        el.style.backgroundImage = `url(${cardData.imgBase64})`;
+                        el.innerText = "";
                     }
                     
-                    // 確保卡牌在正確的區域
                     const targetZone = document.getElementById(cardData.zone);
                     if (targetZone && el.parentElement !== targetZone) {
                         targetZone.appendChild(el);
                     }
                     
-                    // 應用座標 (只有在 field 時)
                     if (cardData.zone && cardData.zone.startsWith('field-')) {
                         el.style.position = 'absolute';
                         el.style.left = `${cardData.x}px`;
                         el.style.top = `${cardData.y}px`;
                     } else {
-                        el.style.position = 'static';
+                        el.style.position = 'relative';
+                        el.style.left = 'auto';
+                        el.style.top = 'auto';
                     }
                     
-                    // 應用翻轉
                     if (cardData.isTapped) el.classList.add('tapped');
                     else el.classList.remove('tapped');
                     
-                    // 應用 core
                     const coreEl = el.querySelector('.card-cores');
-                    if (coreEl) coreEl.innerText = cardData.cores;
+                    if (coreEl) coreEl.innerText = cardData.cores || 0;
                 });
             }
             
@@ -1064,107 +1096,183 @@
             isSyncing = false;
         };
 
-        // 打包狀態傳給 Firebase
-        function updateRoomState() {
-             if (isSyncing) return; // 避免接收更新時又觸發上傳
-             if (window.sendGameState) {
-                  // 準備乾淨的狀態物件 (移除巨大圖片資料)
-                  const stateToSave = {
-                      p1_life: gameState.p1_life,
-                      p1_reserve: gameState.p1_reserve,
-                      p1_count: gameState.p1_count,
-                      p1_trash_core: gameState.p1_trash_core,
-                      p2_life: gameState.p2_life,
-                      p2_reserve: gameState.p2_reserve,
-                      p2_count: gameState.p2_count,
-                      p2_trash_core: gameState.p2_trash_core,
-                      p1Deck: gameState.p1Deck,
-                      p2Deck: gameState.p2Deck,
-                      soulCoreLocation: gameState.soulCoreLocation,
-                      // 精簡化卡牌資料 (不包含 imgBase64)
-                      cards: Object.values(gameState.cards).map(card => ({
-                          id: card.id,
-                          owner: card.owner,
-                          zone: card.zone,
-                          x: card.x,
-                          y: card.y,
-                          isTapped: card.isTapped,
-                          cores: card.cores
-                      }))
-                  };
-                  window.sendGameState(stateToSave);
-             }
+        // 當收到遠端卡圖時更新本地快取與畫面
+        window.applyCardImages = (imagesMap) => {
+            if (!imagesMap) return;
+            Object.entries(imagesMap).forEach(([cardId, base64]) => {
+                cardImageCache[cardId] = base64;
+                if (gameState.cards[cardId]) {
+                    gameState.cards[cardId].imgBase64 = base64;
+                }
+                const el = document.getElementById(cardId);
+                if (el) {
+                    el.style.backgroundImage = `url(${base64})`;
+                    el.innerText = "";
+                }
+            });
+        };
+
+        function buildStatePayload() {
+            return {
+                p1_life: gameState.p1_life,
+                p1_reserve: gameState.p1_reserve,
+                p1_count: gameState.p1_count,
+                p1_trash_core: gameState.p1_trash_core,
+                p2_life: gameState.p2_life,
+                p2_reserve: gameState.p2_reserve,
+                p2_count: gameState.p2_count,
+                p2_trash_core: gameState.p2_trash_core,
+                p1Deck: gameState.p1Deck,
+                p2Deck: gameState.p2Deck,
+                soulCoreLocation: gameState.soulCoreLocation,
+                cards: Object.values(gameState.cards).map(card => ({
+                    id: card.id,
+                    owner: card.owner,
+                    zone: card.zone,
+                    x: card.x,
+                    y: card.y,
+                    isTapped: card.isTapped,
+                    cores: card.cores
+                }))
+            };
         }
 
+        function updateRoomState() {
+            if (isSyncing) return;
+            if (window.sendGameState) {
+                window.sendGameState(buildStatePayload());
+            }
+        }
     </script>
     
-    <!-- Firebase Realtime Sync Module -->
+    <!-- Firebase Realtime Sync Module (免除 Auth 阻擋 & 每個分頁獨立 ID) -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getFirestore, doc, setDoc, getDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         
         const appId = "bsbeta-52f46";
         const firebaseConfig = {
-          apiKey: "AIzaSyCVxbd8WGayDHWQ8OSDBu-3-tfG6nJZM4s",
-          authDomain: "bsbeta-52f46.firebaseapp.com",
-          projectId: "bsbeta-52f46",
-          storageBucket: "bsbeta-52f46.firebasestorage.app",
-          messagingSenderId: "174223783079",
-          appId: "1:174223783079:web:33c1b8542ced38e7831782",
-          measurementId: "G-WHRBTBPMEQ"
+            apiKey: "AIzaSyCVxbd8WGayDHWQ8OSDBu-3-tfG6nJZM4s",
+            authDomain: "bsbeta-52f46.firebaseapp.com",
+            projectId: "bsbeta-52f46",
+            storageBucket: "bsbeta-52f46.firebasestorage.app",
+            messagingSenderId: "174223783079",
+            appId: "1:174223783079:web:33c1b8542ced38e7831782",
+            measurementId: "G-WHRBTBPMEQ"
         };
         
-        let db, auth, currentUser, unsubscribe;
+        // 每個瀏覽器分頁產生獨立的 clientId，解決同一瀏覽器雙開分頁共用 UID 導致不更新的問題
+        const clientId = "client_" + Math.random().toString(36).substring(2, 10) + "_" + Date.now();
+        const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        let unsubscribeRoom = null;
+        let unsubscribeImages = null;
+        window.currentRoomCode = null;
         
-        window.initMultiplayer = async (roomCode) => {
-            if (!firebaseConfig) {
-                document.getElementById('mp-status-msg').innerText = "Firebase not configured.";
-                return;
-            }
-            document.getElementById('mp-status-msg').innerText = "Connecting...";
+        window.initMultiplayer = async (roomCode, isCreator = false) => {
+            const statusEl = document.getElementById('mp-status-msg');
+            statusEl.className = "text-xs text-yellow-400 mr-2";
+            statusEl.innerText = "Connecting...";
             
             try {
-                const app = initializeApp(firebaseConfig);
-                db = getFirestore(app);
-                auth = getAuth(app);
-                
-                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
-                    await signInWithCustomToken(auth, __initial_auth_token);
-                } else {
-                    await signInAnonymously(auth);
-                }
-                currentUser = auth.currentUser;
+                if (unsubscribeRoom) unsubscribeRoom();
+                if (unsubscribeImages) unsubscribeImages();
+
                 window.currentRoomCode = roomCode;
-                
                 const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', roomCode);
-                
-                unsubscribe = onSnapshot(roomRef, (snapshot) => {
-                    if (snapshot.exists()) {
-                        const data = snapshot.data();
-                        if (data.lastUpdatedBy !== currentUser.uid) {
+
+                if (isCreator) {
+                    // 建立房間時立即寫入初始狀態
+                    await window.sendGameState(buildStatePayload());
+                } else {
+                    // 加入房間時先讀取目前房間的狀態
+                    const existingSnap = await getDoc(roomRef);
+                    if (existingSnap.exists()) {
+                        const data = existingSnap.data();
+                        if (data.stateJson) {
                             window.applyGameState(JSON.parse(data.stateJson));
                         }
                     }
-                });
+                }
                 
+                // 監聽房間的即時狀態變化 (Life / Core / Count / 卡牌位置)
+                unsubscribeRoom = onSnapshot(roomRef, (snapshot) => {
+                    if (snapshot.exists()) {
+                        const data = snapshot.data();
+                        if (data.lastUpdatedBy !== clientId && data.stateJson) {
+                            window.applyGameState(JSON.parse(data.stateJson));
+                        }
+                    }
+                }, (err) => {
+                    console.error("Room listener error:", err);
+                    statusEl.className = "text-xs text-red-500 mr-2";
+                    statusEl.innerText = "Sync Error: " + err.code;
+                });
+
+                // 監聽房間內卡圖子集合，讓對手匯入的卡圖自動同步顯示
+                const imagesColRef = collection(db, 'artifacts', appId, 'public', 'data', 'rooms', roomCode, 'cardImages');
+                unsubscribeImages = onSnapshot(imagesColRef, (querySnapshot) => {
+                    const imgMap = {};
+                    querySnapshot.forEach((docSnap) => {
+                        const d = docSnap.data();
+                        if (d && d.base64) {
+                            imgMap[docSnap.id] = d.base64;
+                        }
+                    });
+                    window.applyCardImages(imgMap);
+                });
+
+                // 如果本地已經先匯入過牌組，加入房間後自動補傳卡圖
+                const existingLocalImages = {};
+                Object.values(gameState.cards).forEach(c => {
+                    if (c.imgBase64) existingLocalImages[c.id] = c.imgBase64;
+                });
+                if (Object.keys(existingLocalImages).length > 0) {
+                    window.uploadPlayerCardImages('all', existingLocalImages);
+                }
+
+                statusEl.className = "text-xs text-green-400 mr-2";
+                statusEl.innerText = "SYNCED";
+                return true;
             } catch (err) {
-                console.error("Firebase init failed", err);
-                document.getElementById('mp-status-msg').innerText = "Connection failed.";
+                console.error("Firebase init failed:", err);
+                statusEl.className = "text-xs text-red-500 mr-2";
+                statusEl.innerText = "Connection failed: " + (err.code || err.message);
+                return false;
             }
         };
         
         window.sendGameState = async (stateObj) => {
-            if (!db || !window.currentRoomCode || !currentUser) return;
+            if (!db || !window.currentRoomCode) return;
             try {
                 const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', window.currentRoomCode);
                 await setDoc(roomRef, {
                     stateJson: JSON.stringify(stateObj),
-                    lastUpdatedBy: currentUser.uid,
+                    lastUpdatedBy: clientId,
                     timestamp: Date.now()
                 }, { merge: true });
             } catch (err) {
-                console.error("Sync failed", err);
+                console.error("Sync failed:", err);
+                const statusEl = document.getElementById('mp-status-msg');
+                if (statusEl) {
+                    statusEl.className = "text-xs text-red-500 mr-2";
+                    statusEl.innerText = "Sync failed: " + (err.code || err.message);
+                }
+            }
+        };
+
+        // 將每張壓縮後的卡圖獨立存成單一文件 (每張約 10KB，完全避開單一文件 1MB 限制)
+        window.uploadPlayerCardImages = async (player, cardsMap) => {
+            if (!db || !window.currentRoomCode) return;
+            try {
+                const entries = Object.entries(cardsMap);
+                for (const [cardId, base64] of entries) {
+                    const imgRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', window.currentRoomCode, 'cardImages', cardId);
+                    await setDoc(imgRef, { owner: player, base64: base64 });
+                }
+            } catch (err) {
+                console.error("Card image upload failed:", err);
             }
         };
     </script>
