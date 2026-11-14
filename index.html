@@ -529,6 +529,89 @@
             box-shadow: 0 0 25px 4px rgba(34, 197, 94, 0.9), inset 0 0 18px rgba(34, 197, 94, 0.45) !important;
             animation: lifeIncreaseFlash 0.75s ease-out;
         }
+        @keyframes zoneWhiteFlash {
+            0% {
+                border-color: #ffffff !important;
+                box-shadow: 0 0 28px 6px rgba(255, 255, 255, 0.95), inset 0 0 22px rgba(255, 255, 255, 0.6) !important;
+            }
+            100% {
+                border-color: #374151;
+                box-shadow: none;
+            }
+        }
+        .flash-border-white {
+            border-color: #ffffff !important;
+            box-shadow: 0 0 25px 4px rgba(255, 255, 255, 0.95), inset 0 0 18px rgba(255, 255, 255, 0.5) !important;
+            animation: zoneWhiteFlash 0.75s ease-out;
+        }
+
+        /* 2. 生命值歸零震動與紅光閃爍 2 秒動畫 */
+        @keyframes zeroLifeShakeRed {
+            0%, 100% { transform: translate(0, 0); border-color: #ef4444; box-shadow: 0 0 35px 8px rgba(239, 68, 68, 0.95), inset 0 0 25px rgba(239, 68, 68, 0.6); }
+            10%, 30%, 50%, 70%, 90% { transform: translate(-7px, 4px); border-color: #ff0000; box-shadow: 0 0 45px 12px rgba(239, 68, 68, 1), inset 0 0 35px rgba(239, 68, 68, 0.8); }
+            20%, 40%, 60%, 80% { transform: translate(7px, -4px); border-color: #f87171; box-shadow: 0 0 25px 4px rgba(239, 68, 68, 0.8), inset 0 0 15px rgba(239, 68, 68, 0.4); }
+        }
+        .zero-life-shake {
+            animation: zeroLifeShakeRed 0.25s infinite ease-in-out !important;
+            border-color: #ef4444 !important;
+        }
+
+        /* 勝利方 2 秒特效橫幅 */
+        .victory-banner {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle, rgba(234, 179, 8, 0.28) 0%, rgba(0, 0, 0, 0.65) 80%);
+            z-index: 950;
+            pointer-events: none;
+            animation: victoryPulse 0.5s infinite alternate ease-in-out;
+        }
+        @keyframes victoryPulse {
+            0% { box-shadow: inset 0 0 30px rgba(250, 204, 21, 0.5); }
+            100% { box-shadow: inset 0 0 70px rgba(250, 204, 21, 0.95); }
+        }
+
+        /* 3. 區域左上角迷你玩家狀態燈 */
+        .player-status-badge {
+            position: absolute;
+            top: 4px;
+            left: 6px;
+            z-index: 80;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(0, 0, 0, 0.85);
+            border: 1px solid #333;
+            padding: 1px 6px;
+            border-radius: 999px;
+            pointer-events: none;
+        }
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background-color: #374151;
+            box-shadow: inset 0 0 2px #000;
+            transition: background-color 0.25s ease, box-shadow 0.25s ease;
+        }
+        .status-dot.online {
+            background-color: #22c55e;
+            box-shadow: 0 0 8px 2px rgba(34, 197, 94, 0.95);
+        }
+
+        /* 4. 隨機抽籤閃爍高亮樣式 */
+        .lottery-highlight {
+            border-color: #facc15 !important;
+            box-shadow: 0 0 30px 6px rgba(250, 204, 21, 0.9), inset 0 0 25px rgba(250, 204, 21, 0.45) !important;
+        }
+        .lottery-winner-yellow {
+            border-color: #facc15 !important;
+            box-shadow: 0 0 40px 10px rgba(250, 204, 21, 0.98), inset 0 0 35px rgba(250, 204, 21, 0.65) !important;
+            background-color: rgba(250, 204, 21, 0.08) !important;
+        }
     </style>
 </head>
 <body class="h-screen w-screen flex flex-col p-2 box-border gap-2 bg-[#000] overflow-hidden">
@@ -541,12 +624,27 @@
         </div>
         <div class="flex gap-2 items-center">
             <span id="mp-status-msg" class="text-xs text-gray-400 mr-2"></span>
+            <button id="btn-reset" class="text-xs border border-red-500 px-3 py-1 bg-[#050505] text-red-400 hover:bg-red-900 hover:text-white font-bold cursor-pointer transition-colors" onclick="openResetModal()" title="重設場上所有卡片與 Core 至初始狀態 (保留牌組)">RESET</button>
             <button id="btn-sync" class="text-xs border border-green-500 px-3 py-1 bg-[#050505] text-green-500 hover:bg-green-900 hover:text-white font-bold cursor-pointer transition-colors" onclick="openMultiplayerModal()">ONLINE SYNC</button>
-            <button id="btn-view-p1" class="text-xs border px-3 py-1 bg-white text-black font-bold cursor-pointer transition-colors" onclick="setView('P1')">Join as P1</button>
+            <button id="btn-view-p1" class="text-xs border px-3 py-1 text-gray-400 border-gray-600 hover:bg-gray-800 cursor-pointer transition-colors" onclick="setView('P1')">Join as P1</button>
             <button id="btn-view-p2" class="text-xs border px-3 py-1 text-gray-400 border-gray-600 hover:bg-gray-800 cursor-pointer transition-colors" onclick="setView('P2')">Join as P2</button>
-            <button id="btn-view-spec" class="text-xs border px-3 py-1 text-gray-400 border-gray-600 hover:bg-gray-800 cursor-pointer transition-colors" onclick="setView('SPECTATOR')">觀戰 (Spectate)</button>
+            <button id="btn-view-spec" class="text-xs border px-3 py-1 bg-white text-black font-bold cursor-pointer transition-colors" onclick="setView('SPECTATOR')">觀戰 (Spectate)</button>
         </div>
     </header>
+
+    <!-- 4. 畫面正中央隨機抽籤按鈕與抽籤結果確認按鈕 -->
+    <div id="center-lottery-container" class="fixed inset-0 pointer-events-none z-[9000] flex justify-center items-center">
+        <button id="btn-start-lottery" class="pointer-events-auto border-2 border-yellow-400 bg-black/95 text-yellow-300 hover:bg-yellow-400 hover:text-black font-black px-7 py-3.5 rounded-full shadow-[0_0_30px_rgba(250,204,21,0.75)] tracking-widest text-sm uppercase transition-all transform hover:scale-105 cursor-pointer flex items-center gap-2" onclick="startPlayerLottery()">
+            <span>🎲 隨機抽籤決定先攻 (RANDOM PICK)</span>
+        </button>
+    </div>
+
+    <div id="lottery-confirm-container" class="fixed inset-0 pointer-events-none z-[9050] hidden flex justify-center items-center">
+        <div class="pointer-events-auto border-2 border-yellow-400 bg-black/95 px-7 py-5 rounded-xl shadow-[0_0_40px_rgba(250,204,21,0.9)] flex flex-col items-center gap-3">
+            <div id="lottery-winner-text" class="text-yellow-300 font-black tracking-widest text-base uppercase">🎯 抽籤結果：P1 獲選！</div>
+            <button class="border-2 border-yellow-400 bg-yellow-400 text-black hover:bg-white hover:border-white font-black px-6 py-2 rounded-full text-xs tracking-widest uppercase transition-colors cursor-pointer" onclick="confirmLotteryResult()">✓ 確認 (CONFIRM)</button>
+        </div>
+    </div>
 
     <!-- Playmat Container -->
     <main class="flex-1 flex flex-col gap-2 min-h-0 w-full overflow-y-auto px-2 pb-4 custom-scrollbar">
@@ -562,7 +660,12 @@
         </div>
         
         <!-- P2 MAIN AREA (左 Burst/Life/Reserve，右 Count/Deck/Trash Card/Trash Core) -->
-        <div id="section-main-p2" class="flex-none border-2 border-gray-700 p-2 grid grid-cols-[160px_1fr_160px] gap-2 relative bg-[#050505] rounded-sm transition-all duration-300">
+        <div id="section-main-p2" class="flex-none border-2 border-gray-700 p-2 pt-6 grid grid-cols-[160px_1fr_160px] gap-2 relative bg-[#050505] rounded-sm transition-all duration-300">
+            <!-- 3. P2 左上角迷你玩家狀態燈 -->
+            <div class="player-status-badge" title="P2 玩家在線狀態">
+                <span id="status-light-p2" class="status-dot"></span>
+                <span class="text-[9px] font-black text-gray-400 tracking-wider">P2</span>
+            </div>
             <!-- Left: Burst -> Life -> Reserve -->
             <div class="flex flex-col gap-2">
                 <div class="counter-box relative flex-1 min-h-[150px] flex flex-col">
@@ -574,7 +677,7 @@
                         <span class="pointer-events-none select-none">Drop here</span>
                     </div>
                 </div>
-                <div id="life-box-p2" class="counter-box relative flex-none">
+                <div id="life-box-p2" class="counter-box relative flex-none" ondrop="dropSoulCore(event, 'p2', 'life')" ondragover="allowDrop(event)">
                     <div class="counter-title">Life</div>
                     <button class="small-action-btn" onclick="takeLife('p2')">TAKE LIFE</button>
                     <div class="counter-value">
@@ -582,6 +685,7 @@
                         <span id="val_p2_life">5</span>
                         <button class="counter-btn" onclick="updateCounter('p2_life', 1)">+</button>
                     </div>
+                    <div class="absolute bottom-1 right-1.5 flex items-center justify-center" id="slot_p2_soul_life"></div>
                 </div>
                 <div id="reserve-box-p2" class="counter-box relative flex-none" ondrop="dropSoulCore(event, 'p2', 'reserve')" ondragover="allowDrop(event)">
                     <div class="counter-title">Reserve</div>
@@ -598,6 +702,11 @@
             <!-- Center Field -->
             <div id="field-p2" class="zone field-zone border border-gray-600 bg-[#0a0a0a] relative overflow-hidden min-h-[380px]" ondrop="drop(event, 'field-p2')" ondragover="allowDrop(event)">
                  <div class="field-label">OPPONENT</div>
+                 <!-- 2. P2 勝利特效覆蓋層 -->
+                 <div id="victory-overlay-p2" class="victory-banner hidden">
+                     <div class="text-5xl font-black tracking-widest text-yellow-300 drop-shadow-[0_0_20px_rgba(250,204,21,1)]">VICTORY</div>
+                     <div class="text-sm font-bold text-white tracking-widest mt-1">P2 獲勝！</div>
+                 </div>
                  <!-- P2 創界神區域 (左下角迷你自適應，附展開/收起箭頭) -->
                  <div id="god-wrapper-p2" class="god-zone-wrapper" ondrop="dropOnGodZone(event, 'p2')" ondragover="allowDrop(event)">
                      <div class="flex items-center justify-between gap-2 mb-0.5">
@@ -639,7 +748,7 @@
                         <button class="action-btn" onclick="drawCard('p2', 'bottom')">DRAW BTM</button>
                     </div>
                 </div>
-                <div class="counter-box relative flex-1 flex flex-col">
+                <div id="trash-card-box-p2" class="counter-box relative flex-1 flex flex-col">
                     <div class="counter-title flex items-center gap-1">
                         <span>Trash <span class="counter-title-sm">(Card)</span></span>
                         <span id="val_p2_trash_card_count" class="bg-gray-800 text-white border border-gray-600 px-1.5 py-0 rounded text-[10px] font-black">0</span>
@@ -666,7 +775,12 @@
         </div>
 
         <!-- P1 MAIN AREA (左 Burst/Life/Reserve，右 Count/Deck/Trash Card/Trash Core) -->
-        <div id="section-main-p1" class="flex-none border-2 border-gray-700 p-2 grid grid-cols-[160px_1fr_160px] gap-2 relative bg-[#050505] rounded-sm transition-all duration-300">
+        <div id="section-main-p1" class="flex-none border-2 border-gray-700 p-2 pt-6 grid grid-cols-[160px_1fr_160px] gap-2 relative bg-[#050505] rounded-sm transition-all duration-300">
+            <!-- 3. P1 左上角迷你玩家狀態燈 -->
+            <div class="player-status-badge" title="P1 玩家在線狀態">
+                <span id="status-light-p1" class="status-dot"></span>
+                <span class="text-[9px] font-black text-gray-400 tracking-wider">P1</span>
+            </div>
             <!-- Left: Burst -> Life -> Reserve -->
             <div class="flex flex-col gap-2">
                 <div class="counter-box relative flex-1 min-h-[150px] flex flex-col">
@@ -678,7 +792,7 @@
                         <span class="pointer-events-none select-none">Drop here</span>
                     </div>
                 </div>
-                <div id="life-box-p1" class="counter-box relative flex-none">
+                <div id="life-box-p1" class="counter-box relative flex-none" ondrop="dropSoulCore(event, 'p1', 'life')" ondragover="allowDrop(event)">
                     <div class="counter-title">Life</div>
                     <button class="small-action-btn" onclick="takeLife('p1')">TAKE LIFE</button>
                     <div class="counter-value">
@@ -686,6 +800,7 @@
                         <span id="val_p1_life">5</span>
                         <button class="counter-btn" onclick="updateCounter('p1_life', 1)">+</button>
                     </div>
+                    <div class="absolute bottom-1 right-1.5 flex items-center justify-center" id="slot_p1_soul_life"></div>
                 </div>
                 <div id="reserve-box-p1" class="counter-box relative flex-none" ondrop="dropSoulCore(event, 'p1', 'reserve')" ondragover="allowDrop(event)">
                     <div class="counter-title">Reserve</div>
@@ -702,6 +817,11 @@
             <!-- Center Field -->
             <div id="field-p1" class="zone field-zone border border-gray-600 bg-[#0a0a0a] relative overflow-hidden min-h-[380px]" ondrop="drop(event, 'field-p1')" ondragover="allowDrop(event)">
                  <div class="field-label">PLAYER (YOU)</div>
+                 <!-- 2. P1 勝利特效覆蓋層 -->
+                 <div id="victory-overlay-p1" class="victory-banner hidden">
+                     <div class="text-5xl font-black tracking-widest text-yellow-300 drop-shadow-[0_0_20px_rgba(250,204,21,1)]">VICTORY</div>
+                     <div class="text-sm font-bold text-white tracking-widest mt-1">P1 獲勝！</div>
+                 </div>
                  <!-- P1 創界神區域 (左下角迷你自適應，附展開/收起箭頭) -->
                  <div id="god-wrapper-p1" class="god-zone-wrapper" ondrop="dropOnGodZone(event, 'p1')" ondragover="allowDrop(event)">
                      <div class="flex items-center justify-between gap-2 mb-0.5">
@@ -743,7 +863,7 @@
                         <button class="action-btn" onclick="drawCard('p1', 'bottom')">DRAW BTM</button>
                     </div>
                 </div>
-                <div class="counter-box relative flex-1 flex flex-col">
+                <div id="trash-card-box-p1" class="counter-box relative flex-1 flex flex-col">
                     <div class="counter-title flex items-center gap-1">
                         <span>Trash <span class="counter-title-sm">(Card)</span></span>
                         <span id="val_p1_trash_card_count" class="bg-gray-800 text-white border border-gray-600 px-1.5 py-0 rounded text-[10px] font-black">0</span>
@@ -836,6 +956,16 @@
         </div>
     </div>
 
+    <!-- 重設對局確認視窗 (保留雙方 Deck) -->
+    <div id="reset-confirm-modal" class="fixed inset-0 bg-black/85 z-[12500] hidden flex justify-center items-center">
+        <div class="border-2 border-red-500 bg-[#050505] p-6 w-[340px] flex flex-col gap-4 shadow-2xl rounded">
+            <div class="text-red-400 font-black tracking-widest text-center text-sm uppercase border-b border-gray-800 pb-2">重設對局 (RESET GAME)</div>
+            <div class="text-gray-300 text-xs text-center leading-relaxed">確定要將場上所有卡片與 Core 恢復至初始狀態嗎？<br><span class="text-gray-500 text-[11px]">（已匯入的雙方牌組將會保留並重新洗牌）</span></div>
+            <button class="border-2 border-red-500 bg-red-950/40 py-2.5 text-white font-bold hover:bg-red-600 hover:text-white transition-colors cursor-pointer text-xs tracking-wider rounded" onclick="confirmResetGame()">✓ 確定重設 (RESET)</button>
+            <button class="border border-gray-600 py-2 text-gray-400 text-xs hover:bg-gray-800 hover:text-white transition-colors cursor-pointer rounded" onclick="closeResetModal()">✕ 取消 (CANCEL)</button>
+        </div>
+    </div>
+
     <!-- Multiplayer Modal -->
     <div id="mp-modal" class="fixed inset-0 bg-black/90 z-[10000] hidden flex justify-center items-center">
         <div class="border-2 border-green-500 p-8 w-[400px] flex flex-col gap-6 bg-[#050505]">
@@ -852,8 +982,10 @@
                 <input type="text" id="join-room-code" placeholder="ENTER ROOM CODE" class="flex-1 bg-transparent border border-gray-600 text-white px-3 py-2 uppercase tracking-wider focus:border-green-500 outline-none text-center">
                 <button class="border border-green-500 text-green-500 px-4 font-bold hover:bg-green-900 hover:text-white transition-colors cursor-pointer" onclick="joinRoom()">JOIN</button>
             </div>
+
+            <button class="border border-red-500/70 py-2 text-red-400 text-xs font-bold hover:bg-red-950 hover:text-white transition-colors cursor-pointer uppercase tracking-wider" onclick="manualCleanupRooms()">🧹 立即清除所有閒置/無人房間</button>
             
-            <div class="text-center mt-2">
+            <div class="text-center mt-1">
                 <button class="text-gray-500 text-xs hover:text-white underline cursor-pointer" onclick="closeMultiplayerModal()">Cancel</button>
             </div>
         </div>
@@ -864,15 +996,20 @@
         /* =========================================================================
            GLOBAL STATE
            ========================================================================= */
+        const localSeatId = "seat_" + Math.random().toString(36).substring(2, 10) + "_" + Date.now();
         const gameState = {
             p1_life: 5, p1_reserve: 3, p1_count: 0, p1_trash_core: 0,
             p2_life: 5, p2_reserve: 3, p2_count: 0, p2_trash_core: 0,
             cards: {}, // { id: { id, owner, zone, x, y, imgBase64, rotation, isFaceDown, cores, zOrder } }
             p1Deck: [],
             p2Deck: [],
-            soulCoreLocation: { p1: 'reserve', p2: 'reserve' }, // 'reserve' | 'trash' | 'count' | cardId
+            soulCoreLocation: { p1: 'reserve', p2: 'reserve' }, // 'reserve' | 'trash' | 'count' | 'life' | cardId
             lastShuffle: null, // { player, timestamp }
-            viewMode: 'P1' // 'P1' | 'P2' | 'SPECTATOR'
+            lastLottery: null, // { winner, timestamp }
+            lotteryPendingWinner: null, // 抽籤結束後保持黃色高亮直到按下確認
+            lotteryUsed: false,
+            seats: { p1: null, p2: null }, // 紀錄是否有玩家入座 P1 / P2
+            viewMode: 'SPECTATOR' // 3. 入 game 時預設為觀戰狀態 ('SPECTATOR' | 'P1' | 'P2')
         };
 
         const cardImageCache = {};
@@ -884,7 +1021,11 @@
         let pendingDeckDrop = null; // { cardId, player }
         let pendingGodDrop = null; // { cardId, player }
         let lastSeenShuffleTime = Date.now();
+        let lastSeenLotteryTime = Date.now();
+        let isLotteryRunning = false;
+        let lotteryStepTimer = null;
         const shuffleFlashTimers = { p1: null, p2: null };
+        const zeroLifeTimers = { p1: null, p2: null };
 
         function showNotice(msg) {
             const modal = document.getElementById('notice-modal');
@@ -969,6 +1110,264 @@
                 el.classList.remove('flash-border-red', 'flash-border-green');
             }, 750);
             elementFlashTimers.set(el, timer);
+        }
+
+        // 指定顏色的區域/卡牌閃光效果 ('red' | 'green' | 'white')
+        function triggerElementColorFlash(el, color) {
+            if (!el) return;
+            const prevTimer = elementFlashTimers.get(el);
+            if (prevTimer) clearTimeout(prevTimer);
+
+            const classMap = {
+                red: 'flash-border-red',
+                green: 'flash-border-green',
+                white: 'flash-border-white'
+            };
+            const flashClass = classMap[color];
+            if (!flashClass) return;
+
+            el.classList.remove('flash-border-red', 'flash-border-green', 'flash-border-white');
+            void el.offsetWidth;
+            el.classList.add(flashClass);
+
+            const timer = setTimeout(() => {
+                el.classList.remove('flash-border-red', 'flash-border-green', 'flash-border-white');
+            }, 750);
+            elementFlashTimers.set(el, timer);
+        }
+
+        // 1. 卡片移至 Trash (僅卡片邊緣閃紅光)、移至 Deck (牌組閃白光)、移至場上及 Burst (僅卡片邊緣閃綠光)、手牌增加時閃綠光
+        function triggerCardZoneMoveFlash(cardId, targetZoneId) {
+            if (!targetZoneId) return;
+            const cardEl = cardId ? document.getElementById(cardId) : null;
+            if (targetZoneId.startsWith('zone-trash-')) {
+                if (cardEl) triggerElementColorFlash(cardEl, 'red');
+            } else if (targetZoneId.startsWith('deck-')) {
+                const player = targetZoneId.includes('p2') ? 'p2' : 'p1';
+                triggerElementColorFlash(document.getElementById(`deck-box-${player}`), 'white');
+            } else if (targetZoneId.startsWith('field-') || targetZoneId.startsWith('zone-god-') || targetZoneId.startsWith('zone-burst-')) {
+                if (cardEl) triggerElementColorFlash(cardEl, 'green');
+            } else if (targetZoneId.startsWith('hand-')) {
+                const player = targetZoneId.endsWith('p2') ? 'p2' : 'p1';
+                if (cardEl) triggerElementColorFlash(cardEl, 'green');
+                triggerElementColorFlash(document.getElementById(`section-hand-${player}`), 'green');
+            }
+        }
+
+        // 2. 當生命值清零時：歸零方閃紅光並震動 2 秒，另一方顯示勝利，2 秒後恢復正常
+        function triggerZeroLifeSequence(loserPlayer) {
+            const winnerPlayer = loserPlayer === 'p1' ? 'p2' : 'p1';
+            const loserSection = document.getElementById(`section-main-${loserPlayer}`);
+            const loserLifeBox = document.getElementById(`life-box-${loserPlayer}`);
+            const winnerOverlay = document.getElementById(`victory-overlay-${winnerPlayer}`);
+            const winnerSection = document.getElementById(`section-main-${winnerPlayer}`);
+
+            if (zeroLifeTimers[loserPlayer]) {
+                clearTimeout(zeroLifeTimers[loserPlayer]);
+            }
+
+            if (loserSection) loserSection.classList.add('zero-life-shake');
+            if (loserLifeBox) loserLifeBox.classList.add('zero-life-shake');
+            if (winnerOverlay) winnerOverlay.classList.remove('hidden');
+            if (winnerSection) winnerSection.classList.add('flash-border-green');
+
+            zeroLifeTimers[loserPlayer] = setTimeout(() => {
+                if (loserSection) loserSection.classList.remove('zero-life-shake');
+                if (loserLifeBox) loserLifeBox.classList.remove('zero-life-shake');
+                if (winnerOverlay) winnerOverlay.classList.add('hidden');
+                if (winnerSection) winnerSection.classList.remove('flash-border-green');
+                zeroLifeTimers[loserPlayer] = null;
+            }, 2000);
+        }
+
+        // 4. 畫面正中央隨機抽籤功能：總長約 3 秒、閃爍速度由快到慢遞減，結束時中選區域保持黃色高亮並需點擊確認才取消
+        function startPlayerLottery() {
+            if (isLotteryRunning) return;
+            const winner = Math.random() < 0.5 ? 'p1' : 'p2';
+            const now = Date.now();
+            lastSeenLotteryTime = now;
+            gameState.lastLottery = { winner, timestamp: now };
+            gameState.lotteryPendingWinner = winner;
+            gameState.lotteryUsed = true;
+            runLotteryAnimation(winner);
+            updateRoomState();
+        }
+
+        function applyLotteryPendingUI() {
+            const p1Sec = document.getElementById('section-main-p1');
+            const p2Sec = document.getElementById('section-main-p2');
+            const p1Field = document.getElementById('field-p1');
+            const p2Field = document.getElementById('field-p2');
+            const confirmContainer = document.getElementById('lottery-confirm-container');
+            const winnerText = document.getElementById('lottery-winner-text');
+
+            if (isLotteryRunning) return;
+
+            p1Sec?.classList.remove('lottery-winner-yellow');
+            p2Sec?.classList.remove('lottery-winner-yellow');
+            p1Field?.classList.remove('lottery-winner-yellow');
+            p2Field?.classList.remove('lottery-winner-yellow');
+
+            const winner = gameState.lotteryPendingWinner;
+            if (winner === 'p1' || winner === 'p2') {
+                const winSec = document.getElementById(`section-main-${winner}`);
+                const winField = document.getElementById(`field-${winner}`);
+                winSec?.classList.add('lottery-winner-yellow');
+                winField?.classList.add('lottery-winner-yellow');
+                if (winnerText) {
+                    winnerText.innerText = `🎯 抽籤結果：${winner.toUpperCase()} 區域獲選！`;
+                }
+                if (confirmContainer) confirmContainer.classList.remove('hidden');
+            } else {
+                if (confirmContainer) confirmContainer.classList.add('hidden');
+            }
+        }
+
+        function confirmLotteryResult() {
+            gameState.lotteryPendingWinner = null;
+            applyLotteryPendingUI();
+            updateAllUI();
+            updateRoomState();
+        }
+
+        function runLotteryAnimation(winner) {
+            if (lotteryStepTimer) {
+                clearTimeout(lotteryStepTimer);
+                lotteryStepTimer = null;
+            }
+            isLotteryRunning = true;
+            const btnContainer = document.getElementById('center-lottery-container');
+            const confirmContainer = document.getElementById('lottery-confirm-container');
+            if (btnContainer) btnContainer.classList.add('hidden');
+            if (confirmContainer) confirmContainer.classList.add('hidden');
+
+            const p1Sec = document.getElementById('section-main-p1');
+            const p2Sec = document.getElementById('section-main-p2');
+            const p1Field = document.getElementById('field-p1');
+            const p2Field = document.getElementById('field-p2');
+
+            p1Sec?.classList.remove('lottery-highlight', 'lottery-winner-yellow');
+            p2Sec?.classList.remove('lottery-highlight', 'lottery-winner-yellow');
+            p1Field?.classList.remove('lottery-winner-yellow');
+            p2Field?.classList.remove('lottery-winner-yellow');
+
+            // 總計 3000ms (3秒)，間隔由快 (60ms) 逐漸遞減變慢至 (430ms)
+            const delays = [60, 70, 80, 95, 110, 130, 155, 185, 220, 260, 305, 355, 405, 430, 140];
+            // 計算起始位置，確保最後一步必定停在 winner
+            const totalSteps = delays.length;
+            const startIndex = (winner === 'p1')
+                ? ((totalSteps - 1) % 2 === 0 ? 0 : 1)
+                : ((totalSteps - 1) % 2 === 1 ? 0 : 1);
+
+            let step = 0;
+
+            function nextFlashStep() {
+                p1Sec?.classList.remove('lottery-highlight');
+                p2Sec?.classList.remove('lottery-highlight');
+
+                const currentPlayer = ((startIndex + step) % 2 === 0) ? 'p1' : 'p2';
+                const currentSec = currentPlayer === 'p1' ? p1Sec : p2Sec;
+                currentSec?.classList.add('lottery-highlight');
+
+                const delay = delays[step];
+                step++;
+
+                if (step < totalSteps) {
+                    lotteryStepTimer = setTimeout(nextFlashStep, delay);
+                } else {
+                    lotteryStepTimer = setTimeout(() => {
+                        p1Sec?.classList.remove('lottery-highlight');
+                        p2Sec?.classList.remove('lottery-highlight');
+                        isLotteryRunning = false;
+                        lotteryStepTimer = null;
+                        gameState.lotteryPendingWinner = winner;
+                        applyLotteryPendingUI();
+                    }, delay);
+                }
+            }
+
+            nextFlashStep();
+        }
+
+        // 1. 重設對局功能：保留雙方 Deck，將所有卡片收回牌組洗牌，恢復初始 Core 與生命值，並重新顯示中央抽籤按鈕
+        function openResetModal() {
+            const modal = document.getElementById('reset-confirm-modal');
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeResetModal() {
+            const modal = document.getElementById('reset-confirm-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function confirmResetGame() {
+            closeResetModal();
+            hideCardPreview();
+            closeZoneModal();
+            closeDeckChoiceModal();
+            closeGodConfirmModal();
+            document.getElementById('core-return-modal')?.classList.add('hidden');
+
+            if (lotteryStepTimer) {
+                clearTimeout(lotteryStepTimer);
+                lotteryStepTimer = null;
+            }
+            isLotteryRunning = false;
+            gameState.lotteryPendingWinner = null;
+            applyLotteryPendingUI();
+
+            gameState.p1_life = 5;
+            gameState.p1_reserve = 3;
+            gameState.p1_count = 0;
+            gameState.p1_trash_core = 0;
+
+            gameState.p2_life = 5;
+            gameState.p2_reserve = 3;
+            gameState.p2_count = 0;
+            gameState.p2_trash_core = 0;
+
+            gameState.soulCoreLocation = { p1: 'reserve', p2: 'reserve' };
+            gameState.lotteryUsed = false;
+
+            const p1Cards = [];
+            const p2Cards = [];
+
+            Object.values(gameState.cards).forEach(card => {
+                const el = document.getElementById(card.id);
+                if (el) el.remove();
+
+                card.zone = `deck-${card.owner}`;
+                card.x = 0;
+                card.y = 0;
+                card.rotation = 0;
+                card.isFaceDown = false;
+                card.cores = 0;
+                card.zOrder = zOrderCounter++;
+
+                if (card.owner === 'p1') {
+                    p1Cards.push(card.id);
+                } else if (card.owner === 'p2') {
+                    p2Cards.push(card.id);
+                }
+            });
+
+            // 洗勻雙方牌組
+            for (let i = p1Cards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [p1Cards[i], p1Cards[j]] = [p1Cards[j], p1Cards[i]];
+            }
+            for (let i = p2Cards.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [p2Cards[i], p2Cards[j]] = [p2Cards[j], p2Cards[i]];
+            }
+
+            gameState.p1Deck = p1Cards;
+            gameState.p2Deck = p2Cards;
+
+            updateAllUI();
+            if (p1Cards.length > 0) triggerDeckShuffleFlash('p1');
+            if (p2Cards.length > 0) triggerDeckShuffleFlash('p2');
+            updateRoomState();
         }
 
         function triggerCounterKeyFlash(key, delta) {
@@ -1188,6 +1587,19 @@
             updateSoulCoreUI('p1');
             updateSoulCoreUI('p2');
 
+            // 3. 更新區域左上角迷你玩家狀態燈 (有玩家時亮綠燈，無玩家時熄滅)
+            if (!gameState.seats) gameState.seats = { p1: null, p2: null };
+            const p1Light = document.getElementById('status-light-p1');
+            const p2Light = document.getElementById('status-light-p2');
+            if (p1Light) p1Light.classList.toggle('online', !!gameState.seats.p1);
+            if (p2Light) p2Light.classList.toggle('online', !!gameState.seats.p2);
+            // 4. 控制正中央隨機抽籤按鈕與抽籤結果黃色鎖定狀態
+            const lotteryContainer = document.getElementById('center-lottery-container');
+            if (lotteryContainer && !isLotteryRunning) {
+                lotteryContainer.classList.toggle('hidden', !!gameState.lotteryUsed);
+            }
+            applyLotteryPendingUI();
+
             const p1Section = document.getElementById('section-main-p1');
             const p2Section = document.getElementById('section-main-p2');
             const p1Hand = document.getElementById('section-hand-p1');
@@ -1261,7 +1673,20 @@
 
         function setView(mode) {
             gameState.viewMode = mode;
+            if (!gameState.seats) gameState.seats = { p1: null, p2: null };
+
+            // 先釋放自己原本佔用的座位，再依據新模式設定座位狀態燈
+            if (gameState.seats.p1 === localSeatId) gameState.seats.p1 = null;
+            if (gameState.seats.p2 === localSeatId) gameState.seats.p2 = null;
+
+            if (mode === 'P1') {
+                gameState.seats.p1 = localSeatId;
+            } else if (mode === 'P2') {
+                gameState.seats.p2 = localSeatId;
+            }
+
             updateAllUI();
+            updateRoomState();
         }
 
         function toggleHand(player) {
@@ -1286,6 +1711,11 @@
 
             if (actualDelta !== 0) {
                 triggerCounterKeyFlash(key, actualDelta);
+                if (key === 'p1_life' && currentVal > 0 && nextVal === 0) {
+                    triggerZeroLifeSequence('p1');
+                } else if (key === 'p2_life' && currentVal > 0 && nextVal === 0) {
+                    triggerZeroLifeSequence('p2');
+                }
             }
 
             updateAllUI();
@@ -1336,11 +1766,16 @@
         }
 
         function takeLife(player) {
-            if (gameState[`${player}_life`] <= 0) return;
-            gameState[`${player}_life`] -= 1;
+            const prevLife = parseInt(gameState[`${player}_life`], 10) || 0;
+            if (prevLife <= 0) return;
+            const nextLife = prevLife - 1;
+            gameState[`${player}_life`] = nextLife;
             gameState[`${player}_reserve`] += 1;
             triggerCounterKeyFlash(`${player}_life`, -1);
             triggerCounterKeyFlash(`${player}_reserve`, 1);
+            if (prevLife > 0 && nextLife === 0) {
+                triggerZeroLifeSequence(player);
+            }
             updateAllUI();
             updateRoomState();
         }
@@ -1379,14 +1814,14 @@
         function setSoulCoreLocation(player, destination) {
             const prevLoc = gameState.soulCoreLocation[player];
             if (prevLoc !== destination) {
-                if (['reserve', 'trash', 'count'].includes(prevLoc)) {
+                if (['reserve', 'trash', 'count', 'life'].includes(prevLoc)) {
                     const prevKey = prevLoc === 'trash' ? `${player}_trash_core` : `${player}_${prevLoc}`;
                     triggerCounterKeyFlash(prevKey, -1);
                 } else if (prevLoc && gameState.cards[prevLoc]) {
                     triggerCardCoreFlash(prevLoc, -1);
                 }
 
-                if (['reserve', 'trash', 'count'].includes(destination)) {
+                if (['reserve', 'trash', 'count', 'life'].includes(destination)) {
                     const nextKey = destination === 'trash' ? `${player}_trash_core` : `${player}_${destination}`;
                     triggerCounterKeyFlash(nextKey, 1);
                 } else if (destination && gameState.cards[destination]) {
@@ -1413,7 +1848,7 @@
 
         function updateSoulCoreUI(player) {
             const loc = gameState.soulCoreLocation[player] || 'reserve';
-            const places = ['reserve', 'trash', 'count'];
+            const places = ['reserve', 'trash', 'count', 'life'];
 
             places.forEach(place => {
                 const slot = document.getElementById(`slot_${player}_soul_${place}`);
@@ -1421,7 +1856,7 @@
                 slot.innerHTML = '';
                 if (loc === place) {
                     slot.appendChild(createSoulCoreTokenElement(player));
-                } else if (place === 'reserve' || place === 'trash') {
+                } else if (place === 'reserve' || place === 'trash' || place === 'life') {
                     const emptyBtn = document.createElement('div');
                     emptyBtn.className = 'soul-core-slot-empty';
                     emptyBtn.innerText = 'S';
@@ -1689,6 +2124,9 @@
             }
 
             updateAllUI();
+            if (prevZone !== cardData.zone) {
+                triggerCardZoneMoveFlash(cardId, cardData.zone);
+            }
             updateRoomState();
 
             // 若有需要歸還的一般場上 Core 或 Soul Core，彈出選擇視窗讓玩家選擇放到預備區或廢棄區
@@ -2209,6 +2647,9 @@
             if (!newState) return;
             isSyncing = true;
 
+            const prevP1Life = gameState.p1_life;
+            const prevP2Life = gameState.p2_life;
+
             ['p1_life', 'p1_reserve', 'p1_count', 'p1_trash_core',
              'p2_life', 'p2_reserve', 'p2_count', 'p2_trash_core'].forEach(key => {
                 if (newState[key] !== undefined && newState[key] !== gameState[key]) {
@@ -2216,15 +2657,29 @@
                 }
             });
 
+            if (newState.p1_life !== undefined && prevP1Life > 0 && newState.p1_life === 0) {
+                triggerZeroLifeSequence('p1');
+            }
+            if (newState.p2_life !== undefined && prevP2Life > 0 && newState.p2_life === 0) {
+                triggerZeroLifeSequence('p2');
+            }
+
             let remoteShufflePlayer = null;
             if (newState.lastShuffle && newState.lastShuffle.timestamp > lastSeenShuffleTime) {
                 lastSeenShuffleTime = newState.lastShuffle.timestamp;
                 gameState.lastShuffle = newState.lastShuffle;
                 remoteShufflePlayer = newState.lastShuffle.player;
             }
+
+            let remoteLotteryWinner = null;
+            if (newState.lastLottery && newState.lastLottery.timestamp > lastSeenLotteryTime) {
+                lastSeenLotteryTime = newState.lastLottery.timestamp;
+                gameState.lastLottery = newState.lastLottery;
+                remoteLotteryWinner = newState.lastLottery.winner;
+            }
             
             ['p1_life', 'p1_reserve', 'p1_count', 'p1_trash_core', 
-             'p2_life', 'p2_reserve', 'p2_count', 'p2_trash_core', 'soulCoreLocation'].forEach(key => {
+             'p2_life', 'p2_reserve', 'p2_count', 'p2_trash_core', 'soulCoreLocation', 'lotteryUsed', 'lotteryPendingWinner', 'seats'].forEach(key => {
                 if (newState[key] !== undefined) gameState[key] = newState[key];
             });
             
@@ -2232,6 +2687,7 @@
             if (Array.isArray(newState.p2Deck)) gameState.p2Deck = newState.p2Deck;
 
             const remoteCoreChanges = [];
+            const remoteZoneMoves = [];
             if (Array.isArray(newState.cards)) {
                 const remoteIds = new Set(newState.cards.map(c => c.id));
                 Object.keys(gameState.cards).forEach(localId => {
@@ -2266,10 +2722,14 @@
                         };
                     } else {
                         const localCard = gameState.cards[remoteCard.id];
+                        const oldZone = localCard.zone;
                         const oldCores = localCard.cores || 0;
                         const newCores = remoteCard.cores || 0;
                         if (newCores !== oldCores) {
                             remoteCoreChanges.push({ id: remoteCard.id, owner: remoteCard.owner, zone: remoteCard.zone, delta: newCores - oldCores });
+                        }
+                        if (remoteCard.zone && remoteCard.zone !== oldZone) {
+                            remoteZoneMoves.push({ id: remoteCard.id, targetZone: remoteCard.zone });
                         }
                         localCard.zone = remoteCard.zone;
                         localCard.x = remoteCard.x || 0;
@@ -2323,8 +2783,14 @@
                     triggerElementCoreFlash(document.getElementById(`god-wrapper-${change.owner}`), change.delta);
                 }
             });
+            remoteZoneMoves.forEach(move => {
+                triggerCardZoneMoveFlash(move.id, move.targetZone);
+            });
             if (remoteShufflePlayer) {
                 triggerDeckShuffleFlash(remoteShufflePlayer);
+            }
+            if (remoteLotteryWinner) {
+                runLotteryAnimation(remoteLotteryWinner);
             }
             isSyncing = false;
         };
@@ -2358,6 +2824,10 @@
                 p2Deck: gameState.p2Deck,
                 soulCoreLocation: gameState.soulCoreLocation,
                 lastShuffle: gameState.lastShuffle,
+                lastLottery: gameState.lastLottery,
+                lotteryPendingWinner: gameState.lotteryPendingWinner || null,
+                lotteryUsed: !!gameState.lotteryUsed,
+                seats: gameState.seats || { p1: null, p2: null },
                 cards: Object.values(gameState.cards).map(card => ({
                     id: card.id,
                     owner: card.owner,
@@ -2379,13 +2849,20 @@
             }
         }
 
+        async function manualCleanupRooms() {
+            if (window.cleanupInactiveRooms) {
+                const count = await window.cleanupInactiveRooms(true);
+                showNotice(`已成功清除 ${count} 個無人使用或閒置的房間！`);
+            }
+        }
+
         updateAllUI();
     </script>
     
     <!-- Firebase Realtime Sync Module -->
     <script type="module">
         import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-        import { getFirestore, doc, setDoc, getDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, getDoc, getDocs, deleteDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
         
         const appId = "bsbeta-52f46";
         const firebaseConfig = {
@@ -2404,7 +2881,77 @@
 
         let unsubscribeRoom = null;
         let unsubscribeImages = null;
+        let heartbeatTimer = null;
         window.currentRoomCode = null;
+
+        // 1. 刪除指定房間及其底下的 cardImages 子集合
+        async function deleteRoomAndSubcollections(roomCode) {
+            try {
+                const imagesColRef = collection(db, 'artifacts', appId, 'public', 'data', 'rooms', roomCode, 'cardImages');
+                const imgSnaps = await getDocs(imagesColRef);
+                for (const imgDoc of imgSnaps.docs) {
+                    await deleteDoc(imgDoc.ref);
+                }
+                const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', roomCode);
+                await deleteDoc(roomRef);
+                return true;
+            } catch (err) {
+                console.warn("Failed to delete room:", roomCode, err);
+                return false;
+            }
+        }
+
+        // 自動掃描並清除無人使用或閒置超時的房間
+        window.cleanupInactiveRooms = async (forceAllUnseated = false) => {
+            if (!db) return 0;
+            let deletedCount = 0;
+            try {
+                const roomsColRef = collection(db, 'artifacts', appId, 'public', 'data', 'rooms');
+                const snap = await getDocs(roomsColRef);
+                const now = Date.now();
+                const STALE_TIMEOUT_MS = 10 * 60 * 1000; // 10 分鐘無任何心跳或操作視為廢棄房間
+                const EMPTY_SEAT_TIMEOUT_MS = 2 * 60 * 1000; // 無任何玩家入座且超過 2 分鐘無更新自動清除
+
+                for (const roomDoc of snap.docs) {
+                    const code = roomDoc.id;
+                    if (code === window.currentRoomCode) continue; // 不清除自己當前所在的房間
+
+                    const data = roomDoc.data() || {};
+                    const lastActive = data.lastActive || data.timestamp || 0;
+                    const age = now - lastActive;
+
+                    let hasActivePlayer = false;
+                    const activeClients = data.activeClients || {};
+                    const recentClientIds = Object.keys(activeClients).filter(cid => (now - activeClients[cid]) < 90 * 1000);
+
+                    if (data.stateJson) {
+                        try {
+                            const st = JSON.parse(data.stateJson);
+                            if (st.seats && (st.seats.p1 || st.seats.p2)) {
+                                hasActivePlayer = true;
+                            }
+                        } catch (e) {}
+                    }
+
+                    const isStale = age > STALE_TIMEOUT_MS;
+                    const isEmptyAndIdle = (!hasActivePlayer && recentClientIds.length === 0 && age > EMPTY_SEAT_TIMEOUT_MS);
+                    const shouldForceClean = forceAllUnseated && (!hasActivePlayer || age > 90 * 1000);
+
+                    if (isStale || isEmptyAndIdle || shouldForceClean) {
+                        const ok = await deleteRoomAndSubcollections(code);
+                        if (ok) deletedCount++;
+                    }
+                }
+            } catch (err) {
+                console.warn("Cleanup scan error:", err);
+            }
+            return deletedCount;
+        };
+
+        // 網頁啟動時自動背景清理一次廢棄房間
+        setTimeout(() => {
+            window.cleanupInactiveRooms(false);
+        }, 1500);
         
         window.initMultiplayer = async (roomCode, isCreator = false) => {
             const statusEl = document.getElementById('mp-status-msg');
@@ -2414,6 +2961,10 @@
             try {
                 if (unsubscribeRoom) unsubscribeRoom();
                 if (unsubscribeImages) unsubscribeImages();
+                if (heartbeatTimer) clearInterval(heartbeatTimer);
+
+                // 建立或加入新房間前，先自動清理舊的無人房間
+                await window.cleanupInactiveRooms(false);
 
                 window.currentRoomCode = roomCode;
                 const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', roomCode);
@@ -2427,8 +2978,24 @@
                         if (data.stateJson) {
                             window.applyGameState(JSON.parse(data.stateJson));
                         }
+                        await setDoc(roomRef, {
+                            lastActive: Date.now(),
+                            [`activeClients.${clientId}`]: Date.now()
+                        }, { merge: true });
                     }
                 }
+
+                // 每 30 秒發送一次在線心跳，維持房間存活
+                heartbeatTimer = setInterval(async () => {
+                    if (!window.currentRoomCode) return;
+                    try {
+                        const rRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', window.currentRoomCode);
+                        await setDoc(rRef, {
+                            lastActive: Date.now(),
+                            [`activeClients.${clientId}`]: Date.now()
+                        }, { merge: true });
+                    } catch (e) {}
+                }, 30000);
                 
                 unsubscribeRoom = onSnapshot(roomRef, (snapshot) => {
                     if (snapshot.exists()) {
@@ -2481,7 +3048,9 @@
                 await setDoc(roomRef, {
                     stateJson: JSON.stringify(stateObj),
                     lastUpdatedBy: clientId,
-                    timestamp: Date.now()
+                    timestamp: Date.now(),
+                    lastActive: Date.now(),
+                    [`activeClients.${clientId}`]: Date.now()
                 }, { merge: true });
             } catch (err) {
                 console.error("Sync failed:", err);
@@ -2492,6 +3061,22 @@
                 }
             }
         };
+
+        // 當玩家關閉或離開網頁時，釋放自己佔用的 P1/P2 座位並檢查房間是否已完全無人使用，若無人則直接清除房間
+        window.addEventListener('beforeunload', () => {
+            if (!db || !window.currentRoomCode) return;
+            const leavingCode = window.currentRoomCode;
+            if (gameState.seats) {
+                if (gameState.seats.p1 === localSeatId) gameState.seats.p1 = null;
+                if (gameState.seats.p2 === localSeatId) gameState.seats.p2 = null;
+            }
+            const nobodySeated = !gameState.seats?.p1 && !gameState.seats?.p2;
+            if (nobodySeated) {
+                deleteRoomAndSubcollections(leavingCode);
+            } else {
+                window.sendGameState(buildStatePayload());
+            }
+        });
 
         window.uploadPlayerCardImages = async (player, cardsMap) => {
             if (!db || !window.currentRoomCode) return;
