@@ -741,6 +741,11 @@
             content: none !important;
         }
 
+        /* 6. 卡牌正反面 3D 翻轉亮光特效 */
+        .card.card-flipping {
+            box-shadow: 0 0 26px 6px rgba(243, 198, 104, 0.85), 0 10px 25px rgba(0, 0, 0, 0.95) !important;
+        }
+
         /* 手機/iPad模式下長按拖動卡片時的跟隨視覺分身 */
         #touch-drag-ghost {
             position: fixed;
@@ -908,10 +913,11 @@
             display: flex;
             flex-wrap: nowrap;
             gap: 6px;
-            padding: 4px;
+            padding: 20px 6px 4px 6px;
             overflow-x: auto;
+            overflow-y: visible;
             align-items: center;
-            min-height: 150px;
+            min-height: 156px;
         }
         
         .hand-zone .card {
@@ -919,7 +925,21 @@
             left: auto !important;
             top: auto !important;
             flex-shrink: 0;
-            transform: none !important;
+            transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.22s ease, border-color 0.2s ease, opacity 0.15s !important;
+        }
+
+        /* 非翻轉動畫期間保持預設無變形，翻轉期間允許 3D rotateY 動畫在手牌中完整生效 */
+        .hand-zone .card:not(.card-flipping) {
+            transform: translateY(0) scale(1);
+        }
+
+        /* 3. 電腦模式滑鼠指向手牌、或手機版點擊手牌時，卡牌平滑向上突出動畫 */
+        body:not(.mobile-mode) .hand-zone:not(.opponent-hand) .card:not(.card-flipping):hover,
+        .hand-zone .card.hand-card-selected:not(.card-flipping) {
+            transform: translateY(-18px) scale(1.06) !important;
+            z-index: 120 !important;
+            border-color: #f3c668 !important;
+            box-shadow: 0 14px 28px rgba(0, 0, 0, 0.95), 0 0 14px rgba(243, 198, 104, 0.55) !important;
         }
 
         .hand-zone .card .card-controls {
@@ -1177,6 +1197,24 @@
             box-shadow: inset 0 2px 14px rgba(0, 0, 0, 0.8);
         }
 
+        /* 1. 自己的手牌區在上下滾動畫面時固定在畫面最下方 */
+        .sticky-my-hand {
+            position: sticky !important;
+            bottom: 0 !important;
+            z-index: 500 !important;
+            background: rgba(10, 9, 8, 0.94) !important;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-top: 1.5px solid rgba(200, 170, 118, 0.65) !important;
+            box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.92), inset 0 2px 14px rgba(0, 0, 0, 0.85) !important;
+        }
+
+        /* 2. 牌庫與編輯器卡片格位效能優化：自動略過視窗外元素的渲染，大幅減少 DOM 卡頓 */
+        .pool-card-cell {
+            content-visibility: auto;
+            contain-intrinsic-size: 116px 210px;
+        }
+
         /* 左上角貼邊迷你箭咀按鈕 (銳利暗金邊框) */
         #opp-pip-toggle-btn {
             position: fixed;
@@ -1391,7 +1429,7 @@
 
     <div id="lottery-confirm-container" class="fixed inset-0 pointer-events-none z-[9050] hidden flex justify-center items-center">
         <div class="pointer-events-auto border border-[#c8aa76] bg-black/95 px-7 py-5 rounded-sm shadow-[0_15px_45px_rgba(0,0,0,0.95)] flex flex-col items-center gap-3">
-            <div id="lottery-winner-text" class="text-[#e0b25b] font-black tracking-widest text-base uppercase">🎯 抽籤結果：P1 獲選！</div>
+            <div id="lottery-winner-text" class="text-[#e0b25b] font-black tracking-widest text-base uppercase">🎯 抽籤結果：P1 先攻！</div>
             <button class="bg-[#c8aa76] text-black hover:bg-white font-black px-6 py-2 rounded-sm text-xs tracking-widest uppercase transition-colors cursor-pointer" onclick="confirmLotteryResult()">✓ 確認 (CONFIRM)</button>
         </div>
     </div>
@@ -1627,7 +1665,7 @@
             
             <!-- Center Field -->
             <div id="field-p1" class="zone field-zone relative overflow-hidden min-h-[370px]" ondrop="drop(event, 'field-p1')" ondragover="allowDrop(event)">
-                 <div class="field-label">PLAYER (YOU)</div>
+                 <div class="field-label">YOU</div>
                  <!-- 2. P1 勝利特效覆蓋層 -->
                  <div id="victory-overlay-p1" class="victory-banner hidden">
                      <div class="text-5xl font-black tracking-widest text-yellow-300 drop-shadow-[0_0_20px_rgba(250,204,21,1)]">VICTORY</div>
@@ -1847,23 +1885,106 @@
         </div>
     </div>
 
-    <!-- 本地卡組庫 (Deck Vault) Modal：查看所有匯入過的 Deck、自由載入至 P1 / P2、新增與刪除資料庫 -->
+    <!-- 雲端共享卡組庫與卡組編輯器 (Deck Vault & Deck Editor) Modal -->
     <div id="deck-vault-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-[10500] hidden flex justify-center items-center p-6">
-        <div class="border border-[#b09466]/60 bg-[#0a0a0a]/95 w-full max-w-4xl max-h-[85vh] flex flex-col p-5 gap-3.5 shadow-2xl rounded-sm">
-            <div class="flex justify-between items-center border-b border-[#b09466]/30 pb-3 flex-wrap gap-2">
-                <div class="flex items-center gap-2.5">
-                    <div class="text-[#e0b25b] font-black tracking-widest text-lg uppercase">🗂️ 卡組庫 (SAVED DECK VAULT)</div>
-                    <span id="deck-vault-count-badge" class="bg-black/80 border border-[#b09466]/45 text-[#e0b25b] px-2 py-0.5 rounded-sm text-xs font-bold">0 副卡組</span>
+        <div class="border border-[#b09466]/60 bg-[#0a0a0a]/95 w-full max-w-6xl max-h-[90vh] flex flex-col p-5 gap-3.5 shadow-2xl rounded-sm">
+            <!-- 卡組庫列表視圖 -->
+            <div id="deck-vault-main-view" class="flex flex-col flex-1 min-h-0 gap-3.5">
+                <div class="flex justify-between items-center border-b border-[#b09466]/30 pb-3 flex-wrap gap-2">
+                    <div class="flex items-center gap-2.5">
+                        <div class="text-[#e0b25b] font-black tracking-widest text-lg uppercase">🗂️ 共享卡組庫 (SHARED DECK VAULT)</div>
+                        <span id="deck-vault-count-badge" class="bg-black/80 border border-[#b09466]/45 text-[#e0b25b] px-2 py-0.5 rounded-sm text-xs font-bold">0 副卡組</span>
+                        <span id="deck-vault-sync-status" class="text-[10px] text-emerald-400 font-bold">● 雲端即時同步中</span>
+                    </div>
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <input type="file" id="vault-import-zip-input" accept=".zip" class="hidden" onchange="importZipToVaultOnly(event)">
+                        <button id="btn-open-card-pool" class="border border-purple-400/60 bg-purple-950/60 text-purple-200 hover:bg-purple-500 hover:text-white px-3 py-1 rounded-sm text-xs font-black cursor-pointer transition-colors" onclick="openCardPoolView()" title="查看所有導入過的單卡牌庫，可新增或刪除單卡">📚 查看牌庫 (0)</button>
+                        <button class="border border-sky-500/55 bg-sky-950/50 text-sky-300 hover:bg-sky-500 hover:text-black px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="openDeckEditor(null)">✨ 新建空白卡組</button>
+                        <button class="border border-emerald-500/55 bg-emerald-950/50 text-emerald-300 hover:bg-emerald-500 hover:text-black px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="document.getElementById('vault-import-zip-input').click()">＋ 匯入 .ZIP 卡組</button>
+                        <button class="border border-rose-500/55 bg-rose-950/50 text-rose-300 hover:bg-rose-600 hover:text-white px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="clearAllDecksFromVault()" title="刪除並清空所有已儲存的匯入卡組資料庫">🗑️ 清空資料庫</button>
+                        <button class="border border-[#b09466]/45 bg-black/70 text-[#dcd6cc] hover:bg-[#c8aa76] hover:text-black px-3.5 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="closeDeckVaultModal()">CLOSE (✕)</button>
+                    </div>
                 </div>
-                <div class="flex items-center gap-2">
-                    <input type="file" id="vault-import-zip-input" accept=".zip" class="hidden" onchange="importZipToVaultOnly(event)">
-                    <button class="border border-emerald-500/55 bg-emerald-950/50 text-emerald-300 hover:bg-emerald-500 hover:text-black px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="document.getElementById('vault-import-zip-input').click()">＋ 新增匯入 .ZIP 卡組</button>
-                    <button class="border border-rose-500/55 bg-rose-950/50 text-rose-300 hover:bg-rose-600 hover:text-white px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="clearAllDecksFromVault()" title="刪除並清空所有已儲存的匯入卡組資料庫">🗑️ 清空整個資料庫</button>
-                    <button class="border border-[#b09466]/45 bg-black/70 text-[#dcd6cc] hover:bg-[#c8aa76] hover:text-black px-3.5 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="closeDeckVaultModal()">CLOSE (✕)</button>
+                <div class="text-[11px] text-[#c8bea8]">所有玩家導入或編輯的卡組都會自動同步至雲端共享庫（新卡牌亦會自動收錄至「📚 牌庫」），任何人皆可查看、重新命名、編輯卡牌數量或直接載入至 P1 / P2。</div>
+                <div id="deck-vault-list" class="flex-1 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5 p-1 custom-scrollbar">
                 </div>
             </div>
-            <div class="text-[11px] text-[#c8bea8]">所有從 P1 / P2 或此處匯入過的 .ZIP 牌組皆會自動保存在瀏覽器硬碟資料庫（IndexedDB，不佔用遊戲執行記憶體）。可隨時點選下方按鈕將任意牌組載入至 P1 或 P2。</div>
-            <div id="deck-vault-list" class="flex-1 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5 p-1 custom-scrollbar">
+
+            <!-- 牌庫管理視圖 (Card Pool View) -->
+            <div id="card-pool-view" class="hidden flex-col flex-1 min-h-0 gap-3.5">
+                <div class="flex justify-between items-center border-b border-[#b09466]/30 pb-3 flex-wrap gap-2">
+                    <div class="flex items-center gap-2.5 flex-wrap">
+                        <button class="border border-[#b09466]/45 bg-black/70 text-[#dcd6cc] hover:bg-[#c8aa76] hover:text-black px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="closeCardPoolView()">◀ 返回卡組庫</button>
+                        <div class="text-[#e0b25b] font-black tracking-widest text-lg uppercase">📚 共享總牌庫 (CARD POOL)</div>
+                        <span id="card-pool-count-badge" class="bg-purple-950/80 border border-purple-400/50 text-purple-200 px-2.5 py-0.5 rounded-sm text-xs font-black">0 張卡牌</span>
+                        <span id="card-pool-ocr-status" class="hidden text-[11px] text-amber-300 font-bold animate-pulse">🔍 正在辨識卡牌右下角編號...</span>
+                    </div>
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <input type="file" id="card-pool-import-input" accept="image/*,.zip" multiple class="hidden" onchange="handleCardPoolImportFiles(event)">
+                        <button class="border border-amber-400/60 bg-amber-950/60 text-amber-200 hover:bg-amber-400 hover:text-black px-3 py-1 rounded-sm text-xs font-black cursor-pointer transition-colors" onclick="rescanAllCardPoolCodes()" title="重新掃描並辨識牌庫中所有卡牌右下角的卡號">🔍 辨識全部右下角卡號</button>
+                        <button class="border border-sky-400/60 bg-sky-950/60 text-sky-200 hover:bg-sky-400 hover:text-black px-3 py-1 rounded-sm text-xs font-black cursor-pointer transition-colors" onclick="document.getElementById('card-pool-import-input').click()">＋ 導入卡牌至牌庫 (圖片 / ZIP)</button>
+                        <button class="border border-rose-500/55 bg-rose-950/50 text-rose-300 hover:bg-rose-600 hover:text-white px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="clearAllCardPool()">🗑️ 清空牌庫</button>
+                        <button class="border border-[#b09466]/45 bg-black/70 text-[#dcd6cc] hover:bg-[#c8aa76] hover:text-black px-3.5 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="closeDeckVaultModal()">CLOSE (✕)</button>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between gap-3 flex-wrap">
+                    <div class="text-[11px] text-[#c8bea8]">導入卡牌時會自動偵測右下角編號命名（如 <b class="text-[#e0b25b]">BS71-CP05</b>），亦可直接點擊卡號修改。支援忽略空格搜尋（如輸入 <b class="text-white">bs 71</b> 會顯示所有 BS71 卡牌）。</div>
+                    <div class="flex items-center gap-1.5 min-w-[260px] flex-1 max-w-[360px]">
+                        <div class="relative flex-1">
+                            <input id="card-pool-search-input" type="text" placeholder="🔍 搜尋卡號 (例如: bs 71 / BS71-CP05)..." class="w-full bg-black/85 border border-purple-400/55 focus:border-[#e0b25b] text-[#f5efe6] text-xs font-bold px-3 py-1.5 pr-7 rounded-sm outline-none" oninput="onCardPoolSearchInput(this.value)">
+                            <button type="button" class="absolute right-2 top-1/2 -translate-y-1/2 text-[#a89f91] hover:text-white text-xs cursor-pointer" onclick="onCardPoolSearchInput('')" title="清除搜尋">✕</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="card-pool-grid" class="flex-1 overflow-y-auto grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 gap-3.5 p-2 custom-scrollbar bg-black/40 border border-[#b09466]/20 rounded-sm">
+                </div>
+            </div>
+
+            <!-- 卡組編輯器視圖 (Deck Editor View：左側顯示總牌庫點擊加入，右側編輯當前 Deck 且減到 0 不會消失) -->
+            <div id="deck-editor-view" class="hidden flex-col flex-1 min-h-0 gap-3">
+                <div class="flex justify-between items-center border-b border-[#b09466]/30 pb-3 flex-wrap gap-2">
+                    <div class="flex items-center gap-2 flex-1 min-w-[240px]">
+                        <button class="border border-[#b09466]/45 bg-black/70 text-[#dcd6cc] hover:bg-[#c8aa76] hover:text-black px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="closeDeckEditor()">◀ 返回列表</button>
+                        <span class="text-xs font-bold text-[#c8bea8] ml-1">卡組名稱：</span>
+                        <input id="deck-editor-name-input" type="text" placeholder="輸入卡組名稱..." class="bg-black/80 border border-[#b09466]/60 focus:border-[#e0b25b] text-[#f5efe6] text-sm font-black px-3 py-1 rounded-sm outline-none flex-1 max-w-[280px]">
+                        <span id="deck-editor-total-badge" class="bg-amber-950/70 border border-[#c8aa76]/60 text-[#e0b25b] px-2.5 py-1 rounded-sm text-xs font-black">總計 0 張</span>
+                    </div>
+                    <div class="flex items-center gap-2 flex-wrap">
+                        <input type="file" id="deck-editor-add-img-input" accept="image/*,.zip" multiple class="hidden" onchange="handleDeckEditorImportFiles(event)">
+                        <button class="border border-sky-400/60 bg-sky-950/60 text-sky-200 hover:bg-sky-400 hover:text-black px-3 py-1.5 rounded-sm text-xs font-black cursor-pointer transition-colors" onclick="document.getElementById('deck-editor-add-img-input').click()">＋ 導入卡牌 (圖片 / ZIP)</button>
+                        <button id="btn-editor-overwrite" class="border border-emerald-400/60 bg-emerald-950/60 text-emerald-200 hover:bg-emerald-400 hover:text-black px-3.5 py-1.5 rounded-sm text-xs font-black cursor-pointer transition-colors" onclick="saveDeckEditorResult(false)">💾 保存編輯覆蓋</button>
+                        <button class="bg-[#c8aa76] text-black hover:bg-white px-3.5 py-1.5 rounded-sm text-xs font-black cursor-pointer transition-colors" onclick="saveDeckEditorResult(true)">✨ 另存新 Deck</button>
+                    </div>
+                </div>
+                <div class="text-[11px] text-[#c8bea8] flex justify-between items-center flex-wrap gap-1">
+                    <span>💡 <b>左側牌庫</b>：可搜尋卡號（如 <b class="text-white">bs 71</b>）並點擊卡牌加入右側 Deck；<b>右側卡組</b>：按「<b class="text-white">－</b> / <b class="text-white">＋</b>」調整張數（減到 <b class="text-rose-300">0 張</b>時不會立即消失，直到點擊保存才會移除）。</span>
+                </div>
+                <div class="flex-1 min-h-0 grid grid-cols-1 md:grid-cols-12 gap-3.5 overflow-hidden">
+                    <!-- 左側：總牌庫 (支援搜尋卡號 + 點擊卡牌直接加入當前編輯的 Deck) -->
+                    <div class="md:col-span-5 flex flex-col min-h-0 bg-black/50 border border-purple-400/35 rounded-sm p-2.5">
+                        <div class="flex items-center justify-between gap-2 pb-2 mb-2 border-b border-[#b09466]/25 flex-wrap">
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-xs font-black text-purple-300 tracking-wider">📚 總牌庫 (點擊加入)</span>
+                                <span id="deck-editor-pool-count" class="bg-purple-950/80 border border-purple-400/40 text-purple-200 px-1.5 py-0 rounded-sm text-[10px] font-bold">0</span>
+                            </div>
+                            <div class="relative flex-1 min-w-[140px]">
+                                <input id="deck-editor-pool-search-input" type="text" placeholder="🔍 搜尋如 bs 71..." class="w-full bg-black/85 border border-purple-400/45 focus:border-[#e0b25b] text-[#f5efe6] text-[11px] font-bold px-2.5 py-1 pr-6 rounded-sm outline-none" oninput="onCardPoolSearchInput(this.value)">
+                                <button type="button" class="absolute right-1.5 top-1/2 -translate-y-1/2 text-[#a89f91] hover:text-white text-[10px] cursor-pointer" onclick="onCardPoolSearchInput('')" title="清除搜尋">✕</button>
+                            </div>
+                        </div>
+                        <div id="deck-editor-pool-grid" class="flex-1 overflow-y-auto grid grid-cols-3 sm:grid-cols-3 gap-2.5 p-1 custom-scrollbar content-start">
+                        </div>
+                    </div>
+
+                    <!-- 右側：當前編輯中的卡組卡牌 -->
+                    <div class="md:col-span-7 flex flex-col min-h-0 bg-black/40 border border-[#b09466]/35 rounded-sm p-2.5">
+                        <div class="flex items-center justify-between pb-2 mb-2 border-b border-[#b09466]/25">
+                            <span class="text-xs font-black text-[#e0b25b] tracking-wider">🃏 當前編輯卡組內容 (減至 0 張保存後才移除)</span>
+                        </div>
+                        <div id="deck-editor-card-grid" class="flex-1 overflow-y-auto grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 p-1 custom-scrollbar content-start">
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -1878,6 +1999,7 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
     <script>
         /* =========================================================================
            GLOBAL STATE
@@ -2520,13 +2642,6 @@
                         boxShadow: '0 0 25px 6px rgba(156, 163, 175, 0.8)',
                         borderColor: '#9ca3af',
                         opacity: 1,
-                        offset: 0.88
-                    },
-                    {
-                        transform: `translate(${dx}px, ${dy}px) scale(0.76) rotate(0deg)`,
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.8)',
-                        borderColor: '#9ca3af',
-                        opacity: 1,
                         offset: 1
                     }
                 ], {
@@ -2582,7 +2697,146 @@
             }
         }
 
-        // 2. 生命值歸零時：歸零方閃紅光並震動 2 秒，另一方顯示 VICTORY 勝利 2 秒後恢復正常
+        // 5. 戰敗方區域連環爆破特效 與 勝利方區域慶祝煙花特效
+        function playDefeatExplosionOnField(loserPlayer) {
+            const fieldEl = document.getElementById(`field-${loserPlayer}`);
+            if (!fieldEl) return;
+            const rect = fieldEl.getBoundingClientRect();
+
+            for (let b = 0; b < 6; b++) {
+                setTimeout(() => {
+                    const cx = rect.left + rect.width * (0.18 + Math.random() * 0.64);
+                    const cy = rect.top + rect.height * (0.2 + Math.random() * 0.6);
+
+                    // 爆破核心火球與震波環
+                    const coreBlast = document.createElement('div');
+                    coreBlast.style.position = 'fixed';
+                    coreBlast.style.left = `${cx}px`;
+                    coreBlast.style.top = `${cy}px`;
+                    coreBlast.style.width = '54px';
+                    coreBlast.style.height = '54px';
+                    coreBlast.style.borderRadius = '50%';
+                    coreBlast.style.background = 'radial-gradient(circle, #ffffff 0%, #fde047 30%, #f97316 62%, #dc2626 90%, transparent 100%)';
+                    coreBlast.style.boxShadow = '0 0 55px 22px rgba(239, 68, 68, 0.95)';
+                    coreBlast.style.pointerEvents = 'none';
+                    coreBlast.style.zIndex = '16900';
+                    document.body.appendChild(coreBlast);
+
+                    coreBlast.animate([
+                        { transform: 'translate(-50%, -50%) scale(0.2)', opacity: 1 },
+                        { transform: 'translate(-50%, -50%) scale(2.9)', opacity: 0.92, offset: 0.38 },
+                        { transform: 'translate(-50%, -50%) scale(4.2)', opacity: 0 }
+                    ], { duration: 540, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' }).onfinish = () => coreBlast.remove();
+
+                    // 飛散火光與爆破碎片
+                    const shardColors = ['#ef4444', '#f97316', '#fde047', '#ffffff', '#7f1d1d'];
+                    for (let i = 0; i < 24; i++) {
+                        const shard = document.createElement('div');
+                        const size = 6 + Math.random() * 8;
+                        const color = shardColors[i % shardColors.length];
+                        shard.style.position = 'fixed';
+                        shard.style.left = `${cx}px`;
+                        shard.style.top = `${cy}px`;
+                        shard.style.width = `${size}px`;
+                        shard.style.height = `${size}px`;
+                        shard.style.borderRadius = i % 2 === 0 ? '2px' : '50%';
+                        shard.style.background = color;
+                        shard.style.boxShadow = `0 0 14px 3px ${color}`;
+                        shard.style.pointerEvents = 'none';
+                        shard.style.zIndex = '16910';
+                        document.body.appendChild(shard);
+
+                        const angle = (Math.PI * 2 * i) / 24 + (Math.random() - 0.5) * 0.35;
+                        const dist = 65 + Math.random() * 120;
+                        const tx = Math.cos(angle) * dist;
+                        const ty = Math.sin(angle) * dist + 18;
+                        const rot = (Math.random() - 0.5) * 360;
+
+                        shard.animate([
+                            { transform: 'translate(-50%, -50%) scale(1.2) rotate(0deg)', opacity: 1 },
+                            { transform: `translate(calc(-50% + ${tx}px), calc(-50% + ${ty}px)) scale(0.15) rotate(${rot}deg)`, opacity: 0 }
+                        ], {
+                            duration: 520 + Math.random() * 260,
+                            easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+                            fill: 'forwards'
+                        }).onfinish = () => shard.remove();
+                    }
+                }, b * 170);
+            }
+        }
+
+        function playVictoryFireworksOnField(winnerPlayer) {
+            const targetField = document.getElementById(`field-${winnerPlayer}`);
+            if (!targetField) return;
+            const targetRect = targetField.getBoundingClientRect();
+            const palettes = [
+                ['#fde047', '#f59e0b', '#ffffff'],
+                ['#38bdf8', '#818cf8', '#e0f2fe'],
+                ['#34d399', '#a7f3d0', '#fef08a'],
+                ['#f43f5e', '#fb7185', '#fef08a'],
+                ['#c084fc', '#f472b6', '#ffffff']
+            ];
+
+            for (let s = 0; s < 6; s++) {
+                setTimeout(() => {
+                    const endX = targetRect.left + targetRect.width * (0.18 + Math.random() * 0.64);
+                    const endY = targetRect.top + targetRect.height * (0.2 + Math.random() * 0.6);
+                    const palette = palettes[s % palettes.length];
+
+                    const flashRing = document.createElement('div');
+                    flashRing.style.position = 'fixed';
+                    flashRing.style.left = `${endX}px`;
+                    flashRing.style.top = `${endY}px`;
+                    flashRing.style.width = '22px';
+                    flashRing.style.height = '22px';
+                    flashRing.style.borderRadius = '50%';
+                    flashRing.style.border = `3px solid ${palette[0]}`;
+                    flashRing.style.boxShadow = `0 0 32px 12px ${palette[0]}`;
+                    flashRing.style.pointerEvents = 'none';
+                    flashRing.style.zIndex = '16890';
+                    document.body.appendChild(flashRing);
+                    flashRing.animate([
+                        { transform: 'translate(-50%, -50%) scale(0.3)', opacity: 1 },
+                        { transform: 'translate(-50%, -50%) scale(4.8)', opacity: 0 }
+                    ], { duration: 520, easing: 'ease-out' }).onfinish = () => flashRing.remove();
+
+                    const particleCount = 28;
+                    for (let i = 0; i < particleCount; i++) {
+                        const p = document.createElement('div');
+                        const color = palette[i % palette.length];
+                        const size = 5 + Math.random() * 5.5;
+                        p.style.position = 'fixed';
+                        p.style.left = `${endX}px`;
+                        p.style.top = `${endY}px`;
+                        p.style.width = `${size}px`;
+                        p.style.height = `${size}px`;
+                        p.style.borderRadius = '50%';
+                        p.style.background = color;
+                        p.style.boxShadow = `0 0 12px 3px ${color}`;
+                        p.style.pointerEvents = 'none';
+                        p.style.zIndex = '16900';
+                        document.body.appendChild(p);
+
+                        const angle = (Math.PI * 2 * i) / particleCount + (Math.random() - 0.5) * 0.25;
+                        const dist = 60 + Math.random() * 95;
+                        const tx = Math.cos(angle) * dist;
+                        const ty = Math.sin(angle) * dist + 22;
+
+                        p.animate([
+                            { transform: 'translate(-50%, -50%) scale(1)', opacity: 1 },
+                            { transform: `translate(calc(-50% + ${tx * 0.75}px), calc(-50% + ${ty * 0.65}px)) scale(1.2)`, opacity: 1, offset: 0.55 },
+                            { transform: `translate(calc(-50% + ${tx}px), calc(-50% + ${ty}px)) scale(0.15)`, opacity: 0 }
+                        ], {
+                            duration: 680 + Math.random() * 280,
+                            easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+                            fill: 'forwards'
+                        }).onfinish = () => p.remove();
+                    }
+                }, s * 160);
+            }
+        }
+
+        // 2 & 5. 生命值歸零時：戰敗方閃紅光震動並爆破，勝利方顯示 VICTORY 並綻放煙花
         function triggerZeroLifeSequence(loserPlayer) {
             const winnerPlayer = loserPlayer === 'p1' ? 'p2' : 'p1';
             const loserSection = document.getElementById(`section-main-${loserPlayer}`);
@@ -2598,12 +2852,42 @@
             if (loserLifeBox) loserLifeBox.classList.add('zero-life-shake');
             if (winnerOverlay) winnerOverlay.classList.remove('hidden');
 
+            playDefeatExplosionOnField(loserPlayer);
+            playVictoryFireworksOnField(winnerPlayer);
+
             zeroLifeTimers[loserPlayer] = setTimeout(() => {
                 if (loserSection) loserSection.classList.remove('zero-life-shake');
                 if (loserLifeBox) loserLifeBox.classList.remove('zero-life-shake');
                 if (winnerOverlay) winnerOverlay.classList.add('hidden');
                 zeroLifeTimers[loserPlayer] = null;
-            }, 2000);
+            }, 2400);
+        }
+
+        // 6. 抽籤結束時的提示音效 (Web Audio API 清脆和弦決定音)
+        function playLotteryFinishSound() {
+            try {
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                if (!AudioCtx) return;
+                const ctx = new AudioCtx();
+                if (ctx.state === 'suspended') ctx.resume();
+
+                const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+                notes.forEach((freq, idx) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = idx === notes.length - 1 ? 'triangle' : 'sine';
+                    osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.065);
+
+                    gain.gain.setValueAtTime(0.0001, ctx.currentTime + idx * 0.065);
+                    gain.gain.exponentialRampToValueAtTime(0.22, ctx.currentTime + idx * 0.065 + 0.02);
+                    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + idx * 0.065 + 0.55);
+
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(ctx.currentTime + idx * 0.065);
+                    osc.stop(ctx.currentTime + idx * 0.065 + 0.58);
+                });
+            } catch (e) {}
         }
 
         // 4. 隨機抽籤決定玩家：由快到慢閃爍 3 秒，結束時停在獲選區域呈現黃色並顯示確認按鈕
@@ -2639,7 +2923,7 @@
                 winSec?.classList.add('lottery-winner-yellow');
                 winField?.classList.add('lottery-winner-yellow');
                 if (winnerText) {
-                    winnerText.innerText = `🎯 抽籤結果：${w.toUpperCase()} 獲選！`;
+                    winnerText.innerText = `🎯 抽籤結果：${w.toUpperCase()} 先攻！`;
                 }
                 if (confirmContainer) confirmContainer.classList.remove('hidden');
             } else {
@@ -2654,16 +2938,14 @@
             updateRoomState();
         }
 
-        // 同步更新放大預覽圖的旋轉角度與正反面狀態
+        // 7. 同步更新放大預覽圖的正反面狀態（放大預視圖永遠保持正向 0 度直立，不跟隨場上卡牌旋轉）
         function syncActivePreviewTransform() {
             if (!activePreviewCardId) return;
             const cardData = gameState.cards[activePreviewCardId];
             const previewImg = document.getElementById('card-preview-img');
             if (!cardData || !previewImg) return;
 
-            const isFieldOrGod = cardData.zone && (cardData.zone.startsWith('field-') || cardData.zone.startsWith('zone-god-'));
-            const rot = isFieldOrGod ? (cardData.rotation || 0) : 0;
-            previewImg.style.transform = `rotate(${rot}deg)`;
+            previewImg.style.transform = 'rotate(0deg)';
 
             const imgSrc = (cardHighResCache[activePreviewCardId]) || cardData.imgBase64 || cardImageCache[activePreviewCardId] || '';
             if (cardData.isFaceDown) {
@@ -2675,7 +2957,7 @@
             }
         }
 
-        // 4. 將卡牌高清放大預覽 (375x525，放大25%) 顯示在指定的卡牌旁邊 (支援手機模式點擊放大卡片互動)
+        // 4 & 7. 將卡牌高清放大預覽 (375x525，放大25%) 顯示在指定的卡牌旁邊，且放大預視圖永遠保持直立不旋轉
         function showCardPreviewNextToElement(targetEl, imgSrc, cardId = null, interactive = false) {
             if (!targetEl) return;
             const cardData = cardId ? gameState.cards[cardId] : null;
@@ -2696,9 +2978,8 @@
                 previewImg.style.backgroundImage = hdSrc ? `url(${hdSrc})` : 'none';
             }
 
-            const isFieldOrGod = cardData && cardData.zone && (cardData.zone.startsWith('field-') || cardData.zone.startsWith('zone-god-'));
-            const rot = isFieldOrGod ? (cardData.rotation || 0) : 0;
-            previewImg.style.transform = `rotate(${rot}deg)`;
+            // 7. 放大的預視圖永遠保持 0 度正向，不跟隨卡牌旋轉
+            previewImg.style.transform = 'rotate(0deg)';
 
             if (interactive) {
                 previewPanel.classList.remove('pointer-events-none');
@@ -2744,6 +3025,7 @@
             previewPanel.classList.add('pointer-events-none');
             if (previewImg) previewImg.style.transform = 'rotate(0deg)';
             if (mobileHint) mobileHint.classList.add('hidden');
+            document.querySelectorAll('.card.hand-card-selected').forEach(c => c.classList.remove('hand-card-selected'));
         }
 
         // 手機/iPad模式下：點擊放大後卡牌的左右側旋轉 90 度，快速連點兩下放大後卡牌翻轉，點擊放大卡片以外位置取消放大
@@ -2845,6 +3127,7 @@
                         isLotteryRunning = false;
                         lotteryStepTimer = null;
                         gameState.lotteryPendingWinner = winner;
+                        playLotteryFinishSound();
                         applyLotteryPendingUI();
                     }, delay);
                 }
@@ -3856,18 +4139,22 @@
                 const activeBtnClass = "text-xs px-3 py-1 rounded-sm bg-[#c8aa76] text-black font-bold cursor-pointer transition-all";
                 const inactiveBtnClass = "text-xs px-3 py-1 rounded-sm text-[#a89f91] hover:text-white cursor-pointer transition-all";
                 
+                p1Hand.classList.remove('sticky-my-hand');
+                p2Hand.classList.remove('sticky-my-hand');
+
                 if (gameState.viewMode === 'P1') {
                     btnP1.className = activeBtnClass;
                     btnP2.className = inactiveBtnClass;
                     btnSpec.className = inactiveBtnClass;
                     
-                    document.querySelector('#field-p1 .field-label').innerText = "PLAYER (YOU)";
+                    document.querySelector('#field-p1 .field-label').innerText = "YOU";
                     document.querySelector('#field-p2 .field-label').innerText = "OPPONENT";
                     document.getElementById('title-hand-p1').innerText = "Player Hand (P1)";
                     document.getElementById('title-hand-p2').innerText = "Opponent Hand (P2)";
                     
                     document.getElementById('hand-p2').classList.add('opponent-hand');
                     document.getElementById('hand-p1').classList.remove('opponent-hand');
+                    p1Hand.classList.add('sticky-my-hand');
                     
                     mainContainer.appendChild(p2Hand);
                     mainContainer.appendChild(p2Section);
@@ -3879,13 +4166,14 @@
                     btnP1.className = inactiveBtnClass;
                     btnSpec.className = inactiveBtnClass;
                     
-                    document.querySelector('#field-p2 .field-label').innerText = "PLAYER (YOU)";
+                    document.querySelector('#field-p2 .field-label').innerText = "YOU";
                     document.querySelector('#field-p1 .field-label').innerText = "OPPONENT";
                     document.getElementById('title-hand-p2').innerText = "Player Hand (P2)";
                     document.getElementById('title-hand-p1').innerText = "Opponent Hand (P1)";
                     
                     document.getElementById('hand-p1').classList.add('opponent-hand');
                     document.getElementById('hand-p2').classList.remove('opponent-hand');
+                    p2Hand.classList.add('sticky-my-hand');
                     
                     mainContainer.appendChild(p1Hand);
                     mainContainer.appendChild(p1Section);
@@ -3904,6 +4192,7 @@
 
                     document.getElementById('hand-p1').classList.remove('opponent-hand');
                     document.getElementById('hand-p2').classList.remove('opponent-hand');
+                    p1Hand.classList.add('sticky-my-hand');
 
                     mainContainer.appendChild(p2Hand);
                     mainContainer.appendChild(p2Section);
@@ -4165,13 +4454,28 @@
             gameState.viewMode = mode;
             if (!gameState.seats) gameState.seats = { p1: null, p2: null };
 
-            if (gameState.seats.p1 === localSeatId) gameState.seats.p1 = null;
-            if (gameState.seats.p2 === localSeatId) gameState.seats.p2 = null;
+            let releasedP1 = false;
+            let releasedP2 = false;
+            if (gameState.seats.p1 === localSeatId) {
+                gameState.seats.p1 = null;
+                releasedP1 = true;
+            }
+            if (gameState.seats.p2 === localSeatId) {
+                gameState.seats.p2 = null;
+                releasedP2 = true;
+            }
 
             if (mode === 'P1') {
                 gameState.seats.p1 = localSeatId;
+                if (window.syncPlayerSeat) window.syncPlayerSeat('p1', localSeatId);
+                if (releasedP2 && window.syncPlayerSeat) window.syncPlayerSeat('p2', null);
             } else if (mode === 'P2') {
                 gameState.seats.p2 = localSeatId;
+                if (window.syncPlayerSeat) window.syncPlayerSeat('p2', localSeatId);
+                if (releasedP1 && window.syncPlayerSeat) window.syncPlayerSeat('p1', null);
+            } else {
+                if (releasedP1 && window.syncPlayerSeat) window.syncPlayerSeat('p1', null);
+                if (releasedP2 && window.syncPlayerSeat) window.syncPlayerSeat('p2', null);
             }
 
             updateAllUI();
@@ -4329,10 +4633,11 @@
                 totalOrbs
             );
 
-            // (d) 場上所有卡牌若非打直狀態，則向左旋轉 90 度
+            // (d) 場上所有卡牌及創界神區所有卡牌，若非打直狀態，則向左旋轉 90 度回正
             const fieldPrefix = `field-${player}`;
+            const godPrefix = `zone-god-${player}`;
             Object.values(gameState.cards).forEach(cardData => {
-                if (cardData.zone === fieldPrefix) {
+                if (cardData.zone === fieldPrefix || cardData.zone === godPrefix) {
                     const currentRot = cardData.rotation || 0;
                     const normRot = ((currentRot % 360) + 360) % 360;
                     if (normRot !== 0) {
@@ -4377,44 +4682,25 @@
         }
 
         /* =========================================================================
-           SOUL CORE MECHANICS & CENTER CORE SPAWNER
+           SOUL CORE, CENTER CORE & ZONE CORE TRANSFER HELPERS
            ========================================================================= */
-        function getSoulCoreLocationElement(player, loc) {
-            if (!loc) return null;
-            const slotMap = {
-                reserve: `slot_${player}_soul_reserve`,
-                trash: `slot_${player}_soul_trash`,
-                count: `slot_${player}_soul_count`,
-                life: `slot_${player}_soul_life`
-            };
-            const boxMap = {
-                reserve: `reserve-box-${player}`,
-                trash: `trash-core-box-${player}`,
-                count: `count-box-${player}`,
-                life: `life-box-${player}`
-            };
-            if (slotMap[loc]) {
-                const slotEl = document.getElementById(slotMap[loc]);
-                if (slotEl) {
-                    const r = slotEl.getBoundingClientRect();
-                    if (r.width > 0 && r.height > 0) return slotEl;
-                }
-                return document.getElementById(boxMap[loc]);
-            }
+        function getSoulPlaceAnchor(player, loc) {
+            if (!loc) return `reserve-box-${player}`;
+            if (loc === 'reserve') return `reserve-box-${player}`;
+            if (loc === 'trash') return `trash-core-box-${player}`;
+            if (loc === 'life') return `life-box-${player}`;
+            if (loc === 'count') return `count-box-${player}`;
             const cardEl = document.getElementById(loc);
-            if (cardEl) {
-                return cardEl.querySelector('.card-soul-btn') || cardEl.querySelector('.card-controls') || cardEl;
-            }
-            return null;
+            if (cardEl) return cardEl.querySelector('.card-controls') || cardEl;
+            return loc;
         }
 
         function playSoulCoreMoveAnimation(player, fromLoc, toLoc) {
             if (!fromLoc || !toLoc || fromLoc === toLoc) return;
-            const fromEl = getSoulCoreLocationElement(player, fromLoc);
-            const toEl = getSoulCoreLocationElement(player, toLoc);
-            if (!fromEl || !toEl) return;
+            const srcAnchor = getSoulPlaceAnchor(player, fromLoc);
+            const dstAnchor = getSoulPlaceAnchor(player, toLoc);
             const theme = player === 'p2' ? 'soulP2' : 'soulP1';
-            playCoreTransferAnimation(fromEl, toEl, '★ SOUL CORE', theme, 1);
+            playCoreTransferAnimation(srcAnchor, dstAnchor, '★ SOUL CORE', theme, 1);
         }
 
         function createSoulCoreTokenElement(player) {
@@ -4427,7 +4713,6 @@
                 e.stopPropagation();
                 draggedSoulOwner = player;
                 draggedCard = null;
-                isDraggingCenterCore = false;
                 e.dataTransfer.setData('text/plain', `SOUL:${player}`);
             });
             token.addEventListener('dragend', () => {
@@ -4448,412 +4733,24 @@
 
         function setSoulCoreLocation(player, destination) {
             const prevLoc = gameState.soulCoreLocation[player];
-            if (prevLoc !== destination) {
-                if (['reserve', 'trash', 'count', 'life'].includes(prevLoc)) {
-                    const prevKey = prevLoc === 'trash' ? `${player}_trash_core` : `${player}_${prevLoc}`;
-                    triggerCounterKeyFlash(prevKey, -1);
-                } else if (prevLoc && gameState.cards[prevLoc]) {
-                    triggerCardCoreFlash(prevLoc, -1);
-                }
+            if (prevLoc === destination) return;
+            if (['reserve', 'trash', 'count', 'life'].includes(prevLoc)) {
+                const prevKey = prevLoc === 'trash' ? `${player}_trash_core` : `${player}_${prevLoc}`;
+                triggerCounterKeyFlash(prevKey, -1);
+            } else if (prevLoc && gameState.cards[prevLoc]) {
+                triggerCardCoreFlash(prevLoc, -1);
+            }
 
-                if (['reserve', 'trash', 'count', 'life'].includes(destination)) {
-                    const nextKey = destination === 'trash' ? `${player}_trash_core` : `${player}_${destination}`;
-                    triggerCounterKeyFlash(nextKey, 1);
-                } else if (destination && gameState.cards[destination]) {
-                    triggerCardCoreFlash(destination, 1);
-                }
-                playSoulCoreMoveAnimation(player, prevLoc, destination);
+            if (['reserve', 'trash', 'count', 'life'].includes(destination)) {
+                const nextKey = destination === 'trash' ? `${player}_trash_core` : `${player}_${destination}`;
+                triggerCounterKeyFlash(nextKey, 1);
+            } else if (destination && gameState.cards[destination]) {
+                triggerCardCoreFlash(destination, 1);
             }
             gameState.soulCoreLocation[player] = destination;
+            playSoulCoreMoveAnimation(player, prevLoc, destination);
             updateAllUI();
             updateRoomState();
-        }
-
-        // 4. 中央藍色圓形 Core 拖放到卡牌時增加該卡牌 1 個 Core 並播放飛行動畫
-        function addSpawnedCoreToCard(cardId) {
-            const cardData = gameState.cards[cardId];
-            if (!cardData || !cardData.zone) return;
-            if (!cardData.zone.startsWith('field-') && !cardData.zone.startsWith('zone-god-')) return;
-
-            cardData.cores = (cardData.cores || 0) + 1;
-            const el = document.getElementById(cardId);
-            if (el) {
-                const coreEl = el.querySelector('.card-cores');
-                if (coreEl) coreEl.innerText = getDisplayedCardCoreCount(cardData);
-            }
-
-            const spawnerEl = document.getElementById('center-core-spawner');
-            const cardTargetEl = el ? (el.querySelector('.card-controls') || el) : cardId;
-            if (spawnerEl) {
-                playCoreTransferAnimation(spawnerEl, cardTargetEl, '+1 CORE', 'cost', 1);
-            }
-
-            const now = Date.now();
-            lastSeenActionEffectTime = now;
-            gameState.lastActionEffect = { type: 'centerCoreAdd', cardId, player: cardData.owner, count: 1, timestamp: now };
-
-            triggerCardCoreFlash(cardId, 1);
-            updateAllUI();
-            updateRoomState();
-        }
-
-        // 初始化中央藍色 Core 的滑鼠拖曳與手機/iPad觸控拖曳
-        (function initCenterCoreSpawner() {
-            const spawner = document.getElementById('center-core-spawner');
-            const coreGhost = document.getElementById('core-drag-ghost');
-            if (!spawner) return;
-
-            spawner.addEventListener('dragstart', (e) => {
-                if (controlMode === 'MOBILE') {
-                    e.preventDefault();
-                    return;
-                }
-                e.stopPropagation();
-                isDraggingCenterCore = true;
-                draggedCard = null;
-                draggedSoulOwner = null;
-                e.dataTransfer.setData('text/plain', 'CENTER_CORE');
-            });
-
-            spawner.addEventListener('dragend', () => {
-                isDraggingCenterCore = false;
-                document.querySelectorAll('.drag-over').forEach(z => z.classList.remove('drag-over'));
-            });
-
-            let activeCorePointerId = null;
-            spawner.addEventListener('pointerdown', (e) => {
-                if (controlMode !== 'MOBILE' && e.pointerType !== 'touch') return;
-                e.preventDefault();
-                e.stopPropagation();
-                activeCorePointerId = e.pointerId;
-                isDraggingCenterCore = true;
-                try { spawner.setPointerCapture(e.pointerId); } catch (err) {}
-
-                if (coreGhost) {
-                    coreGhost.style.left = `${e.clientX}px`;
-                    coreGhost.style.top = `${e.clientY}px`;
-                    coreGhost.style.display = 'block';
-                }
-            });
-
-            spawner.addEventListener('pointermove', (e) => {
-                if (activeCorePointerId !== e.pointerId || !isDraggingCenterCore) return;
-                e.preventDefault();
-                if (coreGhost) {
-                    coreGhost.style.left = `${e.clientX}px`;
-                    coreGhost.style.top = `${e.clientY}px`;
-                }
-                document.querySelectorAll('.drag-over').forEach(z => z.classList.remove('drag-over'));
-                const underEl = document.elementFromPoint(e.clientX, e.clientY);
-                if (!underEl) return;
-                const targetCardEl = underEl.closest('.card');
-                const counterBox = underEl.closest('#trash-core-box-p1, #trash-core-box-p2, #reserve-box-p1, #reserve-box-p2, #life-box-p1, #life-box-p2, #count-box-p1, #count-box-p2');
-                if (targetCardEl) {
-                    targetCardEl.classList.add('drag-over');
-                } else if (counterBox) {
-                    counterBox.classList.add('drag-over');
-                }
-            });
-
-            const finishCoreTouchDrag = (e) => {
-                if (activeCorePointerId !== e.pointerId) return;
-                try {
-                    if (spawner.hasPointerCapture(e.pointerId)) {
-                        spawner.releasePointerCapture(e.pointerId);
-                    }
-                } catch (err) {}
-                activeCorePointerId = null;
-                isDraggingCenterCore = false;
-                if (coreGhost) coreGhost.style.display = 'none';
-                document.querySelectorAll('.drag-over').forEach(z => z.classList.remove('drag-over'));
-
-                if (e.type === 'pointerup') {
-                    const underEl = document.elementFromPoint(e.clientX, e.clientY);
-                    if (!underEl) return;
-                    const targetCardEl = underEl.closest('.card');
-                    if (targetCardEl && targetCardEl.id) {
-                        addSpawnedCoreToCard(targetCardEl.id);
-                        return;
-                    }
-                    const counterBox = underEl.closest('#trash-core-box-p1, #trash-core-box-p2, #reserve-box-p1, #reserve-box-p2, #life-box-p1, #life-box-p2, #count-box-p1, #count-box-p2');
-                    if (counterBox) {
-                        const targetPlayer = counterBox.id.endsWith('p2') ? 'p2' : 'p1';
-                        const destKey = counterBox.id.startsWith('trash-core') ? `${targetPlayer}_trash_core`
-                            : (counterBox.id.startsWith('reserve') ? `${targetPlayer}_reserve`
-                            : (counterBox.id.startsWith('life') ? `${targetPlayer}_life` : `${targetPlayer}_count`));
-                        updateCounter(destKey, 1);
-                    }
-                }
-            };
-
-            spawner.addEventListener('pointerup', finishCoreTouchDrag);
-            spawner.addEventListener('pointercancel', finishCoreTouchDrag);
-        })();
-
-        // 1. 將預備區 / 廢棄區 / 生命值 / Count 的 1 個 Core 拖動到卡牌、其他區域或中央空間 (space)
-        function transferZoneCoreToTarget(sourcePlayer, sourcePlace, targetType, targetIdOrPlayer) {
-            const keyMap = {
-                trash: `${sourcePlayer}_trash_core`,
-                reserve: `${sourcePlayer}_reserve`,
-                life: `${sourcePlayer}_life`,
-                count: `${sourcePlayer}_count`
-            };
-            const boxMap = {
-                trash: `trash-core-box-${sourcePlayer}`,
-                reserve: `reserve-box-${sourcePlayer}`,
-                life: `life-box-${sourcePlayer}`,
-                count: `count-box-${sourcePlayer}`
-            };
-            const srcKey = keyMap[sourcePlace];
-            const srcBoxId = boxMap[sourcePlace];
-            if (!srcKey || !srcBoxId) return;
-            const currentVal = parseInt(gameState[srcKey], 10) || 0;
-            if (currentVal <= 0) return;
-
-            // (A) 拖動到場上或創界神卡牌
-            if (targetType === 'card') {
-                const destCard = gameState.cards[targetIdOrPlayer];
-                if (!destCard || !destCard.zone) return;
-                if (!destCard.zone.startsWith('field-') && !destCard.zone.startsWith('zone-god-')) return;
-
-                gameState[srcKey] = currentVal - 1;
-                destCard.cores = (destCard.cores || 0) + 1;
-
-                const destEl = document.getElementById(destCard.id);
-                if (destEl) {
-                    const cEl = destEl.querySelector('.card-cores');
-                    if (cEl) cEl.innerText = getDisplayedCardCoreCount(destCard);
-                }
-                const destAnchor = destEl ? (destEl.querySelector('.card-controls') || destEl) : destCard.id;
-                playCoreTransferAnimation(srcBoxId, destAnchor, '+1 CORE', 'cost', 1);
-
-                const now = Date.now();
-                lastSeenActionEffectTime = now;
-                gameState.lastActionEffect = {
-                    type: 'zoneCoreTransfer',
-                    srcBoxId,
-                    targetType: 'card',
-                    targetId: destCard.id,
-                    orbTheme: 'cost',
-                    count: 1,
-                    timestamp: now
-                };
-
-                triggerCounterKeyFlash(srcKey, -1);
-                triggerCardCoreFlash(destCard.id, 1);
-                updateAllUI();
-                updateRoomState();
-                return;
-            }
-
-            // (B) 拖動到中央空間 (移除 1 個 Core 回空間)
-            if (targetType === 'space') {
-                const spawnerEl = document.getElementById('center-core-spawner');
-                gameState[srcKey] = currentVal - 1;
-                const orbTheme = sourcePlace === 'life' ? 'life' : 'cost';
-                if (spawnerEl) {
-                    playCoreTransferAnimation(srcBoxId, spawnerEl, '-1 CORE ➔ 空間', orbTheme, 1);
-                }
-                const now = Date.now();
-                lastSeenActionEffectTime = now;
-                gameState.lastActionEffect = {
-                    type: 'zoneCoreTransfer',
-                    srcBoxId,
-                    targetType: 'space',
-                    targetId: 'center-core-spawner',
-                    orbTheme,
-                    count: 1,
-                    timestamp: now
-                };
-                triggerCounterKeyFlash(srcKey, -1);
-                if (srcKey === 'p1_life' && currentVal > 0 && gameState.p1_life === 0) triggerZeroLifeSequence('p1');
-                if (srcKey === 'p2_life' && currentVal > 0 && gameState.p2_life === 0) triggerZeroLifeSequence('p2');
-                updateAllUI();
-                updateRoomState();
-                return;
-            }
-
-            // (C) 拖動到其他 Core 區域 (Reserve / Trash / Life / Count)
-            const destPlayer = targetIdOrPlayer || sourcePlayer;
-            if (destPlayer === sourcePlayer && targetType === sourcePlace) return;
-
-            const destKeyMap = {
-                trash: `${destPlayer}_trash_core`,
-                reserve: `${destPlayer}_reserve`,
-                life: `${destPlayer}_life`,
-                count: `${destPlayer}_count`
-            };
-            const destBoxMap = {
-                trash: `trash-core-box-${destPlayer}`,
-                reserve: `reserve-box-${destPlayer}`,
-                life: `life-box-${destPlayer}`,
-                count: `count-box-${destPlayer}`
-            };
-            const destKey = destKeyMap[targetType];
-            const destBoxId = destBoxMap[targetType];
-            if (!destKey || !destBoxId) return;
-
-            gameState[srcKey] = currentVal - 1;
-            gameState[destKey] = (parseInt(gameState[destKey], 10) || 0) + 1;
-
-            const orbTheme = (sourcePlace === 'life' || targetType === 'life')
-                ? 'life'
-                : (sourcePlace === 'trash' && targetType === 'reserve' ? 'refresh' : 'cost');
-            playCoreTransferAnimation(srcBoxId, destBoxId, `CORE ➔ ${targetType.toUpperCase()}`, orbTheme, 1);
-
-            const now = Date.now();
-            lastSeenActionEffectTime = now;
-            gameState.lastActionEffect = {
-                type: 'zoneCoreTransfer',
-                srcBoxId,
-                targetType,
-                targetId: destBoxId,
-                orbTheme,
-                count: 1,
-                timestamp: now
-            };
-
-            triggerCounterKeyFlash(srcKey, -1);
-            triggerCounterKeyFlash(destKey, 1);
-            if (srcKey === 'p1_life' && currentVal > 0 && gameState.p1_life === 0) triggerZeroLifeSequence('p1');
-            if (srcKey === 'p2_life' && currentVal > 0 && gameState.p2_life === 0) triggerZeroLifeSequence('p2');
-            updateAllUI();
-            updateRoomState();
-        }
-
-        // 2. 將場上卡牌或創界神上的 1 個 Core 拖動到其他區域 (Trash Core / Reserve / Life / Count)、另一張卡牌或中央空間 (space)
-        function transferCardCoreToTarget(sourceCardId, targetType, targetPlayerOrCardId) {
-            const sourceCard = gameState.cards[sourceCardId];
-            if (!sourceCard || !sourceCard.zone) return;
-            const isSourceFieldOrGod = sourceCard.zone.startsWith('field-') || sourceCard.zone.startsWith('zone-god-');
-            if (!isSourceFieldOrGod || (sourceCard.cores || 0) <= 0) return;
-
-            const sourceEl = document.getElementById(sourceCardId);
-            const sourceAnchor = sourceEl ? (sourceEl.querySelector('.card-controls') || sourceEl) : sourceCardId;
-
-            if (targetType === 'space') {
-                sourceCard.cores = (sourceCard.cores || 0) - 1;
-                if (sourceEl) {
-                    const cEl = sourceEl.querySelector('.card-cores');
-                    if (cEl) cEl.innerText = getDisplayedCardCoreCount(sourceCard);
-                }
-                const spawnerEl = document.getElementById('center-core-spawner');
-                if (spawnerEl) {
-                    playCoreTransferAnimation(sourceAnchor, spawnerEl, '-1 CORE ➔ 空間', 'cost', 1);
-                }
-                const now = Date.now();
-                lastSeenActionEffectTime = now;
-                gameState.lastActionEffect = {
-                    type: 'cardCoreTransfer',
-                    sourceCardId,
-                    targetType: 'space',
-                    targetId: 'center-core-spawner',
-                    player: sourceCard.owner,
-                    count: 1,
-                    timestamp: now
-                };
-                triggerCardCoreFlash(sourceCardId, -1);
-                updateAllUI();
-                updateRoomState();
-                return;
-            }
-
-            if (targetType === 'card') {
-                const destCardId = targetPlayerOrCardId;
-                if (!destCardId || destCardId === sourceCardId) return;
-                const destCard = gameState.cards[destCardId];
-                if (!destCard || !destCard.zone) return;
-                if (!destCard.zone.startsWith('field-') && !destCard.zone.startsWith('zone-god-')) return;
-
-                sourceCard.cores = (sourceCard.cores || 0) - 1;
-                destCard.cores = (destCard.cores || 0) + 1;
-
-                if (sourceEl) {
-                    const cEl = sourceEl.querySelector('.card-cores');
-                    if (cEl) cEl.innerText = getDisplayedCardCoreCount(sourceCard);
-                }
-                const destEl = document.getElementById(destCardId);
-                if (destEl) {
-                    const cEl = destEl.querySelector('.card-cores');
-                    if (cEl) cEl.innerText = getDisplayedCardCoreCount(destCard);
-                }
-                const destAnchor = destEl ? (destEl.querySelector('.card-controls') || destEl) : destCardId;
-                playCoreTransferAnimation(sourceAnchor, destAnchor, 'CORE 轉移 (-1 ➔ +1)', 'cost', 1);
-
-                const now = Date.now();
-                lastSeenActionEffectTime = now;
-                gameState.lastActionEffect = {
-                    type: 'cardCoreTransfer',
-                    sourceCardId,
-                    targetType: 'card',
-                    targetId: destCardId,
-                    player: sourceCard.owner,
-                    count: 1,
-                    timestamp: now
-                };
-
-                triggerCardCoreFlash(sourceCardId, -1);
-                triggerCardCoreFlash(destCardId, 1);
-                updateAllUI();
-                updateRoomState();
-                return;
-            }
-
-            const player = targetPlayerOrCardId || sourceCard.owner;
-            const counterKeyMap = {
-                trash: `${player}_trash_core`,
-                reserve: `${player}_reserve`,
-                life: `${player}_life`,
-                count: `${player}_count`
-            };
-            const boxIdMap = {
-                trash: `trash-core-box-${player}`,
-                reserve: `reserve-box-${player}`,
-                life: `life-box-${player}`,
-                count: `count-box-${player}`
-            };
-            const labelMap = {
-                trash: 'CORE (-1 ➔ +1 TRASH)',
-                reserve: 'CORE (-1 ➔ +1 RESERVE)',
-                life: 'CORE (-1 ➔ +1 LIFE)',
-                count: 'CORE (-1 ➔ +1 COUNT)'
-            };
-
-            const counterKey = counterKeyMap[targetType];
-            const destBoxId = boxIdMap[targetType];
-            if (!counterKey || !destBoxId) return;
-
-            sourceCard.cores = (sourceCard.cores || 0) - 1;
-            gameState[counterKey] = (parseInt(gameState[counterKey], 10) || 0) + 1;
-
-            if (sourceEl) {
-                const coreEl = sourceEl.querySelector('.card-cores');
-                if (coreEl) coreEl.innerText = getDisplayedCardCoreCount(sourceCard);
-            }
-
-            const theme = targetType === 'life' ? 'life' : 'cost';
-            playCoreTransferAnimation(sourceAnchor, destBoxId, labelMap[targetType], theme, 1);
-
-            const now = Date.now();
-            lastSeenActionEffectTime = now;
-            gameState.lastActionEffect = {
-                type: 'cardCoreTransfer',
-                sourceCardId,
-                targetType,
-                targetId: destBoxId,
-                player,
-                count: 1,
-                timestamp: now
-            };
-
-            triggerCardCoreFlash(sourceCardId, -1);
-            triggerCounterKeyFlash(counterKey, 1);
-            updateAllUI();
-            updateRoomState();
-        }
-
-        function transferGodCoreToTrash(cardId, targetPlayer = null) {
-            transferCardCoreToTarget(cardId, 'trash', targetPlayer);
         }
 
         function dropSoulCore(ev, player, targetPlace) {
@@ -4865,83 +4762,6 @@
                 const soulOwner = (raw && raw.startsWith('SOUL:')) ? raw.split(':')[1] : draggedSoulOwner;
                 if (soulOwner === player) {
                     setSoulCoreLocation(player, targetPlace);
-                }
-            }
-        }
-
-        function dropOnTrashCoreBox(ev, player) {
-            dropOnCounterBox(ev, player, 'trash');
-        }
-
-        function dropOnCounterBox(ev, player, targetPlace) {
-            const raw = ev.dataTransfer.getData('text/plain');
-            if (raw === 'CENTER_CORE' || isDraggingCenterCore) {
-                ev.preventDefault();
-                ev.stopPropagation();
-                isDraggingCenterCore = false;
-                document.querySelectorAll('.drag-over').forEach(z => z.classList.remove('drag-over'));
-                const destKey = targetPlace === 'trash' ? `${player}_trash_core` : `${player}_${targetPlace}`;
-                updateCounter(destKey, 1);
-                return;
-            }
-            if ((raw && raw.startsWith('ZONE_CORE:')) || draggedZoneCoreInfo) {
-                ev.preventDefault();
-                ev.stopPropagation();
-                document.querySelectorAll('.drag-over').forEach(z => z.classList.remove('drag-over'));
-                let srcPlayer = draggedZoneCoreInfo?.player;
-                let srcPlace = draggedZoneCoreInfo?.place;
-                if (raw && raw.startsWith('ZONE_CORE:')) {
-                    const parts = raw.split(':');
-                    srcPlayer = parts[1];
-                    srcPlace = parts[2];
-                }
-                draggedZoneCoreInfo = null;
-                if (srcPlayer && srcPlace) {
-                    transferZoneCoreToTarget(srcPlayer, srcPlace, targetPlace, player);
-                }
-                return;
-            }
-            if ((raw && raw.startsWith('CARD_CORE:')) || (raw && raw.startsWith('GOD_CORE:')) || draggedGodCoreCardId) {
-                ev.preventDefault();
-                ev.stopPropagation();
-                document.querySelectorAll('.drag-over').forEach(z => z.classList.remove('drag-over'));
-                const cid = (raw && raw.includes(':')) ? raw.split(':')[1] : draggedGodCoreCardId;
-                draggedGodCoreCardId = null;
-                if (cid && gameState.cards[cid]) {
-                    transferCardCoreToTarget(cid, targetPlace, player);
-                }
-                return;
-            }
-            dropSoulCore(ev, player, targetPlace);
-        }
-
-        // 將卡牌或各區域的 Core 拖動到中央空間 (#center-divider-hud-box) 直接移除回空間
-        function dropOnCenterSpace(ev) {
-            ev.preventDefault();
-            ev.stopPropagation();
-            document.querySelectorAll('.drag-over').forEach(z => z.classList.remove('drag-over'));
-            const raw = ev.dataTransfer.getData('text/plain');
-
-            if ((raw && raw.startsWith('CARD_CORE:')) || (raw && raw.startsWith('GOD_CORE:')) || draggedGodCoreCardId) {
-                const cid = (raw && raw.includes(':')) ? raw.split(':')[1] : draggedGodCoreCardId;
-                draggedGodCoreCardId = null;
-                if (cid && gameState.cards[cid]) {
-                    transferCardCoreToTarget(cid, 'space', null);
-                }
-                return;
-            }
-
-            if ((raw && raw.startsWith('ZONE_CORE:')) || draggedZoneCoreInfo) {
-                let srcPlayer = draggedZoneCoreInfo?.player;
-                let srcPlace = draggedZoneCoreInfo?.place;
-                if (raw && raw.startsWith('ZONE_CORE:')) {
-                    const parts = raw.split(':');
-                    srcPlayer = parts[1];
-                    srcPlace = parts[2];
-                }
-                draggedZoneCoreInfo = null;
-                if (srcPlayer && srcPlace) {
-                    transferZoneCoreToTarget(srcPlayer, srcPlace, 'space', null);
                 }
             }
         }
@@ -4987,54 +4807,153 @@
                         soulBtn.title = "點擊將 Soul Core 放置到此卡上";
                     }
                 }
-                const coreEl = el.querySelector('.card-cores');
-                const displayCores = getDisplayedCardCoreCount(cardData);
-                if (coreEl && String(coreEl.innerText) !== String(displayCores)) {
-                    coreEl.innerText = displayCores;
-                }
+                applyCardVisualState(cardData, el);
             });
         }
 
-        /* =========================================================================
-           CARD MECHANICS & IMAGE COMPRESSION (高清化 500x700 + 本機無損快取 + 自訂卡背上傳)
-           ========================================================================= */
-        const CUSTOM_CARDBACK_STORAGE_KEY = 'bs_custom_cardback_base64';
-
-        function applyCustomCardBackUrl(dataUrl) {
-            if (!dataUrl) return;
-            document.documentElement.style.setProperty('--bs-cardback-svg', `url("${dataUrl}")`);
+        function addSpawnedCoreToCard(cardId) {
+            const cardData = gameState.cards[cardId];
+            if (!cardData || !cardData.zone) return;
+            if (!cardData.zone.startsWith('field-') && !cardData.zone.startsWith('zone-god-')) return;
+            cardData.cores = (cardData.cores || 0) + 1;
+            const el = document.getElementById(cardId);
+            if (el) applyCardVisualState(cardData, el);
+            const spawnerEl = document.getElementById('center-core-spawner');
+            const targetEl = el ? (el.querySelector('.card-controls') || el) : cardId;
+            if (spawnerEl && targetEl) {
+                playCoreTransferAnimation(spawnerEl, targetEl, '+1 CORE', 'cost', 1);
+            }
+            triggerCardCoreFlash(cardId, 1);
+            const now = Date.now();
+            lastSeenActionEffectTime = now;
+            gameState.lastActionEffect = { type: 'centerCoreAdd', cardId, timestamp: now };
+            updateAllUI();
+            updateRoomState();
         }
 
-        // 啟動時自動讀取上次儲存於瀏覽器的自訂 BS 卡背
-        try {
-            const savedCardBack = localStorage.getItem(CUSTOM_CARDBACK_STORAGE_KEY);
-            if (savedCardBack) {
-                applyCustomCardBackUrl(savedCardBack);
-            }
-        } catch (e) {}
+        function transferCardCoreToTarget(sourceCardId, targetType, targetIdOrPlayer) {
+            const srcCard = gameState.cards[sourceCardId];
+            if (!srcCard || (srcCard.cores || 0) <= 0) return;
 
-        async function uploadCustomCardBack(event) {
-            const file = event.target.files && event.target.files[0];
-            if (!file) return;
-            try {
-                const compressedBase64 = await compressImageBlob(file, 500, 700, 0.9);
-                applyCustomCardBackUrl(compressedBase64);
-                try {
-                    localStorage.setItem(CUSTOM_CARDBACK_STORAGE_KEY, compressedBase64);
-                } catch (e) {}
-                cardImageCache['__custom_cardback__'] = compressedBase64;
-                if (window.uploadPlayerCardImages) {
-                    window.uploadPlayerCardImages('system', { '__custom_cardback__': compressedBase64 });
+            srcCard.cores -= 1;
+            const srcEl = document.getElementById(sourceCardId);
+            if (srcEl) applyCardVisualState(srcCard, srcEl);
+            triggerCardCoreFlash(sourceCardId, -1);
+
+            const srcAnchor = srcEl ? (srcEl.querySelector('.card-controls') || srcEl) : sourceCardId;
+            let destAnchor = 'center-core-spawner';
+
+            if (targetType === 'card') {
+                const dstCard = gameState.cards[targetIdOrPlayer];
+                if (!dstCard) return;
+                dstCard.cores = (dstCard.cores || 0) + 1;
+                const dstEl = document.getElementById(dstCard.id);
+                if (dstEl) applyCardVisualState(dstCard, dstEl);
+                triggerCardCoreFlash(dstCard.id, 1);
+                destAnchor = dstEl ? (dstEl.querySelector('.card-controls') || dstEl) : dstCard.id;
+            } else if (targetType === 'space') {
+                destAnchor = 'center-core-spawner';
+            } else {
+                const p = targetIdOrPlayer || srcCard.owner;
+                const stateKey = targetType === 'trash' ? `${p}_trash_core` : `${p}_${targetType}`;
+                gameState[stateKey] = (parseInt(gameState[stateKey], 10) || 0) + 1;
+                triggerCounterKeyFlash(stateKey, 1);
+                destAnchor = targetType === 'trash' ? `trash-core-box-${p}` : `${targetType}-box-${p}`;
+            }
+
+            playCoreTransferAnimation(srcAnchor, destAnchor, null, targetType === 'life' ? 'life' : 'cost', 1);
+            const now = Date.now();
+            lastSeenActionEffectTime = now;
+            gameState.lastActionEffect = {
+                type: 'cardCoreTransfer',
+                sourceCardId,
+                targetType,
+                targetId: typeof destAnchor === 'string' ? destAnchor : targetIdOrPlayer,
+                count: 1,
+                timestamp: now
+            };
+            updateAllUI();
+            updateRoomState();
+        }
+
+        function transferZoneCoreToTarget(srcPlayer, srcPlace, targetType, targetIdOrPlayer) {
+            const srcKey = srcPlace === 'trash' ? `${srcPlayer}_trash_core` : `${srcPlayer}_${srcPlace}`;
+            if ((parseInt(gameState[srcKey], 10) || 0) <= 0) return;
+            if (targetType === srcPlace && targetIdOrPlayer === srcPlayer) return;
+
+            gameState[srcKey] -= 1;
+            triggerCounterKeyFlash(srcKey, -1);
+            const srcBoxId = srcPlace === 'trash' ? `trash-core-box-${srcPlayer}` : `${srcPlace}-box-${srcPlayer}`;
+            let destAnchor = 'center-core-spawner';
+            let orbTheme = (srcPlace === 'life' || targetType === 'life') ? 'life' : 'cost';
+
+            if (targetType === 'card') {
+                const dstCard = gameState.cards[targetIdOrPlayer];
+                if (!dstCard) return;
+                dstCard.cores = (dstCard.cores || 0) + 1;
+                const dstEl = document.getElementById(dstCard.id);
+                if (dstEl) applyCardVisualState(dstCard, dstEl);
+                triggerCardCoreFlash(dstCard.id, 1);
+                destAnchor = dstEl ? (dstEl.querySelector('.card-controls') || dstEl) : dstCard.id;
+            } else if (targetType === 'space') {
+                destAnchor = 'center-core-spawner';
+            } else {
+                const dstPlayer = targetIdOrPlayer || srcPlayer;
+                const dstKey = targetType === 'trash' ? `${dstPlayer}_trash_core` : `${dstPlayer}_${targetType}`;
+                gameState[dstKey] = (parseInt(gameState[dstKey], 10) || 0) + 1;
+                triggerCounterKeyFlash(dstKey, 1);
+                destAnchor = targetType === 'trash' ? `trash-core-box-${dstPlayer}` : `${targetType}-box-${dstPlayer}`;
+            }
+
+            playCoreTransferAnimation(srcBoxId, destAnchor, null, orbTheme, 1);
+            const now = Date.now();
+            lastSeenActionEffectTime = now;
+            gameState.lastActionEffect = {
+                type: 'zoneCoreTransfer',
+                srcBoxId,
+                targetType,
+                targetId: typeof destAnchor === 'string' ? destAnchor : targetIdOrPlayer,
+                orbTheme,
+                count: 1,
+                timestamp: now
+            };
+            updateAllUI();
+            updateRoomState();
+        }
+
+        function dropOnTrashCoreBox(ev, player) {
+            dropOnCounterBox(ev, player, 'trash');
+        }
+
+        function dropOnCenterSpace(ev) {
+            ev.preventDefault();
+            ev.stopPropagation();
+            document.querySelectorAll('.drag-over').forEach(z => z.classList.remove('drag-over'));
+            const rawData = ev.dataTransfer.getData('text/plain');
+            if ((rawData && rawData.startsWith('ZONE_CORE:')) || draggedZoneCoreInfo) {
+                let srcPlayer = draggedZoneCoreInfo?.player;
+                let srcPlace = draggedZoneCoreInfo?.place;
+                if (rawData && rawData.startsWith('ZONE_CORE:')) {
+                    const parts = rawData.split(':');
+                    srcPlayer = parts[1];
+                    srcPlace = parts[2];
                 }
-                showNotice('已成功套用你上傳的專屬 BS 卡背至所有卡牌！');
-            } catch (err) {
-                console.error('Upload cardback failed:', err);
-                showNotice('讀取卡背圖片失敗。');
+                draggedZoneCoreInfo = null;
+                if (srcPlayer && srcPlace) {
+                    transferZoneCoreToTarget(srcPlayer, srcPlace, 'space', null);
+                }
+                return;
             }
-            event.target.value = '';
+            if ((rawData && rawData.startsWith('CARD_CORE:')) || (rawData && rawData.startsWith('GOD_CORE:')) || draggedGodCoreCardId) {
+                const sourceCid = (rawData && rawData.includes(':')) ? rawData.split(':')[1] : draggedGodCoreCardId;
+                draggedGodCoreCardId = null;
+                if (sourceCid) {
+                    transferCardCoreToTarget(sourceCid, 'space', null);
+                }
+            }
         }
 
-        function compressImageBlob(blob, maxWidth = 500, maxHeight = 700, quality = 0.86) {
+        function compressImageBlob(blob, maxWidth = 420, maxHeight = 588, quality = 0.80) {
             return new Promise((resolve, reject) => {
                 const url = URL.createObjectURL(blob);
                 const img = new Image();
@@ -5053,7 +4972,12 @@
                     ctx.imageSmoothingEnabled = true;
                     ctx.imageSmoothingQuality = 'high';
                     ctx.drawImage(img, 0, 0, targetW, targetH);
-                    resolve(canvas.toDataURL('image/jpeg', quality));
+                    // 2. 優先使用 WebP 格式儲存，比 JPEG 減少約 45%~60% 儲存與傳輸體積，若瀏覽器不支援則自動退回 JPEG
+                    let dataUrl = canvas.toDataURL('image/webp', quality);
+                    if (!dataUrl || !dataUrl.startsWith('data:image/webp')) {
+                        dataUrl = canvas.toDataURL('image/jpeg', quality);
+                    }
+                    resolve(dataUrl);
                 };
                 img.onerror = (err) => {
                     URL.revokeObjectURL(url);
@@ -5063,11 +4987,337 @@
             });
         }
 
+        (function initCenterCoreSpawnerEvents() {
+            const spawner = document.getElementById('center-core-spawner');
+            if (!spawner) return;
+            spawner.addEventListener('dragstart', (e) => {
+                if (controlMode === 'MOBILE') {
+                    e.preventDefault();
+                    return;
+                }
+                e.stopPropagation();
+                isDraggingCenterCore = true;
+                draggedCard = null;
+                draggedSoulOwner = null;
+                draggedGodCoreCardId = null;
+                draggedZoneCoreInfo = null;
+                e.dataTransfer.setData('text/plain', 'CENTER_CORE');
+            });
+            spawner.addEventListener('dragend', () => {
+                isDraggingCenterCore = false;
+                document.querySelectorAll('.drag-over').forEach(z => z.classList.remove('drag-over'));
+            });
+
+            let spawnerPtrId = null;
+            spawner.addEventListener('pointerdown', (e) => {
+                if (controlMode !== 'MOBILE' && e.pointerType !== 'touch') return;
+                e.preventDefault();
+                e.stopPropagation();
+                spawnerPtrId = e.pointerId;
+                isDraggingCenterCore = true;
+                try { spawner.setPointerCapture(e.pointerId); } catch (err) {}
+                const coreGhost = document.getElementById('core-drag-ghost');
+                if (coreGhost) {
+                    coreGhost.style.left = `${e.clientX}px`;
+                    coreGhost.style.top = `${e.clientY}px`;
+                    coreGhost.style.display = 'block';
+                }
+            });
+            spawner.addEventListener('pointermove', (e) => {
+                if (spawnerPtrId !== e.pointerId || !isDraggingCenterCore) return;
+                e.preventDefault();
+                const coreGhost = document.getElementById('core-drag-ghost');
+                if (coreGhost) {
+                    coreGhost.style.left = `${e.clientX}px`;
+                    coreGhost.style.top = `${e.clientY}px`;
+                }
+                document.querySelectorAll('.drag-over').forEach(z => z.classList.remove('drag-over'));
+                const underEl = document.elementFromPoint(e.clientX, e.clientY);
+                if (!underEl) return;
+                const targetCardEl = underEl.closest('.card');
+                const counterBox = underEl.closest('#reserve-box-p1, #reserve-box-p2, #trash-core-box-p1, #trash-core-box-p2, #life-box-p1, #life-box-p2');
+                if (targetCardEl) targetCardEl.classList.add('drag-over');
+                else if (counterBox) counterBox.classList.add('drag-over');
+            });
+            const finishSpawnerTouch = (e) => {
+                if (spawnerPtrId !== e.pointerId) return;
+                try {
+                    if (spawner.hasPointerCapture(e.pointerId)) spawner.releasePointerCapture(e.pointerId);
+                } catch (err) {}
+                spawnerPtrId = null;
+                isDraggingCenterCore = false;
+                const coreGhost = document.getElementById('core-drag-ghost');
+                if (coreGhost) coreGhost.style.display = 'none';
+                document.querySelectorAll('.drag-over').forEach(z => z.classList.remove('drag-over'));
+                if (e.type === 'pointerup') {
+                    const underEl = document.elementFromPoint(e.clientX, e.clientY);
+                    if (!underEl) return;
+                    const targetCardEl = underEl.closest('.card');
+                    if (targetCardEl && targetCardEl.id) {
+                        addSpawnedCoreToCard(targetCardEl.id);
+                        return;
+                    }
+                    const counterBox = underEl.closest('#reserve-box-p1, #reserve-box-p2, #trash-core-box-p1, #trash-core-box-p2, #life-box-p1, #life-box-p2');
+                    if (counterBox) {
+                        const p = counterBox.id.endsWith('p2') ? 'p2' : 'p1';
+                        const key = counterBox.id.startsWith('reserve') ? `${p}_reserve`
+                            : (counterBox.id.startsWith('trash-core') ? `${p}_trash_core` : `${p}_life`);
+                        updateCounter(key, 1);
+                    }
+                }
+            };
+            spawner.addEventListener('pointerup', finishSpawnerTouch);
+            spawner.addEventListener('pointercancel', finishSpawnerTouch);
+        })();
+
         /* =========================================================================
-           INDEXEDDB DECK VAULT (本地卡組庫：自動儲存匯入過的 Deck、支援載入至 P1/P2 及刪除資料庫)
+           SHARED DECK VAULT, CARD POOL & DECK EDITOR (雲端同步卡組庫 + 共享總牌庫 + 編輯卡組增減卡牌)
            ========================================================================= */
         const DECK_VAULT_DB_NAME = 'BSPrototypeDeckVaultDB';
         const DECK_VAULT_STORE_NAME = 'savedDecks';
+        const CARD_POOL_STORE_NAME = 'savedCardPool';
+        let sharedCloudDecksMap = {}; // { deckId: deckRecord } 由 Firebase 即時同步的雲端共享卡組庫
+        let sharedCloudCardPoolMap = {}; // { cardId: { id, img, code, createdAt } } 由 Firebase 即時同步的共享總牌庫
+        let currentEditingDeckId = null;
+        let currentEditingDeckCards = []; // [{ img: base64, count: number }]
+        let currentEditingCardBack = null;
+        let cardPoolSearchQuery = ''; // 目前卡庫搜尋關鍵字
+        let cachedLocalPoolList = null; // 記憶體快取，避免重複讀取 IndexedDB 造成卡頓
+        let poolRenderToken = 0;
+        let sidebarPoolRenderToken = 0;
+
+        // 智慧搜尋比對：忽略大小寫、空格與連字號（例如搜尋 "bs 71" 或 "bs71" 皆可匹配 "BS71-CP05"）
+        function matchesCardCodeQuery(cardCode, queryStr) {
+            if (!queryStr || !queryStr.trim()) return true;
+            const codeRaw = String(cardCode || '').toUpperCase();
+            const qRaw = String(queryStr || '').trim().toUpperCase();
+
+            const normCode = codeRaw.replace(/[\s\-_]/g, '');
+            const normQuery = qRaw.replace(/[\s\-_]/g, '');
+            if (normCode.includes(normQuery)) return true;
+
+            // 支援多關鍵字分段匹配，例如 "bs71 cp"
+            const tokens = qRaw.split(/[\s\-_]+/).filter(Boolean);
+            if (tokens.length > 1) {
+                return tokens.every(tk => normCode.includes(tk));
+            }
+            return false;
+        }
+
+        function onCardPoolSearchInput(val) {
+            cardPoolSearchQuery = val || '';
+            const poolInput = document.getElementById('card-pool-search-input');
+            const editorInput = document.getElementById('deck-editor-pool-search-input');
+            if (poolInput && poolInput.value !== cardPoolSearchQuery) poolInput.value = cardPoolSearchQuery;
+            if (editorInput && editorInput.value !== cardPoolSearchQuery) editorInput.value = cardPoolSearchQuery;
+            renderCardPoolGrid();
+            renderDeckEditorPoolSidebar();
+        }
+
+        // 從檔案名稱或 OCR 文字中正規化提取 Battle Spirits 卡號 (例如 BS71-CP05, CB30-X01, SD66-001, BSC42-012, PX24-01)
+        function extractNormalizedBSCardCode(rawText) {
+            if (!rawText) return null;
+            let cleaned = String(rawText)
+                .toUpperCase()
+                .replace(/[—–_~～·•.]/g, '-')
+                .replace(/[^A-Z0-9\-\s]/g, ' ');
+
+            // 修正 OCR 在數字與字母間常見的誤判 (如 BS7I-CPOS -> BS71-CP05, 8S71 -> BS71)
+            cleaned = cleaned
+                .replace(/\b8S(\d)/g, 'BS$1')
+                .replace(/\bB5(\d)/g, 'BS$1');
+
+            const patterns = [
+                /\b(BS|BSC|CB|SD|PB|PX|PC|LM|EX|CP|SJ|X|P)\s*([0-9OIl]{1,3})\s*[-]\s*([A-Z0-9OIl]{1,6})\b/,
+                /\b(BS|BSC|CB|SD|PB|PX|PC|LM|EX)\s*([0-9OIl]{1,3})\s+([A-Z]{0,3}[0-9OIl]{1,4})\b/
+            ];
+
+            for (const regex of patterns) {
+                const m = cleaned.match(regex);
+                if (m) {
+                    const prefix = m[1];
+                    const setNum = m[2].replace(/O/g, '0').replace(/[Il]/g, '1');
+                    let serial = m[3];
+                    // 將序號尾部的數字區段 O/I 轉回 0/1 (例如 CP05、RV001、X01)
+                    serial = serial.replace(/^([A-Z]*?)([0-9OIl]+)$/, (_, pfx, digits) => {
+                        let fixedPrefix = pfx;
+                        if (fixedPrefix === 'CPO') fixedPrefix = 'CP0';
+                        const fixedDigits = digits.replace(/O/g, '0').replace(/[Il]/g, '1');
+                        return fixedPrefix + fixedDigits;
+                    });
+                    return `${prefix}${setNum}-${serial}`;
+                }
+            }
+            return null;
+        }
+
+        function extractCodeFromFilenameHint(filename) {
+            if (!filename) return null;
+            const base = filename.split('/').pop().replace(/\.(jpg|jpeg|png|webp)$/i, '');
+            const byPattern = extractNormalizedBSCardCode(base);
+            if (byPattern) return byPattern;
+            // 若檔名本身就帶有連字號編號格式 (例如 BS71-CP05_1)
+            const m = base.toUpperCase().match(/([A-Z]{1,4}\d{1,3}-[A-Z0-9]{1,6})/);
+            return m ? m[1] : null;
+        }
+
+        // 針對卡牌右下角區域裁切並進行放大 + 白底黑字強化預處理，讓白框黑字的 BS71-CP05 清晰可辨
+        function createBottomRightCodeCropDataUrl(imgSource, cropMode = 'tight') {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => {
+                    const w = img.naturalWidth || img.width;
+                    const h = img.naturalHeight || img.height;
+                    if (!w || !h) return resolve(null);
+
+                    // tight: 聚焦右下角寶石下方白框卡號區；wide: 涵蓋整個右下底部區
+                    const rx = cropMode === 'tight' ? 0.56 : 0.45;
+                    const ry = cropMode === 'tight' ? 0.905 : 0.875;
+                    const rw = cropMode === 'tight' ? 0.42 : 0.54;
+                    const rh = cropMode === 'tight' ? 0.088 : 0.115;
+
+                    const sx = Math.floor(w * rx);
+                    const sy = Math.floor(h * ry);
+                    const sw = Math.max(16, Math.floor(w * rw));
+                    const sh = Math.max(12, Math.floor(h * rh));
+
+                    const scale = 3.5;
+                    const pad = 16;
+                    const canvas = document.createElement('canvas');
+                    canvas.width = Math.round(sw * scale) + pad * 2;
+                    canvas.height = Math.round(sh * scale) + pad * 2;
+                    const ctx = canvas.getContext('2d');
+
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.imageSmoothingEnabled = true;
+                    ctx.imageSmoothingQuality = 'high';
+                    ctx.drawImage(img, sx, sy, sw, sh, pad, pad, Math.round(sw * scale), Math.round(sh * scale));
+
+                    // 對比度增強與適應性灰階拉伸，保留白框內深色字元筆畫
+                    const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    const d = imgData.data;
+                    for (let i = 0; i < d.length; i += 4) {
+                        const lum = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
+                        // 將高亮度背景推向純白、深色文字推向純黑
+                        let v = (lum - 128) * 2.1 + 128;
+                        v = Math.max(0, Math.min(255, Math.round(v)));
+                        d[i] = d[i + 1] = d[i + 2] = v;
+                    }
+                    ctx.putImageData(imgData, 0, 0);
+                    resolve(canvas.toDataURL('image/png'));
+                };
+                img.onerror = () => resolve(null);
+                img.src = imgSource;
+            });
+        }
+
+        let ocrWorkerPromise = null;
+        let ocrQueueChain = Promise.resolve();
+
+        async function getSharedOcrWorker() {
+            if (!window.Tesseract) return null;
+            if (!ocrWorkerPromise) {
+                ocrWorkerPromise = (async () => {
+                    try {
+                        const worker = await window.Tesseract.createWorker('eng');
+                        await worker.setParameters({
+                            tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-',
+                            tessedit_pageseg_mode: '7'
+                        });
+                        return worker;
+                    } catch (err) {
+                        console.warn('Tesseract worker init failed:', err);
+                        ocrWorkerPromise = null;
+                        return null;
+                    }
+                })();
+            }
+            return ocrWorkerPromise;
+        }
+
+        // 佇列式辨識單張卡牌右下角編號，辨識完成後自動更新本地與雲端卡庫
+        function enqueueCardCodeOcr(cardRecord, highResSource = null) {
+            if (!cardRecord || !cardRecord.id) return;
+            ocrQueueChain = ocrQueueChain.then(async () => {
+                const statusEl = document.getElementById('card-pool-ocr-status');
+                if (statusEl) statusEl.classList.remove('hidden');
+                try {
+                    const worker = await getSharedOcrWorker();
+                    if (!worker) return;
+                    const src = highResSource || cardRecord.img;
+                    if (!src) return;
+
+                    let detectedCode = null;
+                    for (const mode of ['tight', 'wide']) {
+                        const cropUrl = await createBottomRightCodeCropDataUrl(src, mode);
+                        if (!cropUrl) continue;
+                        const { data: { text } } = await worker.recognize(cropUrl);
+                        detectedCode = extractNormalizedBSCardCode(text);
+                        if (detectedCode) break;
+                    }
+
+                    if (detectedCode) {
+                        await updateCardPoolCode(cardRecord.id, detectedCode, true);
+                    }
+                } catch (e) {
+                    console.warn('OCR card code failed:', e);
+                } finally {
+                    const statusEl2 = document.getElementById('card-pool-ocr-status');
+                    if (statusEl2) statusEl2.classList.add('hidden');
+                }
+            });
+        }
+
+        async function updateCardPoolCode(cardId, newCode, silent = false) {
+            const cleaned = (newCode || '').trim().toUpperCase();
+            if (!cardId || !cleaned) return;
+            const pool = await getAllCardsFromPoolDB();
+            const target = pool.find(c => c.id === cardId);
+            if (!target) return;
+
+            target.code = cleaned;
+            await putCardToLocalPoolDBOnly(target);
+            if (sharedCloudCardPoolMap[cardId]) {
+                sharedCloudCardPoolMap[cardId].code = cleaned;
+            } else {
+                sharedCloudCardPoolMap[cardId] = target;
+            }
+            if (window.saveCardsToCloudPool) {
+                await window.saveCardsToCloudPool([target]);
+            }
+            await renderCardPoolGrid();
+            await renderDeckEditorPoolSidebar();
+            if (!silent) {
+                showNotice(`已將卡牌編號更新為「${cleaned}」！`);
+            }
+        }
+
+        async function rescanAllCardPoolCodes() {
+            const pool = await getAllCardsFromPoolDB();
+            if (pool.length === 0) return showNotice('目前牌庫內沒有卡牌可供辨識。');
+            let queued = 0;
+            pool.forEach(c => {
+                enqueueCardCodeOcr(c, c.img);
+                queued++;
+            });
+            showNotice(`已排入 ${queued} 張卡牌進行右下角編號 OCR 自動辨識，完成後將即時更新卡號！`);
+        }
+
+        function computeCardImageHashId(base64Str) {
+            if (!base64Str) return 'card_empty';
+            let h1 = 0xdeadbeef ^ base64Str.length;
+            let h2 = 0x41c6ce57 ^ base64Str.length;
+            const step = Math.max(1, Math.floor(base64Str.length / 256));
+            for (let i = 0; i < base64Str.length; i += step) {
+                const ch = base64Str.charCodeAt(i);
+                h1 = Math.imul(h1 ^ ch, 2654435761);
+                h2 = Math.imul(h2 ^ ch, 1597334677);
+            }
+            h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+            h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+            return 'cp_' + (h2 >>> 0).toString(36) + '_' + (h1 >>> 0).toString(36) + '_' + base64Str.length.toString(36);
+        }
 
         function openDeckVaultDB() {
             return new Promise((resolve, reject) => {
@@ -5075,11 +5325,14 @@
                     reject(new Error('IndexedDB not supported'));
                     return;
                 }
-                const req = window.indexedDB.open(DECK_VAULT_DB_NAME, 1);
+                const req = window.indexedDB.open(DECK_VAULT_DB_NAME, 2);
                 req.onupgradeneeded = (e) => {
                     const db = e.target.result;
                     if (!db.objectStoreNames.contains(DECK_VAULT_STORE_NAME)) {
                         db.createObjectStore(DECK_VAULT_STORE_NAME, { keyPath: 'id' });
+                    }
+                    if (!db.objectStoreNames.contains(CARD_POOL_STORE_NAME)) {
+                        db.createObjectStore(CARD_POOL_STORE_NAME, { keyPath: 'id' });
                     }
                 };
                 req.onsuccess = (e) => resolve(e.target.result);
@@ -5087,21 +5340,342 @@
             });
         }
 
-        async function saveDeckToVaultDB(deckName, cardImagesArray, customCardBack = null) {
+        async function putCardToLocalPoolDBOnly(cardRecord) {
+            try {
+                if (cachedLocalPoolList) {
+                    const idx = cachedLocalPoolList.findIndex(c => c.id === cardRecord.id);
+                    if (idx !== -1) cachedLocalPoolList[idx] = cardRecord;
+                    else cachedLocalPoolList.push(cardRecord);
+                }
+                const db = await openDeckVaultDB();
+                return new Promise((resolve, reject) => {
+                    const tx = db.transaction(CARD_POOL_STORE_NAME, 'readwrite');
+                    const store = tx.objectStore(CARD_POOL_STORE_NAME);
+                    store.put(cardRecord);
+                    tx.oncomplete = () => resolve(cardRecord);
+                    tx.onerror = (e) => reject(e.target.error);
+                });
+            } catch (err) {
+                return null;
+            }
+        }
+
+        async function getAllCardsFromPoolDB() {
+            const mergedMap = { ...sharedCloudCardPoolMap };
+            try {
+                if (!cachedLocalPoolList) {
+                    const db = await openDeckVaultDB();
+                    cachedLocalPoolList = await new Promise((resolve, reject) => {
+                        const tx = db.transaction(CARD_POOL_STORE_NAME, 'readonly');
+                        const store = tx.objectStore(CARD_POOL_STORE_NAME);
+                        const req = store.getAll();
+                        req.onsuccess = () => resolve(Array.isArray(req.result) ? req.result : []);
+                        req.onerror = (e) => reject(e.target.error);
+                    });
+                }
+                cachedLocalPoolList.forEach(c => {
+                    if (c && c.id && !mergedMap[c.id]) {
+                        mergedMap[c.id] = c;
+                    }
+                });
+            } catch (err) {}
+
+            const list = Object.values(mergedMap);
+            list.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+            return list;
+        }
+
+        // 將新導入的卡牌圖片自動去重並加入總牌庫 (Card Pool)，支援傳入字串或 { img, filename, highResSrc, code }
+        async function registerCardsToPool(cardsInputArray) {
+            if (!Array.isArray(cardsInputArray) || cardsInputArray.length === 0) return [];
+            const currentPool = await getAllCardsFromPoolDB();
+            const existingMap = new Map(currentPool.map(c => [c.id, c]));
+            const newlyAdded = [];
+            const recordsNeedOcr = [];
+
+            for (const entry of cardsInputArray) {
+                const img = typeof entry === 'string' ? entry : entry?.img;
+                if (!img) continue;
+                const hintName = typeof entry === 'object' ? (entry.filename || '') : '';
+                const highResSrc = typeof entry === 'object' ? (entry.highResSrc || null) : null;
+                const presetCode = typeof entry === 'object' ? (entry.code || null) : null;
+                const extractedFromFilename = presetCode || extractCodeFromFilenameHint(hintName);
+
+                const cid = computeCardImageHashId(img);
+                if (!existingMap.has(cid)) {
+                    const record = {
+                        id: cid,
+                        img: img,
+                        code: extractedFromFilename || '辨識中...',
+                        createdAt: Date.now() + newlyAdded.length
+                    };
+                    existingMap.set(cid, record);
+                    await putCardToLocalPoolDBOnly(record);
+                    sharedCloudCardPoolMap[cid] = record;
+                    newlyAdded.push(record);
+                    if (!extractedFromFilename) {
+                        recordsNeedOcr.push({ record, highResSrc });
+                    }
+                } else {
+                    const existRec = existingMap.get(cid);
+                    if (extractedFromFilename && (!existRec.code || existRec.code === '辨識中...' || existRec.code.startsWith('CARD-'))) {
+                        existRec.code = extractedFromFilename;
+                        await putCardToLocalPoolDBOnly(existRec);
+                        sharedCloudCardPoolMap[cid] = existRec;
+                        newlyAdded.push(existRec);
+                    } else if (!existRec.code || existRec.code === '辨識中...') {
+                        recordsNeedOcr.push({ record: existRec, highResSrc });
+                    }
+                }
+            }
+
+            if (newlyAdded.length > 0 && window.saveCardsToCloudPool) {
+                await window.saveCardsToCloudPool(newlyAdded);
+            }
+            updateCardPoolButtonBadge();
+
+            // 對尚未從檔名取得編號的新卡牌啟動右下角 OCR 辨識
+            recordsNeedOcr.forEach(({ record, highResSrc }) => {
+                enqueueCardCodeOcr(record, highResSrc || record.img);
+            });
+
+            return newlyAdded;
+        }
+
+        async function deleteCardFromPoolDB(cardId) {
+            if (!cardId) return;
+            try {
+                delete sharedCloudCardPoolMap[cardId];
+                if (cachedLocalPoolList) {
+                    cachedLocalPoolList = cachedLocalPoolList.filter(c => c.id !== cardId);
+                }
+                const db = await openDeckVaultDB();
+                await new Promise((resolve, reject) => {
+                    const tx = db.transaction(CARD_POOL_STORE_NAME, 'readwrite');
+                    const store = tx.objectStore(CARD_POOL_STORE_NAME);
+                    store.delete(cardId);
+                    tx.oncomplete = () => resolve(true);
+                    tx.onerror = (e) => reject(e.target.error);
+                });
+                if (window.deleteCardFromCloudPool) {
+                    await window.deleteCardFromCloudPool(cardId);
+                }
+                hideCardPreview();
+                await renderCardPoolGrid();
+                await renderDeckEditorPoolSidebar();
+                await updateCardPoolButtonBadge();
+            } catch (err) {
+                console.error('Delete card from pool failed:', err);
+            }
+        }
+
+        async function clearAllCardPool() {
+            try {
+                sharedCloudCardPoolMap = {};
+                cachedLocalPoolList = [];
+                const db = await openDeckVaultDB();
+                await new Promise((resolve, reject) => {
+                    const tx = db.transaction(CARD_POOL_STORE_NAME, 'readwrite');
+                    const store = tx.objectStore(CARD_POOL_STORE_NAME);
+                    store.clear();
+                    tx.oncomplete = () => resolve(true);
+                    tx.onerror = (e) => reject(e.target.error);
+                });
+                if (window.clearAllCardsFromCloudPool) {
+                    await window.clearAllCardsFromCloudPool();
+                }
+                hideCardPreview();
+                await renderCardPoolGrid();
+                await renderDeckEditorPoolSidebar();
+                await updateCardPoolButtonBadge();
+                showNotice('已清空總牌庫中的所有卡牌！');
+            } catch (err) {
+                console.error('Clear card pool failed:', err);
+            }
+        }
+
+        async function updateCardPoolButtonBadge() {
+            const btn = document.getElementById('btn-open-card-pool');
+            const badge = document.getElementById('card-pool-count-badge');
+            const editorPoolBadge = document.getElementById('deck-editor-pool-count');
+            const pool = await getAllCardsFromPoolDB();
+            if (btn) btn.innerText = `📚 查看牌庫 (${pool.length})`;
+            if (badge) badge.innerText = `${pool.length} 張卡牌`;
+            if (editorPoolBadge) editorPoolBadge.innerText = `${pool.length}`;
+        }
+
+        async function openCardPoolView() {
+            const mainView = document.getElementById('deck-vault-main-view');
+            const editorView = document.getElementById('deck-editor-view');
+            const poolView = document.getElementById('card-pool-view');
+            hideCardPreview();
+            if (mainView) mainView.classList.add('hidden');
+            if (editorView) {
+                editorView.classList.add('hidden');
+                editorView.classList.remove('flex');
+            }
+            if (poolView) {
+                poolView.classList.remove('hidden');
+                poolView.classList.add('flex');
+            }
+            await renderCardPoolGrid();
+        }
+
+        function closeCardPoolView() {
+            const mainView = document.getElementById('deck-vault-main-view');
+            const poolView = document.getElementById('card-pool-view');
+            hideCardPreview();
+            if (poolView) {
+                poolView.classList.add('hidden');
+                poolView.classList.remove('flex');
+            }
+            if (mainView) mainView.classList.remove('hidden');
+            renderDeckVaultList();
+        }
+
+        async function handleCardPoolImportFiles(event) {
+            const files = Array.from(event.target.files || []);
+            if (files.length === 0) return;
+            const extractedItems = [];
+            try {
+                for (const file of files) {
+                    if (/\.zip$/i.test(file.name)) {
+                        const zip = new JSZip();
+                        const contents = await zip.loadAsync(file);
+                        const entries = Object.entries(contents.files).filter(([filename, zipEntry]) => !zipEntry.dir && !filename.includes('__MACOSX') && /\.(jpg|jpeg|png|webp)$/i.test(filename));
+                        for (const [filename, zipEntry] of entries) {
+                            const baseName = filename.split('/').pop();
+                            if (/^(back|cardback|card_back|bs_back|卡背)\.(jpg|jpeg|png|webp)$/i.test(baseName)) continue;
+                            const blob = await zipEntry.async('blob');
+                            const highResSrc = await compressImageBlob(blob, 900, 1260, 0.92);
+                            const compressed = await compressImageBlob(blob, 500, 700, 0.86);
+                            extractedItems.push({ img: compressed, filename: baseName, highResSrc });
+                        }
+                    } else if (/\.(jpg|jpeg|png|webp)$/i.test(file.name) || file.type.startsWith('image/')) {
+                        const highResSrc = await compressImageBlob(file, 900, 1260, 0.92);
+                        const compressed = await compressImageBlob(file, 500, 700, 0.86);
+                        extractedItems.push({ img: compressed, filename: file.name, highResSrc });
+                    }
+                }
+                const added = await registerCardsToPool(extractedItems);
+                await renderCardPoolGrid();
+                await renderDeckEditorPoolSidebar();
+                showNotice(`已掃描 ${extractedItems.length} 張卡圖，新增 ${added.length} 張新卡至總牌庫並自動偵測右下角編號！`);
+            } catch (err) {
+                console.error('Import files to card pool failed:', err);
+                showNotice('導入卡牌至總牌庫失敗。');
+            }
+            if (event && event.target) event.target.value = '';
+        }
+
+        async function renderCardPoolGrid() {
+            const gridEl = document.getElementById('card-pool-grid');
+            if (!gridEl) return;
+            const currentToken = ++poolRenderToken;
+            const allPool = await getAllCardsFromPoolDB();
+            if (currentToken !== poolRenderToken) return;
+            await updateCardPoolButtonBadge();
+            const pool = allPool.filter(c => matchesCardCodeQuery(c.code || '', cardPoolSearchQuery));
+            gridEl.innerHTML = '';
+
+            if (allPool.length === 0) {
+                gridEl.innerHTML = `
+                    <div class="col-span-full flex flex-col items-center justify-center py-14 text-center gap-2 border border-dashed border-purple-400/30 rounded-sm bg-black/40">
+                        <div class="text-purple-200 text-sm font-bold">目前總牌庫尚無任何卡牌</div>
+                        <div class="text-[#a89f91] text-xs">當你匯入任何 .ZIP 卡組或在上方點擊「＋ 導入卡牌至牌庫」時，所有新卡牌都會自動收錄並辨識右下角編號！</div>
+                    </div>
+                `;
+                return;
+            }
+
+            if (pool.length === 0) {
+                gridEl.innerHTML = `
+                    <div class="col-span-full flex flex-col items-center justify-center py-14 text-center gap-2 border border-dashed border-amber-400/30 rounded-sm bg-black/40">
+                        <div class="text-[#e0b25b] text-sm font-bold">找不到符合「${cardPoolSearchQuery}」的卡牌</div>
+                        <div class="text-[#a89f91] text-xs">請嘗試其他關鍵字（如 BS71），或點擊卡牌下方的編號欄位手動編輯卡號。</div>
+                    </div>
+                `;
+                return;
+            }
+
+            // 2. 分批非同步渲染 (每幀渲染 24 張)，避免牌庫卡片較多時造成主執行緒停頓
+            const BATCH_SIZE = 24;
+            let idx = 0;
+
+            function renderNextBatch() {
+                if (currentToken !== poolRenderToken) return;
+                const frag = document.createDocumentFragment();
+                const end = Math.min(idx + BATCH_SIZE, pool.length);
+
+                for (; idx < end; idx++) {
+                    const cardRec = pool[idx];
+                    const cell = document.createElement('div');
+                    cell.className = 'pool-card-cell flex flex-col items-center border border-[#b09466]/45 bg-[#141311] p-2 rounded-sm gap-1.5 shadow-md hover:border-purple-400 transition-colors';
+
+                    const thumb = document.createElement('div');
+                    thumb.className = 'w-[100px] h-[140px] bg-black border border-[#b09466]/55 rounded-sm bg-cover bg-center cursor-pointer shadow relative';
+                    thumb.style.backgroundImage = `url(${cardRec.img})`;
+
+                    const codeBadge = document.createElement('div');
+                    codeBadge.className = 'absolute bottom-1 right-1 bg-black/85 border border-[#e0b25b]/70 text-[#e0b25b] text-[9.5px] font-black px-1.5 py-0.5 rounded-sm shadow pointer-events-none';
+                    codeBadge.innerText = cardRec.code || '未命名';
+                    thumb.appendChild(codeBadge);
+
+                    thumb.addEventListener('mouseenter', () => {
+                        if (controlMode !== 'PC') return;
+                        showCardPreviewNextToElement(thumb, cardRec.img, null, false);
+                    });
+                    thumb.addEventListener('mouseleave', () => {
+                        if (controlMode !== 'PC') return;
+                        hideCardPreview();
+                    });
+                    thumb.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        showCardPreviewNextToElement(thumb, cardRec.img, null, false);
+                    });
+
+                    const codeRow = document.createElement('div');
+                    codeRow.className = 'flex items-center gap-1 w-full';
+                    const codeInput = document.createElement('input');
+                    codeInput.type = 'text';
+                    codeInput.value = cardRec.code || '';
+                    codeInput.placeholder = '輸入卡號如 BS71-CP05';
+                    codeInput.className = 'w-full bg-black/75 border border-[#b09466]/40 focus:border-[#e0b25b] text-[10px] font-black text-[#f5efe6] px-1.5 py-0.5 rounded-sm outline-none text-center uppercase';
+                    codeInput.title = '可手動修改卡牌編號，按 Enter 儲存';
+                    codeInput.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            updateCardPoolCode(cardRec.id, codeInput.value, false);
+                        }
+                    });
+                    codeInput.addEventListener('change', () => {
+                        updateCardPoolCode(cardRec.id, codeInput.value, true);
+                    });
+                    codeRow.appendChild(codeInput);
+
+                    const delBtn = document.createElement('button');
+                    delBtn.className = 'w-full bg-rose-950/60 border border-rose-500/45 hover:bg-rose-600 text-rose-200 hover:text-white text-[10.5px] font-bold py-1 rounded-sm cursor-pointer transition-colors';
+                    delBtn.innerText = '🗑️ 刪除卡牌';
+                    delBtn.onclick = () => deleteCardFromPoolDB(cardRec.id);
+
+                    cell.appendChild(thumb);
+                    cell.appendChild(codeRow);
+                    cell.appendChild(delBtn);
+                    frag.appendChild(cell);
+                }
+
+                gridEl.appendChild(frag);
+                if (idx < pool.length) {
+                    requestAnimationFrame(renderNextBatch);
+                }
+            }
+
+            renderNextBatch();
+        }
+
+        async function putDeckToLocalDBOnly(deckRecord) {
             try {
                 const db = await openDeckVaultDB();
-                const allDecks = await getAllDecksFromVaultDB();
-                // 若已有同名卡組則直接覆蓋更新，避免重複堆積
-                const existing = allDecks.find(d => d.name === deckName);
-                const deckRecord = {
-                    id: existing ? existing.id : ('deck_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7)),
-                    name: deckName,
-                    cardCount: cardImagesArray.length,
-                    coverImage: cardImagesArray[0] || '',
-                    cards: cardImagesArray,
-                    cardBack: customCardBack || null,
-                    updatedAt: Date.now()
-                };
                 return new Promise((resolve, reject) => {
                     const tx = db.transaction(DECK_VAULT_STORE_NAME, 'readwrite');
                     const store = tx.objectStore(DECK_VAULT_STORE_NAME);
@@ -5110,33 +5684,90 @@
                     tx.onerror = (e) => reject(e.target.error);
                 });
             } catch (err) {
-                console.warn('Save deck to IndexedDB failed:', err);
+                return null;
+            }
+        }
+
+        async function saveDeckToVaultDB(deckName, cardImagesArray, customCardBack = null, forceDeckId = null) {
+            try {
+                const allDecks = await getAllDecksFromVaultDB();
+                const existing = forceDeckId
+                    ? allDecks.find(d => d.id === forceDeckId)
+                    : allDecks.find(d => d.name === deckName);
+
+                const deckRecord = {
+                    id: forceDeckId || (existing ? existing.id : ('deck_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7))),
+                    name: deckName,
+                    cardCount: cardImagesArray.length,
+                    coverImage: cardImagesArray[0] || '',
+                    cards: cardImagesArray,
+                    cardBack: customCardBack !== null ? customCardBack : (existing?.cardBack || null),
+                    updatedAt: Date.now()
+                };
+
+                await putDeckToLocalDBOnly(deckRecord);
+                sharedCloudDecksMap[deckRecord.id] = deckRecord;
+
+                // 自動將卡組中的所有卡牌註冊至總牌庫 (Card Pool)
+                await registerCardsToPool(cardImagesArray);
+
+                if (window.saveDeckToCloudVault) {
+                    const cloudOk = await window.saveDeckToCloudVault(deckRecord);
+                    const statusBadge = document.getElementById('deck-vault-sync-status');
+                    if (statusBadge) {
+                        statusBadge.innerText = cloudOk ? '● 雲端已同步給所有玩家' : '● 本機已儲存 (雲端同步重試中)';
+                    }
+                }
+                return deckRecord;
+            } catch (err) {
+                console.warn('Save deck to Vault failed:', err);
                 return null;
             }
         }
 
         async function getAllDecksFromVaultDB() {
+            const mergedMap = { ...sharedCloudDecksMap };
             try {
                 const db = await openDeckVaultDB();
-                return new Promise((resolve, reject) => {
+                const localList = await new Promise((resolve, reject) => {
                     const tx = db.transaction(DECK_VAULT_STORE_NAME, 'readonly');
                     const store = tx.objectStore(DECK_VAULT_STORE_NAME);
                     const req = store.getAll();
-                    req.onsuccess = () => {
-                        const list = Array.isArray(req.result) ? req.result : [];
-                        list.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
-                        resolve(list);
-                    };
+                    req.onsuccess = () => resolve(Array.isArray(req.result) ? req.result : []);
                     req.onerror = (e) => reject(e.target.error);
                 });
-            } catch (err) {
-                console.warn('Read decks from IndexedDB failed:', err);
-                return [];
+                localList.forEach(d => {
+                    if (!mergedMap[d.id] || (d.updatedAt || 0) > (mergedMap[d.id].updatedAt || 0)) {
+                        mergedMap[d.id] = d;
+                    }
+                });
+            } catch (err) {}
+
+            const list = Object.values(mergedMap);
+            list.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+            return list;
+        }
+
+        async function renameDeckInVault(deckId, newName) {
+            const trimmed = (newName || '').trim();
+            if (!trimmed) return showNotice('卡組名稱不能為空！');
+            const allDecks = await getAllDecksFromVaultDB();
+            const target = allDecks.find(d => d.id === deckId);
+            if (!target) return;
+            target.name = trimmed;
+            target.updatedAt = Date.now();
+            await putDeckToLocalDBOnly(target);
+            sharedCloudDecksMap[target.id] = target;
+            if (window.saveDeckToCloudVault) {
+                await window.saveDeckToCloudVault(target);
             }
+            await renderDeckVaultList();
+            showNotice(`已將卡組重新命名為「${trimmed}」並同步給所有玩家！`);
         }
 
         async function deleteDeckFromVaultDB(deckId) {
             try {
+                delete sharedCloudDecksMap[deckId];
                 const db = await openDeckVaultDB();
                 await new Promise((resolve, reject) => {
                     const tx = db.transaction(DECK_VAULT_STORE_NAME, 'readwrite');
@@ -5145,6 +5776,9 @@
                     tx.oncomplete = () => resolve(true);
                     tx.onerror = (e) => reject(e.target.error);
                 });
+                if (window.deleteDeckFromCloudVault) {
+                    await window.deleteDeckFromCloudVault(deckId);
+                }
                 await renderDeckVaultList();
             } catch (err) {
                 console.error('Delete deck failed:', err);
@@ -5153,6 +5787,7 @@
 
         async function clearAllDecksFromVault() {
             try {
+                sharedCloudDecksMap = {};
                 const db = await openDeckVaultDB();
                 await new Promise((resolve, reject) => {
                     const tx = db.transaction(DECK_VAULT_STORE_NAME, 'readwrite');
@@ -5161,12 +5796,413 @@
                     tx.oncomplete = () => resolve(true);
                     tx.onerror = (e) => reject(e.target.error);
                 });
+                if (window.clearAllDecksFromCloudVault) {
+                    await window.clearAllDecksFromCloudVault();
+                }
                 await renderDeckVaultList();
                 showNotice('已成功清空所有匯入過的卡組資料庫！');
             } catch (err) {
                 console.error('Clear deck vault failed:', err);
                 showNotice('清空資料庫失敗。');
             }
+        }
+
+        // 接收來自 Firebase 的雲端共享卡組列表
+        window.applySharedCloudDecks = async (cloudDecksMap) => {
+            sharedCloudDecksMap = cloudDecksMap || {};
+            const modal = document.getElementById('deck-vault-modal');
+            const mainView = document.getElementById('deck-vault-main-view');
+            if (modal && !modal.classList.contains('hidden') && mainView && !mainView.classList.contains('hidden')) {
+                await renderDeckVaultList();
+            }
+        };
+
+        // 接收來自 Firebase 的雲端共享總牌庫 (Card Pool)
+        window.applySharedCloudCardPool = async (cloudPoolMap) => {
+            sharedCloudCardPoolMap = cloudPoolMap || {};
+            await updateCardPoolButtonBadge();
+            const modal = document.getElementById('deck-vault-modal');
+            if (!modal || modal.classList.contains('hidden')) return;
+            const poolView = document.getElementById('card-pool-view');
+            const editorView = document.getElementById('deck-editor-view');
+            if (poolView && !poolView.classList.contains('hidden')) {
+                await renderCardPoolGrid();
+            }
+            if (editorView && !editorView.classList.contains('hidden')) {
+                await renderDeckEditorPoolSidebar();
+            }
+        };
+
+        /* =========================================================================
+           DECK EDITOR (卡組編輯器：左側顯示總牌庫點擊加入、右側減至 0 張不消失直到保存)
+           ========================================================================= */
+        function groupCardImagesByCount(cardsArray) {
+            const map = new Map();
+            (cardsArray || []).forEach(base64 => {
+                if (!base64) return;
+                map.set(base64, (map.get(base64) || 0) + 1);
+            });
+            const grouped = [];
+            map.forEach((count, img) => {
+                grouped.push({ img, count });
+            });
+            return grouped;
+        }
+
+        function expandGroupedCardsToArray(groupedList) {
+            const result = [];
+            (groupedList || []).forEach(item => {
+                const c = Math.max(0, parseInt(item.count, 10) || 0);
+                for (let i = 0; i < c; i++) {
+                    result.push(item.img);
+                }
+            });
+            return result;
+        }
+
+        async function openDeckEditor(deckId = null) {
+            const mainView = document.getElementById('deck-vault-main-view');
+            const poolView = document.getElementById('card-pool-view');
+            const editorView = document.getElementById('deck-editor-view');
+            const nameInput = document.getElementById('deck-editor-name-input');
+            const overwriteBtn = document.getElementById('btn-editor-overwrite');
+
+            if (deckId) {
+                const allDecks = await getAllDecksFromVaultDB();
+                const target = allDecks.find(d => d.id === deckId);
+                if (!target) return showNotice('找不到該卡組！');
+                currentEditingDeckId = target.id;
+                currentEditingDeckCards = groupCardImagesByCount(target.cards || []);
+                currentEditingCardBack = target.cardBack || null;
+                if (nameInput) nameInput.value = target.name || '未命名卡組';
+                if (overwriteBtn) overwriteBtn.classList.remove('hidden');
+                // 確保此卡組內的卡牌也全部收錄進總牌庫
+                await registerCardsToPool(target.cards || []);
+            } else {
+                currentEditingDeckId = null;
+                currentEditingDeckCards = [];
+                currentEditingCardBack = null;
+                if (nameInput) nameInput.value = '新卡組_' + new Date().toLocaleTimeString('zh-HK', { hour12: false });
+                if (overwriteBtn) overwriteBtn.classList.add('hidden');
+            }
+
+            if (mainView) mainView.classList.add('hidden');
+            if (poolView) {
+                poolView.classList.add('hidden');
+                poolView.classList.remove('flex');
+            }
+            if (editorView) {
+                editorView.classList.remove('hidden');
+                editorView.classList.add('flex');
+            }
+            renderDeckEditorGrid();
+            await renderDeckEditorPoolSidebar();
+        }
+
+        function closeDeckEditor() {
+            const mainView = document.getElementById('deck-vault-main-view');
+            const editorView = document.getElementById('deck-editor-view');
+            hideCardPreview();
+            if (editorView) {
+                editorView.classList.add('hidden');
+                editorView.classList.remove('flex');
+            }
+            if (mainView) mainView.classList.remove('hidden');
+            renderDeckVaultList();
+        }
+
+        // 1. 編輯 Deck 時加減卡牌數量：減到 0 時保留在畫面上不消失，直到按下確認保存才過濾移除
+        function adjustEditorCardCount(index, delta) {
+            const item = currentEditingDeckCards[index];
+            if (!item) return;
+            item.count = Math.max(0, (item.count || 0) + delta);
+            renderDeckEditorGrid();
+            renderDeckEditorPoolSidebar();
+        }
+
+        // 從左側總牌庫點擊卡牌時，直接將該卡新增 (+1) 至右側正在編輯的 Deck 中
+        function addCardFromPoolToEditorDeck(imgBase64) {
+            if (!imgBase64) return;
+            const existing = currentEditingDeckCards.find(c => c.img === imgBase64);
+            if (existing) {
+                existing.count = (existing.count || 0) + 1;
+            } else {
+                currentEditingDeckCards.push({ img: imgBase64, count: 1 });
+            }
+            renderDeckEditorGrid();
+            renderDeckEditorPoolSidebar();
+        }
+
+        async function handleDeckEditorImportFiles(event) {
+            const files = Array.from(event.target.files || []);
+            if (files.length === 0) return;
+
+            const newlyImportedItems = [];
+            try {
+                for (const file of files) {
+                    if (/\.zip$/i.test(file.name)) {
+                        const zip = new JSZip();
+                        const contents = await zip.loadAsync(file);
+                        const entries = Object.entries(contents.files).filter(([filename, zipEntry]) => !zipEntry.dir && !filename.includes('__MACOSX') && /\.(jpg|jpeg|png|webp)$/i.test(filename));
+                        for (const [filename, zipEntry] of entries) {
+                            const blob = await zipEntry.async('blob');
+                            const baseName = filename.split('/').pop();
+                            if (/^(back|cardback|card_back|bs_back|卡背)\.(jpg|jpeg|png|webp)$/i.test(baseName)) {
+                                currentEditingCardBack = await compressImageBlob(blob, 500, 700, 0.9);
+                                continue;
+                            }
+                            const highResSrc = await compressImageBlob(blob, 900, 1260, 0.92);
+                            const compressed = await compressImageBlob(blob, 500, 700, 0.86);
+                            newlyImportedItems.push({ img: compressed, filename: baseName, highResSrc });
+                            const existing = currentEditingDeckCards.find(c => c.img === compressed);
+                            if (existing) {
+                                existing.count += 1;
+                            } else {
+                                currentEditingDeckCards.push({ img: compressed, count: 1 });
+                            }
+                        }
+                    } else if (/\.(jpg|jpeg|png|webp)$/i.test(file.name) || file.type.startsWith('image/')) {
+                        const highResSrc = await compressImageBlob(file, 900, 1260, 0.92);
+                        const compressed = await compressImageBlob(file, 500, 700, 0.86);
+                        newlyImportedItems.push({ img: compressed, filename: file.name, highResSrc });
+                        const existing = currentEditingDeckCards.find(c => c.img === compressed);
+                        if (existing) {
+                            existing.count += 1;
+                        } else {
+                            currentEditingDeckCards.push({ img: compressed, count: 1 });
+                        }
+                    }
+                }
+                if (newlyImportedItems.length > 0) {
+                    await registerCardsToPool(newlyImportedItems);
+                }
+                renderDeckEditorGrid();
+                await renderDeckEditorPoolSidebar();
+            } catch (err) {
+                console.error('Import files to deck editor failed:', err);
+                showNotice('導入卡牌圖片失敗。');
+            }
+            if (event && event.target) event.target.value = '';
+        }
+
+        // 渲染編輯器左側的「總牌庫」欄（支援卡號搜尋如 "bs 71" + 點擊卡牌即加入當前 Deck）
+        async function renderDeckEditorPoolSidebar() {
+            const poolGridEl = document.getElementById('deck-editor-pool-grid');
+            const poolCountEl = document.getElementById('deck-editor-pool-count');
+            if (!poolGridEl) return;
+
+            const currentToken = ++sidebarPoolRenderToken;
+            const allPool = await getAllCardsFromPoolDB();
+            if (currentToken !== sidebarPoolRenderToken) return;
+            const pool = allPool.filter(c => matchesCardCodeQuery(c.code || '', cardPoolSearchQuery));
+            if (poolCountEl) {
+                poolCountEl.innerText = cardPoolSearchQuery.trim()
+                    ? `${pool.length}/${allPool.length} 張`
+                    : `${allPool.length} 張`;
+            }
+            poolGridEl.innerHTML = '';
+
+            if (allPool.length === 0) {
+                poolGridEl.innerHTML = `
+                    <div class="col-span-full text-center text-[11px] text-[#a89f91] py-10 px-2 border border-dashed border-purple-400/25 rounded-sm">
+                        牌庫尚無卡牌。<br>點擊右上角「＋ 導入卡牌」後，新卡牌會自動收納並辨識卡號供點擊選用！
+                    </div>
+                `;
+                return;
+            }
+
+            if (pool.length === 0) {
+                poolGridEl.innerHTML = `
+                    <div class="col-span-full text-center text-[11px] text-[#e0b25b] py-10 px-2 border border-dashed border-amber-400/30 rounded-sm">
+                        找不到符合「${cardPoolSearchQuery}」的卡牌
+                    </div>
+                `;
+                return;
+            }
+
+            // 分批非同步渲染左側牌庫，保持編輯器流暢不卡頓
+            const BATCH_SIZE = 24;
+            let idx = 0;
+
+            function renderNextSidebarBatch() {
+                if (currentToken !== sidebarPoolRenderToken) return;
+                const frag = document.createDocumentFragment();
+                const end = Math.min(idx + BATCH_SIZE, pool.length);
+
+                for (; idx < end; idx++) {
+                    const cardRec = pool[idx];
+                    const inDeckItem = currentEditingDeckCards.find(c => c.img === cardRec.img);
+                    const inDeckCount = inDeckItem ? (inDeckItem.count || 0) : 0;
+
+                    const cell = document.createElement('div');
+                    cell.className = 'pool-card-cell flex flex-col items-center border border-[#b09466]/40 hover:border-purple-300 bg-[#141311] p-1.5 rounded-sm gap-1 cursor-pointer transition-all hover:scale-[1.03] shadow relative group';
+                    cell.title = `點擊將 ${cardRec.code || '此卡'} (+1) 加入右側 Deck`;
+                    cell.onclick = () => addCardFromPoolToEditorDeck(cardRec.img);
+
+                    const thumb = document.createElement('div');
+                    thumb.className = 'w-[82px] h-[115px] bg-black border border-[#b09466]/50 rounded-sm bg-cover bg-center relative';
+                    thumb.style.backgroundImage = `url(${cardRec.img})`;
+
+                    if (inDeckCount > 0) {
+                        const badge = document.createElement('div');
+                        badge.className = 'absolute top-1 right-1 bg-emerald-950/90 border border-emerald-400 text-emerald-200 text-[10px] font-black px-1.5 py-0 rounded-sm shadow';
+                        badge.innerText = `已入 x${inDeckCount}`;
+                        thumb.appendChild(badge);
+                    }
+
+                    const codeTag = document.createElement('div');
+                    codeTag.className = 'text-[9.5px] font-black text-[#e0b25b] truncate max-w-full px-1';
+                    codeTag.innerText = cardRec.code || '辨識中...';
+
+                    const addHint = document.createElement('div');
+                    addHint.className = 'text-[9.5px] font-black text-purple-200 group-hover:text-white';
+                    addHint.innerText = '＋ 加入 Deck';
+
+                    cell.addEventListener('mouseenter', () => {
+                        if (controlMode !== 'PC') return;
+                        showCardPreviewNextToElement(thumb, cardRec.img, null, false);
+                    });
+                    cell.addEventListener('mouseleave', () => {
+                        if (controlMode !== 'PC') return;
+                        hideCardPreview();
+                    });
+
+                    cell.appendChild(thumb);
+                    cell.appendChild(codeTag);
+                    cell.appendChild(addHint);
+                    frag.appendChild(cell);
+                }
+
+                poolGridEl.appendChild(frag);
+                if (idx < pool.length) {
+                    requestAnimationFrame(renderNextSidebarBatch);
+                }
+            }
+
+            renderNextSidebarBatch();
+        }
+
+        function renderDeckEditorGrid() {
+            const gridEl = document.getElementById('deck-editor-card-grid');
+            const totalBadge = document.getElementById('deck-editor-total-badge');
+            if (!gridEl) return;
+
+            const totalCards = currentEditingDeckCards.reduce((sum, item) => sum + Math.max(0, parseInt(item.count, 10) || 0), 0);
+            if (totalBadge) totalBadge.innerText = `總計 ${totalCards} 張`;
+            gridEl.innerHTML = '';
+
+            // 第一格提供「＋ 點擊或拖放導入卡牌」專屬位置
+            const addSlot = document.createElement('div');
+            addSlot.className = 'flex flex-col items-center justify-center border-2 border-dashed border-sky-400/50 hover:border-sky-300 bg-sky-950/20 hover:bg-sky-900/30 rounded-sm p-2.5 min-h-[195px] cursor-pointer transition-all gap-1.5 text-center';
+            addSlot.onclick = () => document.getElementById('deck-editor-add-img-input').click();
+            addSlot.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                addSlot.classList.add('border-sky-300', 'bg-sky-900/40');
+            });
+            addSlot.addEventListener('dragleave', () => {
+                addSlot.classList.remove('border-sky-300', 'bg-sky-900/40');
+            });
+            addSlot.addEventListener('drop', async (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                addSlot.classList.remove('border-sky-300', 'bg-sky-900/40');
+                const droppedFiles = e.dataTransfer?.files;
+                if (droppedFiles && droppedFiles.length > 0) {
+                    await handleDeckEditorImportFiles({ target: { files: droppedFiles, value: '' } });
+                }
+            });
+            addSlot.innerHTML = `
+                <div class="w-9 h-9 rounded-full bg-sky-500/20 border border-sky-400/60 flex items-center justify-center text-sky-300 text-xl font-black">＋</div>
+                <div class="text-[11px] font-black text-sky-200">導入新卡牌位置</div>
+                <div class="text-[9.5px] text-[#a89f91] leading-relaxed">點擊或拖放圖片/ZIP<br>(同時收錄至左側牌庫)</div>
+            `;
+            gridEl.appendChild(addSlot);
+
+            currentEditingDeckCards.forEach((item, idx) => {
+                const isZero = (item.count || 0) <= 0;
+                const cell = document.createElement('div');
+                cell.className = `flex flex-col items-center border ${isZero ? 'border-rose-500/45 bg-[#141311]/50 opacity-55' : 'border-[#b09466]/45 bg-[#141311]'} p-2 rounded-sm gap-1.5 shadow-md relative transition-opacity`;
+
+                const thumb = document.createElement('div');
+                thumb.className = 'w-[96px] h-[134px] bg-black border border-[#b09466]/55 rounded-sm bg-cover bg-center cursor-pointer relative shadow';
+                thumb.style.backgroundImage = `url(${item.img})`;
+
+                const countTag = document.createElement('div');
+                countTag.className = `absolute top-1 right-1 ${isZero ? 'bg-rose-950/95 border-rose-400 text-rose-200' : 'bg-black/85 border-[#e0b25b] text-[#e0b25b]'} border text-xs font-black px-2 py-0.5 rounded-sm shadow`;
+                countTag.innerText = `x${item.count}`;
+                thumb.appendChild(countTag);
+
+                if (isZero) {
+                    const zeroHint = document.createElement('div');
+                    zeroHint.className = 'absolute inset-x-0 bottom-0 bg-rose-950/90 text-rose-200 text-[9px] font-bold text-center py-0.5';
+                    zeroHint.innerText = '保存後將移除';
+                    thumb.appendChild(zeroHint);
+                }
+
+                thumb.addEventListener('mouseenter', () => {
+                    if (controlMode !== 'PC') return;
+                    showCardPreviewNextToElement(thumb, item.img, null, false);
+                });
+                thumb.addEventListener('mouseleave', () => {
+                    if (controlMode !== 'PC') return;
+                    hideCardPreview();
+                });
+                thumb.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    showCardPreviewNextToElement(thumb, item.img, null, false);
+                });
+
+                const ctrlRow = document.createElement('div');
+                ctrlRow.className = 'flex items-center justify-between w-full gap-1 mt-0.5';
+
+                const btnMinus = document.createElement('button');
+                btnMinus.className = 'flex-1 bg-rose-950/70 border border-rose-500/50 hover:bg-rose-600 text-rose-200 hover:text-white font-black text-xs py-1 rounded-sm cursor-pointer transition-colors';
+                btnMinus.innerText = '－';
+                btnMinus.title = '減少 1 張 (減至 0 張時不會立即消失，保存後才移除)';
+                btnMinus.onclick = () => adjustEditorCardCount(idx, -1);
+
+                const countMid = document.createElement('span');
+                countMid.className = `text-xs font-black ${isZero ? 'text-rose-300' : 'text-[#f5efe6]'} min-w-[32px] text-center`;
+                countMid.innerText = `${item.count} 張`;
+
+                const btnPlus = document.createElement('button');
+                btnPlus.className = 'flex-1 bg-emerald-950/70 border border-emerald-500/50 hover:bg-emerald-500 hover:text-black text-emerald-200 font-black text-xs py-1 rounded-sm cursor-pointer transition-colors';
+                btnPlus.innerText = '＋';
+                btnPlus.title = '增加 1 張';
+                btnPlus.onclick = () => adjustEditorCardCount(idx, 1);
+
+                ctrlRow.appendChild(btnMinus);
+                ctrlRow.appendChild(countMid);
+                ctrlRow.appendChild(btnPlus);
+
+                cell.appendChild(thumb);
+                cell.appendChild(ctrlRow);
+                gridEl.appendChild(cell);
+            });
+        }
+
+        async function saveDeckEditorResult(saveAsNew = false) {
+            const nameInput = document.getElementById('deck-editor-name-input');
+            const rawName = (nameInput ? nameInput.value : '').trim() || '自訂卡組';
+            // 確認保存時，才會將 count <= 0 的卡牌正式過濾掉
+            const expandedCards = expandGroupedCardsToArray(currentEditingDeckCards);
+
+            if (expandedCards.length === 0) {
+                return showNotice('卡組內至少需要 1 張數量大於 0 的卡牌才能儲存！');
+            }
+
+            let targetDeckId = (!saveAsNew && currentEditingDeckId) ? currentEditingDeckId : ('deck_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7));
+            let finalName = rawName;
+            if (saveAsNew && currentEditingDeckId) {
+                const allDecks = await getAllDecksFromVaultDB();
+                if (allDecks.some(d => d.id === currentEditingDeckId && d.name === rawName)) {
+                    finalName = `${rawName} (副本)`;
+                }
+            }
+
+            await saveDeckToVaultDB(finalName, expandedCards, currentEditingCardBack, targetDeckId);
+            closeDeckEditor();
+            showNotice(`已成功儲存卡組「${finalName}」(${expandedCards.length} 張卡) 並同步至共享卡組庫！`);
         }
 
         function applyDeckCardsToPlayer(player, cardImagesArray, customCardBack = null, deckLabel = '') {
@@ -5238,12 +6274,26 @@
 
         async function openDeckVaultModal() {
             const modal = document.getElementById('deck-vault-modal');
+            const mainView = document.getElementById('deck-vault-main-view');
+            const poolView = document.getElementById('card-pool-view');
+            const editorView = document.getElementById('deck-editor-view');
+            if (mainView) mainView.classList.remove('hidden');
+            if (poolView) {
+                poolView.classList.add('hidden');
+                poolView.classList.remove('flex');
+            }
+            if (editorView) {
+                editorView.classList.add('hidden');
+                editorView.classList.remove('flex');
+            }
             if (modal) modal.classList.remove('hidden');
+            await updateCardPoolButtonBadge();
             await renderDeckVaultList();
         }
 
         function closeDeckVaultModal() {
             const modal = document.getElementById('deck-vault-modal');
+            hideCardPreview();
             if (modal) modal.classList.add('hidden');
         }
 
@@ -5253,6 +6303,7 @@
             if (!listEl) return;
 
             const decks = await getAllDecksFromVaultDB();
+            await updateCardPoolButtonBadge();
             if (badgeEl) badgeEl.innerText = `${decks.length} 副卡組`;
             listEl.innerHTML = '';
 
@@ -5268,7 +6319,7 @@
 
             decks.forEach(deck => {
                 const card = document.createElement('div');
-                card.className = 'flex flex-col justify-between border border-[#b09466]/45 bg-[#121110]/90 p-3 rounded-sm gap-3 shadow-lg hover:border-[#e0b25b] transition-colors';
+                card.className = 'flex flex-col justify-between border border-[#b09466]/45 bg-[#121110]/90 p-3 rounded-sm gap-2.5 shadow-lg hover:border-[#e0b25b] transition-colors';
 
                 const topRow = document.createElement('div');
                 topRow.className = 'flex items-start gap-3';
@@ -5282,21 +6333,40 @@
                 const infoCol = document.createElement('div');
                 infoCol.className = 'flex-1 min-w-0 flex flex-col gap-1';
 
-                const nameEl = document.createElement('div');
-                nameEl.className = 'text-sm font-black text-[#f5efe6] truncate';
-                nameEl.title = deck.name;
-                nameEl.innerText = deck.name;
+                // 支援直接在卡片匣內修改名稱並儲存同步
+                const nameRow = document.createElement('div');
+                nameRow.className = 'flex items-center gap-1';
+
+                const nameInput = document.createElement('input');
+                nameInput.type = 'text';
+                nameInput.value = deck.name || '未命名卡組';
+                nameInput.className = 'w-full bg-black/65 border border-[#b09466]/40 focus:border-[#e0b25b] text-xs font-black text-[#f5efe6] px-2 py-1 rounded-sm outline-none';
+                nameInput.title = '輸入新名稱後按 Enter 或點擊改名按鈕';
+                nameInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        renameDeckInVault(deck.id, nameInput.value);
+                    }
+                });
+
+                const btnRename = document.createElement('button');
+                btnRename.className = 'bg-[#c8aa76]/20 border border-[#c8aa76]/55 hover:bg-[#c8aa76] text-[#e0b25b] hover:text-black text-[10px] font-bold px-2 py-1 rounded-sm whitespace-nowrap cursor-pointer transition-colors';
+                btnRename.innerText = '改名';
+                btnRename.onclick = () => renameDeckInVault(deck.id, nameInput.value);
+
+                nameRow.appendChild(nameInput);
+                nameRow.appendChild(btnRename);
 
                 const countEl = document.createElement('div');
-                countEl.className = 'text-xs font-bold text-[#e0b25b]';
+                countEl.className = 'text-xs font-bold text-[#e0b25b] mt-0.5';
                 countEl.innerText = `卡牌數量：${deck.cardCount || (deck.cards ? deck.cards.length : 0)} 張`;
 
                 const dateStr = deck.updatedAt ? new Date(deck.updatedAt).toLocaleString('zh-HK', { hour12: false }) : '';
                 const timeEl = document.createElement('div');
                 timeEl.className = 'text-[10px] text-[#a89f91]';
-                timeEl.innerText = `儲存時間：${dateStr}`;
+                timeEl.innerText = `更新：${dateStr}`;
 
-                infoCol.appendChild(nameEl);
+                infoCol.appendChild(nameRow);
                 infoCol.appendChild(countEl);
                 infoCol.appendChild(timeEl);
 
@@ -5304,26 +6374,33 @@
                 topRow.appendChild(infoCol);
 
                 const btnRow = document.createElement('div');
-                btnRow.className = 'flex items-center gap-1.5 pt-1 border-t border-[#b09466]/20';
+                btnRow.className = 'grid grid-cols-4 gap-1.5 pt-1.5 border-t border-[#b09466]/20';
 
                 const btnLoadP1 = document.createElement('button');
-                btnLoadP1.className = 'flex-1 bg-sky-950/60 border border-sky-400/50 hover:bg-sky-500 hover:text-black text-sky-200 text-xs font-black py-1.5 rounded-sm cursor-pointer transition-colors';
-                btnLoadP1.innerText = '載入至 P1';
+                btnLoadP1.className = 'bg-sky-950/60 border border-sky-400/50 hover:bg-sky-500 hover:text-black text-sky-200 text-[11px] font-black py-1.5 rounded-sm cursor-pointer transition-colors';
+                btnLoadP1.innerText = '載入 P1';
                 btnLoadP1.onclick = () => loadSavedDeckToPlayer(deck.id, 'p1');
 
                 const btnLoadP2 = document.createElement('button');
-                btnLoadP2.className = 'flex-1 bg-amber-950/60 border border-amber-400/50 hover:bg-amber-400 hover:text-black text-amber-200 text-xs font-black py-1.5 rounded-sm cursor-pointer transition-colors';
-                btnLoadP2.innerText = '載入至 P2';
+                btnLoadP2.className = 'bg-amber-950/60 border border-amber-400/50 hover:bg-amber-400 hover:text-black text-amber-200 text-[11px] font-black py-1.5 rounded-sm cursor-pointer transition-colors';
+                btnLoadP2.innerText = '載入 P2';
                 btnLoadP2.onclick = () => loadSavedDeckToPlayer(deck.id, 'p2');
 
+                const btnEdit = document.createElement('button');
+                btnEdit.className = 'bg-purple-950/60 border border-purple-400/50 hover:bg-purple-500 hover:text-white text-purple-200 text-[11px] font-black py-1.5 rounded-sm cursor-pointer transition-colors';
+                btnEdit.innerText = '✏️ 編輯卡組';
+                btnEdit.title = '編輯此卡組：增加/減少卡牌或導入新卡';
+                btnEdit.onclick = () => openDeckEditor(deck.id);
+
                 const btnDel = document.createElement('button');
-                btnDel.className = 'bg-rose-950/50 border border-rose-500/45 hover:bg-rose-600 hover:text-white text-rose-300 text-xs font-bold px-2.5 py-1.5 rounded-sm cursor-pointer transition-colors';
+                btnDel.className = 'bg-rose-950/50 border border-rose-500/45 hover:bg-rose-600 hover:text-white text-rose-300 text-[11px] font-bold py-1.5 rounded-sm cursor-pointer transition-colors';
                 btnDel.innerText = '刪除';
                 btnDel.title = '從資料庫刪除此卡組';
                 btnDel.onclick = () => deleteDeckFromVaultDB(deck.id);
 
                 btnRow.appendChild(btnLoadP1);
                 btnRow.appendChild(btnLoadP2);
+                btnRow.appendChild(btnEdit);
                 btnRow.appendChild(btnDel);
 
                 card.appendChild(topRow);
@@ -5332,7 +6409,7 @@
             });
         }
 
-        // 解析 ZIP 檔案並同時存入 IndexedDB 卡組庫
+        // 解析 ZIP 檔案並同時存入 IndexedDB 卡組庫與總牌庫 (附帶右下角卡號偵測)
         async function parseZipAndSaveToVault(file) {
             const zip = new JSZip();
             const contents = await zip.loadAsync(file);
@@ -5342,6 +6419,7 @@
             const entries = allFiles.filter(([filename]) => /\.(jpg|jpeg|png|webp)$/i.test(filename));
 
             const cardImagesArray = [];
+            const poolItemsWithHints = [];
             const highResBlobs = [];
             let customBackBase64 = null;
 
@@ -5352,12 +6430,15 @@
                     customBackBase64 = await compressImageBlob(blob, 500, 700, 0.9);
                     continue;
                 }
+                const highResSrc = await compressImageBlob(blob, 900, 1260, 0.92);
                 const compressedBase64 = await compressImageBlob(blob, 500, 700, 0.86);
                 cardImagesArray.push(compressedBase64);
+                poolItemsWithHints.push({ img: compressedBase64, filename: baseName, highResSrc });
                 highResBlobs.push(blob);
             }
 
             if (cardImagesArray.length > 0) {
+                await registerCardsToPool(poolItemsWithHints);
                 await saveDeckToVaultDB(deckName, cardImagesArray, customBackBase64);
             }
 
@@ -5652,25 +6733,95 @@
             if (!cardData || !cardData.zone) return;
             const canRotate = cardData.zone.startsWith('field-') || cardData.zone.startsWith('zone-god-');
             if (!canRotate) return;
-            const deltaDeg = isRightSide ? 90 : -90;
-            cardData.rotation = (cardData.rotation || 0) + deltaDeg;
-            playSfx('tap');
+
+            cardData.rotation = (cardData.rotation || 0) + (isRightSide ? 90 : -90);
             const el = document.getElementById(cardId);
             if (el) applyCardVisualState(cardData, el);
             updateRoomState();
         }
 
-        // 快速連點兩下反轉卡牌
+        // 6. 卡牌正反面 3D 翻轉動畫（卡牌與放大預視圖在翻轉至 90 度垂直切面時切換正反面，手牌與場上皆生效）
+        function playCardFlipVisualAnimation(cardId, targetFaceDown, keepPreview = false) {
+            const cardData = gameState.cards[cardId];
+            if (!cardData) return;
+            const el = document.getElementById(cardId);
+            if (!el) {
+                cardData.isFaceDown = targetFaceDown;
+                return;
+            }
+
+            const isFieldOrGod = cardData.zone && (cardData.zone.startsWith('field-') || cardData.zone.startsWith('zone-god-'));
+            const rot = isFieldOrGod ? (cardData.rotation || 0) : 0;
+
+            el.getAnimations().forEach(anim => anim.cancel());
+            el.classList.add('card-flipping');
+
+            const phase1 = el.animate([
+                { transform: `perspective(600px) rotate(${rot}deg) scale(1) rotateY(0deg)` },
+                { transform: `perspective(600px) rotate(${rot}deg) scale(1.14) rotateY(90deg)` }
+            ], {
+                duration: 135,
+                easing: 'ease-in',
+                fill: 'forwards'
+            });
+
+            // 若當前放大預覽視窗正顯示此卡，且保持預覽，同步為放大預視圖播放 3D 翻轉動畫
+            const previewImg = document.getElementById('card-preview-img');
+            if (keepPreview && activePreviewCardId === cardId && previewImg) {
+                previewImg.getAnimations().forEach(anim => anim.cancel());
+                const prevAnim1 = previewImg.animate([
+                    { transform: 'perspective(900px) rotate(0deg) scale(1) rotateY(0deg)' },
+                    { transform: 'perspective(900px) rotate(0deg) scale(1.05) rotateY(90deg)' }
+                ], { duration: 135, easing: 'ease-in', fill: 'forwards' });
+
+                prevAnim1.onfinish = () => {
+                    syncActivePreviewTransform();
+                    const prevAnim2 = previewImg.animate([
+                        { transform: 'perspective(900px) rotate(0deg) scale(1.05) rotateY(-90deg)' },
+                        { transform: 'perspective(900px) rotate(0deg) scale(1) rotateY(0deg)' }
+                    ], { duration: 155, easing: 'ease-out', fill: 'forwards' });
+                    prevAnim2.onfinish = () => {
+                        previewImg.getAnimations().forEach(anim => anim.cancel());
+                    };
+                };
+            }
+
+            phase1.onfinish = () => {
+                cardData.isFaceDown = targetFaceDown;
+                applyCardVisualState(cardData, el);
+                if (!keepPreview && cardData.isFaceDown) {
+                    hideCardPreview();
+                } else if (activePreviewCardId === cardId) {
+                    syncActivePreviewTransform();
+                }
+
+                const phase2 = el.animate([
+                    { transform: `perspective(600px) rotate(${rot}deg) scale(1.14) rotateY(-90deg)` },
+                    { transform: `perspective(600px) rotate(${rot}deg) scale(1) rotateY(0deg)` }
+                ], {
+                    duration: 155,
+                    easing: 'ease-out',
+                    fill: 'forwards'
+                });
+
+                phase2.onfinish = () => {
+                    el.getAnimations().forEach(anim => anim.cancel());
+                    el.classList.remove('card-flipping');
+                    applyCardVisualState(cardData, el);
+                };
+            };
+        }
+
+        // 快速連點兩下反轉卡牌 (附帶 3D 翻轉動畫)
         function flipCardFace(cardId, keepPreview = false) {
             const cardData = gameState.cards[cardId];
             if (!cardData || !cardData.zone) return;
             const isFlippable = cardData.zone.startsWith('field-') || cardData.zone.startsWith('zone-god-') || cardData.zone.startsWith('hand-') || cardData.zone.startsWith('zone-burst-');
             if (!isFlippable) return;
-            cardData.isFaceDown = !cardData.isFaceDown;
+            const nextFaceDown = !cardData.isFaceDown;
+            cardData.isFaceDown = nextFaceDown;
             playSfx('tap');
-            const el = document.getElementById(cardId);
-            if (el) applyCardVisualState(cardData, el);
-            if (!keepPreview && cardData.isFaceDown) hideCardPreview();
+            playCardFlipVisualAnimation(cardId, nextFaceDown, keepPreview);
             updateRoomState();
         }
 
@@ -5927,19 +7078,32 @@
 
                 if (isTouchDraggingCard) {
                     isTouchDraggingCard = false;
-                    endTouchCardDrag(cardData.id, e.clientX, e.clientY);
+                    if (e.type === 'pointerup') {
+                        endTouchCardDrag(cardData.id, e.clientX, e.clientY);
+                    } else {
+                        el.style.opacity = '1';
+                        const ghost = document.getElementById('touch-drag-ghost');
+                        if (ghost) ghost.style.display = 'none';
+                        document.querySelectorAll('.drag-over').forEach(z => z.classList.remove('drag-over'));
+                        draggedCard = null;
+                    }
                     return;
                 }
 
-                // 若未進入拖動且為正常放開手指，視為「單擊卡牌放大」
+                // 若未進入拖動且為正常放開手指，視為「單擊卡牌放大」並讓手牌向上突出
                 if (e.type === 'pointerup') {
                     const isOpponentHand = el.closest('.opponent-hand');
                     if (isOpponentHand) return;
                     const currentCard = gameState.cards[cardData.id];
                     const currentImg = currentCard?.imgBase64 || cardImageCache[cardData.id];
+                    const isInHand = el.closest('.hand-zone');
                     if (activePreviewCardId === cardData.id) {
                         hideCardPreview();
                     } else {
+                        document.querySelectorAll('.card.hand-card-selected').forEach(c => c.classList.remove('hand-card-selected'));
+                        if (isInHand) {
+                            el.classList.add('hand-card-selected');
+                        }
                         showCardPreviewNextToElement(el, currentImg, cardData.id, true);
                     }
                 }
@@ -6288,6 +7452,41 @@
             triggerDeckChoiceForCard(cardId, player);
         }
 
+        // 處理將實體 Core 或卡片 Core 拖放到 Life / Reserve / Trash 區域的放置事件
+        function dropOnCounterBox(ev, player, targetPlace) {
+            ev.preventDefault();
+            ev.stopPropagation();
+            document.querySelectorAll('.drag-over').forEach(z => z.classList.remove('drag-over'));
+
+            const rawData = ev.dataTransfer.getData('text/plain');
+            if (rawData && rawData.startsWith('ZONE_CORE:')) {
+                const parts = rawData.split(':');
+                const srcPlayer = parts[1];
+                const srcPlace = parts[2];
+                transferZoneCoreToTarget(srcPlayer, srcPlace, targetPlace, player);
+                return;
+            }
+            if ((rawData && rawData.startsWith('CARD_CORE:')) || (rawData && rawData.startsWith('GOD_CORE:')) || draggedGodCoreCardId) {
+                const sourceCid = (rawData && rawData.includes(':')) ? rawData.split(':')[1] : draggedGodCoreCardId;
+                draggedGodCoreCardId = null;
+                if (sourceCid) {
+                    transferCardCoreToTarget(sourceCid, targetPlace, player);
+                }
+                return;
+            }
+            if (rawData === 'CENTER_CORE' || isDraggingCenterCore) {
+                isDraggingCenterCore = false;
+                if (targetPlace === 'reserve') {
+                    gameState[`${player}_reserve`] += 1;
+                    triggerCounterKeyFlash(`${player}_reserve`, 1);
+                    playCoreTransferAnimation('center-core-spawner', `reserve-box-${player}`, '+1 RESERVE CORE', 'cost', 1);
+                    updateAllUI();
+                    updateRoomState();
+                }
+                return;
+            }
+        }
+
         function closeDeckChoiceModal() {
             pendingDeckDrop = null;
             document.getElementById('deck-choice-modal').classList.add('hidden');
@@ -6559,15 +7758,23 @@
             };
             
             ['p1_life', 'p1_reserve', 'p1_count', 'p1_trash_core', 
-             'p2_life', 'p2_reserve', 'p2_count', 'p2_trash_core', 'soulCoreLocation', 'zoneCollapsed', 'lotteryUsed', 'lotteryPendingWinner', 'seats'].forEach(key => {
+             'p2_life', 'p2_reserve', 'p2_count', 'p2_trash_core', 'soulCoreLocation', 'zoneCollapsed', 'lotteryUsed', 'lotteryPendingWinner'].forEach(key => {
                 if (newState[key] !== undefined) gameState[key] = newState[key];
             });
+
+            // 1. 合併遠端與本地的 P1 / P2 玩家入座狀態燈，確保不會互相覆蓋
+            if (newState.seats) {
+                if (!gameState.seats) gameState.seats = { p1: null, p2: null };
+                gameState.seats.p1 = newState.seats.p1 || (gameState.viewMode === 'P1' ? localSeatId : null);
+                gameState.seats.p2 = newState.seats.p2 || (gameState.viewMode === 'P2' ? localSeatId : null);
+            }
             
             if (Array.isArray(newState.p1Deck)) gameState.p1Deck = newState.p1Deck;
             if (Array.isArray(newState.p2Deck)) gameState.p2Deck = newState.p2Deck;
 
             const remoteCoreChanges = [];
             const remoteZoneMoves = [];
+            const remoteCardFlips = [];
             if (Array.isArray(newState.cards)) {
                 const remoteIds = new Set(newState.cards.map(c => c.id));
                 Object.keys(gameState.cards).forEach(localId => {
@@ -6605,6 +7812,8 @@
                     } else {
                         const localCard = gameState.cards[remoteCard.id];
                         const oldZone = localCard.zone;
+                        const oldFaceDown = !!localCard.isFaceDown;
+                        const newFaceDown = !!remoteCard.isFaceDown;
                         const oldCores = localCard.cores || 0;
                         const newCores = remoteCard.cores || 0;
                         if (newCores !== oldCores) {
@@ -6620,6 +7829,8 @@
                                 }
                             }
                             remoteZoneMoves.push({ id: remoteCard.id, prevZone: oldZone, targetZone: remoteCard.zone, startRect });
+                        } else if (oldFaceDown !== newFaceDown) {
+                            remoteCardFlips.push({ id: remoteCard.id, isFaceDown: newFaceDown });
                         }
                         localCard.zone = remoteCard.zone;
                         localCard.x = remoteCard.x || 0;
@@ -6627,7 +7838,7 @@
                         localCard.rx = typeof remoteCard.rx === 'number' ? remoteCard.rx : undefined;
                         localCard.ry = typeof remoteCard.ry === 'number' ? remoteCard.ry : undefined;
                         localCard.rotation = parsedRotation;
-                        localCard.isFaceDown = !!remoteCard.isFaceDown;
+                        localCard.isFaceDown = newFaceDown;
                         localCard.cores = newCores;
                         localCard.zOrder = remoteCard.zOrder || localCard.zOrder || 1;
                         if (cachedImg) localCard.imgBase64 = cachedImg;
@@ -6669,6 +7880,9 @@
             }
             
             updateAllUI();
+            remoteCardFlips.forEach(flip => {
+                playCardFlipVisualAnimation(flip.id, flip.isFaceDown, true);
+            });
             ['p1', 'p2'].forEach(p => {
                 const newLoc = gameState.soulCoreLocation?.[p];
                 if (prevSoulLoc[p] && newLoc && prevSoulLoc[p] !== newLoc) {
@@ -6857,8 +8071,27 @@
             closeMultiplayerModal,
             openDeckVaultModal,
             closeDeckVaultModal,
+            openCardPoolView,
+            closeCardPoolView,
+            handleCardPoolImportFiles,
+            onCardPoolSearchInput,
+            updateCardPoolCode,
+            rescanAllCardPoolCodes,
+            deleteCardFromPoolDB,
+            clearAllCardPool,
+            getAllCardsFromPoolDB,
+            putCardToLocalPoolDBOnly,
+            getAllDecksFromVaultDB,
+            putDeckToLocalDBOnly,
             importZipToVaultOnly,
             loadSavedDeckToPlayer,
+            renameDeckInVault,
+            openDeckEditor,
+            closeDeckEditor,
+            adjustEditorCardCount,
+            addCardFromPoolToEditorDeck,
+            handleDeckEditorImportFiles,
+            saveDeckEditorResult,
             deleteDeckFromVaultDB,
             clearAllDecksFromVault,
             createRoom,
@@ -6918,6 +8151,55 @@
             if (f2El) fieldResizeObserver.observe(f2El);
         }
 
+        // 自訂上傳 BS 卡背功能實作
+        const CUSTOM_CARDBACK_STORAGE_KEY = 'bs_custom_cardback_base64';
+
+        function applyCustomCardBackUrl(base64Url) {
+            if (!base64Url) return;
+            const styleId = 'custom-cardback-style';
+            let styleEl = document.getElementById(styleId);
+            if (!styleEl) {
+                styleEl = document.createElement('style');
+                styleEl.id = styleId;
+                document.head.appendChild(styleEl);
+            }
+            styleEl.innerHTML = `
+                :root {
+                    --bs-cardback-svg: url("${base64Url}") !important;
+                }
+            `;
+        }
+
+        async function uploadCustomCardBack(event) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
+            try {
+                const compressed = await compressImageBlob(file, 500, 700, 0.9);
+                applyCustomCardBackUrl(compressed);
+                try {
+                    localStorage.setItem(CUSTOM_CARDBACK_STORAGE_KEY, compressed);
+                } catch (e) {}
+                cardImageCache['__custom_cardback__'] = compressed;
+                if (window.uploadPlayerCardImages) {
+                    window.uploadPlayerCardImages('all', { '__custom_cardback__': compressed });
+                }
+                showNotice('已成功設定自訂卡背！並已套用到全場所有牌組、蓋牌與對手手牌。');
+            } catch (err) {
+                console.error('Upload custom cardback failed:', err);
+                showNotice('讀取或壓縮卡背圖片失敗。');
+            }
+            event.target.value = '';
+        }
+
+        // 初始化載入本機記憶的自訂卡背
+        try {
+            const savedBack = localStorage.getItem(CUSTOM_CARDBACK_STORAGE_KEY);
+            if (savedBack) {
+                applyCustomCardBackUrl(savedBack);
+                cardImageCache['__custom_cardback__'] = savedBack;
+            }
+        } catch (e) {}
+
         autoDetectControlMode();
         updateAllUI();
     </script>
@@ -6941,11 +8223,270 @@
         const clientId = "client_" + Math.random().toString(36).substring(2, 10) + "_" + Date.now();
         const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
         const db = getFirestore(app);
-
         let unsubscribeRoom = null;
         let unsubscribeImages = null;
+        let unsubscribeSharedDecks = null;
+        let unsubscribeSharedCardPool = null;
+        let hasUploadedInitialLocalDecks = false;
+        let hasUploadedInitialLocalPool = false;
         let heartbeatTimer = null;
-        window.currentRoomCode = null;
+
+        // 啟動全局共享總牌庫 (sharedCardPool) 即時同步監聽 (使用背景閒置佇列寫入本地 DB，防止大量卡牌同步時造成對局卡頓)
+        function initGlobalSharedCardPoolListener() {
+            if (!db || unsubscribeSharedCardPool) return;
+            try {
+                const poolColRef = collection(db, 'artifacts', appId, 'public', 'data', 'sharedCardPool');
+                unsubscribeSharedCardPool = onSnapshot(poolColRef, async (querySnapshot) => {
+                    const cloudPool = {};
+                    const pendingLocalSaves = [];
+                    for (const docSnap of querySnapshot.docs) {
+                        const d = docSnap.data();
+                        if (d && d.id && d.img) {
+                            const item = {
+                                id: d.id,
+                                img: d.img,
+                                code: d.code || '',
+                                createdAt: d.createdAt || Date.now()
+                            };
+                            cloudPool[d.id] = item;
+                            pendingLocalSaves.push(item);
+                        }
+                    }
+                    if (window.applySharedCloudCardPool) {
+                        await window.applySharedCloudCardPool(cloudPool);
+                    }
+                    // 背景分段寫入 IndexedDB，不阻塞主畫面動畫與操作
+                    if (pendingLocalSaves.length > 0 && window.putCardToLocalPoolDBOnly) {
+                        setTimeout(async () => {
+                            for (let i = 0; i < pendingLocalSaves.length; i++) {
+                                await window.putCardToLocalPoolDBOnly(pendingLocalSaves[i]);
+                                if (i % 10 === 9) {
+                                    await new Promise(r => setTimeout(r, 16));
+                                }
+                            }
+                        }, 80);
+                    }
+                    if (!hasUploadedInitialLocalPool && window.getAllCardsFromPoolDB) {
+                        hasUploadedInitialLocalPool = true;
+                        const localPool = await window.getAllCardsFromPoolDB();
+                        const unsynced = localPool.filter(c => c && c.id && !cloudPool[c.id]);
+                        if (unsynced.length > 0 && window.saveCardsToCloudPool) {
+                            await window.saveCardsToCloudPool(unsynced);
+                        }
+                    }
+                }, (err) => {
+                    console.warn("Shared card pool listener error:", err);
+                });
+            } catch (err) {
+                console.warn("Init shared card pool listener failed:", err);
+            }
+        }
+
+        window.saveCardsToCloudPool = async (cardRecordsArray) => {
+            if (!db || !Array.isArray(cardRecordsArray)) return;
+            try {
+                for (const rec of cardRecordsArray) {
+                    if (!rec || !rec.id || !rec.img) continue;
+                    const cardRef = doc(db, 'artifacts', appId, 'public', 'data', 'sharedCardPool', rec.id);
+                    await setDoc(cardRef, {
+                        id: rec.id,
+                        img: rec.img,
+                        code: rec.code || '',
+                        createdAt: rec.createdAt || Date.now()
+                    });
+                }
+            } catch (err) {
+                console.warn("Save cards to cloud pool warning:", err);
+            }
+        };
+
+        window.deleteCardFromCloudPool = async (cardId) => {
+            if (!db || !cardId) return;
+            try {
+                const cardRef = doc(db, 'artifacts', appId, 'public', 'data', 'sharedCardPool', cardId);
+                await deleteDoc(cardRef);
+            } catch (err) {
+                console.warn("Delete card from cloud pool warning:", err);
+            }
+        };
+
+        window.clearAllCardsFromCloudPool = async () => {
+            if (!db) return;
+            try {
+                const poolColRef = collection(db, 'artifacts', appId, 'public', 'data', 'sharedCardPool');
+                const snap = await getDocs(poolColRef);
+                for (const d of snap.docs) {
+                    await deleteDoc(d.ref);
+                }
+            } catch (err) {
+                console.warn("Clear cloud card pool warning:", err);
+            }
+        };
+
+        // 2. 啟動全局共享卡組庫 (sharedDecks) 即時同步監聽，支援分塊儲存 (Chunking) 突破 Firestore 1MB 限制，讓所有玩家都能即時看見所有導入或編輯的 Deck
+        function initGlobalSharedDecksListener() {
+            if (!db || unsubscribeSharedDecks) return;
+            try {
+                const sharedColRef = collection(db, 'artifacts', appId, 'public', 'data', 'sharedDecks');
+                unsubscribeSharedDecks = onSnapshot(sharedColRef, async (querySnapshot) => {
+                    const metaDocs = [];
+                    const chunkMap = {}; // { deckId: { chunkIndex: cardsArray } }
+
+                    for (const docSnap of querySnapshot.docs) {
+                        const d = docSnap.data();
+                        if (!d) continue;
+                        if (d.isChunk && d.deckId !== undefined && d.chunkIndex !== undefined) {
+                            if (!chunkMap[d.deckId]) chunkMap[d.deckId] = {};
+                            chunkMap[d.deckId][d.chunkIndex] = Array.isArray(d.cards) ? d.cards : [];
+                        } else if (d.id) {
+                            metaDocs.push(d);
+                        }
+                    }
+
+                    const cloudMap = {};
+                    for (const meta of metaDocs) {
+                        let fullCards = [];
+                        if (typeof meta.chunkCount === 'number' && meta.chunkCount > 0) {
+                            const deckChunks = chunkMap[meta.id] || {};
+                            let allChunksReady = true;
+                            for (let i = 0; i < meta.chunkCount; i++) {
+                                if (Array.isArray(deckChunks[i])) {
+                                    fullCards.push(...deckChunks[i]);
+                                } else {
+                                    allChunksReady = false;
+                                }
+                            }
+                            // 若部分分塊仍在傳輸中且本機已有完整快取，先保留本機快取避免閃爍
+                            if (!allChunksReady && sharedCloudDecksMap[meta.id]?.cards?.length === meta.cardCount) {
+                                fullCards = sharedCloudDecksMap[meta.id].cards;
+                            }
+                        } else if (Array.isArray(meta.cards)) {
+                            fullCards = meta.cards;
+                        }
+
+                        if (fullCards.length > 0) {
+                            const assembled = {
+                                id: meta.id,
+                                name: meta.name || '未命名卡組',
+                                cardCount: meta.cardCount || fullCards.length,
+                                coverImage: meta.coverImage || fullCards[0] || '',
+                                cards: fullCards,
+                                cardBack: meta.cardBack || null,
+                                updatedAt: meta.updatedAt || Date.now()
+                            };
+                            cloudMap[meta.id] = assembled;
+                            if (window.putDeckToLocalDBOnly) {
+                                await window.putDeckToLocalDBOnly(assembled);
+                            }
+                        }
+                    }
+
+                    if (window.applySharedCloudDecks) {
+                        window.applySharedCloudDecks(cloudMap);
+                    }
+
+                    // 首次連線時，若本地已有卡組尚未上傳至雲端，自動補同步上雲端供其他玩家使用
+                    if (!hasUploadedInitialLocalDecks && window.getAllDecksFromVaultDB) {
+                        hasUploadedInitialLocalDecks = true;
+                        const localDecks = await window.getAllDecksFromVaultDB();
+                        for (const ld of localDecks) {
+                            if (ld && ld.id && !cloudMap[ld.id]) {
+                                await window.saveDeckToCloudVault(ld);
+                            }
+                        }
+                    }
+                }, (err) => {
+                    console.warn("Shared decks listener error:", err);
+                });
+            } catch (err) {
+                console.warn("Init shared decks listener failed:", err);
+            }
+        }
+
+        window.saveDeckToCloudVault = async (deckRecord) => {
+            if (!db || !deckRecord || !deckRecord.id) return false;
+            try {
+                const cardsList = Array.isArray(deckRecord.cards) ? deckRecord.cards : [];
+                const CHUNK_SIZE = 8; // 每 8 張卡存為一個分塊文件，確保單一文件遠低於 Firestore 1MB 限制
+                const chunkCount = Math.ceil(cardsList.length / CHUNK_SIZE);
+
+                // 1. 先上傳所有卡牌分塊文件
+                for (let i = 0; i < chunkCount; i++) {
+                    const slice = cardsList.slice(i * CHUNK_SIZE, (i + 1) * CHUNK_SIZE);
+                    const chunkDocId = `${deckRecord.id}__chunk_${i}`;
+                    const chunkRef = doc(db, 'artifacts', appId, 'public', 'data', 'sharedDecks', chunkDocId);
+                    await setDoc(chunkRef, {
+                        isChunk: true,
+                        deckId: deckRecord.id,
+                        chunkIndex: i,
+                        cards: slice,
+                        updatedAt: deckRecord.updatedAt || Date.now()
+                    });
+                }
+
+                // 2. 再上傳主索引文件（觸發其他玩家的即時組裝更新）
+                const deckRef = doc(db, 'artifacts', appId, 'public', 'data', 'sharedDecks', deckRecord.id);
+                await setDoc(deckRef, {
+                    id: deckRecord.id,
+                    name: deckRecord.name || '未命名卡組',
+                    cardCount: cardsList.length,
+                    chunkCount: chunkCount,
+                    coverImage: deckRecord.coverImage || cardsList[0] || '',
+                    cardBack: deckRecord.cardBack || null,
+                    updatedAt: deckRecord.updatedAt || Date.now()
+                });
+                return true;
+            } catch (err) {
+                console.warn("Cloud deck sync warning:", err);
+                return false;
+            }
+        };
+
+        window.deleteDeckFromCloudVault = async (deckId) => {
+            if (!db || !deckId) return;
+            try {
+                const sharedColRef = collection(db, 'artifacts', appId, 'public', 'data', 'sharedDecks');
+                const snap = await getDocs(sharedColRef);
+                for (const d of snap.docs) {
+                    const data = d.data();
+                    if (d.id === deckId || (data && data.deckId === deckId)) {
+                        await deleteDoc(d.ref);
+                    }
+                }
+            } catch (err) {
+                console.warn("Delete cloud deck warning:", err);
+            }
+        };
+
+        window.clearAllDecksFromCloudVault = async () => {
+            if (!db) return;
+            try {
+                const sharedColRef = collection(db, 'artifacts', appId, 'public', 'data', 'sharedDecks');
+                const snap = await getDocs(sharedColRef);
+                for (const d of snap.docs) {
+                    await deleteDoc(d.ref);
+                }
+            } catch (err) {
+                console.warn("Clear cloud decks warning:", err);
+            }
+        };
+
+        // 1. 獨立同步 P1 / P2 入座狀態燈至房間頂層欄位，確保不會被其他玩家的 stateJson 覆蓋
+        window.syncPlayerSeat = async (playerKey, seatVal) => {
+            if (!db || !window.currentRoomCode) return;
+            try {
+                const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', window.currentRoomCode);
+                await setDoc(roomRef, {
+                    [`seat_${playerKey}`]: seatVal || null,
+                    lastActive: Date.now()
+                }, { merge: true });
+            } catch (err) {
+                console.warn("Seat sync error:", err);
+            }
+        };
+
+        initGlobalSharedDecksListener();
+        initGlobalSharedCardPoolListener();
 
         async function deleteRoomAndSubcollections(roomCode) {
             try {
@@ -7029,18 +8570,34 @@
                 const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', roomCode);
 
                 if (isCreator) {
+                    await setDoc(roomRef, {
+                        seat_p1: gameState.viewMode === 'P1' ? localSeatId : (gameState.seats?.p1 || null),
+                        seat_p2: gameState.viewMode === 'P2' ? localSeatId : (gameState.seats?.p2 || null),
+                        lastActive: Date.now(),
+                        [`activeClients.${clientId}`]: Date.now()
+                    }, { merge: true });
                     await window.sendGameState(buildStatePayload());
                 } else {
                     const existingSnap = await getDoc(roomRef);
                     if (existingSnap.exists()) {
                         const data = existingSnap.data();
                         if (data.stateJson) {
-                            window.applyGameState(JSON.parse(data.stateJson));
+                            const parsed = JSON.parse(data.stateJson);
+                            parsed.seats = {
+                                p1: data.seat_p1 !== undefined ? data.seat_p1 : (parsed.seats?.p1 || null),
+                                p2: data.seat_p2 !== undefined ? data.seat_p2 : (parsed.seats?.p2 || null)
+                            };
+                            if (gameState.viewMode === 'P1') parsed.seats.p1 = localSeatId;
+                            if (gameState.viewMode === 'P2') parsed.seats.p2 = localSeatId;
+                            window.applyGameState(parsed);
                         }
-                        await setDoc(roomRef, {
+                        const seatPatch = {
                             lastActive: Date.now(),
                             [`activeClients.${clientId}`]: Date.now()
-                        }, { merge: true });
+                        };
+                        if (gameState.viewMode === 'P1') seatPatch.seat_p1 = localSeatId;
+                        if (gameState.viewMode === 'P2') seatPatch.seat_p2 = localSeatId;
+                        await setDoc(roomRef, seatPatch, { merge: true });
                     }
                 }
 
@@ -7048,18 +8605,33 @@
                     if (!window.currentRoomCode) return;
                     try {
                         const rRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', window.currentRoomCode);
-                        await setDoc(rRef, {
+                        const hbPatch = {
                             lastActive: Date.now(),
                             [`activeClients.${clientId}`]: Date.now()
-                        }, { merge: true });
+                        };
+                        if (gameState.viewMode === 'P1') hbPatch.seat_p1 = localSeatId;
+                        if (gameState.viewMode === 'P2') hbPatch.seat_p2 = localSeatId;
+                        await setDoc(rRef, hbPatch, { merge: true });
                     } catch (e) {}
                 }, 30000);
                 
                 unsubscribeRoom = onSnapshot(roomRef, (snapshot) => {
                     if (snapshot.exists()) {
                         const data = snapshot.data();
-                        if (data.lastUpdatedBy !== clientId && data.stateJson) {
-                            window.applyGameState(JSON.parse(data.stateJson));
+                        let parsedState = null;
+                        if (data.stateJson) {
+                            try { parsedState = JSON.parse(data.stateJson); } catch (e) {}
+                        }
+                        // 1. 綜合頂層 seat_p1 / seat_p2 與 stateJson.seats，確保任何一方按下 Join as P1 / P2 時所有玩家都能即時看見綠燈亮起
+                        const mergedP1 = data.seat_p1 || parsedState?.seats?.p1 || (gameState.viewMode === 'P1' ? localSeatId : null);
+                        const mergedP2 = data.seat_p2 || parsedState?.seats?.p2 || (gameState.viewMode === 'P2' ? localSeatId : null);
+                        gameState.seats = { p1: mergedP1, p2: mergedP2 };
+
+                        if (data.lastUpdatedBy !== clientId && parsedState) {
+                            parsedState.seats = { p1: mergedP1, p2: mergedP2 };
+                            window.applyGameState(parsedState);
+                        } else {
+                            updateAllUI();
                         }
                     }
                 }, (err) => {
@@ -7106,13 +8678,19 @@
             if (!db || !window.currentRoomCode) return;
             try {
                 const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', window.currentRoomCode);
-                await setDoc(roomRef, {
+                const payload = {
                     stateJson: JSON.stringify(stateObj),
                     lastUpdatedBy: clientId,
                     timestamp: Date.now(),
                     lastActive: Date.now(),
                     [`activeClients.${clientId}`]: Date.now()
-                }, { merge: true });
+                };
+                if (gameState.viewMode === 'P1') {
+                    payload.seat_p1 = localSeatId;
+                } else if (gameState.viewMode === 'P2') {
+                    payload.seat_p2 = localSeatId;
+                }
+                await setDoc(roomRef, payload, { merge: true });
             } catch (err) {
                 console.error("Sync failed:", err);
                 const statusEl = document.getElementById('mp-status-msg');
@@ -7127,8 +8705,14 @@
             if (!db || !window.currentRoomCode) return;
             const leavingCode = window.currentRoomCode;
             if (gameState.seats) {
-                if (gameState.seats.p1 === localSeatId) gameState.seats.p1 = null;
-                if (gameState.seats.p2 === localSeatId) gameState.seats.p2 = null;
+                if (gameState.seats.p1 === localSeatId) {
+                    gameState.seats.p1 = null;
+                    window.syncPlayerSeat('p1', null);
+                }
+                if (gameState.seats.p2 === localSeatId) {
+                    gameState.seats.p2 = null;
+                    window.syncPlayerSeat('p2', null);
+                }
             }
             const nobodySeated = !gameState.seats?.p1 && !gameState.seats?.p2;
             if (nobodySeated) {
