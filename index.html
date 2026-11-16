@@ -2,10 +2,16 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 4. 禁止手機/iPad 雙擊畫面時觸發瀏覽器原生放大縮放 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>BS PROTOTYPE - 2-PLAYER EDITION</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        html, body {
+            touch-action: manipulation;
+            overflow-x: hidden !important;
+            overscroll-behavior-x: none;
+        }
         body, .counter-box, .counter-title, .counter-value, .action-btn, .small-action-btn {
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
@@ -463,6 +469,102 @@
         .btn-pay-cost:hover { background: #0284c7; color: #ffffff; border-color: #ffffff; }
         .btn-refresh-state { background: rgba(6, 78, 59, 0.7); border: 1px solid rgba(52, 211, 153, 0.55); color: #a7f3d0; border-radius: 1px; transition: all 0.18s ease; }
         .btn-refresh-state:hover { background: #10b981; color: #050608; border-color: #ffffff; }
+
+        /* 預設隱藏手機專屬整合元素，僅在 body.phone-mode (點擊手機模式) 時啟用大比例與整合按鈕 */
+        .phone-only-ui { display: none !important; }
+        body.phone-mode .pc-ipad-only-ui { display: none !important; }
+        body.phone-mode .phone-only-ui { display: flex !important; }
+        body.phone-mode button.phone-only-ui { display: inline-flex !important; justify-content: center; align-items: center; }
+
+        /* 📱 手機模式專屬 UI：如同參考圖 2 的大比例側欄、巨型按鈕與立體水晶 Core，並消除重疊 */
+        body.phone-mode .playmat-panel {
+            grid-template-columns: 124px 1fr 124px !important;
+            gap: 5px !important;
+            padding: 26px 5px 6px 5px !important;
+        }
+        body.phone-mode .counter-box {
+            padding: 6px 5px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 3px !important;
+        }
+        body.phone-mode .counter-title {
+            font-size: 12px !important;
+            font-weight: 900 !important;
+            letter-spacing: 0.05em !important;
+            text-align: left !important;
+            margin-bottom: 0 !important;
+        }
+        body.phone-mode .physical-core-gem {
+            width: 24px !important;
+            height: 24px !important;
+        }
+        body.phone-mode .core-gem-tray {
+            gap: 4px !important;
+            min-height: 26px !important;
+            padding: 2px !important;
+            margin-top: 0 !important;
+        }
+        body.phone-mode .soul-core-token {
+            width: 24px !important;
+            height: 24px !important;
+        }
+        body.phone-mode .soul-core-slot-empty {
+            width: 22px !important;
+            height: 22px !important;
+            font-size: 10px !important;
+        }
+        body.phone-mode .counter-value {
+            font-size: 18px !important;
+            gap: 6px !important;
+            justify-content: flex-start !important;
+            padding-left: 2px !important;
+        }
+        body.phone-mode .counter-btn {
+            width: 24px !important;
+            height: 24px !important;
+            font-size: 15px !important;
+            font-weight: 900 !important;
+            border-radius: 3px !important;
+        }
+        body.phone-mode .highlight-action-btn {
+            font-size: 10.5px !important;
+            padding: 2.5px 6px !important;
+            border-radius: 3px !important;
+            top: 4px !important;
+            right: 4px !important;
+        }
+        body.phone-mode .action-btn {
+            font-size: 12px !important;
+            padding: 6px 4px !important;
+            border-radius: 3px !important;
+            font-weight: 900 !important;
+            margin-top: 2px !important;
+        }
+        body.phone-mode .deck-cardback-visual {
+            width: 90px !important;
+            height: 126px !important;
+            margin: 3px auto !important;
+        }
+        body.phone-mode .deck-cardback-count {
+            font-size: 22px !important;
+            padding: 1px 8px !important;
+        }
+        /* 5. 手機模式下：場上與創界神縮細卡牌隱藏下方 [-] 與 [+] 按鈕，只保留藍水晶圖示、Core 數量與魂 Core */
+        body.phone-mode .card-controls .card-core-minus-btn,
+        body.phone-mode .card-controls .card-core-plus-btn {
+            display: none !important;
+        }
+        /* 6. 手機模式的中央空間 Core 放大粒 */
+        body.phone-mode .center-core-spawner {
+            width: 34px !important;
+            height: 34px !important;
+            filter: drop-shadow(0 0 12px rgba(56, 189, 248, 1)) !important;
+        }
+        body.phone-mode .center-divider-hud {
+            padding: 5px 14px !important;
+            gap: 10px !important;
+        }
 
         .deck-cardback-visual {
             width: 86px;
@@ -1006,21 +1108,21 @@
             content: "";
             width: 13px;
             height: 13px;
-            border-right: 2.5px solid rgba(148, 163, 184, 0.65);
-            border-bottom: 2.5px solid rgba(148, 163, 184, 0.65);
-            border-bottom-right-radius: 3px;
-            transition: border-color 0.15s;
-        }
-        #opp-pip-resizer:hover::after, #opp-pip-resizer:active::after { border-color: #38bdf8; }
-
-        /* 響應式頂部導航列與等比例縮放戰場容器 (參考圖片3手機版完美比例) */
+        /* 響應式頂部導航列與等比例縮放戰場容器 (1. 鎖定寬度並禁止左右滑動，只允許上下捲動) */
         #main-top-header button, #main-top-header span {
             white-space: nowrap;
         }
+        #playmat-root {
+            overflow-x: hidden !important;
+            overflow-y: auto !important;
+            touch-action: pan-y;
+            overscroll-behavior-x: none;
+        }
         #playmat-scale-outer {
             width: 100%;
+            max-width: 100%;
             flex-shrink: 0;
-            overflow: visible;
+            overflow: hidden !important;
             position: relative;
         }
         #playmat-scale-stage {
@@ -1054,9 +1156,11 @@
             <span id="mp-status-msg" class="text-[10px] sm:text-xs text-[#c8bea8] whitespace-nowrap"></span>
         </div>
         <div class="flex gap-1.5 items-center flex-wrap justify-end flex-1">
+            <!-- 7. 移除 iPad 前面的日文字 -->
             <div class="flex items-center bg-black/70 p-0.5 rounded-sm border border-[#b09466]/35 flex-shrink-0">
-                <button id="btn-mode-pc" class="text-[10px] sm:text-[11px] px-2 py-0.5 sm:py-1 rounded-sm bg-[#c8aa76] text-black font-bold cursor-pointer transition-all whitespace-nowrap" onclick="setControlMode('PC')" title="電腦模式：滑鼠懸停預覽、單擊左右轉向、雙擊翻面、直接拖曳">💻 電腦</button>
-                <button id="btn-mode-mobile" class="text-[10px] sm:text-[11px] px-2 py-0.5 sm:py-1 rounded-sm bg-transparent text-[#a89f91] hover:text-white cursor-pointer transition-all whitespace-nowrap" onclick="setControlMode('MOBILE')" title="手機/iPad模式：單擊卡牌放大(點放大卡左右旋轉/連點兩下翻轉)、按住滑動直接拖曳">📱 手機/iPad</button>
+                <button id="btn-mode-pc" class="text-[10px] sm:text-[11px] px-2 py-0.5 sm:py-1 rounded-sm bg-[#c8aa76] text-black font-bold cursor-pointer transition-all whitespace-nowrap" onclick="setControlMode('PC')" title="電腦模式：完整桌面介面、滑鼠懸停預覽、單擊轉向、雙擊翻面">💻 電腦</button>
+                <button id="btn-mode-ipad" class="text-[10px] sm:text-[11px] px-2 py-0.5 sm:py-1 rounded-sm bg-transparent text-[#a89f91] hover:text-white cursor-pointer transition-all whitespace-nowrap" onclick="setControlMode('IPAD')" title="iPad模式：保留完整桌面介面與全部獨立按鈕，支援觸控單擊放大與按住拖曳">iPad</button>
+                <button id="btn-mode-phone" class="text-[10px] sm:text-[11px] px-2 py-0.5 sm:py-1 rounded-sm bg-transparent text-[#a89f91] hover:text-white cursor-pointer transition-all whitespace-nowrap" onclick="setControlMode('PHONE')" title="手機模式：專為手機螢幕放大的巨型按鈕介面，並將細碎按鈕自動收納為選單">📱 手機</button>
             </div>
             <div class="flex items-center gap-1 bg-black/70 px-2 py-0.5 sm:py-1 rounded-sm border border-[#b09466]/35 flex-shrink-0">
                 <button id="btn-bgm-toggle" class="text-[10px] sm:text-[11px] text-[#c8bea8] hover:text-white font-bold cursor-pointer transition-colors flex items-center gap-1 whitespace-nowrap" onclick="toggleBgmPlayback()" title="播放 / 關閉背景音樂">🎵 BGM OFF</button>
@@ -1127,18 +1231,27 @@
         </div>
     </div>
 
-    <!-- 2. 全場玩家加入 P1 / P2 公佈提示橫幅 -->
-    <div id="seat-announce-toast" class="fixed top-16 left-1/2 -translate-x-1/2 z-[15500] pointer-events-none opacity-0 -translate-y-3 transition-all duration-300">
-        <div id="seat-announce-text" class="bg-[#0a0a0a]/95 border-2 border-[#c8aa76] text-[#e0b25b] px-6 py-2 rounded-sm shadow-[0_10px_30px_rgba(0,0,0,0.95)] font-black tracking-widest text-sm uppercase flex items-center gap-2"></div>
+    <!-- 加入 / 離開 P1 / P2 全場文字公佈提示橫幅 -->
+    <div id="seat-announce-toast" class="fixed top-14 left-1/2 -translate-x-1/2 z-[9700] pointer-events-none opacity-0 -translate-y-3 transition-all duration-300">
+        <div id="seat-announce-text" class="bg-black/95 border border-[#c8aa76] text-[#f5efe6] font-black px-6 py-2.5 rounded-sm shadow-[0_10px_30px_rgba(0,0,0,0.95)] tracking-widest text-xs sm:text-sm flex items-center gap-2.5 whitespace-nowrap"></div>
     </div>
 
-    <!-- Playmat Container (P1與P2對稱區域由下方腳本在啟動瞬間動態渲染，大幅縮減HTML檔案體積) -->
+    <!-- Playmat Container (由 JS 動態渲染 P1 與 P2 對稱戰場) -->
     <main id="playmat-root" class="flex-1 flex flex-col gap-0 min-h-0 w-full overflow-y-auto px-1 pb-3 custom-scrollbar"></main>
 
-    <!-- Card Preview -->
+    <!-- Card Preview (5. 手機版模式預視卡牌時，下方顯示 Core 增加/減少與魂 Core 控制列) -->
     <div id="card-preview" class="fixed z-[11000] pointer-events-none opacity-0 invisible transition-opacity duration-150">
         <div id="card-preview-img"></div>
-        <div id="card-preview-mobile-hint" class="hidden mt-2 bg-black/95 border border-[#b09466]/55 text-[#e5dccb] text-[10px] px-3.5 py-1 rounded-sm shadow-lg pointer-events-none whitespace-nowrap">
+        <div id="card-preview-core-bar" class="hidden mt-2 bg-[#0a0a0a]/95 border border-[#c8aa76] px-4 py-2 rounded-sm shadow-2xl items-center gap-3 pointer-events-auto">
+            <button type="button" class="w-9 h-9 bg-rose-950/80 hover:bg-rose-600 active:scale-95 text-rose-200 hover:text-white border border-rose-500/50 rounded-sm font-black text-lg flex items-center justify-center cursor-pointer" onpointerdown="event.stopPropagation()" onclick="event.stopPropagation(); adjustPreviewCardCore(-1)">-</button>
+            <div class="flex items-center gap-2 px-2">
+                <span class="physical-core-gem"></span>
+                <span id="card-preview-core-count" class="text-lg font-black text-white min-w-[22px] text-center">0</span>
+            </div>
+            <button type="button" class="w-9 h-9 bg-emerald-950/80 hover:bg-emerald-500 active:scale-95 text-emerald-200 hover:text-black border border-emerald-500/50 rounded-sm font-black text-lg flex items-center justify-center cursor-pointer" onpointerdown="event.stopPropagation()" onclick="event.stopPropagation(); adjustPreviewCardCore(1)">+</button>
+            <button type="button" id="card-preview-soul-btn" class="w-9 h-9 bg-black/80 border border-[#b09466]/60 text-[#e0b25b] rounded-sm font-black text-xs flex items-center justify-center cursor-pointer ml-1" onpointerdown="event.stopPropagation()" onclick="event.stopPropagation(); togglePreviewCardSoul()">S</button>
+        </div>
+        <div id="card-preview-mobile-hint" class="hidden mt-1.5 bg-black/95 border border-[#b09466]/55 text-[#e5dccb] text-[10px] px-3.5 py-1 rounded-sm shadow-lg pointer-events-none whitespace-nowrap">
             ◀ 點擊左側左轉90° ｜ 連點兩下翻面 ｜ 點擊右側右轉90° ▶
         </div>
     </div>
@@ -1189,6 +1302,17 @@
         </div>
     </div>
 
+    <!-- 手機友善：Deck 牌組與 Trash 廢棄區整合式大按鈕選單 Modal -->
+    <div id="zone-action-menu-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[11800] hidden flex justify-center items-center p-4">
+        <div class="border border-[#c8aa76] bg-[#0a0a0a]/95 p-5 w-[350px] max-w-[92vw] flex flex-col gap-3 shadow-2xl rounded-sm">
+            <div class="flex justify-between items-center border-b border-[#b09466]/35 pb-2.5">
+                <div id="zone-action-menu-title" class="text-[#e0b25b] font-black tracking-widest text-base uppercase">⚙️ 區域功能選單</div>
+                <button class="border border-[#b09466]/45 bg-black/70 text-[#dcd6cc] hover:bg-rose-600 hover:text-white px-2.5 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="closeZoneActionMenu()">✕</button>
+            </div>
+            <div id="zone-action-menu-body" class="flex flex-col gap-2.5 py-1"></div>
+        </div>
+    </div>
+
     <!-- Custom Notification Modal -->
     <div id="notice-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[13000] hidden flex justify-center items-center">
         <div class="border border-[#b09466]/60 bg-[#0a0a0a]/95 p-6 w-[320px] flex flex-col gap-4 shadow-2xl text-center rounded-sm">
@@ -1231,6 +1355,7 @@
     </div>
 
     <!-- 本地卡組庫 (Deck Vault) Modal -->
+    <!-- 本地卡組庫 (Deck Vault) Modal (7. 移除多餘說明字眼) -->
     <div id="deck-vault-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-[10500] hidden flex justify-center items-center p-6">
         <div class="border border-[#b09466]/60 bg-[#0a0a0a]/95 w-full max-w-4xl max-h-[85vh] flex flex-col p-5 gap-3.5 shadow-2xl rounded-sm">
             <div class="flex justify-between items-center border-b border-[#b09466]/30 pb-3 flex-wrap gap-2">
@@ -1245,7 +1370,6 @@
                     <button class="border border-[#b09466]/45 bg-black/70 text-[#dcd6cc] hover:bg-[#c8aa76] hover:text-black px-3.5 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="closeDeckVaultModal()">CLOSE (✕)</button>
                 </div>
             </div>
-            <div class="text-[11px] text-[#c8bea8]">所有匯入的卡組皆透過「去重壓縮（相同卡圖只存 1 份＋張數）」儲存在瀏覽器 IndexedDB 硬碟中，完全不會增加 HTML 程式碼體積！點擊「✏️ 編輯張數」即可自由增減每張卡的數量。</div>
             <div id="deck-vault-list" class="flex-1 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5 p-1 custom-scrollbar"></div>
         </div>
     </div>
@@ -1377,11 +1501,12 @@
                         </div>
                         <div class="relative z-50 flex items-center justify-center min-w-[20px] pointer-events-auto" id="slot_${p}_soul_count"></div>
                     </div>
-                    <div id="deck-box-${p}" class="counter-box relative flex-none flex flex-col" ondrop="dropOnDeck(event, '${p}')" ondragover="allowDrop(event)" title="可將卡牌拖曳至此放回牌組頂或底">
+                    <div id="deck-box-${p}" class="counter-box relative flex-none flex flex-col" ondrop="dropOnDeck(event, '${p}')" ondragover="allowDrop(event)" title="可將卡牌拖曳至此放回牌組頂或底；點擊卡背直接抽牌">
                         <div class="counter-title">Deck</div>
-                        <button class="small-action-btn" onclick="document.getElementById('import-zip-${p}').click()">IMPORT</button>
+                        <!-- 電腦 / iPad 模式原本的完整獨立按鈕 -->
+                        <button class="small-action-btn pc-ipad-only-ui" onclick="document.getElementById('import-zip-${p}').click()">IMPORT</button>
                         <input type="file" id="import-zip-${p}" accept=".zip" class="hidden" onchange="importZip(event, '${p}')">
-                        <div class="flex gap-1 mt-1 mb-0.5">
+                        <div class="flex gap-1 mt-1 mb-0.5 pc-ipad-only-ui">
                             <button class="action-btn" onclick="shuffleDeck('${p}')">洗牌</button>
                             <button class="action-btn" onclick="openZoneModal('${p}', 'deck')">VIEW</button>
                         </div>
@@ -1390,40 +1515,55 @@
                             <div class="deck-cardback-count transition-transform pointer-events-none" id="val_${p}_deck_count">0</div>
                         </div>
                         <button class="action-btn mb-0.5" onclick="deployTop('${p}')">公開卡牌</button>
-                        <div class="flex gap-1">
+                        <div class="flex gap-1 pc-ipad-only-ui">
                             <button class="action-btn" onclick="drawCard('${p}', 'top')">抽牌組頂</button>
                             <button class="action-btn" onclick="drawCard('${p}', 'bottom')">抽牌組底</button>
                         </div>
+                        <!-- 手機模式專屬：將其他不常用牌組功能整合為單一大按鈕 -->
+                        <button class="action-btn phone-only-ui bg-[#c8aa76]/20 border-[#c8aa76]/70 text-[#e0b25b]" onclick="openDeckActionMenu('${p}')">⚙️ 牌組選單</button>
                     </div>
                     <div id="trash-card-box-${p}" class="counter-box relative flex-1 flex flex-col gap-1.5">
                         <div class="counter-title flex items-center justify-center gap-1.5">
                             <span>Trash</span>
                             <span id="val_${p}_trash_card_count" class="bg-black/70 border border-[#b09466]/40 text-[#e0b25b] px-2 py-0 rounded-sm text-[10px] font-black">0</span>
                         </div>
-                        <button class="small-action-btn" onclick="openZoneModal('${p}', 'trash')">VIEW</button>
-                        <div id="zone-trash-${p}" class="zone stack-zone flex-1 mt-0.5 text-stone-600 text-xs" ondrop="drop(event, 'zone-trash-${p}')" ondragover="allowDrop(event)">
+                        <!-- 電腦 / iPad 模式原本的 VIEW 按鈕 -->
+                        <button class="small-action-btn pc-ipad-only-ui" onclick="openZoneModal('${p}', 'trash')">VIEW</button>
+                        <!-- 手機模式專屬：大顆整合選單按鈕 -->
+                        <button class="phone-only-ui text-xs border border-[#c8aa76]/75 bg-black/85 hover:bg-[#c8aa76] hover:text-black text-[#e0b25b] py-1.5 px-2 rounded-sm font-black cursor-pointer transition-colors w-full" onclick="openTrashActionMenu('${p}')">⚙️ 廢棄/除外選單</button>
+                        <div id="zone-trash-${p}" class="zone stack-zone flex-1 mt-0.5 text-stone-600 text-xs cursor-pointer" onclick="openZoneModal('${p}', 'trash')" ondrop="drop(event, 'zone-trash-${p}')" ondragover="allowDrop(event)" title="點擊檢視 Trash 廢棄區卡牌">
                             <span class="pointer-events-none select-none text-lg font-bold text-stone-600/80">0</span>
                         </div>
+                        <!-- 電腦 / iPad 模式原本的除外區完整按鈕列 -->
                         <div id="exclude-card-box-${p}" class="bg-black/50 border border-[#b09466]/30 hover:border-[#c8aa76] transition-colors px-2 py-1 flex items-center justify-between gap-1 relative rounded-sm" ondrop="drop(event, 'zone-exclude-${p}')" ondragover="allowDrop(event)" title="可將卡牌直接拖曳至此處除外">
                             <div class="flex items-center gap-1.5">
                                 <span class="text-[9px] font-bold text-[#c8bea8]">除外區</span>
                                 <span id="val_${p}_exclude_card_count" class="bg-black/70 border border-[#b09466]/40 text-[#e0b25b] px-1.5 py-0 rounded-sm text-[9px] font-black">0</span>
                             </div>
-                            <div class="flex items-center gap-1">
+                            <div class="flex items-center gap-1 pc-ipad-only-ui">
                                 <button class="text-[8px] border border-[#b09466]/40 bg-black/60 hover:bg-[#c8aa76] hover:text-black px-2 py-0.5 rounded-sm text-[#dcd6cc] cursor-pointer transition-colors" onclick="openZoneModal('${p}', 'exclude')">VIEW</button>
                                 <button class="text-[8px] border border-[#b09466]/40 bg-[#c8aa76]/20 hover:bg-[#c8aa76] px-2 py-0.5 rounded-sm text-[#e0b25b] hover:text-black cursor-pointer font-bold transition-colors" onclick="moveAllTrashToExclude('${p}')" title="將 Trash 所有卡片移至除外區">全除外</button>
                             </div>
+                            <button class="phone-only-ui text-[11px] text-[#e0b25b] font-black px-1.5 py-0.5 border border-[#c8aa76]/50 rounded-sm bg-black/70" onclick="openZoneModal('${p}', 'exclude')">檢視</button>
                             <div id="zone-exclude-${p}" class="zone exclude-mini-zone hidden"></div>
                         </div>
                     </div>
                     <div id="trash-core-box-${p}" class="counter-box relative flex-none" ondrop="dropOnCounterBox(event, '${p}', 'trash')" ondragover="allowDrop(event)">
-                        <div class="flex items-center justify-between gap-1 mb-0.5">
+                        <div class="flex items-center justify-between gap-1 mb-0.5 pc-ipad-only-ui">
                             <div class="counter-title mb-0 text-[9.5px] tracking-wider whitespace-nowrap">TRASH</div>
                             <div class="flex items-center gap-1">
                                 <button class="text-[7.5px] border border-[#b09466]/40 bg-black/45 hover:bg-[#c8aa76] hover:text-black px-1.5 py-0.5 rounded-sm text-[#dcd6cc] cursor-pointer transition-colors leading-none" onclick="recoverCore('${p}')" title="將 1 個 Core 移回預備區">↺1</button>
                                 <button class="text-[7.5px] border border-[#b09466]/40 bg-black/45 hover:bg-[#c8aa76] hover:text-black px-1.5 py-0.5 rounded-sm text-[#dcd6cc] cursor-pointer font-bold transition-colors leading-none" onclick="recoverAllCores('${p}')" title="將所有 Trash Core 移回預備區">ALL</button>
                                 <button class="text-[7.5px] px-1.5 py-0.5 font-black cursor-pointer btn-refresh-state leading-none" onclick="refreshState('${p}')" title="回復狀態：Trash Core 全回預備區 + 預備區 Core+1 + 抽 1 張卡 + 場上橫置卡牌全部轉正">⟳ 回復</button>
                             </div>
+                        </div>
+                        <!-- 2. 手機模式專屬：緊湊不重疊的「TRASH + ALL」與「⟳ 回復」按鈕 -->
+                        <div class="phone-only-ui flex-col gap-1 mb-0.5 w-full">
+                            <div class="flex items-center justify-between w-full gap-1">
+                                <span class="counter-title mb-0">TRASH</span>
+                                <button class="text-[10px] border border-[#b09466]/60 bg-black/80 text-[#e5dccb] px-1.5 py-0.5 rounded-sm font-black leading-tight whitespace-nowrap" onclick="recoverAllCores('${p}')">ALL</button>
+                            </div>
+                            <button class="w-full py-1 text-[11px] font-black cursor-pointer btn-refresh-state rounded-sm leading-tight" onclick="refreshState('${p}')">⟳ 回復</button>
                         </div>
                         <div id="gems_${p}_trash_core" class="core-gem-tray mt-0.5"></div>
                         <div class="counter-value mt-0.5">
@@ -1463,10 +1603,16 @@
         /* =========================================================================
            GLOBAL STATE
            ========================================================================= */
-        let boardScale = 1; // 2. 戰場自動等比例縮放係數 (手機與窄視窗時自動等比例縮小整個盤面，維持黃金比例)
+        let boardScale = 1;
         const BASE_BOARD_WIDTH = 960;
+        const PHONE_BOARD_WIDTH = 620; // 手機模式下採用緊湊基準寬度，讓兩側按鈕、卡背與 Core 在手機螢幕上放大約 1.55 倍（如圖2大小）
+
+        function getActiveBaseBoardWidth() {
+            return (typeof deviceMode !== 'undefined' && deviceMode === 'PHONE') ? PHONE_BOARD_WIDTH : BASE_BOARD_WIDTH;
+        }
 
         function updateHandOverlapLayout() {
+            const targetBoardW = getActiveBaseBoardWidth();
             ['p1', 'p2'].forEach(p => {
                 const handZone = document.getElementById(`hand-${p}`);
                 const handPanel = document.getElementById(`section-hand-${p}`);
@@ -1477,14 +1623,13 @@
                 const isPinned = handPanel.classList.contains('sticky-bottom-hand');
                 const maxPanelW = isPinned
                     ? Math.floor((window.innerWidth - 12) / (boardScale || 1))
-                    : BASE_BOARD_WIDTH;
+                    : targetBoardW;
 
                 if (isPinned) {
                     handPanel.style.maxWidth = `${maxPanelW}px`;
                     handPanel.style.width = 'max-content';
                     handPanel.style.minWidth = '340px';
                 } else {
-                    // 未開啟固定漂浮（鎖定於場地下方原位）時保持 100% 滿寬，不縮小
                     handPanel.style.maxWidth = '100%';
                     handPanel.style.width = '100%';
                     handPanel.style.minWidth = '100%';
@@ -1537,18 +1682,45 @@
             const root = document.getElementById('playmat-root');
             const outer = document.getElementById('playmat-scale-outer');
             const stage = document.getElementById('playmat-scale-stage');
+            const s1 = document.getElementById('section-main-p1');
+            const s2 = document.getElementById('section-main-p2');
             if (!root || !outer || !stage) return;
 
-            const availW = Math.max(280, root.clientWidth - 4);
-            if (availW < BASE_BOARD_WIDTH) {
-                boardScale = Number((availW / BASE_BOARD_WIDTH).toFixed(4));
-                stage.style.width = `${BASE_BOARD_WIDTH}px`;
+            const targetBoardW = getActiveBaseBoardWidth();
+            stage.style.minWidth = `${targetBoardW}px`;
+            stage.style.minHeight = '0px';
+            if (s1) s1.style.flex = '0 0 auto';
+            if (s2) s2.style.flex = '0 0 auto';
+
+            // 1. 確保手機模式下戰場寬度 100% 貼合視窗，不產生任何左右溢出與左右拖動
+            const availW = Math.max(280, root.clientWidth);
+            const pinnedHandReserve = isBottomHandPinned ? Math.round(182 * Math.min(1, availW / targetBoardW)) : 12;
+            const availH = Math.max(320, window.innerHeight - root.getBoundingClientRect().top - pinnedHandReserve);
+
+            if (availW < targetBoardW) {
+                boardScale = Number((availW / targetBoardW).toFixed(4));
+                stage.style.width = `${targetBoardW}px`;
+
+                const requiredStageH = Math.floor(availH / boardScale);
+                if (requiredStageH > stage.offsetHeight) {
+                    stage.style.minHeight = `${requiredStageH}px`;
+                    if (s1) s1.style.flex = '1 1 auto';
+                    if (s2) s2.style.flex = '1 1 auto';
+                }
+
                 stage.style.transform = `scale(${boardScale})`;
+                outer.style.width = `${availW}px`;
                 outer.style.height = `${Math.ceil(stage.offsetHeight * boardScale)}px`;
             } else {
                 boardScale = 1;
                 stage.style.width = '100%';
+                if (availH > stage.offsetHeight) {
+                    stage.style.minHeight = `${availH}px`;
+                    if (s1) s1.style.flex = '1 1 auto';
+                    if (s2) s2.style.flex = '1 1 auto';
+                }
                 stage.style.transform = 'none';
+                outer.style.width = '100%';
                 outer.style.height = `${stage.offsetHeight}px`;
             }
             syncPinnedHandGeometry();
@@ -1571,7 +1743,8 @@
             viewMode: 'SPECTATOR'
         };
 
-        let controlMode = 'PC';
+        let controlMode = 'PC'; // 'PC' (滑鼠操作) | 'MOBILE' (iPad與手機共用的觸控操作)
+        let deviceMode = 'PC';  // 'PC' | 'IPAD' | 'PHONE' (只有 PHONE 會套用大按鈕與選單整合 UI)
         let activePreviewCardId = null;
         let activePreviewTargetEl = null;
         let previewCardScale = 1.0; // 2. 預覽卡片縮放比例 (0.5 ~ 1.6)
@@ -1821,29 +1994,47 @@
         loadYouTubeBgmApi();
 
         function setControlMode(mode) {
-            controlMode = (mode === 'MOBILE') ? 'MOBILE' : 'PC';
+            if (mode === 'PHONE' || mode === 'MOBILE') {
+                deviceMode = 'PHONE';
+                controlMode = 'MOBILE';
+            } else if (mode === 'IPAD') {
+                deviceMode = 'IPAD';
+                controlMode = 'MOBILE';
+            } else {
+                deviceMode = 'PC';
+                controlMode = 'PC';
+            }
+
             const btnPc = document.getElementById('btn-mode-pc');
-            const btnMobile = document.getElementById('btn-mode-mobile');
+            const btnIpad = document.getElementById('btn-mode-ipad');
+            const btnPhone = document.getElementById('btn-mode-phone');
             const activeClass = "text-[10px] sm:text-[11px] px-2 py-0.5 sm:py-1 rounded-sm bg-[#c8aa76] text-black font-bold cursor-pointer transition-all whitespace-nowrap";
             const inactiveClass = "text-[10px] sm:text-[11px] px-2 py-0.5 sm:py-1 rounded-sm bg-transparent text-[#a89f91] hover:text-white cursor-pointer transition-all whitespace-nowrap";
 
-            if (controlMode === 'MOBILE') {
-                document.body.classList.add('mobile-mode');
-                if (btnMobile) btnMobile.className = activeClass;
-                if (btnPc) btnPc.className = inactiveClass;
-            } else {
-                document.body.classList.remove('mobile-mode');
-                if (btnPc) btnPc.className = activeClass;
-                if (btnMobile) btnMobile.className = inactiveClass;
-            }
+            document.body.classList.toggle('mobile-mode', controlMode === 'MOBILE');
+            document.body.classList.toggle('phone-mode', deviceMode === 'PHONE');
+
+            if (btnPc) btnPc.className = (deviceMode === 'PC') ? activeClass : inactiveClass;
+            if (btnIpad) btnIpad.className = (deviceMode === 'IPAD') ? activeClass : inactiveClass;
+            if (btnPhone) btnPhone.className = (deviceMode === 'PHONE') ? activeClass : inactiveClass;
+
             hideCardPreview();
+            // 2. 切換手機/電腦模式時強制重新渲染 Core 托盤（手機模式只顯示 1 粒代表性 Core）
+            ['gems_p1_life', 'gems_p2_life', 'gems_p1_reserve', 'gems_p2_reserve', 'gems_p1_trash_core', 'gems_p2_trash_core'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) delete el.dataset.renderedCount;
+            });
+            renderPhysicalCoreTrays();
+            updatePlaymatResponsiveScale();
+            refreshAllFieldCardsPosition();
         }
 
         function autoDetectControlMode() {
             const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
-            const isMobileUA = /iPad|iPhone|iPod|Android/i.test(navigator.userAgent) ||
-                               (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-            if (isTouchDevice && isMobileUA) setControlMode('MOBILE');
+            const isPhoneUA = /iPhone|iPod|Android.*Mobile/i.test(navigator.userAgent) || (isTouchDevice && window.innerWidth < 640);
+            const isIpadUA = /iPad|Android/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+            if (isTouchDevice && isPhoneUA) setControlMode('PHONE');
+            else if (isTouchDevice && isIpadUA) setControlMode('IPAD');
             else setControlMode('PC');
         }
 
@@ -2248,6 +2439,87 @@
                 previewImg.classList.remove('face-down');
                 previewImg.style.backgroundImage = imgSrc ? `url(${imgSrc})` : 'none';
             }
+            syncPreviewCoreControlBar();
+        }
+
+        // 5. 手機模式預覽卡牌下方顯示 Core 增減與魂 Core 控制列
+        function syncPreviewCoreControlBar() {
+            const coreBar = document.getElementById('card-preview-core-bar');
+            const countEl = document.getElementById('card-preview-core-count');
+            const soulBtn = document.getElementById('card-preview-soul-btn');
+            if (!coreBar) return;
+
+            const cardData = activePreviewCardId ? gameState.cards[activePreviewCardId] : null;
+            const isFieldOrGod = cardData && cardData.zone && (cardData.zone.startsWith('field-') || cardData.zone.startsWith('zone-god-'));
+            if (deviceMode === 'PHONE' && isFieldOrGod) {
+                coreBar.classList.remove('hidden');
+                coreBar.classList.add('flex');
+                if (countEl) countEl.innerText = getDisplayedCardCoreCount(cardData);
+                if (soulBtn) {
+                    const isGod = cardData.zone.startsWith('zone-god-');
+                    soulBtn.style.display = isGod ? 'none' : 'flex';
+                    const hasSoul = gameState.soulCoreLocation?.[cardData.owner] === cardData.id;
+                    soulBtn.classList.toggle('soul-active', hasSoul);
+                }
+            } else {
+                coreBar.classList.add('hidden');
+                coreBar.classList.remove('flex');
+            }
+        }
+
+        function adjustPreviewCardCore(delta) {
+            if (!activePreviewCardId) return;
+            addCoreToCard(activePreviewCardId, delta);
+            syncPreviewCoreControlBar();
+        }
+
+        function togglePreviewCardSoul() {
+            if (!activePreviewCardId) return;
+            const cardData = gameState.cards[activePreviewCardId];
+            if (!cardData || !cardData.zone || !cardData.zone.startsWith('field-')) return;
+            const owner = cardData.owner;
+            setSoulCoreLocation(owner, gameState.soulCoreLocation[owner] === cardData.id ? 'reserve' : cardData.id);
+            syncPreviewCoreControlBar();
+        }
+
+        // 3. 手機/iPad 模式下點擊放大預視圖左右側時，放大卡向該方向傾斜 30 度隨後回正；雙擊放大預視圖時播放 3D 翻轉動畫
+        function playPreviewCardTiltFeedback(isRightSide) {
+            const previewImg = document.getElementById('card-preview-img');
+            if (!previewImg) return;
+            const deg = isRightSide ? 30 : -30;
+            previewImg.animate([
+                { transform: 'rotate(0deg) scale(1)' },
+                { transform: `rotate(${deg}deg) scale(1.04)`, offset: 0.45 },
+                { transform: 'rotate(0deg) scale(1)' }
+            ], {
+                duration: 260,
+                easing: 'cubic-bezier(0.22, 1, 0.36, 1)'
+            });
+        }
+
+        function playPreviewCardFlip3DFeedback(onMidSwap) {
+            const previewImg = document.getElementById('card-preview-img');
+            if (!previewImg) {
+                if (onMidSwap) onMidSwap();
+                return;
+            }
+            const p1 = previewImg.animate([
+                { transform: 'perspective(900px) rotateY(0deg) scale(1)' },
+                { transform: 'perspective(900px) rotateY(90deg) scale(1.06)' }
+            ], { duration: 130, easing: 'cubic-bezier(0.4, 0, 0.85, 0.65)', fill: 'forwards' });
+
+            p1.onfinish = () => {
+                if (onMidSwap) onMidSwap();
+                const p2 = previewImg.animate([
+                    { transform: 'perspective(900px) rotateY(-90deg) scale(1.06)' },
+                    { transform: 'perspective(900px) rotateY(0deg) scale(1)' }
+                ], { duration: 180, easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fill: 'forwards' });
+                p2.onfinish = () => {
+                    p1.cancel();
+                    p2.cancel();
+                    previewImg.style.transform = 'rotate(0deg)';
+                };
+            };
         }
 
         function showCardPreviewNextToElement(targetEl, imgSrc, cardId = null, interactive = false) {
@@ -2270,9 +2542,8 @@
                 previewImg.style.backgroundImage = hdSrc ? `url(${hdSrc})` : 'none';
             }
 
-            // 7. 放大的預視圖固定為 0 度不旋轉，並套用使用者自訂的預覽卡片尺寸比例（在小螢幕自動限制最大寬高避免超出螢幕）
             const maxAvailW = window.innerWidth - 20;
-            const maxAvailH = window.innerHeight - 50;
+            const maxAvailH = window.innerHeight - (deviceMode === 'PHONE' ? 115 : 55);
             const fitScale = Math.min(1, maxAvailW / (375 * previewCardScale), maxAvailH / (525 * previewCardScale));
             const pw = Math.round(375 * previewCardScale * fitScale);
             const ph = Math.round(525 * previewCardScale * fitScale);
@@ -2292,14 +2563,17 @@
                 if (mobileHint) mobileHint.classList.add('hidden');
             }
 
+            syncPreviewCoreControlBar();
+
             const rect = targetEl.getBoundingClientRect();
             const gap = 14;
             let left = rect.right + gap;
             if (left + pw > window.innerWidth - 10) left = rect.left - pw - gap;
             left = Math.max(10, Math.min(left, window.innerWidth - pw - 10));
 
+            const extraBottom = (deviceMode === 'PHONE' && interactive) ? 85 : 35;
             let top = rect.top + (rect.height - ph) / 2;
-            top = Math.max(10, Math.min(top, window.innerHeight - ph - 35));
+            top = Math.max(10, Math.min(top, window.innerHeight - ph - extraBottom));
 
             previewPanel.style.left = `${Math.round(left)}px`;
             previewPanel.style.top = `${Math.round(top)}px`;
@@ -2311,6 +2585,7 @@
             const previewPanel = document.getElementById('card-preview');
             const previewImg = document.getElementById('card-preview-img');
             const mobileHint = document.getElementById('card-preview-mobile-hint');
+            const coreBar = document.getElementById('card-preview-core-bar');
             activePreviewCardId = null;
             activePreviewTargetEl = null;
             document.querySelectorAll('.card.hand-card-popped').forEach(el => el.classList.remove('hand-card-popped'));
@@ -2321,6 +2596,7 @@
             previewPanel.classList.add('pointer-events-none');
             if (previewImg) previewImg.style.transform = 'rotate(0deg)';
             if (mobileHint) mobileHint.classList.add('hidden');
+            if (coreBar) { coreBar.classList.add('hidden'); coreBar.classList.remove('flex'); }
         }
 
         // 2. 拉動拖動條即時放大或縮細預覽卡片的尺寸 (50% ~ 160%)
@@ -2354,23 +2630,39 @@
             }
         }
 
+        // 啟動時載入上次儲存的預覽卡片尺寸比例
         try {
-            const savedScale = localStorage.getItem('bs_preview_card_scale');
-            if (savedScale) changePreviewCardScale(savedScale);
+            const savedPreviewScale = localStorage.getItem('bs_preview_card_scale');
+            if (savedPreviewScale) changePreviewCardScale(savedPreviewScale);
         } catch (e) {}
 
-        // 1. 切換下方自己的手牌區是否常駐固定於畫面底部
+        // 1. 切換下方自己的手牌區是否常駐固定於畫面底部（移至 body 最外層以確保不受 transform:scale 影響，永遠緊貼螢幕正下方）
         function applyStickyHandUI() {
             const p1Hand = document.getElementById('section-hand-p1');
             const p2Hand = document.getElementById('section-hand-p2');
+            const stage = document.getElementById('playmat-scale-stage');
             const bottomPlayer = (gameState.viewMode === 'P2') ? 'p2' : 'p1';
             const topPlayer = bottomPlayer === 'p1' ? 'p2' : 'p1';
 
             const bottomEl = bottomPlayer === 'p1' ? p1Hand : p2Hand;
             const topEl = topPlayer === 'p1' ? p1Hand : p2Hand;
 
-            if (topEl) topEl.classList.remove('sticky-bottom-hand');
-            if (bottomEl) bottomEl.classList.toggle('sticky-bottom-hand', isBottomHandPinned);
+            if (topEl) {
+                topEl.classList.remove('sticky-bottom-hand');
+                if (stage && topEl.parentElement !== stage) {
+                    stage.insertBefore(topEl, stage.firstChild);
+                }
+            }
+            if (bottomEl) {
+                bottomEl.classList.toggle('sticky-bottom-hand', isBottomHandPinned);
+                if (isBottomHandPinned) {
+                    if (bottomEl.parentElement !== document.body) {
+                        document.body.appendChild(bottomEl);
+                    }
+                } else if (stage && bottomEl.parentElement !== stage) {
+                    stage.appendChild(bottomEl);
+                }
+            }
 
             ['p1', 'p2'].forEach(p => {
                 const pinBtn = document.getElementById(`btn-pin-hand-${p}`);
@@ -2422,6 +2714,7 @@
         (function initBackdropClickToCloseModals() {
             const modalConfigs = [
                 { id: 'zone-view-modal', closeFn: () => closeZoneModal() },
+                { id: 'zone-action-menu-modal', closeFn: () => closeZoneActionMenu() },
                 { id: 'deck-vault-modal', closeFn: () => closeDeckVaultModal() },
                 { id: 'deck-editor-modal', closeFn: () => closeDeckEditorModal() },
                 { id: 'mp-modal', closeFn: () => closeMultiplayerModal() },
@@ -2441,6 +2734,80 @@
                 });
             });
         })();
+
+        // 手機友善：開啟 Deck 或 Trash 區域整合式大按鈕選單
+        function closeZoneActionMenu() {
+            document.getElementById('zone-action-menu-modal')?.classList.add('hidden');
+        }
+
+        function openDeckActionMenu(player) {
+            const modal = document.getElementById('zone-action-menu-modal');
+            const titleEl = document.getElementById('zone-action-menu-title');
+            const bodyEl = document.getElementById('zone-action-menu-body');
+            if (!modal || !titleEl || !bodyEl) return;
+
+            const P = player.toUpperCase();
+            const deckCount = (gameState[`${player}Deck`] || []).length;
+            titleEl.innerText = `⚙️ ${P} 牌組功能選單 (${deckCount} 張)`;
+            bodyEl.innerHTML = '';
+
+            const menuItems = [
+                { label: '🔀 洗牌 (SHUFFLE DECK)', style: 'bg-[#c8aa76] text-black hover:bg-white font-black', fn: () => shuffleDeck(player) },
+                { label: '🔍 檢視牌組內容 (VIEW DECK)', style: 'bg-sky-950/70 border border-sky-400/60 text-sky-200 hover:bg-sky-500 hover:text-black font-bold', fn: () => openZoneModal(player, 'deck') },
+                { label: '✨ 公開牌組頂卡牌至場上', style: 'bg-amber-950/60 border border-[#c8aa76]/60 text-[#fde68a] hover:bg-[#c8aa76] hover:text-black font-bold', fn: () => deployTop(player) },
+                { label: '⬆️ 抽牌組頂 1 張 (DRAW TOP)', style: 'bg-white/5 border border-[#b09466]/50 text-[#f5efe6] hover:bg-[#c8aa76] hover:text-black font-bold', fn: () => drawCard(player, 'top') },
+                { label: '⬇️ 抽牌組底 1 張 (DRAW BOTTOM)', style: 'bg-white/5 border border-[#b09466]/50 text-[#f5efe6] hover:bg-[#c8aa76] hover:text-black font-bold', fn: () => drawCard(player, 'bottom') },
+                { label: '📂 匯入 .ZIP 牌組檔案 (IMPORT)', style: 'bg-emerald-950/60 border border-emerald-500/60 text-emerald-200 hover:bg-emerald-500 hover:text-black font-bold', fn: () => document.getElementById(`import-zip-${player}`)?.click() },
+                { label: '🗂️ 從全球卡組庫載入牌組', style: 'bg-black/80 border border-[#c8aa76]/60 text-[#e0b25b] hover:bg-[#c8aa76] hover:text-black font-bold', fn: () => openDeckVaultModal() }
+            ];
+
+            menuItems.forEach(item => {
+                const btn = document.createElement('button');
+                btn.className = `w-full py-3 px-4 rounded-sm text-xs sm:text-sm tracking-wider cursor-pointer transition-all shadow-md text-center ${item.style}`;
+                btn.innerText = item.label;
+                btn.onclick = () => {
+                    closeZoneActionMenu();
+                    item.fn();
+                };
+                bodyEl.appendChild(btn);
+            });
+
+            modal.classList.remove('hidden');
+        }
+
+        function openTrashActionMenu(player) {
+            const modal = document.getElementById('zone-action-menu-modal');
+            const titleEl = document.getElementById('zone-action-menu-title');
+            const bodyEl = document.getElementById('zone-action-menu-body');
+            if (!modal || !titleEl || !bodyEl) return;
+
+            const P = player.toUpperCase();
+            const trashCount = getTrashCards(player).length;
+            const excludeCount = getExcludeCards(player).length;
+            titleEl.innerText = `⚙️ ${P} 廢棄區 & 除外區選單`;
+            bodyEl.innerHTML = '';
+
+            const menuItems = [
+                { label: `🗑️ 檢視廢棄區 (TRASH: ${trashCount} 張)`, style: 'bg-[#c8aa76] text-black hover:bg-white font-black', fn: () => openZoneModal(player, 'trash') },
+                { label: `🚫 檢視除外區 (EXCLUDE: ${excludeCount} 張)`, style: 'bg-sky-950/70 border border-sky-400/60 text-sky-200 hover:bg-sky-500 hover:text-black font-bold', fn: () => openZoneModal(player, 'exclude') },
+                { label: '⚡ 將廢棄區所有卡牌移至除外區 (全除外)', style: 'bg-rose-950/70 border border-rose-500/60 text-rose-200 hover:bg-rose-600 hover:text-white font-bold', fn: () => moveAllTrashToExclude(player) },
+                { label: '↺ 將廢棄區 1 個 Core 移回預備區', style: 'bg-white/5 border border-[#b09466]/50 text-[#f5efe6] hover:bg-[#c8aa76] hover:text-black font-bold', fn: () => recoverCore(player) },
+                { label: '💎 將廢棄區全部 Core 移回預備區 (ALL)', style: 'bg-emerald-950/60 border border-emerald-500/60 text-emerald-200 hover:bg-emerald-500 hover:text-black font-bold', fn: () => recoverAllCores(player) }
+            ];
+
+            menuItems.forEach(item => {
+                const btn = document.createElement('button');
+                btn.className = `w-full py-3 px-4 rounded-sm text-xs sm:text-sm tracking-wider cursor-pointer transition-all shadow-md text-center ${item.style}`;
+                btn.innerText = item.label;
+                btn.onclick = () => {
+                    closeZoneActionMenu();
+                    item.fn();
+                };
+                bodyEl.appendChild(btn);
+            });
+
+            modal.classList.remove('hidden');
+        }
 
         (function initMobilePreviewInteractions() {
             const previewImg = document.getElementById('card-preview-img');
@@ -2462,7 +2829,7 @@
                     lastTapTime = 0;
                     if (previewTapTimer) { clearTimeout(previewTapTimer); previewTapTimer = null; }
                     flipCardFace(activePreviewCardId, true);
-                    syncActivePreviewTransform();
+                    playPreviewCardFlip3DFeedback(() => syncActivePreviewTransform());
                 } else {
                     lastTapTime = now;
                     if (previewTapTimer) clearTimeout(previewTapTimer);
@@ -2471,17 +2838,31 @@
                         const currentCard = gameState.cards[activePreviewCardId];
                         if (currentCard && currentCard.zone && (currentCard.zone.startsWith('field-') || currentCard.zone.startsWith('zone-god-'))) {
                             rotateCardBySide(activePreviewCardId, isRightSide);
+                            playPreviewCardTiltFeedback(isRightSide);
                             syncActivePreviewTransform();
                         }
-                    }, 250);
+                    }, 230);
                 }
             });
 
             document.addEventListener('pointerdown', (e) => {
                 if (controlMode !== 'MOBILE' || !activePreviewCardId) return;
-                if (e.target.closest('#card-preview-img') || e.target.closest('.card')) return;
+                if (e.target.closest('#card-preview-img') || e.target.closest('#card-preview-core-bar') || e.target.closest('.card')) return;
                 hideCardPreview();
             });
+
+            // 4. 全局攔截 iOS / iPadOS / Android 雙擊畫面觸發瀏覽器原生縮放
+            let lastGlobalTouchEnd = 0;
+            document.addEventListener('touchend', (e) => {
+                const now = Date.now();
+                if (now - lastGlobalTouchEnd <= 320) {
+                    if (e.cancelable) e.preventDefault();
+                }
+                lastGlobalTouchEnd = now;
+            }, { passive: false });
+            document.addEventListener('dblclick', (e) => {
+                if (controlMode === 'MOBILE' && e.cancelable) e.preventDefault();
+            }, { passive: false });
         })();
 
         function runLotteryAnimation(winner) {
@@ -2990,11 +3371,13 @@
                 const tray = document.getElementById(trayId);
                 if (!tray) return;
                 const count = Math.max(0, parseInt(gameState[key], 10) || 0);
-                if (tray.dataset.renderedCount === String(count)) return;
-                tray.dataset.renderedCount = String(count);
+                const renderKey = `${deviceMode}_${count}`;
+                if (tray.dataset.renderedCount === renderKey) return;
+                tray.dataset.renderedCount = renderKey;
                 tray.innerHTML = '';
 
-                const maxVisualGems = 12;
+                // 2. 手機模式下：每個區域（Life / Reserve / Trash）最多只顯示 1 粒實體藍水晶 Core 代表（可點擊或拖曳），不重複排列多粒以節省空間
+                const maxVisualGems = (deviceMode === 'PHONE') ? 1 : 12;
                 const showGems = Math.min(count, maxVisualGems);
                 for (let i = 0; i < showGems; i++) {
                     const gem = document.createElement('span');
@@ -3085,7 +3468,7 @@
                     tray.appendChild(gem);
                 }
 
-                if (count > maxVisualGems) {
+                if (deviceMode !== 'PHONE' && count > maxVisualGems) {
                     const extra = document.createElement('span');
                     extra.className = 'text-[10px] font-black text-sky-300 ml-0.5';
                     extra.innerText = `+${count - maxVisualGems}`;
@@ -5130,7 +5513,7 @@
             controls.addEventListener('touchstart', (e) => e.stopPropagation(), { passive: true });
             
             const btnCoreMinus = document.createElement('button');
-            btnCoreMinus.className = 'card-btn';
+            btnCoreMinus.className = 'card-btn card-core-minus-btn';
             btnCoreMinus.innerText = '-';
             btnCoreMinus.title = "減少 1 個 Core (歸還至 Reserve)";
             btnCoreMinus.onclick = (e) => { e.stopPropagation(); addCoreToCard(cardData.id, -1); };
@@ -5215,7 +5598,7 @@
             corePill.addEventListener('pointercancel', finishGodCoreTouchDrag);
             
             const btnCorePlus = document.createElement('button');
-            btnCorePlus.className = 'card-btn';
+            btnCorePlus.className = 'card-btn card-core-plus-btn';
             btnCorePlus.innerText = '+';
             btnCorePlus.title = "增加 1 個 Core (優先從 Reserve 拿取)";
             btnCorePlus.onclick = (e) => { e.stopPropagation(); addCoreToCard(cardData.id, 1); };
@@ -6019,6 +6402,7 @@
         Object.assign(window, {
             gameState, cardImageCache, localSeatId, applyCustomCardBackUrl, buildStatePayload,
             setControlMode, toggleBgmPlayback, changeBgmVolume, toggleBgmMiniVideo, changePreviewCardScale, uploadCustomCardBack,
+            adjustPreviewCardCore, togglePreviewCardSoul,
             openResetModal, closeResetModal, confirmResetGame, openMultiplayerModal, closeMultiplayerModal,
             openDeckVaultModal, closeDeckVaultModal, importZipToVaultOnly, loadSavedDeckToPlayer,
             deleteDeckFromVaultDB, clearAllDecksFromVault, openDeckEditorModal, closeDeckEditorModal,
@@ -6026,7 +6410,7 @@
             manualCleanupRooms, setView, toggleHand, toggleStickyHand, toggleTopHeader, toggleGodZone, toggleOpenHandZone,
             startPlayerLottery, confirmLotteryResult, updateCounter, takeLife, payCost,
             recoverCore, recoverAllCores, refreshState, moveAllTrashToExclude, shuffleDeck,
-            drawCard, deployTop, importZip, openZoneModal, closeZoneModal, closeDeckChoiceModal,
+            drawCard, deployTop, importZip, openZoneModal, closeZoneModal, openDeckActionMenu, openTrashActionMenu, closeZoneActionMenu, closeDeckChoiceModal,
             closeGodConfirmModal, closeNoticeModal, allowDrop, drop, dropOnDeck, dropOnGodZone,
             dropOnCounterBox, dropOnTrashCoreBox, dropOnCenterSpace, dropSoulCore,
             launchBurstFireworks, toggleOpponentPiP, resetOpponentPiPSize, openOpponentTrashFromPiP,
