@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <!-- 4. 禁止手機/iPad 雙擊畫面時觸發瀏覽器原生放大縮放 -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>BS PROTOTYPE - 2-PLAYER EDITION</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -1108,6 +1108,7 @@
             content: "";
             width: 13px;
             height: 13px;
+        }
         /* 響應式頂部導航列與等比例縮放戰場容器 (1. 鎖定寬度並禁止左右滑動，只允許上下捲動) */
         #main-top-header button, #main-top-header span {
             white-space: nowrap;
@@ -1137,6 +1138,24 @@
             body { padding: 4px !important; gap: 4px !important; }
             #main-top-header { padding: 4px 8px !important; gap: 4px !important; }
         }
+
+        /* Keep the play surface inside the dynamic viewport, including browser chrome. */
+        html { margin: 0; width: 100%; height: 100%; background: #0d0c0b; }
+        body { margin: 0; width: 100%; height: 100dvh; min-height: 0; }
+        *, *::before, *::after { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+        input, textarea { -webkit-user-select: text; user-select: text; }
+        body.mobile-mode { padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left) !important; }
+        body.mobile-mode .card, body.mobile-mode .hand-zone,
+        body.mobile-mode .hand-panel, body.mobile-mode .deck-cardback-visual { touch-action: none; }
+        body.mobile-mode #playmat-root { padding-left: 0; padding-right: 0; }
+        body.mobile-mode .field-bottom-left-dock { width: calc(100% - 20px); gap: 6px; }
+        body.mobile-mode .god-zone-wrapper, body.mobile-mode .openhand-zone-wrapper { flex: 1 1 0; min-width: 0; width: 0; padding: 4px; }
+        body.mobile-mode .god-zone, body.mobile-mode .openhand-zone { display: block; width: 100%; min-width: 0; height: 184px; overflow-x: auto; overflow-y: hidden; }
+        body.mobile-mode .god-zone .card, body.mobile-mode .openhand-zone .card { position: absolute !important; left: var(--stack-x, 0px) !important; top: 8px !important; margin: 0 !important; transform-origin: 50% 100%; }
+        body.mobile-mode .god-zone .card { rotate: var(--fan-angle, 0deg); transition: left .24s ease, rotate .24s ease, transform .18s ease; }
+        .compact-zone-button { display: none; }
+        body.mobile-mode .compact-zone-button { display: inline-block; min-height: 28px; padding: 2px 5px; border: 1px solid #b09466; border-radius: 3px; color: #e0b25b; font-size: 10px; }
+        #touch-drag-ghost { z-index: 20000 !important; pointer-events: none !important; }
     </style>
 </head>
 <body class="h-screen w-screen flex flex-col p-2 box-border gap-1.5 overflow-hidden">
@@ -1475,6 +1494,7 @@
                         <div id="god-wrapper-${p}" class="god-zone-wrapper" ondrop="dropOnGodZone(event, '${p}')" ondragover="allowDrop(event)">
                             <div class="flex items-center justify-between gap-2 mb-1">
                                 <div class="counter-title mb-0">創界神</div>
+                                <button class="compact-zone-button" onclick="toggleGodFan('${p}')">扇形</button>
                                 <button id="btn-toggle-god-${p}" class="text-[9px] text-[#c8bea8] hover:text-white border border-[#b09466]/40 bg-black/60 hover:bg-[#c8aa76] hover:text-black px-2 py-0.5 rounded-sm leading-tight cursor-pointer transition-colors" onclick="toggleGodZone('${p}')" title="收起 / 展開創界神區域">▼</button>
                             </div>
                             <div id="zone-god-${p}" class="zone god-zone custom-scrollbar"></div>
@@ -1485,6 +1505,7 @@
                                     <span>手元區</span>
                                     <span id="val_${p}_openhand_card_count" class="bg-black/70 border border-[#b09466]/40 text-[#e0b25b] px-1.5 py-0 rounded-sm text-[9px] font-black">0</span>
                                 </div>
+                                <button class="compact-zone-button" onclick="openZoneModal('${p}', 'openhand')">展示全部</button>
                                 <button id="btn-toggle-openhand-${p}" class="text-[9px] text-[#c8bea8] hover:text-white border border-[#b09466]/40 bg-black/60 hover:bg-[#c8aa76] hover:text-black px-2 py-0.5 rounded-sm leading-tight cursor-pointer transition-colors" onclick="toggleOpenHandZone('${p}')" title="收起 / 展開手元區">▼</button>
                             </div>
                             <div id="zone-openhand-${p}" class="zone openhand-zone custom-scrollbar"></div>
@@ -1673,6 +1694,7 @@
                 }
             });
             updateHandOverlapLayout();
+            layoutCompactZones();
             if (root) {
                 root.style.paddingBottom = isBottomHandPinned ? `${Math.round(188 * boardScale) + 14}px` : '12px';
             }
@@ -2027,6 +2049,7 @@
             renderPhysicalCoreTrays();
             updatePlaymatResponsiveScale();
             refreshAllFieldCardsPosition();
+            layoutCompactZones();
         }
 
         function autoDetectControlMode() {
@@ -2486,13 +2509,15 @@
         function playPreviewCardTiltFeedback(isRightSide) {
             const previewImg = document.getElementById('card-preview-img');
             if (!previewImg) return;
-            const deg = isRightSide ? 30 : -30;
+            const base = getComputedStyle(previewImg).transform;
+            previewImg.getAnimations().forEach(animation => animation.cancel());
+            const deg = isRightSide ? 10 : -10;
             previewImg.animate([
-                { transform: 'rotate(0deg) scale(1)' },
-                { transform: `rotate(${deg}deg) scale(1.04)`, offset: 0.45 },
+                { transform: base },
+                { transform: `rotate(${deg}deg) scale(1.015)`, offset: 0.4 },
                 { transform: 'rotate(0deg) scale(1)' }
             ], {
-                duration: 260,
+                duration: 340,
                 easing: 'cubic-bezier(0.22, 1, 0.36, 1)'
             });
         }
@@ -3477,6 +3502,29 @@
             });
         }
 
+        const godFanExpanded = { p1: false, p2: false };
+        function toggleGodFan(player) {
+            godFanExpanded[player] = !godFanExpanded[player];
+            layoutCompactZones();
+        }
+        function layoutCompactZones() {
+            ['p1', 'p2'].forEach(player => {
+                ['god', 'openhand'].forEach(type => {
+                    const zone = document.getElementById(`zone-${type}-${player}`);
+                    const cards = [...zone.querySelectorAll(':scope > .card')];
+                    const mobile = controlMode === 'MOBILE';
+                    const expanded = type === 'god' && godFanExpanded[player];
+                    // A minimum exposed strip keeps every card reachable; long fans scroll inside their own zone.
+                    const available = Math.max(0, zone.clientWidth - 112);
+                    const step = expanded ? 42 : Math.max(12, Math.min(type === 'god' ? 26 : 16, available / Math.max(1, cards.length - 1)));
+                    cards.forEach((card, index) => {
+                        card.style.setProperty('--stack-x', `${6 + index * step}px`);
+                        card.style.setProperty('--fan-angle', mobile && expanded ? `${Math.max(-12, Math.min(12, (index - (cards.length - 1) / 2) * 4))}deg` : '0deg');
+                    });
+                });
+            });
+        }
+
         function updateAllUI() {
             ['p1_life', 'p1_reserve', 'p1_count', 'p1_trash_core', 'p2_life', 'p2_reserve', 'p2_count', 'p2_trash_core'].forEach(key => {
                 const el = document.getElementById('val_' + key);
@@ -3590,6 +3638,7 @@
 
             applyStickyHandUI();
             updateHandOverlapLayout();
+            layoutCompactZones();
             updatePlaymatResponsiveScale();
             refreshAllFieldCardsPosition();
             if (currentModalInfo) renderZoneModalContent();
@@ -4586,7 +4635,9 @@
                     store.put(deckRecord);
                     tx.oncomplete = () => resolve(deckRecord);
                     tx.onerror = (e) => reject(e.target.error);
+                    tx.onabort = () => reject(tx.error || new Error('卡組儲存已中止'));
                 });
+                db.close();
                 // 4. 同步上傳至全球雲端卡組庫，讓所有玩家都能即時看見與使用同一副卡組
                 if (window.saveGlobalDeckToCloud) {
                     window.saveGlobalDeckToCloud(deckRecord);
@@ -4597,7 +4648,7 @@
                 return deckRecord;
             } catch (err) {
                 console.warn('Save deck to IndexedDB failed:', err);
-                return null;
+                throw err;
             }
         }
 
@@ -4623,7 +4674,9 @@
                     if (!d || !d.id) return;
                     const prev = mergedMap.get(d.id);
                     if (!prev || (d.updatedAt || 0) >= (prev.updatedAt || 0)) {
-                        mergedMap.set(d.id, d);
+                        const sameRevision = prev && (d.updatedAt || 0) === (prev.updatedAt || 0);
+                        mergedMap.set(d.id, sameRevision && !d.entries?.length && !d.cards?.length
+                            ? { ...prev, ...d, entries: getDeckEntriesFromRecord(prev) } : d);
                     }
                 });
             }
@@ -4924,7 +4977,12 @@
                 return;
             }
 
-            await saveDeckToVaultDB(newName, validEntries, null, currentEditingDeckId);
+            try {
+                await saveDeckToVaultDB(newName, validEntries, null, currentEditingDeckId);
+            } catch (err) {
+                showNotice('儲存卡組失敗：' + (err.message || '請檢查瀏覽器儲存空間。'));
+                return;
+            }
             closeDeckEditorModal();
             await renderDeckVaultList();
             const totalCards = validEntries.reduce((s, e) => s + (parseInt(e.count, 10) || 0), 0);
@@ -5024,7 +5082,7 @@
             const deckName = file.name.replace(/\.zip$/i, '') || ('Deck_' + new Date().toLocaleTimeString());
 
             const allFiles = Object.entries(contents.files).filter(([filename, zipEntry]) => !zipEntry.dir && !filename.includes('__MACOSX'));
-            const entries = allFiles.filter(([filename]) => /\.(jpg|jpeg|png|webp)$/i.test(filename));
+            const entries = allFiles.filter(([filename]) => /\.(jpg|jpeg|png|webp|gif|avif|bmp)$/i.test(filename));
 
             const cardImagesArray = [];
             const highResBlobs = [];
@@ -5042,9 +5100,8 @@
                 highResBlobs.push(blob);
             }
 
-            if (cardImagesArray.length > 0) {
-                await saveDeckToVaultDB(deckName, cardImagesArray, customBackBase64);
-            }
+            if (!cardImagesArray.length) throw new Error('ZIP 內沒有可匯入的卡圖（支援 JPG、PNG、WebP、GIF、AVIF、BMP）。');
+            await saveDeckToVaultDB(deckName, cardImagesArray, customBackBase64);
 
             return { deckName, cardImagesArray, highResBlobs, customBackBase64 };
         }
@@ -5058,7 +5115,7 @@
                 showNotice(`已將卡組「${deckName}」(${cardImagesArray.length} 張卡) 去重儲存至卡組庫！你可點擊「✏️ 編輯張數」自由調整每張卡的數量。`);
             } catch (err) {
                 console.error("Error importing zip to vault:", err);
-                showNotice("讀取 ZIP 檔案失敗。");
+                showNotice("匯入失敗：" + (err.message || "無法讀取 ZIP 或儲存卡組，請檢查檔案及瀏覽器儲存空間。"));
             }
             event.target.value = '';
         }
@@ -5076,7 +5133,7 @@
                 });
             } catch (err) {
                 console.error("Error reading zip", err);
-                showNotice("讀取 ZIP 檔案失敗。");
+                showNotice("匯入失敗：" + (err.message || "無法讀取 ZIP 或儲存卡組，請檢查檔案及瀏覽器儲存空間。"));
             }
             event.target.value = '';
         }
@@ -5643,6 +5700,8 @@
             let isTouchDraggingCard = false, touchStartX = 0, touchStartY = 0, activePointerId = null;
             el.addEventListener('pointerdown', (e) => {
                 if (controlMode !== 'MOBILE' || e.target.closest('.card-controls')) return;
+                if (activePointerId !== null) return;
+                e.preventDefault(); e.stopPropagation();
                 activePointerId = e.pointerId; touchStartX = e.clientX; touchStartY = e.clientY; isTouchDraggingCard = false;
                 try { el.setPointerCapture(e.pointerId); } catch (err) {}
             });
@@ -5650,7 +5709,7 @@
             el.addEventListener('pointermove', (e) => {
                 if (controlMode !== 'MOBILE' || activePointerId !== e.pointerId) return;
                 const dist = Math.hypot(e.clientX - touchStartX, e.clientY - touchStartY);
-                if (!isTouchDraggingCard && dist > 6) {
+                if (!isTouchDraggingCard && dist > 2) {
                     isTouchDraggingCard = true;
                     startTouchCardDrag(cardData.id, el, e.clientX, e.clientY);
                 }
@@ -5661,13 +5720,19 @@
             });
 
             const finishTouchInteraction = (e) => {
-                if (controlMode !== 'MOBILE' || (activePointerId !== null && e.pointerId !== activePointerId)) return;
+                if (controlMode !== 'MOBILE' || activePointerId !== e.pointerId) return;
                 try { if (el.hasPointerCapture(e.pointerId)) el.releasePointerCapture(e.pointerId); } catch (err) {}
                 activePointerId = null;
 
                 if (isTouchDraggingCard) {
                     isTouchDraggingCard = false;
-                    endTouchCardDrag(cardData.id, e.clientX, e.clientY);
+                    if (e.type === 'pointerup') endTouchCardDrag(cardData.id, e.clientX, e.clientY);
+                    else {
+                        el.style.opacity = '1';
+                        document.getElementById('touch-drag-ghost').style.display = 'none';
+                        document.querySelectorAll('.drag-over').forEach(z => z.classList.remove('drag-over'));
+                        draggedCard = null;
+                    }
                     return;
                 }
                 if (e.type === 'pointerup') {
@@ -5945,6 +6010,9 @@
             if (type === 'deck') {
                 cardIds = [...gameState[`${player}Deck`]];
                 titleEl.innerText = `${player.toUpperCase()} DECK (${cardIds.length} CARDS)`;
+            } else if (type === 'openhand') {
+                cardIds = getOpenHandCards(player).map(c => c.id);
+                titleEl.innerText = `${player.toUpperCase()} 手元區（點擊卡牌放到場上）`;
             } else if (type === 'exclude') {
                 cardIds = getExcludeCards(player).slice().reverse().map(c => c.id);
                 titleEl.innerText = `${player.toUpperCase()} 除外區 (${cardIds.length} CARDS)`;
@@ -5974,9 +6042,14 @@
                 thumb.className = 'w-[100px] h-[140px] bg-black border border-gray-600 rounded bg-cover bg-center cursor-pointer';
                 if (imgSrc) thumb.style.backgroundImage = `url(${imgSrc})`;
 
-                thumb.addEventListener('mouseenter', () => { if (controlMode === 'PC' && imgSrc) showCardPreviewNextToElement(thumb, imgSrc, cid, false); });
+                thumb.addEventListener('mouseenter', () => { if (type !== 'openhand' && controlMode === 'PC' && imgSrc) showCardPreviewNextToElement(thumb, imgSrc, cid, false); });
                 thumb.addEventListener('mouseleave', () => { if (controlMode === 'PC') hideCardPreview(); });
                 thumb.addEventListener('click', (e) => {
+                    if (type === 'openhand') {
+                        e.stopPropagation();
+                        moveCardToZone(cid, `field-${player}`);
+                        return;
+                    }
                     if (controlMode !== 'MOBILE' || !imgSrc) return;
                     e.stopPropagation();
                     if (activePreviewCardId === cid) hideCardPreview();
@@ -6008,7 +6081,8 @@
                     btnGrid.appendChild(b);
                 });
 
-                item.append(label, thumb, btnGrid);
+                if (type === 'openhand') item.append(thumb);
+                else item.append(label, thumb, btnGrid);
                 listEl.appendChild(item);
             });
         }
@@ -6421,6 +6495,7 @@
             updatePlaymatResponsiveScale();
             refreshAllFieldCardsPosition();
             renderOpponentPiP();
+            layoutCompactZones();
             hideCardPreview();
         });
 
