@@ -1148,11 +1148,14 @@
         body.mobile-mode .card, body.mobile-mode .hand-zone,
         body.mobile-mode .hand-panel, body.mobile-mode .deck-cardback-visual { touch-action: none; }
         body.mobile-mode #playmat-root { padding-left: 0; padding-right: 0; }
-        body.mobile-mode .field-bottom-left-dock { width: calc(100% - 20px); gap: 6px; }
+        body.mobile-mode .field-bottom-left-dock { width: min(288px, calc(100% - 20px)); gap: 6px; }
         body.mobile-mode .god-zone-wrapper, body.mobile-mode .openhand-zone-wrapper { flex: 1 1 0; min-width: 0; width: 0; padding: 4px; }
-        body.mobile-mode .god-zone, body.mobile-mode .openhand-zone { display: block; width: 100%; min-width: 0; height: 184px; overflow-x: auto; overflow-y: hidden; }
-        body.mobile-mode .god-zone .card, body.mobile-mode .openhand-zone .card { position: absolute !important; left: var(--stack-x, 0px) !important; top: 8px !important; margin: 0 !important; transform-origin: 50% 100%; }
+        body.mobile-mode .god-zone, body.mobile-mode .openhand-zone { display: block; width: 100%; min-width: 0; min-height: 0; height: 114px; overflow-x: auto; overflow-y: hidden; }
+        body.mobile-mode .god-zone .card, body.mobile-mode .openhand-zone .card { position: absolute !important; left: var(--stack-x, 0px) !important; top: 5px !important; width: 56px; height: 78px; margin: 0 !important; transform-origin: 50% 100%; }
         body.mobile-mode .god-zone .card { transition: left .24s ease, transform .18s ease; }
+        body.mobile-mode .god-zone .card .card-controls { top: calc(100% + 2px); transform: translateX(-50%); gap: 3px; padding: 2px 4px; }
+        body.mobile-mode .god-zone .card .card-core-minus-btn,
+        body.mobile-mode .god-zone .card .card-core-plus-btn { display: none !important; }
         .compact-zone-button { display: none; }
         body.mobile-mode .compact-zone-button { display: inline-block; min-height: 28px; padding: 2px 5px; border: 1px solid #b09466; border-radius: 3px; color: #e0b25b; font-size: 10px; }
         #touch-drag-ghost { z-index: 20000 !important; pointer-events: none !important; }
@@ -1266,7 +1269,7 @@
 
     <!-- Card Preview (5. 手機版模式預視卡牌時，下方顯示 Core 增加/減少與魂 Core 控制列) -->
     <div id="card-preview" class="fixed z-[11000] pointer-events-none opacity-0 invisible transition-opacity duration-150">
-        <button id="preview-deploy" class="hidden w-full bg-amber-200 text-black font-bold py-2 mb-2 rounded pointer-events-auto" onclick="deployPreviewHandCard()">放置到場上</button>
+        <button id="preview-deploy" class="hidden w-full bg-black border border-[#b09466] text-[#e0b25b] font-bold py-2 mb-2 rounded-sm pointer-events-auto hover:bg-[#c8aa76] hover:text-black transition-colors" onclick="deployPreviewHandCard()">放置到場上</button>
         <div id="card-preview-img"></div>
         <div id="card-preview-core-bar" class="hidden mt-2 bg-[#0a0a0a]/95 border border-[#c8aa76] px-4 py-2 rounded-sm shadow-2xl items-center gap-3 pointer-events-auto">
             <button type="button" class="w-9 h-9 bg-rose-950/80 hover:bg-rose-600 active:scale-95 text-rose-200 hover:text-white border border-rose-500/50 rounded-sm font-black text-lg flex items-center justify-center cursor-pointer" onpointerdown="event.stopPropagation()" onclick="event.stopPropagation(); adjustPreviewCardCore(-1)">-</button>
@@ -1707,6 +1710,12 @@
             }
         }
 
+        let lastResponsiveGeometry = '';
+        function responsiveGeometryKey(root, stage) {
+            return [root.clientWidth, root.clientHeight, root.getBoundingClientRect().top,
+                stage.offsetHeight, window.innerHeight, deviceMode, gameState.viewMode, isBottomHandPinned].join(':');
+        }
+
         function updatePlaymatResponsiveScale() {
             const root = document.getElementById('playmat-root');
             const outer = document.getElementById('playmat-scale-outer');
@@ -1715,6 +1724,8 @@
             const s2 = document.getElementById('section-main-p2');
             if (!root || !outer || !stage) return;
 
+            const geometry = responsiveGeometryKey(root, stage);
+            if (geometry === lastResponsiveGeometry) return;
             const targetBoardW = getActiveBaseBoardWidth();
             stage.style.minWidth = `${targetBoardW}px`;
             stage.style.minHeight = '0px';
@@ -1753,6 +1764,7 @@
                 outer.style.height = `${stage.offsetHeight}px`;
             }
             syncPinnedHandGeometry();
+            lastResponsiveGeometry = responsiveGeometryKey(root, stage);
         }
         const localSeatId = "seat_" + Math.random().toString(36).substring(2, 10) + "_" + Date.now();
         const gameState = {
@@ -1781,6 +1793,12 @@
 
         const cardImageCache = {};
         const cardHighResCache = {};
+        function releaseCardImage(cardId, keepCachedImage = false) {
+            if (cardHighResCache[cardId]) URL.revokeObjectURL(cardHighResCache[cardId]);
+            delete cardHighResCache[cardId];
+            if (!keepCachedImage) delete cardImageCache[cardId];
+        }
+
         let draggedCard = null;
         let draggedSoulOwner = null;
         let draggedGodCoreCardId = null;
@@ -1885,7 +1903,7 @@
             }
             setTimeout(() => {
                 refreshAllFieldCardsPosition();
-                renderOpponentPiP();
+                scheduleOpponentPiPRender();
             }, 60);
         }
 
@@ -3515,7 +3533,7 @@
                     const zone = document.getElementById(`zone-${type}-${player}`);
                     const cards = [...zone.querySelectorAll(':scope > .card')];
                     // Keep an exposed strip for each card; excess cards scroll inside the zone.
-                    const available = Math.max(0, zone.clientWidth - 112);
+                    const available = Math.max(0, zone.clientWidth - 68);
                     const step = Math.max(12, Math.min(type === 'god' ? 26 : 16, available / Math.max(1, cards.length - 1)));
                     cards.forEach((card, index) => {
                         card.style.setProperty('--stack-x', `${6 + index * step}px`);
@@ -3641,7 +3659,7 @@
             updatePlaymatResponsiveScale();
             refreshAllFieldCardsPosition();
             if (currentModalInfo) renderZoneModalContent();
-            renderOpponentPiP();
+            scheduleOpponentPiPRender();
         }
 
         /* =========================================================================
@@ -3679,7 +3697,7 @@
                 win.classList.remove('pip-minimized');
                 btn.classList.add('pip-tab-hidden');
                 setupOpponentPiPObserver();
-                renderOpponentPiP();
+                scheduleOpponentPiPRender();
             } else {
                 win.classList.add('pip-minimized');
                 btn.classList.remove('pip-tab-hidden');
@@ -3691,7 +3709,7 @@
             const win = document.getElementById('opp-pip-window');
             if (!win) return;
             Object.assign(win.style, { left: '12px', top: '56px', width: '480px', height: '280px' });
-            renderOpponentPiP();
+            scheduleOpponentPiPRender();
         }
 
         function openOpponentTrashFromPiP() { openZoneModal(getWatchedOpponentPlayer(), 'trash'); }
@@ -3801,13 +3819,13 @@
                 const maxH = Math.max(185, window.innerHeight - rect.top - 8);
                 win.style.width = `${Math.round(Math.max(250, Math.min(maxW, origW + (e.clientX - rStartX))))}px`;
                 win.style.height = `${Math.round(Math.max(185, Math.min(maxH, origH + (e.clientY - rStartY))))}px`;
-                renderOpponentPiP();
+                scheduleOpponentPiPRender();
             });
             const stopResizeDrag = (e) => {
                 if (resizePointerId !== e.pointerId) return;
                 try { if (resizer.hasPointerCapture(e.pointerId)) resizer.releasePointerCapture(e.pointerId); } catch (err) {}
                 resizePointerId = null;
-                renderOpponentPiP();
+                scheduleOpponentPiPRender();
             };
             resizer.addEventListener('pointerup', stopResizeDrag);
             resizer.addEventListener('pointercancel', stopResizeDrag);
@@ -4740,6 +4758,7 @@
             Object.keys(gameState.cards).forEach(cid => {
                 if (gameState.cards[cid].owner === player) {
                     document.getElementById(cid)?.remove();
+                    releaseCardImage(cid);
                     delete gameState.cards[cid];
                 }
             });
@@ -6303,6 +6322,7 @@
                 Object.keys(gameState.cards).forEach(localId => {
                     if (!remoteIds.has(localId)) {
                         document.getElementById(localId)?.remove();
+                        releaseCardImage(localId, true);
                         delete gameState.cards[localId];
                     }
                 });
@@ -6529,7 +6549,7 @@
         window.addEventListener('resize', () => {
             updatePlaymatResponsiveScale();
             refreshAllFieldCardsPosition();
-            renderOpponentPiP();
+            scheduleOpponentPiPRender();
             layoutCompactZones();
             hideCardPreview();
         });
@@ -6806,6 +6826,7 @@
                     } catch (e) {}
                 }, 30000);
                 
+                let lastReceivedStateJson = null;
                 unsubscribeRoom = onSnapshot(roomRef, (snapshot) => {
                     if (snapshot.exists()) {
                         const data = snapshot.data();
@@ -6819,7 +6840,9 @@
                             document.getElementById('status-light-p1')?.classList.toggle('online', !!gameState.seats.p1);
                             document.getElementById('status-light-p2')?.classList.toggle('online', !!gameState.seats.p2);
                         }
-                        if (data.lastUpdatedBy !== clientId && data.stateJson) {
+                        const stateChanged = data.stateJson && data.stateJson !== lastReceivedStateJson;
+                        if (data.stateJson) lastReceivedStateJson = data.stateJson;
+                        if (data.lastUpdatedBy !== clientId && stateChanged) {
                             const remoteState = JSON.parse(data.stateJson);
                             if (data.seats) remoteState.seats = { ...(remoteState.seats || {}), ...data.seats };
                             window.applyGameState(remoteState);
@@ -6834,11 +6857,13 @@
                 const imagesColRef = collection(db, 'artifacts', appId, 'public', 'data', 'rooms', roomCode, 'cardImages');
                 unsubscribeImages = onSnapshot(imagesColRef, (querySnapshot) => {
                     const imgMap = {};
-                    querySnapshot.forEach((docSnap) => {
+                    querySnapshot.docChanges().forEach(change => {
+                        if (change.type === 'removed') return;
+                        const docSnap = change.doc;
                         const d = docSnap.data();
                         if (d && d.base64) imgMap[docSnap.id] = d.base64;
                     });
-                    window.applyCardImages(imgMap);
+                    if (Object.keys(imgMap).length) window.applyCardImages(imgMap);
                 });
 
                 const existingLocalImages = {};
