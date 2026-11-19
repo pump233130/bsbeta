@@ -1321,14 +1321,17 @@ body {
   height:100dvh;
   min-height:0
 }
-*,::after,::before {
+*:not(input):not(textarea):not(select):not([contenteditable="true"]),::after,::before {
   -webkit-user-select:none;
   user-select:none;
   -webkit-touch-callout:none
 }
-input,textarea {
-  -webkit-user-select:text;
-  user-select:text
+input,textarea,select,[contenteditable="true"] {
+  -webkit-user-select:text!important;
+  user-select:text!important;
+  -webkit-touch-callout:default!important;
+  touch-action:auto!important;
+  pointer-events:auto!important
 }
 body.mobile-mode {
   padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)!important
@@ -2258,6 +2261,12 @@ body.mobile-mode #playmat-root .brave-god-attached .god-core-badge {
 </span>
 </div>
 <div class="flex gap-1.5 items-center flex-wrap justify-end flex-1">
+<div class="flex items-center gap-1 bg-black/70 px-2 py-0.5 sm:py-1 rounded-sm border border-[#b09466]/35 flex-shrink-0">
+<span class="text-[10px] sm:text-[11px] text-[#e0b25b] font-bold whitespace-nowrap">👤</span>
+<input id="player-nickname-input" type="text" maxlength="16" placeholder="輸入暱稱" autocomplete="off" class="w-20 sm:w-24 bg-transparent text-[10px] sm:text-xs text-[#f5efe6] font-bold outline-none caret-[#facc15] placeholder:text-stone-500" oninput="if(!event.isComposing)setLocalPlayerName(this.value)" oncompositionend="setLocalPlayerName(this.value)" title="設定你的玩家名稱（自動記憶於此瀏覽器）">
+<button type="button" class="text-[10px] text-[#a89f91] hover:text-rose-400 px-1 leading-none cursor-pointer transition-colors" onclick="clearLocalPlayerName()" title="清除暱稱">✕</button>
+<button type="button" class="text-[10px] text-[#c8bea8] hover:text-[#e0b25b] px-0.5 leading-none cursor-pointer transition-colors" onclick="pasteLocalPlayerName()" title="貼上剪貼簿文字作為暱稱">📋</button>
+</div>
 <div class="flex items-center bg-black/70 p-0.5 rounded-sm border border-[#b09466]/35 flex-shrink-0">
 <button id="btn-mode-pc" class="text-[10px] sm:text-[11px] px-2 py-0.5 sm:py-1 rounded-sm bg-[#c8aa76] text-black font-bold cursor-pointer transition-all whitespace-nowrap" onclick='setControlMode("PC")' title="電腦模式：完整桌面介面、滑鼠懸停預覽、單擊轉向、雙擊翻面">💻 電腦</button> <button id="btn-mode-ipad" class="text-[10px] sm:text-[11px] px-2 py-0.5 sm:py-1 rounded-sm bg-transparent text-[#a89f91] hover:text-white cursor-pointer transition-all whitespace-nowrap" onclick='setControlMode("IPAD")' title="iPad模式：保留完整桌面介面與全部獨立按鈕，支援觸控單擊放大與按住拖曳">iPad</button> <button id="btn-mode-phone" class="text-[10px] sm:text-[11px] px-2 py-0.5 sm:py-1 rounded-sm bg-transparent text-[#a89f91] hover:text-white cursor-pointer transition-all whitespace-nowrap" onclick='setControlMode("PHONE")' title="手機模式：專為手機螢幕放大的巨型按鈕介面，並將細碎按鈕自動收納為選單">📱 手機</button>
 </div>
@@ -2292,6 +2301,7 @@ body.mobile-mode #playmat-root .brave-god-attached .god-core-badge {
 </main>
 <div id="card-preview" class="fixed z-[11000] pointer-events-none opacity-0 invisible transition-opacity duration-150">
 <button id="preview-deploy" class="hidden w-full bg-black border border-[#b09466] text-[#e0b25b] font-bold py-2 mb-2 rounded-sm pointer-events-auto hover:bg-[#c8aa76] hover:text-black transition-colors" onclick="deployPreviewHandCard()">放置到場上</button>
+<div id="preview-cost-calc" class="hidden w-full mb-1.5 px-2.5 py-1.5 rounded-sm border border-[#c8aa76]/80 bg-[#0a0a0a]/95 shadow-xl flex items-center justify-between gap-2 text-xs font-black"></div>
 <div id="card-preview-img">
 </div>
 <div id="card-preview-core-bar" class="hidden mt-2 bg-[#0a0a0a]/95 border border-[#c8aa76] px-4 py-2 rounded-sm shadow-2xl items-center gap-3 pointer-events-auto">
@@ -2372,24 +2382,32 @@ body.mobile-mode #playmat-root .brave-god-attached .god-core-badge {
 <button class="bg-rose-600 py-2.5 text-white font-bold hover:bg-rose-500 transition-colors cursor-pointer text-xs tracking-wider rounded-sm" onclick="confirmResetGame()">✓ 確定重設 (RESET)</button> <button class="border border-[#b09466]/35 bg-white/5 py-2 text-[#c8bea8] text-xs hover:bg-white/15 hover:text-white transition-colors cursor-pointer rounded-sm" onclick="closeResetModal()">✕ 取消 (CANCEL)</button>
 </div>
 </div>
-<div id="mp-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-[10000] hidden flex justify-center items-center">
-<div class="border border-[#b09466]/60 p-8 w-[400px] max-w-[94vw] box-border flex flex-col gap-5 bg-[#0a0a0a]/95 rounded-sm shadow-2xl">
-<div class="text-[#e0b25b] text-2xl font-black text-center tracking-widest">多人連線對戰</div>
-<div class="text-[#c8bea8] text-sm text-center">建立房間或輸入代碼，與好友進行遠端即時對戰。</div>
-<button class="bg-[#c8aa76] py-3 text-black rounded-sm font-bold hover:bg-white transition-colors cursor-pointer tracking-wider" onclick="createRoom()">＋ 建立新房間</button>
-<div class="relative flex items-center justify-center border-t border-[#b09466]/30 my-1">
-<span class="absolute bg-[#0a0a0a] px-3 text-[#a89f91] text-xs font-bold">或</span>
+<div id="mp-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-[10000] hidden flex justify-center items-center p-3">
+<div class="border border-[#b09466]/60 p-5 sm:p-6 w-[460px] max-w-[95vw] max-h-[88vh] overflow-y-auto box-border flex flex-col gap-4 bg-[#0a0a0a]/95 rounded-sm shadow-2xl custom-scrollbar">
+<div class="flex items-center justify-between border-b border-[#b09466]/30 pb-2.5">
+<div class="text-[#e0b25b] text-xl font-black tracking-widest">多人連線對戰</div>
+<button class="border border-[#b09466]/45 bg-black/70 text-[#dcd6cc] hover:bg-[#c8aa76] hover:text-black px-2.5 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="closeMultiplayerModal()">✕</button>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<span class="text-xs font-black tracking-wider text-[#e0b25b]">🌐 目前在線房間（點擊直接加入）</span>
+<button type="button" class="text-[11px] border border-[#b09466]/45 bg-black/70 hover:bg-[#c8aa76] hover:text-black text-[#e0b25b] px-2 py-0.5 rounded-sm font-bold cursor-pointer transition-colors" onclick="refreshOnlineRoomsList()">🔄 重新整理</button>
+</div>
+<div id="mp-online-rooms-list" class="flex flex-col gap-2 max-h-[210px] overflow-y-auto p-2 border border-[#b09466]/30 bg-black/50 rounded-sm custom-scrollbar">
+<div class="text-center text-xs text-stone-400 py-4">載入在線房間中…</div>
+</div>
+</div>
+<button class="bg-[#c8aa76] py-2.5 text-black rounded-sm font-bold hover:bg-white transition-colors cursor-pointer tracking-wider text-sm" onclick="createRoom()">＋ 建立新房間</button>
+<div class="relative flex items-center justify-center border-t border-[#b09466]/30 my-0.5">
+<span class="absolute bg-[#0a0a0a] px-3 text-[#a89f91] text-xs font-bold">或輸入代碼加入</span>
 </div>
 <div class="flex flex-col gap-2 w-full">
 <div class="flex gap-2 w-full">
-<input id="join-room-code" placeholder="輸入 6 位房間代碼" class="flex-1 min-w-0 bg-black/70 border border-[#b09466]/45 rounded-sm text-white px-3 py-2 uppercase tracking-wider focus:border-[#e0b25b] outline-none text-center font-bold"> <button class="flex-shrink-0 bg-[#c8aa76]/20 border border-[#c8aa76]/60 text-[#e0b25b] px-4 py-2 rounded-sm font-bold hover:bg-[#c8aa76] hover:text-black transition-colors cursor-pointer whitespace-nowrap" onclick="joinRoom()">加入房間</button>
+<input id="join-room-code" placeholder="輸入 6 位房間代碼" class="flex-1 min-w-0 bg-black/70 border border-[#b09466]/45 rounded-sm text-white px-3 py-2 uppercase tracking-wider focus:border-[#e0b25b] outline-none text-center font-bold text-sm"> <button class="flex-shrink-0 bg-[#c8aa76]/20 border border-[#c8aa76]/60 text-[#e0b25b] px-4 py-2 rounded-sm font-bold hover:bg-[#c8aa76] hover:text-black transition-colors cursor-pointer whitespace-nowrap text-sm" onclick="joinRoom()">加入房間</button>
 </div>
 <button class="w-full bg-sky-950/50 border border-sky-400/50 py-2 rounded-sm text-sky-200 text-xs font-bold hover:bg-sky-500 hover:text-black transition-colors cursor-pointer tracking-wider" onclick="pasteAndJoinRoom()">📋 貼上並加入已複製的房間號碼</button>
 </div>
-<button class="bg-rose-950/40 border border-rose-500/40 py-2.5 rounded-sm text-rose-300 text-xs font-bold hover:bg-rose-600 hover:text-white transition-colors cursor-pointer uppercase tracking-wider" onclick="manualCleanupRooms()">🧹 立即清除所有閒置/無人房間</button>
-<div class="text-center mt-1">
-<button class="text-[#a89f91] text-xs hover:text-white underline cursor-pointer" onclick="closeMultiplayerModal()">取消關閉</button>
-</div>
+<button class="bg-rose-950/40 border border-rose-500/40 py-2 rounded-sm text-rose-300 text-xs font-bold hover:bg-rose-600 hover:text-white transition-colors cursor-pointer uppercase tracking-wider" onclick="manualCleanupRooms()">🧹 立即清除所有閒置/無人房間</button>
 </div>
 </div>
 <!-- #endregion -->
@@ -2399,7 +2417,9 @@ body.mobile-mode #playmat-root .brave-god-attached .god-core-badge {
 <div class="card-db-panel">
 <div class="card-db-header">
 <h2 id="card-db-title">卡池</h2>
+<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
 <button type="button" onclick="closeCardDatabase()">關閉 ✕</button>
+</div>
 </div>
 <div class="card-db-actions">
 <input id="card-db-search" type="search" placeholder="搜尋卡號或卡名" aria-label="搜尋卡號或卡名" oninput="renderCardDatabase()">
@@ -2407,6 +2427,30 @@ body.mobile-mode #playmat-root .brave-god-attached .god-core-badge {
 <button onclick="refreshCardDatabase()">重新整理</button>
 <button id="catalog-delete-mode" onclick="toggleCatalogDeleteMode()">刪除模式</button>
 <button id="catalog-delete-selected" class="hidden" onclick="deleteCatalogCards()">刪除所選 (0)</button>
+<button type="button" id="btn-ai-settings-toggle" onclick="toggleAiSettingsPanel()" title="設定自己的 Gemini API Key（僅存於本機瀏覽器）">🔑 AI Key</button>
+<button type="button" id="btn-ai-batch-scan" onclick="runAiBatchCatalogScan()" title="自動對卡池中尚未填寫減輕或標誌的卡圖進行 AI 辨識並儲存">✨ AI 批次補齊</button>
+<button type="button" id="btn-ai-batch-stop" class="hidden" onclick="stopAiBatchCatalogScan()">⏹ 停止批次</button>
+</div>
+<div id="ai-settings-panel" class="ai-settings-panel hidden">
+  <div class="ai-settings-row">
+    <label style="flex:1;min-width:200px">Gemini API Key（僅存於本機瀏覽器，不會上傳）
+      <input id="ai-gemini-key-input" type="password" placeholder="貼上 AIza... 開頭的 Gemini API Key" autocomplete="off">
+    </label>
+    <label style="width:170px">模型
+      <select id="ai-gemini-model-select" style="width:100%;background:#080706;color:#e0b25b;border:1px solid #8d7955;padding:6px;border-radius:3px">
+        <option value="gemini-3.8-flash">gemini-3.8-flash (最新推薦)</option>
+        <option value="gemini-3.0-flash">gemini-3.0-flash</option>
+        <option value="gemini-2.5-flash">gemini-2.5-flash</option>
+        <option value="gemini-2.5-flash-lite">gemini-2.5-flash-lite (快速)</option>
+      </select>
+    </label>
+  </div>
+  <div class="ai-settings-actions">
+    <button type="button" class="bs-picker-ai-btn" onclick="pasteAiApiKey()">📋 貼上 API Key</button>
+    <button type="button" onclick="saveAiSettings()">💾 儲存本機 Key</button>
+    <button type="button" onclick="clearAiSettings()">清除 Key</button>
+    <span id="ai-settings-hint" class="card-db-hint"></span>
+  </div>
 </div>
 <p id="card-db-status" role="status" aria-live="polite">載入中…</p>
 <div id="card-db-list" class="card-db-list">
@@ -2432,6 +2476,41 @@ body.mobile-mode #playmat-root .brave-god-attached .god-core-badge {
 </label>
 <input id="catalog-reduction" type="hidden">
 <input id="catalog-symbol" type="hidden">
+</div>
+<div class="bs-symbol-picker-box">
+  <div class="bs-symbol-picker-controls">
+    <div class="bs-picker-row">
+      <div class="bs-picker-head">
+        <span>減輕（點擊 +1 / 右鍵 -1）</span>
+        <span id="picker-preview-reduction" class="bs-picker-preview"></span>
+        <button type="button" class="bs-picker-clear" onclick="clearCatalogSymbolField('reduction')">清空</button>
+      </div>
+      <div id="picker-btns-reduction" class="bs-picker-btns"></div>
+    </div>
+    <div class="bs-picker-row">
+      <div class="bs-picker-head">
+        <span>標誌（點擊 +1 / 右鍵 -1）</span>
+        <span id="picker-preview-symbol" class="bs-picker-preview"></span>
+        <button type="button" class="bs-picker-clear" onclick="clearCatalogSymbolField('symbol')">清空</button>
+      </div>
+      <div id="picker-btns-symbol" class="bs-picker-btns"></div>
+    </div>
+    <div class="bs-picker-quick-actions">
+      <button type="button" id="bs-picker-ai-btn" class="bs-picker-ai-btn" onclick="aiRecognizeCurrentCard()" title="使用 Gemini Vision AI 自動辨識右側左上角與右下角圖片的減輕與標誌">✨ AI 辨識</button>
+      <button type="button" id="bs-picker-quick-save" class="bs-picker-save-btn" onclick="quickSaveAndCloseCatalog()">💾 儲存並關閉</button>
+      <button type="button" class="bs-picker-cancel-btn" onclick="cancelCatalogEdit()">✕ 取消</button>
+    </div>
+  </div>
+  <div class="bs-card-corner-panel">
+    <div class="bs-corner-card">
+      <div class="bs-corner-label">左上角（費用／減輕）</div>
+      <div id="bs-corner-tl" class="bs-corner-view bs-corner-tl"><span class="bs-corner-empty">尚未導入卡圖</span></div>
+    </div>
+    <div class="bs-corner-card">
+      <div class="bs-corner-label">右下角（標誌）</div>
+      <div id="bs-corner-br" class="bs-corner-view bs-corner-br"><span class="bs-corner-empty">尚未導入卡圖</span></div>
+    </div>
+  </div>
 </div>
 <fieldset>
 <legend>等級 / Lv cost / BP</legend>
@@ -2493,9 +2572,13 @@ body.mobile-mode #playmat-root .brave-god-attached .god-core-badge {
 <header>
 <h2 id="deck-description-name">
 </h2>
-<button onclick="closeDeckDescriptions()">關閉 ✕</button>
+<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+<button type="button" id="btn-deck-ai-batch" class="bs-picker-ai-btn" onclick="runDeckAiBatchScan()" title="使用 Gemini Vision AI 自動批次辨識此卡組所有卡片的減輕與標誌並存檔">✨ AI 自動批次識別</button>
+<button type="button" id="btn-deck-ai-stop" class="hidden" style="border-color:rgba(248,113,113,0.85);color:#fecaca;background:rgba(127,29,29,0.7)" onclick="stopAiBatchCatalogScan()">⏹ 停止</button>
+<button type="button" onclick="closeDeckDescriptions()">關閉 ✕</button>
+</div>
 </header>
-<p class="text-xs text-[#c8bea8]">點擊卡牌，匯入資料圖片或修改描述。</p>
+<p id="deck-description-status" class="text-xs text-[#c8bea8]">點擊卡牌，匯入資料圖片或修改描述。</p>
 <div id="deck-description-grid">
 </div>
 </section>
@@ -2608,7 +2691,7 @@ function createHandSectionHTML(e,t,o) {
 }
 function createMainAreaHTML(e,t) {
   const o=e.toUpperCase();
-  return` <div id="section-main-${e}" class="flex-none playmat-panel p-2.5 pt-7 grid grid-cols-[164px_1fr_164px] gap-2.5 relative transition-all duration-300"> <div class="player-status-badge" title="${o} 玩家在線狀態"> <span id="status-light-${e}" class="status-dot"></span> <span class="text-[9px] font-black text-[#dcd6cc] tracking-wider">${o}</span> </div> <div class="side-col-left flex flex-col gap-2"> <div class="counter-box relative flex-1 min-h-[150px] flex flex-col"> <div class="counter-title flex items-center justify-between pr-1"> <div class="flex items-center gap-1.5"> <span>Burst</span> <button class="text-[8px] border border-[#b09466]/45 bg-amber-950/50 hover:bg-[#c8aa76] hover:text-black text-[#e0b25b] px-1.5 py-0.5 rounded-sm font-black cursor-pointer transition-all shadow-sm" onclick="launchBurstFireworks('${e}')" title="向對手放射煙花特效">🎆 煙花</button> </div> <span id="val_${e}_burst_card_count" class="bg-black/70 border border-[#b09466]/40 text-[#e0b25b] px-2 py-0 rounded-sm text-[10px] font-black">0</span> </div> <div id="zone-burst-${e}" class="zone burst-zone custom-scrollbar flex-1 mt-1 text-stone-500 text-xs flex justify-center items-center" ondrop="drop(event, 'zone-burst-${e}')" ondragover="allowDrop(event)"></div> </div> <div id="life-box-${e}" class="counter-box relative flex-none" ondrop="dropOnCounterBox(event, '${e}', 'life')" ondragover="allowDrop(event)"> <div class="counter-title">Life</div> <button class="highlight-action-btn btn-take-life" onclick="takeLife('${e}')" title="扣減 1 點生命值並將 1 個 Core 移至預備區">⚡ TAKE</button> <div id="gems_${e}_life" class="core-gem-tray"></div> <div class="counter-value mt-0.5"> <button class="counter-btn" onclick="updateCounter('${e}_life', -1)">-</button> <span id="val_${e}_life">5</span> <button class="counter-btn" onclick="updateCounter('${e}_life', 1)">+</button> </div> <div class="absolute bottom-1.5 right-2 z-50 flex items-center justify-center pointer-events-auto" id="slot_${e}_soul_life"></div> </div> <div id="reserve-box-${e}" class="counter-box relative flex-none" ondrop="dropOnCounterBox(event, '${e}', 'reserve')" ondragover="allowDrop(event)"> <div class="counter-title">Reserve</div> <button class="highlight-action-btn btn-pay-cost" onclick="payCost('${e}')" title="支付 1 個預備區 Core 至廢棄區">💎 PAY</button> <div id="gems_${e}_reserve" class="core-gem-tray"></div> <div class="counter-value mt-0.5"> <button class="counter-btn" onclick="updateCounter('${e}_reserve', -1)">-</button> <span id="val_${e}_reserve">3</span> <button class="counter-btn" onclick="updateCounter('${e}_reserve', 1)">+</button> </div> <div class="absolute bottom-1.5 right-2 z-50 flex items-center justify-center pointer-events-auto" id="slot_${e}_soul_reserve"></div> </div> </div> <div id="field-${e}" class="zone field-zone relative overflow-hidden min-h-[370px]" ondrop="drop(event, 'field-${e}')" ondragover="allowDrop(event)"> <div class="field-label">${t}</div> <div id="victory-overlay-${e}" class="victory-banner hidden"> <div class="text-5xl font-black tracking-widest text-yellow-300 drop-shadow-[0_0_20px_rgba(250,204,21,1)]">VICTORY</div> <div class="text-sm font-bold text-white tracking-widest mt-1">${o} 獲勝！</div> </div> <div class="field-bottom-left-dock"> <div id="god-wrapper-${e}" class="god-zone-wrapper" ondrop="dropOnGodZone(event, '${e}')" ondragover="allowDrop(event)"> <div class="flex items-center justify-between gap-2 mb-1"> <div class="counter-title mb-0">創界神</div> <button class="compact-zone-button" onclick="openZoneModal('${e}', 'god')">檢視</button> <button id="btn-toggle-god-${e}" class="text-[9px] text-[#c8bea8] hover:text-white border border-[#b09466]/40 bg-black/60 hover:bg-[#c8aa76] hover:text-black px-2 py-0.5 rounded-sm leading-tight cursor-pointer transition-colors" onclick="toggleGodZone('${e}')" title="收起 / 展開創界神區域">▼</button> </div> <div id="zone-god-${e}" class="zone god-zone custom-scrollbar"></div> </div> <div id="openhand-wrapper-${e}" class="openhand-zone-wrapper" ondrop="drop(event, 'zone-openhand-${e}')" ondragover="allowDrop(event)"> <div class="flex items-center justify-between gap-2 mb-1"> <div class="counter-title mb-0 flex items-center gap-1.5"> <span>手元區</span> <span id="val_${e}_openhand_card_count" class="bg-black/70 border border-[#b09466]/40 text-[#e0b25b] px-1.5 py-0 rounded-sm text-[9px] font-black">0</span> </div> <button class="compact-zone-button" onclick="openZoneModal('${e}', 'openhand')">檢示</button> <button id="btn-toggle-openhand-${e}" class="text-[9px] text-[#c8bea8] hover:text-white border border-[#b09466]/40 bg-black/60 hover:bg-[#c8aa76] hover:text-black px-2 py-0.5 rounded-sm leading-tight cursor-pointer transition-colors" onclick="toggleOpenHandZone('${e}')" title="收起 / 展開手元區">▼</button> </div> <div id="zone-openhand-${e}" class="zone openhand-zone custom-scrollbar"></div> </div> </div> </div> <div class="side-col-right flex flex-col gap-2"> <div id="count-box-${e}" class="counter-box relative flex-none py-1 px-2 flex items-center justify-between" ondrop="dropOnCounterBox(event, '${e}', 'count')" ondragover="allowDrop(event)"> <div class="counter-title mb-0 text-[9px]">Count</div> <div class="counter-value text-xs gap-1.5"> <button class="counter-btn w-3.5 h-3.5 text-[10px]" onclick="updateCounter('${e}_count', -1)">-</button> <span id="val_${e}_count" class="min-w-[14px]">0</span> <button class="counter-btn w-3.5 h-3.5 text-[10px]" onclick="updateCounter('${e}_count', 1)">+</button> </div> <div class="relative z-50 flex items-center justify-center min-w-[20px] pointer-events-auto" id="slot_${e}_soul_count"></div> </div> <div id="deck-box-${e}" class="counter-box relative flex-none flex flex-col" ondrop="dropOnDeck(event, '${e}')" ondragover="allowDrop(event)" title="可將卡牌拖曳至此放回牌組頂或底；點擊卡背直接抽牌"> <div class="counter-title">Deck</div>\n                        \x3c!-- 電腦 / iPad 模式原本的完整獨立按鈕 --\x3e <button class="small-action-btn contract-deck-button" onclick="openContractCards('${e}')">契約</button> <input type="file" id="import-zip-${e}" accept=".zip" class="hidden" onchange="importZip(event, '${e}')"> <div class="flex gap-1 mt-1 mb-0.5 pc-ipad-only-ui"> <button class="action-btn" onclick="shuffleDeck('${e}')">洗牌</button> <button class="action-btn" onclick="openZoneModal('${e}', 'deck')">VIEW</button> </div> <div class="deck-cardback-visual cursor-grab active:cursor-grabbing" id="deck-visual-${e}" draggable="true" title="單擊抽 1 張牌至手牌；或按住直接拖動牌組頂第一張卡（正面）到任意區域"> <div class="deck-cardback-emblem">BS</div> <div class="deck-cardback-count transition-transform pointer-events-none" id="val_${e}_deck_count">0</div> </div> <button class="action-btn mb-0.5" onclick="deployTop('${e}')">公開卡牌</button> <div class="flex gap-1 pc-ipad-only-ui"> <button class="action-btn" onclick="drawCard('${e}', 'top')">抽牌組頂</button> <button class="action-btn" onclick="drawCard('${e}', 'bottom')">抽牌組底</button> </div>\n                        \x3c!-- 手機模式專屬：將其他不常用牌組功能整合為單一大按鈕 --\x3e <button class="action-btn phone-only-ui bg-[#c8aa76]/20 border-[#c8aa76]/70 text-[#e0b25b]" onclick="openDeckActionMenu('${e}')">⚙️ 牌組選單</button> </div> <div id="trash-card-box-${e}" class="counter-box relative flex-1 flex flex-col gap-1.5"> <div class="counter-title flex items-center justify-center gap-1.5"> <span>Trash</span> <span id="val_${e}_trash_card_count" class="bg-black/70 border border-[#b09466]/40 text-[#e0b25b] px-2 py-0 rounded-sm text-[10px] font-black">0</span> </div>\n                        \x3c!-- 電腦 / iPad 模式原本的 VIEW 按鈕 --\x3e <button class="small-action-btn pc-ipad-only-ui" onclick="openZoneModal('${e}', 'trash')">VIEW</button>\n                        \x3c!-- 手機模式專屬：大顆整合選單按鈕 --\x3e <button class="phone-only-ui text-xs border border-[#c8aa76]/75 bg-black/85 hover:bg-[#c8aa76] hover:text-black text-[#e0b25b] py-1.5 px-2 rounded-sm font-black cursor-pointer transition-colors w-full" onclick="openTrashActionMenu('${e}')">⚙️ 廢棄/除外選單</button> <div id="zone-trash-${e}" class="zone stack-zone flex-1 mt-0.5 text-stone-600 text-xs cursor-pointer" onclick="openZoneModal('${e}', 'trash')" ondrop="drop(event, 'zone-trash-${e}')" ondragover="allowDrop(event)" title="點擊檢視 Trash 廢棄區卡牌"> <span class="pointer-events-none select-none text-lg font-bold text-stone-600/80">0</span> </div>\n                        \x3c!-- 電腦 / iPad 模式原本的除外區完整按鈕列 --\x3e <div id="exclude-card-box-${e}" class="bg-black/50 border border-[#b09466]/30 hover:border-[#c8aa76] transition-colors px-2 py-1 flex items-center justify-between gap-1 relative rounded-sm" ondrop="drop(event, 'zone-exclude-${e}')" ondragover="allowDrop(event)" title="可將卡牌直接拖曳至此處除外"> <div class="flex items-center gap-1.5"> <span class="text-[9px] font-bold text-[#c8bea8]">除外區</span> <span id="val_${e}_exclude_card_count" class="bg-black/70 border border-[#b09466]/40 text-[#e0b25b] px-1.5 py-0 rounded-sm text-[9px] font-black">0</span> </div> <div class="flex items-center gap-1 pc-ipad-only-ui"> <button class="text-[8px] border border-[#b09466]/40 bg-black/60 hover:bg-[#c8aa76] hover:text-black px-2 py-0.5 rounded-sm text-[#dcd6cc] cursor-pointer transition-colors" onclick="openZoneModal('${e}', 'exclude')">VIEW</button> <button class="text-[8px] border border-[#b09466]/40 bg-[#c8aa76]/20 hover:bg-[#c8aa76] px-2 py-0.5 rounded-sm text-[#e0b25b] hover:text-black cursor-pointer font-bold transition-colors" onclick="moveAllTrashToExclude('${e}')" title="將 Trash 所有卡片移至除外區">全除外</button> </div> <button class="phone-only-ui text-[11px] text-[#e0b25b] font-black px-1.5 py-0.5 border border-[#c8aa76]/50 rounded-sm bg-black/70" onclick="openZoneModal('${e}', 'exclude')">檢視</button> <div id="zone-exclude-${e}" class="zone exclude-mini-zone hidden"></div> </div> </div> <div id="trash-core-box-${e}" class="counter-box relative flex-none" ondrop="dropOnCounterBox(event, '${e}', 'trash')" ondragover="allowDrop(event)"> <div class="flex items-center justify-between gap-1 mb-0.5 pc-ipad-only-ui"> <div class="counter-title mb-0 text-[9.5px] tracking-wider whitespace-nowrap">TRASH</div> <div class="flex items-center gap-1"> <button class="text-[7.5px] border border-[#b09466]/40 bg-black/45 hover:bg-[#c8aa76] hover:text-black px-1.5 py-0.5 rounded-sm text-[#dcd6cc] cursor-pointer transition-colors leading-none" onclick="recoverCore('${e}')" title="將 1 個 Core 移回預備區">↺1</button> <button class="text-[7.5px] border border-[#b09466]/40 bg-black/45 hover:bg-[#c8aa76] hover:text-black px-1.5 py-0.5 rounded-sm text-[#dcd6cc] cursor-pointer font-bold transition-colors leading-none" onclick="recoverAllCores('${e}')" title="將所有 Trash Core 移回預備區">ALL</button> <button class="text-[7.5px] px-1.5 py-0.5 font-black cursor-pointer btn-refresh-state leading-none" onclick="refreshState('${e}')" title="回復狀態：Trash Core 全回預備區 + 預備區 Core+1 + 抽 1 張卡 + 場上橫置卡牌全部轉正">⟳ 回復</button> </div> </div>\n                        \x3c!-- 2. 手機模式專屬：緊湊不重疊的「TRASH + ALL」與「⟳ 回復」按鈕 --\x3e <div class="phone-only-ui flex-col gap-1 mb-0.5 w-full"> <div class="flex items-center justify-between w-full gap-1"> <span class="counter-title mb-0">TRASH</span> <button class="text-[10px] border border-[#b09466]/60 bg-black/80 text-[#e5dccb] px-1.5 py-0.5 rounded-sm font-black leading-tight whitespace-nowrap" onclick="recoverAllCores('${e}')">ALL</button> </div> <button class="w-full py-1 text-[11px] font-black cursor-pointer btn-refresh-state rounded-sm leading-tight" onclick="refreshState('${e}')">⟳ 回復</button> </div> <div id="gems_${e}_trash_core" class="core-gem-tray mt-0.5"></div> <div class="counter-value mt-0.5"> <button class="counter-btn" onclick="updateCounter('${e}_trash_core', -1)">-</button> <span id="val_${e}_trash_core">0</span> <button class="counter-btn" onclick="updateCounter('${e}_trash_core', 1)">+</button> </div> <div class="absolute bottom-1.5 right-2 z-50 flex items-center justify-center pointer-events-auto" id="slot_${e}_soul_trash"></div> </div> </div> </div>`
+  return` <div id="section-main-${e}" class="flex-none playmat-panel p-2.5 pt-7 grid grid-cols-[164px_1fr_164px] gap-2.5 relative transition-all duration-300"> <div class="player-status-badge" title="${o} 玩家在線狀態"> <span id="status-light-${e}" class="status-dot"></span> <span id="status-name-${e}" class="text-[9px] font-black text-[#dcd6cc] tracking-wider">${o}</span> </div> <div class="side-col-left flex flex-col gap-2"> <div class="counter-box relative flex-1 min-h-[150px] flex flex-col"> <div class="counter-title flex items-center justify-between pr-1"> <div class="flex items-center gap-1.5"> <span>Burst</span> <button class="text-[8px] border border-[#b09466]/45 bg-amber-950/50 hover:bg-[#c8aa76] hover:text-black text-[#e0b25b] px-1.5 py-0.5 rounded-sm font-black cursor-pointer transition-all shadow-sm" onclick="launchBurstFireworks('${e}')" title="向對手放射煙花特效">🎆 煙花</button> </div> <span id="val_${e}_burst_card_count" class="bg-black/70 border border-[#b09466]/40 text-[#e0b25b] px-2 py-0 rounded-sm text-[10px] font-black">0</span> </div> <div id="zone-burst-${e}" class="zone burst-zone custom-scrollbar flex-1 mt-1 text-stone-500 text-xs flex justify-center items-center" ondrop="drop(event, 'zone-burst-${e}')" ondragover="allowDrop(event)"></div> </div> <div id="life-box-${e}" class="counter-box relative flex-none" ondrop="dropOnCounterBox(event, '${e}', 'life')" ondragover="allowDrop(event)"> <div class="counter-title">Life</div> <button class="highlight-action-btn btn-take-life" onclick="takeLife('${e}')" title="扣減 1 點生命值並將 1 個 Core 移至預備區">⚡ TAKE</button> <div id="gems_${e}_life" class="core-gem-tray"></div> <div class="counter-value mt-0.5"> <button class="counter-btn" onclick="updateCounter('${e}_life', -1)">-</button> <span id="val_${e}_life">5</span> <button class="counter-btn" onclick="updateCounter('${e}_life', 1)">+</button> </div> <div class="absolute bottom-1.5 right-2 z-50 flex items-center justify-center pointer-events-auto" id="slot_${e}_soul_life"></div> </div> <div id="reserve-box-${e}" class="counter-box relative flex-none" ondrop="dropOnCounterBox(event, '${e}', 'reserve')" ondragover="allowDrop(event)"> <div class="counter-title">Reserve</div> <button class="highlight-action-btn btn-pay-cost" onclick="payCost('${e}')" title="支付 1 個預備區 Core 至廢棄區">💎 PAY</button> <div id="gems_${e}_reserve" class="core-gem-tray"></div> <div class="counter-value mt-0.5"> <button class="counter-btn" onclick="updateCounter('${e}_reserve', -1)">-</button> <span id="val_${e}_reserve">3</span> <button class="counter-btn" onclick="updateCounter('${e}_reserve', 1)">+</button> </div> <div class="absolute bottom-1.5 right-2 z-50 flex items-center justify-center pointer-events-auto" id="slot_${e}_soul_reserve"></div> </div> </div> <div id="field-${e}" class="zone field-zone relative overflow-hidden min-h-[370px]" ondrop="drop(event, 'field-${e}')" ondragover="allowDrop(event)"> <div class="field-label">${t}</div> <div id="victory-overlay-${e}" class="victory-banner hidden"> <div class="text-5xl font-black tracking-widest text-yellow-300 drop-shadow-[0_0_20px_rgba(250,204,21,1)]">VICTORY</div> <div class="text-sm font-bold text-white tracking-widest mt-1">${o} 獲勝！</div> </div> <div class="field-bottom-left-dock"> <div id="god-wrapper-${e}" class="god-zone-wrapper" ondrop="dropOnGodZone(event, '${e}')" ondragover="allowDrop(event)"> <div class="flex items-center justify-between gap-2 mb-1"> <div class="counter-title mb-0">創界神</div> <button class="compact-zone-button" onclick="openZoneModal('${e}', 'god')">檢視</button> <button id="btn-toggle-god-${e}" class="text-[9px] text-[#c8bea8] hover:text-white border border-[#b09466]/40 bg-black/60 hover:bg-[#c8aa76] hover:text-black px-2 py-0.5 rounded-sm leading-tight cursor-pointer transition-colors" onclick="toggleGodZone('${e}')" title="收起 / 展開創界神區域">▼</button> </div> <div id="zone-god-${e}" class="zone god-zone custom-scrollbar"></div> </div> <div id="openhand-wrapper-${e}" class="openhand-zone-wrapper" ondrop="drop(event, 'zone-openhand-${e}')" ondragover="allowDrop(event)"> <div class="flex items-center justify-between gap-2 mb-1"> <div class="counter-title mb-0 flex items-center gap-1.5"> <span>手元區</span> <span id="val_${e}_openhand_card_count" class="bg-black/70 border border-[#b09466]/40 text-[#e0b25b] px-1.5 py-0 rounded-sm text-[9px] font-black">0</span> </div> <button class="compact-zone-button" onclick="openZoneModal('${e}', 'openhand')">檢示</button> <button id="btn-toggle-openhand-${e}" class="text-[9px] text-[#c8bea8] hover:text-white border border-[#b09466]/40 bg-black/60 hover:bg-[#c8aa76] hover:text-black px-2 py-0.5 rounded-sm leading-tight cursor-pointer transition-colors" onclick="toggleOpenHandZone('${e}')" title="收起 / 展開手元區">▼</button> </div> <div id="zone-openhand-${e}" class="zone openhand-zone custom-scrollbar"></div> </div> </div> </div> <div class="side-col-right flex flex-col gap-2"> <div id="count-box-${e}" class="counter-box relative flex-none py-1 px-2 flex items-center justify-between" ondrop="dropOnCounterBox(event, '${e}', 'count')" ondragover="allowDrop(event)"> <div class="counter-title mb-0 text-[9px]">Count</div> <div class="counter-value text-xs gap-1.5"> <button class="counter-btn w-3.5 h-3.5 text-[10px]" onclick="updateCounter('${e}_count', -1)">-</button> <span id="val_${e}_count" class="min-w-[14px]">0</span> <button class="counter-btn w-3.5 h-3.5 text-[10px]" onclick="updateCounter('${e}_count', 1)">+</button> </div> <div class="relative z-50 flex items-center justify-center min-w-[20px] pointer-events-auto" id="slot_${e}_soul_count"></div> </div> <div id="deck-box-${e}" class="counter-box relative flex-none flex flex-col" ondrop="dropOnDeck(event, '${e}')" ondragover="allowDrop(event)" title="可將卡牌拖曳至此放回牌組頂或底；點擊卡背直接抽牌"> <div class="counter-title">Deck</div>\n                        \x3c!-- 電腦 / iPad 模式原本的完整獨立按鈕 --\x3e <button class="small-action-btn contract-deck-button" onclick="openContractCards('${e}')">契約</button> <input type="file" id="import-zip-${e}" accept=".zip" class="hidden" onchange="importZip(event, '${e}')"> <div class="flex gap-1 mt-1 mb-0.5 pc-ipad-only-ui"> <button class="action-btn" onclick="shuffleDeck('${e}')">洗牌</button> <button class="action-btn" onclick="openZoneModal('${e}', 'deck')">VIEW</button> </div> <div class="deck-cardback-visual cursor-grab active:cursor-grabbing" id="deck-visual-${e}" draggable="true" title="單擊抽 1 張牌至手牌；或按住直接拖動牌組頂第一張卡（正面）到任意區域"> <div class="deck-cardback-emblem">BS</div> <div class="deck-cardback-count transition-transform pointer-events-none" id="val_${e}_deck_count">0</div> </div> <button class="action-btn mb-0.5" onclick="deployTop('${e}')">公開卡牌</button> <div class="flex gap-1 pc-ipad-only-ui"> <button class="action-btn" onclick="drawCard('${e}', 'top')">抽牌組頂</button> <button class="action-btn" onclick="drawCard('${e}', 'bottom')">抽牌組底</button> </div>\n                        \x3c!-- 手機模式專屬：將其他不常用牌組功能整合為單一大按鈕 --\x3e <button class="action-btn phone-only-ui bg-[#c8aa76]/20 border-[#c8aa76]/70 text-[#e0b25b]" onclick="openDeckActionMenu('${e}')">⚙️ 牌組選單</button> </div> <div id="trash-card-box-${e}" class="counter-box relative flex-1 flex flex-col gap-1.5"> <div class="counter-title flex items-center justify-center gap-1.5"> <span>Trash</span> <span id="val_${e}_trash_card_count" class="bg-black/70 border border-[#b09466]/40 text-[#e0b25b] px-2 py-0 rounded-sm text-[10px] font-black">0</span> </div>\n                        \x3c!-- 電腦 / iPad 模式原本的 VIEW 按鈕 --\x3e <button class="small-action-btn pc-ipad-only-ui" onclick="openZoneModal('${e}', 'trash')">VIEW</button>\n                        \x3c!-- 手機模式專屬：大顆整合選單按鈕 --\x3e <button class="phone-only-ui text-xs border border-[#c8aa76]/75 bg-black/85 hover:bg-[#c8aa76] hover:text-black text-[#e0b25b] py-1.5 px-2 rounded-sm font-black cursor-pointer transition-colors w-full" onclick="openTrashActionMenu('${e}')">⚙️ 廢棄/除外選單</button> <div id="zone-trash-${e}" class="zone stack-zone flex-1 mt-0.5 text-stone-600 text-xs cursor-pointer" onclick="openZoneModal('${e}', 'trash')" ondrop="drop(event, 'zone-trash-${e}')" ondragover="allowDrop(event)" title="點擊檢視 Trash 廢棄區卡牌"> <span class="pointer-events-none select-none text-lg font-bold text-stone-600/80">0</span> </div>\n                        \x3c!-- 電腦 / iPad 模式原本的除外區完整按鈕列 --\x3e <div id="exclude-card-box-${e}" class="bg-black/50 border border-[#b09466]/30 hover:border-[#c8aa76] transition-colors px-2 py-1 flex items-center justify-between gap-1 relative rounded-sm" ondrop="drop(event, 'zone-exclude-${e}')" ondragover="allowDrop(event)" title="可將卡牌直接拖曳至此處除外"> <div class="flex items-center gap-1.5"> <span class="text-[9px] font-bold text-[#c8bea8]">除外區</span> <span id="val_${e}_exclude_card_count" class="bg-black/70 border border-[#b09466]/40 text-[#e0b25b] px-1.5 py-0 rounded-sm text-[9px] font-black">0</span> </div> <div class="flex items-center gap-1 pc-ipad-only-ui"> <button class="text-[8px] border border-[#b09466]/40 bg-black/60 hover:bg-[#c8aa76] hover:text-black px-2 py-0.5 rounded-sm text-[#dcd6cc] cursor-pointer transition-colors" onclick="openZoneModal('${e}', 'exclude')">VIEW</button> <button class="text-[8px] border border-[#b09466]/40 bg-[#c8aa76]/20 hover:bg-[#c8aa76] px-2 py-0.5 rounded-sm text-[#e0b25b] hover:text-black cursor-pointer font-bold transition-colors" onclick="moveAllTrashToExclude('${e}')" title="將 Trash 所有卡片移至除外區">全除外</button> </div> <button class="phone-only-ui text-[11px] text-[#e0b25b] font-black px-1.5 py-0.5 border border-[#c8aa76]/50 rounded-sm bg-black/70" onclick="openZoneModal('${e}', 'exclude')">檢視</button> <div id="zone-exclude-${e}" class="zone exclude-mini-zone hidden"></div> </div> </div> <div id="trash-core-box-${e}" class="counter-box relative flex-none" ondrop="dropOnCounterBox(event, '${e}', 'trash')" ondragover="allowDrop(event)"> <div class="flex items-center justify-between gap-1 mb-0.5 pc-ipad-only-ui"> <div class="counter-title mb-0 text-[9.5px] tracking-wider whitespace-nowrap">TRASH</div> <div class="flex items-center gap-1"> <button class="text-[7.5px] border border-[#b09466]/40 bg-black/45 hover:bg-[#c8aa76] hover:text-black px-1.5 py-0.5 rounded-sm text-[#dcd6cc] cursor-pointer transition-colors leading-none" onclick="recoverCore('${e}')" title="將 1 個 Core 移回預備區">↺1</button> <button class="text-[7.5px] border border-[#b09466]/40 bg-black/45 hover:bg-[#c8aa76] hover:text-black px-1.5 py-0.5 rounded-sm text-[#dcd6cc] cursor-pointer font-bold transition-colors leading-none" onclick="recoverAllCores('${e}')" title="將所有 Trash Core 移回預備區">ALL</button> <button class="text-[7.5px] px-1.5 py-0.5 font-black cursor-pointer btn-refresh-state leading-none" onclick="refreshState('${e}')" title="回復狀態：Trash Core 全回預備區 + 預備區 Core+1 + 抽 1 張卡 + 場上橫置卡牌全部轉正">⟳ 回復</button> </div> </div>\n                        \x3c!-- 2. 手機模式專屬：緊湊不重疊的「TRASH + ALL」與「⟳ 回復」按鈕 --\x3e <div class="phone-only-ui flex-col gap-1 mb-0.5 w-full"> <div class="flex items-center justify-between w-full gap-1"> <span class="counter-title mb-0">TRASH</span> <button class="text-[10px] border border-[#b09466]/60 bg-black/80 text-[#e5dccb] px-1.5 py-0.5 rounded-sm font-black leading-tight whitespace-nowrap" onclick="recoverAllCores('${e}')">ALL</button> </div> <button class="w-full py-1 text-[11px] font-black cursor-pointer btn-refresh-state rounded-sm leading-tight" onclick="refreshState('${e}')">⟳ 回復</button> </div> <div id="gems_${e}_trash_core" class="core-gem-tray mt-0.5"></div> <div class="counter-value mt-0.5"> <button class="counter-btn" onclick="updateCounter('${e}_trash_core', -1)">-</button> <span id="val_${e}_trash_core">0</span> <button class="counter-btn" onclick="updateCounter('${e}_trash_core', 1)">+</button> </div> <div class="absolute bottom-1.5 right-2 z-50 flex items-center justify-center pointer-events-auto" id="slot_${e}_soul_trash"></div> </div> </div> </div>`
 }
 !function() {
   const e=document.getElementById("playmat-root");
@@ -2666,6 +2749,8 @@ const localSeatId="seat_"+Math.random().toString(36).substring(2,10)+"_"+Date.no
     god_p1:!1,god_p2:!1,openhand_p1:!1,openhand_p2:!1
   },lastShuffle:null,lastLottery:null,lastActionEffect:null,lotteryPendingWinner:null,lotteryUsed:!1,seats: {
     p1:null,p2:null
+  },seatNames: {
+    p1:"",p2:""
   },viewMode:"SPECTATOR"
 };
 let controlMode="PC",deviceMode="PC",activePreviewCardId=null,activePreviewTargetEl=null,previewCardScale=1,isBottomHandPinned=!0;
@@ -3226,7 +3311,7 @@ function confirmResetGame() {
   },gameState.lotteryUsed=!1;
   const e=[],t=[];
   Object.values(gameState.cards).forEach(o=> {
-    restoreTurnFront(o),document.getElementById(o.id)?.remove(),o.zone=`deck-${o.owner}`,o.x=0,o.y=0,o.rotation=0,o.isFaceDown=!1,o.cores=0,o.zOrder=zOrderCounter++,"p1"===o.owner?e.push(o.id):"p2"===o.owner&&t.push(o.id)
+    restoreTurnFront(o),delete o.braveHostId,delete o.braveOrder,delete o.adventHostId,delete o.adventOrder,document.getElementById(o.id)?.remove(),o.zone=`deck-${o.owner}`,o.x=0,o.y=0,o.rotation=0,o.isFaceDown=!1,o.cores=0,o.zOrder=zOrderCounter++,"p1"===o.owner?e.push(o.id):"p2"===o.owner&&t.push(o.id)
   });
   for(let t=e.length-1;t>0;t--) {
     const o=Math.floor(Math.random()*(t+1));
@@ -3590,7 +3675,7 @@ function updateAllUI() {
     }))
   }),applyZoneCollapsedUI(),updateSoulCoreUI("p1"),updateSoulCoreUI("p2"),gameState.seats||(gameState.seats= {
     p1:null,p2:null
-  }),document.getElementById("status-light-p1")?.classList.toggle("online",!!gameState.seats.p1),document.getElementById("status-light-p2")?.classList.toggle("online",!!gameState.seats.p2);
+  }),document.getElementById("status-light-p1")?.classList.toggle("online",!!gameState.seats.p1),document.getElementById("status-light-p2")?.classList.toggle("online",!!gameState.seats.p2),updateSeatNameBadges();
   const o=document.getElementById("center-lottery-container");
   if(o&&!isLotteryRunning&&o.classList.toggle("hidden",!!gameState.lotteryUsed),applyLotteryPendingUI(),lastRenderedViewMode!==gameState.viewMode) {
     lastRenderedViewMode=gameState.viewMode;
@@ -3653,21 +3738,100 @@ function updateAllUI() {
     activePreviewTargetEl&&(e.target.closest("#card-preview")||activePreviewTargetEl.contains(e.target)||e.target.closest(".card")||hideCardPreview())
   },!0);
   let a=0;
+  const editableFieldSelector='input:not([type="file"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="button"]):not([type="submit"]):not([type="reset"]),textarea,[contenteditable="true"]';
+  ["pointerdown","mousedown","touchstart","touchend","click"].forEach(ev=> {
+    document.addEventListener(ev,e=> {
+      const field=e.target&&e.target.closest?e.target.closest(editableFieldSelector):null;
+      if(!field||field.disabled||field.readOnly)return;
+      if(typeof hideCardPreview==="function"&&activePreviewTargetEl)hideCardPreview();
+      e.stopPropagation();
+      if((ev==="pointerdown"||ev==="mousedown"||ev==="touchstart"||ev==="click")&&document.activeElement!==field) {
+        try {
+          field.focus({preventScroll:!0});
+        } catch(err) {
+          field.focus();
+        }
+      }
+    },!0);
+  });
   document.addEventListener("touchend",e=> {
-    if(e.target.closest("input,textarea,select,button,#card-db-modal"))return;const t=Date.now();t-a<=320&&e.cancelable&&e.preventDefault(),a=t
+    if(e.target.closest("input,textarea,select,button,label,#card-db-modal"))return;const t=Date.now();t-a<=320&&e.cancelable&&e.preventDefault(),a=t
   }, {
     passive:!1
   }),document.addEventListener("dblclick",e=> {
-    !e.target.closest("input,textarea,select,#card-db-modal")&&"MOBILE"===controlMode&&e.cancelable&&e.preventDefault()
+    !e.target.closest("input,textarea,select,label,#card-db-modal")&&"MOBILE"===controlMode&&e.cancelable&&e.preventDefault()
   }, {
     passive:!1
   })
 }
 ();
 let seatAnnounceTimer=null;
-function showSeatAnnouncement(e,t="join") {
+const PLAYER_NICKNAME_STORAGE_KEY="bs_player_nickname";
+let localPlayerName="";
+try {
+  localPlayerName=(localStorage.getItem(PLAYER_NICKNAME_STORAGE_KEY)||"").trim().slice(0,16);
+}
+catch(e) {}
+function getLocalPlayerName() {
+  return (localPlayerName||"").trim()||"玩家";
+}
+function escapeHtmlSimple(str) {
+  return String(str||"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+}
+function updateSeatNameBadges() {
+  gameState.seatNames||(gameState.seatNames={p1:"",p2:""});
+  ["p1","p2"].forEach(p=>{
+    const el=document.getElementById(`status-name-${p}`);
+    if(!el)return;
+    const label=p.toUpperCase();
+    const nm=gameState.seats?.[p]?(gameState.seatNames?.[p]||"").trim():"";
+    el.textContent=nm?`${label} · ${nm}`:label;
+  });
+}
+function setLocalPlayerName(val) {
+  localPlayerName=String(val||"").trim().slice(0,16);
+  try {
+    localStorage.setItem(PLAYER_NICKNAME_STORAGE_KEY,localPlayerName);
+  }
+  catch(e) {}
+  gameState.seatNames||(gameState.seatNames={p1:"",p2:""});
+  if("P1"===gameState.viewMode)gameState.seatNames.p1=getLocalPlayerName();
+  else if("P2"===gameState.viewMode)gameState.seatNames.p2=getLocalPlayerName();
+  updateSeatNameBadges();
+  if("P1"===gameState.viewMode||"P2"===gameState.viewMode)updateRoomState();
+}
+function clearLocalPlayerName() {
+  const inp=document.getElementById("player-nickname-input");
+  if(inp)inp.value="";
+  setLocalPlayerName("");
+}
+async function pasteLocalPlayerName() {
+  const inp=document.getElementById("player-nickname-input");
+  let pasted="";
+  try {
+    if(navigator.clipboard&&typeof navigator.clipboard.readText==="function") {
+      pasted=(await navigator.clipboard.readText()||"").trim();
+    }
+  } catch(e) {
+    pasted="";
+  }
+  if(!pasted) {
+    const manual=window.prompt("無法自動讀取剪貼簿（或剪貼簿為空），請在此貼上你的玩家暱稱：",inp?.value||"");
+    if(manual===null)return;
+    pasted=manual.trim();
+  }
+  const clean=pasted.slice(0,16);
+  if(inp)inp.value=clean;
+  setLocalPlayerName(clean);
+}
+function initPlayerNicknameInput() {
+  const inp=document.getElementById("player-nickname-input");
+  if(inp&&localPlayerName)inp.value=localPlayerName;
+}
+function showSeatAnnouncement(e,t="join",playerName="") {
   const o=document.getElementById("seat-announce-toast"),a=document.getElementById("seat-announce-text");
-  o&&a&&("leave"===t?(playSfx("seatLeave"),a.innerHTML=`<span class="w-2.5 h-2.5 rounded-full bg-rose-400 shadow-[0_0_10px_#fb7185]"></span><span>📢 玩家已離開 ${e} (LEFT ${e})！</span>`):(playSfx("seatJoin"),a.innerHTML=`<span class="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_10px_#34d399]"></span><span>📢 玩家已加入 ${e} (JOINED AS ${e})！</span>`),o.classList.remove("opacity-0","-translate-y-3"),o.classList.add("opacity-100","translate-y-0"),seatAnnounceTimer&&clearTimeout(seatAnnounceTimer),seatAnnounceTimer=setTimeout(()=> {
+  const displayName=escapeHtmlSimple((playerName||"").trim()||"玩家");
+  o&&a&&("leave"===t?(playSfx("seatLeave"),a.innerHTML=`<span class="w-2.5 h-2.5 rounded-full bg-rose-400 shadow-[0_0_10px_#fb7185]"></span><span>📢 ${displayName} 已離開 ${e} (LEFT ${e})！</span>`):(playSfx("seatJoin"),a.innerHTML=`<span class="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_10px_#34d399]"></span><span>📢 ${displayName} 已加入 ${e} (JOINED AS ${e})！</span>`),o.classList.remove("opacity-0","-translate-y-3"),o.classList.add("opacity-100","translate-y-0"),seatAnnounceTimer&&clearTimeout(seatAnnounceTimer),seatAnnounceTimer=setTimeout(()=> {
     o.classList.remove("opacity-100","translate-y-0"),o.classList.add("opacity-0","-translate-y-3")
   },2600))
 }
@@ -3676,12 +3840,17 @@ function setView(e) {
   if(e===t)return;
   gameState.viewMode=e,gameState.seats||(gameState.seats= {
     p1:null,p2:null
-  }),"P1"===t&&"P1"!==e&&gameState.seats.p1===localSeatId&&(gameState.seats.p1=null),"P2"===t&&"P2"!==e&&gameState.seats.p2===localSeatId&&(gameState.seats.p2=null),"P1"===e?gameState.seats.p1=localSeatId:"P2"===e&&(gameState.seats.p2=localSeatId);
+  }),gameState.seatNames||(gameState.seatNames= {
+    p1:"",p2:""
+  });
+  const myName=getLocalPlayerName();
+  let leftName=myName;
+  "P1"===t&&"P1"!==e&&gameState.seats.p1===localSeatId&&(leftName=gameState.seatNames.p1||myName,gameState.seats.p1=null,gameState.seatNames.p1=""),"P2"===t&&"P2"!==e&&gameState.seats.p2===localSeatId&&(leftName=gameState.seatNames.p2||myName,gameState.seats.p2=null,gameState.seatNames.p2=""),"P1"===e?(gameState.seats.p1=localSeatId,gameState.seatNames.p1=myName):"P2"===e&&(gameState.seats.p2=localSeatId,gameState.seatNames.p2=myName);
   const o=Date.now();
-  lastSeenActionEffectTime=o,"P1"===e||"P2"===e?(showSeatAnnouncement(e,"join"),gameState.lastActionEffect= {
-    type:"playerJoinedSeat",seat:e,timestamp:o
-  }):"P1"!==t&&"P2"!==t||(showSeatAnnouncement(t,"leave"),gameState.lastActionEffect= {
-    type:"playerLeftSeat",seat:t,timestamp:o
+  lastSeenActionEffectTime=o,"P1"===e||"P2"===e?(showSeatAnnouncement(e,"join",myName),gameState.lastActionEffect= {
+    type:"playerJoinedSeat",seat:e,playerName:myName,timestamp:o
+  }):"P1"!==t&&"P2"!==t||(showSeatAnnouncement(t,"leave",leftName),gameState.lastActionEffect= {
+    type:"playerLeftSeat",seat:t,playerName:leftName,timestamp:o
   }),window.syncPlayerSeat&&window.syncPlayerSeat(e,t),updateAllUI(),updateRoomState()
 }
 function toggleHand(e) {
@@ -5044,10 +5213,49 @@ function drop(e,t) {
   else moveCardToZone(a,t)
 }
 function openMultiplayerModal() {
-  document.getElementById("mp-modal").classList.remove("hidden")
+  document.getElementById("mp-modal").classList.remove("hidden");
+  refreshOnlineRoomsList();
 }
 function closeMultiplayerModal() {
   document.getElementById("mp-modal").classList.add("hidden")
+}
+async function joinRoomByCode(code) {
+  const c=String(code||"").trim().toUpperCase();
+  if(!c)return;
+  if(closeMultiplayerModal(),window.initMultiplayer&&await window.initMultiplayer(c,!1)) {
+    const t=document.getElementById("room-status-badge");
+    t.innerText=`ROOM: ${c}`,t.classList.remove("hidden");
+  }
+}
+async function refreshOnlineRoomsList() {
+  const listEl=document.getElementById("mp-online-rooms-list");
+  if(!listEl)return;
+  listEl.innerHTML='<div class="text-center text-xs text-stone-400 py-4">正在搜尋在線房間…</div>';
+  if(!window.listActiveRooms) {
+    listEl.innerHTML='<div class="text-center text-xs text-stone-400 py-4">連線模組尚未就緒，請稍後再試。</div>';
+    return;
+  }
+  try {
+    const rooms=await window.listActiveRooms();
+    if(!rooms.length) {
+      listEl.innerHTML='<div class="text-center text-xs text-stone-400 py-4">目前沒有在線房間，點擊下方「＋ 建立新房間」開始對戰！</div>';
+      return;
+    }
+    listEl.innerHTML="";
+    rooms.forEach(r=>{
+      const btn=document.createElement("button");
+      btn.type="button";
+      btn.className="w-full text-left flex items-center justify-between gap-2 px-3 py-2.5 rounded-sm border transition-colors cursor-pointer "+(r.isCurrent?"border-emerald-400/70 bg-emerald-950/40":"border-[#b09466]/45 bg-[#141210] hover:border-[#e0b25b] hover:bg-[#1f1a14]");
+      const p1Tag=r.p1Occupied?`<span class="text-emerald-300 font-bold">P1: ${escapeHtmlSimple(r.p1Name||"已就座")}</span>`:`<span class="text-stone-500">P1: 空位</span>`;
+      const p2Tag=r.p2Occupied?`<span class="text-amber-300 font-bold">P2: ${escapeHtmlSimple(r.p2Name||"已就座")}</span>`:`<span class="text-stone-500">P2: 空位</span>`;
+      btn.innerHTML=`<div class="flex flex-col gap-0.5 min-w-0"><div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_6px_#34d399]"></span><span class="text-sm font-black text-[#f5efe6] tracking-widest">${escapeHtmlSimple(r.code)}</span>${r.isCurrent?'<span class="text-[10px] bg-emerald-600 text-black px-1.5 py-0 rounded-sm font-black">目前房間</span>':""}</div><div class="text-[11px] flex items-center gap-2.5 flex-wrap">${p1Tag}<span class="text-stone-600">|</span>${p2Tag}</div></div><span class="flex-shrink-0 text-xs font-black px-2.5 py-1 rounded-sm ${r.isCurrent?"bg-emerald-900/60 text-emerald-200 border border-emerald-500/40":"bg-[#c8aa76]/20 text-[#e0b25b] border border-[#c8aa76]/60"}">${r.isCurrent?"已連線":"加入 ➔"}</span>`;
+      btn.onclick=()=>joinRoomByCode(r.code);
+      listEl.appendChild(btn);
+    });
+  }
+  catch(err) {
+    listEl.innerHTML=`<div class="text-center text-xs text-rose-400 py-4">讀取房間列表失敗：${escapeHtmlSimple(err.message||"請稍後重試")}</div>`;
+  }
 }
 function generateRoomCode() {
   let e="";
@@ -5102,6 +5310,8 @@ function buildStatePayload() {
       god_p1:!1,god_p2:!1,openhand_p1:!1,openhand_p2:!1
     },lastShuffle:gameState.lastShuffle,lastLottery:gameState.lastLottery,lastActionEffect:gameState.lastActionEffect,lotteryPendingWinner:gameState.lotteryPendingWinner||null,lotteryUsed:!!gameState.lotteryUsed,seats:gameState.seats|| {
       p1:null,p2:null
+    },seatNames:gameState.seatNames|| {
+      p1:"",p2:""
     },cards:Object.values(gameState.cards).map(e=>( {
       id:e.id,owner:e.owner,zone:e.zone,x:e.x,y:e.y,rx:e.rx,ry:e.ry,rotation:e.rotation||0,isFaceDown:!!e.isFaceDown,cores:e.cores,catalogNumber:e.catalogNumber||"",braveHostId:e.braveHostId||null,braveOrder:e.braveOrder||0,zOrder:e.zOrder||1
     }))
@@ -5111,7 +5321,7 @@ function updateRoomState() {
   !isSyncing&&window.sendGameState&&window.sendGameState(buildStatePayload())
 }
 async function manualCleanupRooms() {
-  window.cleanupInactiveRooms&&showNotice(`已成功清除 ${await window.cleanupInactiveRooms(!0)} 個無人使用或閒置的房間！`)
+  window.cleanupInactiveRooms&&(showNotice(`已成功清除 ${await window.cleanupInactiveRooms(!0)} 個無人使用或閒置的房間！`),refreshOnlineRoomsList())
 }
 if(["p1","p2"].forEach(e=> {
   const t=document.getElementById(`deck-visual-${e}`);if(!t)return;t.addEventListener("dragstart",t=> {
@@ -5166,7 +5376,7 @@ if(["p1","p2"].forEach(e=> {
     void 0!==e[t]&&e[t]!==gameState[t]&&triggerCounterKeyFlash(t,e[t]-gameState[t])
   }),void 0!==e.p1_life&&t>0&&0===e.p1_life&&triggerZeroLifeSequence("p1"),void 0!==e.p2_life&&o>0&&0===e.p2_life&&triggerZeroLifeSequence("p2");let a=null;e.lastShuffle&&e.lastShuffle.timestamp>lastSeenShuffleTime&&(lastSeenShuffleTime=e.lastShuffle.timestamp,gameState.lastShuffle=e.lastShuffle,a=e.lastShuffle.player);let n=null;e.lastLottery&&e.lastLottery.timestamp>lastSeenLotteryTime&&(lastSeenLotteryTime=e.lastLottery.timestamp,gameState.lastLottery=e.lastLottery,n=e.lastLottery.winner);let r=null;e.lastActionEffect&&e.lastActionEffect.timestamp>lastSeenActionEffectTime&&(lastSeenActionEffectTime=e.lastActionEffect.timestamp,gameState.lastActionEffect=e.lastActionEffect,r=e.lastActionEffect);const s= {
     p1:gameState.soulCoreLocation?.p1,p2:gameState.soulCoreLocation?.p2
-  };["p1_life","p1_reserve","p1_count","p1_trash_core","p2_life","p2_reserve","p2_count","p2_trash_core","turnFaces","soulCoreLocation","zoneCollapsed","lotteryUsed","lotteryPendingWinner","seats"].forEach(t=> {
+  };["p1_life","p1_reserve","p1_count","p1_trash_core","p2_life","p2_reserve","p2_count","p2_trash_core","turnFaces","soulCoreLocation","zoneCollapsed","lotteryUsed","lotteryPendingWinner","seats","seatNames"].forEach(t=> {
     void 0!==e[t]&&(gameState[t]=e[t])
   }),Array.isArray(e.p1Deck)&&(gameState.p1Deck=e.p1Deck),Array.isArray(e.p2Deck)&&(gameState.p2Deck=e.p2Deck),gameState.seats||(gameState.seats= {
     p1:null,p2:null
@@ -5227,7 +5437,7 @@ if(["p1","p2"].forEach(e=> {
       }
       playCoreTransferAnimation(r.srcBoxId,e,null,r.orbTheme||"cost",t)
     }
-    else if("burstFireworks"===r.type&&r.player)playFireworksShow(r.player);else if("playerJoinedSeat"===r.type&&r.seat)showSeatAnnouncement(r.seat,"join");else if("playerLeftSeat"===r.type&&r.seat)showSeatAnnouncement(r.seat,"leave");else if("counterSpaceCore"===r.type&&r.boxId) {
+    else if("burstFireworks"===r.type&&r.player)playFireworksShow(r.player);else if("playerJoinedSeat"===r.type&&r.seat)showSeatAnnouncement(r.seat,"join",r.playerName||"");else if("playerLeftSeat"===r.type&&r.seat)showSeatAnnouncement(r.seat,"leave",r.playerName||"");else if("counterSpaceCore"===r.type&&r.boxId) {
       const e=document.getElementById("center-core-spawner"),t=r.delta||0,o=r.orbTheme||"cost";e&&0!==t&&(t>0?playCoreTransferAnimation(e,r.boxId,null,o,t):playCoreTransferAnimation(r.boxId,e,null,o,Math.abs(t)))
     }
   }
@@ -5237,7 +5447,7 @@ if(["p1","p2"].forEach(e=> {
     if(("custom_cardback"===e||"__custom_cardback__"===e)&&t)return cardImageCache.custom_cardback=t,void applyCustomCardBackUrl(t);cardImageCache[e]=t,gameState.cards[e]&&(gameState.cards[e].imgBase64=t);const o=document.getElementById(e);o&&gameState.cards[e]&&applyCardVisualState(gameState.cards[e],o)
   }),currentModalInfo&&renderZoneModalContent(),refreshTurnImages())
 },Object.assign(window, {
-  gameState:gameState,cardImageCache:cardImageCache,localSeatId:localSeatId,applyCustomCardBackUrl:applyCustomCardBackUrl,buildStatePayload:buildStatePayload,setControlMode:setControlMode,toggleBgmPlayback:toggleBgmPlayback,changeBgmVolume:changeBgmVolume,toggleBgmMiniVideo:toggleBgmMiniVideo,changePreviewCardScale:changePreviewCardScale,uploadCustomCardBack:uploadCustomCardBack,adjustPreviewCardCore:adjustPreviewCardCore,togglePreviewCardSoul:togglePreviewCardSoul,openResetModal:openResetModal,closeResetModal:closeResetModal,confirmResetGame:confirmResetGame,openMultiplayerModal:openMultiplayerModal,closeMultiplayerModal:closeMultiplayerModal,openDeckVaultModal:openDeckVaultModal,closeDeckVaultModal:closeDeckVaultModal,importZipToVaultOnly:importZipToVaultOnly,loadSavedDeckToPlayer:loadSavedDeckToPlayer,deleteDeckFromVaultDB:deleteDeckFromVaultDB,clearAllDecksFromVault:clearAllDecksFromVault,openDeckEditorModal:openDeckEditorModal,closeDeckEditorModal:closeDeckEditorModal,addExtraCardImagesToEditor:addExtraCardImagesToEditor,saveDeckEditorChanges:saveDeckEditorChanges,createRoom:createRoom,joinRoom:joinRoom,pasteAndJoinRoom:pasteAndJoinRoom,copyRoomCode:copyRoomCode,manualCleanupRooms:manualCleanupRooms,setView:setView,toggleHand:toggleHand,toggleStickyHand:toggleStickyHand,toggleTopHeader:toggleTopHeader,toggleGodZone:toggleGodZone,toggleOpenHandZone:toggleOpenHandZone,startPlayerLottery:startPlayerLottery,confirmLotteryResult:confirmLotteryResult,updateCounter:updateCounter,takeLife:takeLife,payCost:payCost,recoverCore:recoverCore,recoverAllCores:recoverAllCores,refreshState:refreshState,moveAllTrashToExclude:moveAllTrashToExclude,shuffleDeck:shuffleDeck,drawCard:drawCard,deployTop:deployTop,importZip:importZip,openZoneModal:openZoneModal,closeZoneModal:closeZoneModal,openDeckActionMenu:openDeckActionMenu,openTrashActionMenu:openTrashActionMenu,closeZoneActionMenu:closeZoneActionMenu,closeDeckChoiceModal:closeDeckChoiceModal,closeGodConfirmModal:closeGodConfirmModal,closeNoticeModal:closeNoticeModal,allowDrop:allowDrop,drop:drop,dropOnDeck:dropOnDeck,dropOnGodZone:dropOnGodZone,dropOnCounterBox:dropOnCounterBox,dropOnTrashCoreBox:dropOnTrashCoreBox,dropOnCenterSpace:dropOnCenterSpace,dropSoulCore:dropSoulCore,launchBurstFireworks:launchBurstFireworks,renderDeckVaultList:renderDeckVaultList
+  gameState:gameState,cardImageCache:cardImageCache,localSeatId:localSeatId,applyCustomCardBackUrl:applyCustomCardBackUrl,buildStatePayload:buildStatePayload,setControlMode:setControlMode,toggleBgmPlayback:toggleBgmPlayback,changeBgmVolume:changeBgmVolume,toggleBgmMiniVideo:toggleBgmMiniVideo,changePreviewCardScale:changePreviewCardScale,uploadCustomCardBack:uploadCustomCardBack,adjustPreviewCardCore:adjustPreviewCardCore,togglePreviewCardSoul:togglePreviewCardSoul,openResetModal:openResetModal,closeResetModal:closeResetModal,confirmResetGame:confirmResetGame,openMultiplayerModal:openMultiplayerModal,closeMultiplayerModal:closeMultiplayerModal,openDeckVaultModal:openDeckVaultModal,closeDeckVaultModal:closeDeckVaultModal,importZipToVaultOnly:importZipToVaultOnly,loadSavedDeckToPlayer:loadSavedDeckToPlayer,deleteDeckFromVaultDB:deleteDeckFromVaultDB,clearAllDecksFromVault:clearAllDecksFromVault,openDeckEditorModal:openDeckEditorModal,closeDeckEditorModal:closeDeckEditorModal,addExtraCardImagesToEditor:addExtraCardImagesToEditor,saveDeckEditorChanges:saveDeckEditorChanges,createRoom:createRoom,joinRoom:joinRoom,pasteAndJoinRoom:pasteAndJoinRoom,copyRoomCode:copyRoomCode,manualCleanupRooms:manualCleanupRooms,setView:setView,setLocalPlayerName:setLocalPlayerName,clearLocalPlayerName:clearLocalPlayerName,pasteLocalPlayerName:pasteLocalPlayerName,joinRoomByCode:joinRoomByCode,refreshOnlineRoomsList:refreshOnlineRoomsList,toggleHand:toggleHand,toggleStickyHand:toggleStickyHand,toggleTopHeader:toggleTopHeader,toggleGodZone:toggleGodZone,toggleOpenHandZone:toggleOpenHandZone,startPlayerLottery:startPlayerLottery,confirmLotteryResult:confirmLotteryResult,updateCounter:updateCounter,takeLife:takeLife,payCost:payCost,recoverCore:recoverCore,recoverAllCores:recoverAllCores,refreshState:refreshState,moveAllTrashToExclude:moveAllTrashToExclude,shuffleDeck:shuffleDeck,drawCard:drawCard,deployTop:deployTop,importZip:importZip,openZoneModal:openZoneModal,closeZoneModal:closeZoneModal,openDeckActionMenu:openDeckActionMenu,openTrashActionMenu:openTrashActionMenu,closeZoneActionMenu:closeZoneActionMenu,closeDeckChoiceModal:closeDeckChoiceModal,closeGodConfirmModal:closeGodConfirmModal,closeNoticeModal:closeNoticeModal,allowDrop:allowDrop,drop:drop,dropOnDeck:dropOnDeck,dropOnGodZone:dropOnGodZone,dropOnCounterBox:dropOnCounterBox,dropOnTrashCoreBox:dropOnTrashCoreBox,dropOnCenterSpace:dropOnCenterSpace,dropSoulCore:dropSoulCore,launchBurstFireworks:launchBurstFireworks,renderDeckVaultList:renderDeckVaultList
 }),window.addEventListener("resize",()=> {
   updatePlaymatResponsiveScale(),refreshAllFieldCardsPosition(),layoutCompactZones(),hideCardPreview()
 }),"undefined"!=typeof ResizeObserver) {
@@ -5246,7 +5456,7 @@ if(["p1","p2"].forEach(e=> {
   }),t=document.getElementById("field-p1"),o=document.getElementById("field-p2"),a=document.getElementById("playmat-scale-stage");
   t&&e.observe(t),o&&e.observe(o),a&&e.observe(a)
 }
-autoDetectControlMode(),updateAllUI(),updatePlaymatResponsiveScale();
+initPlayerNicknameInput(),autoDetectControlMode(),updateAllUI(),updatePlaymatResponsiveScale();
 var catalogSourceKey="",catalogEditContext=null,descriptionDeck=null,translationCard=null;
 function addCatalogLevel(e= {
 }) {
@@ -5328,7 +5538,7 @@ function parseCatalogText(e) {
 }
 function applyCatalogText(e=!0) {
   const t=parseCatalogText(document.getElementById("catalog-ocr-text").value);
-  for(const o of["number","name","type","cost","effect","attribute","family","rarity"]) {
+  for(const o of["number","name","type","cost","effect","attribute","family","rarity","reduction","symbol"]) {
     const a=document.getElementById("catalog-"+o);
     !t[o]||!e&&a.value||(a.value=t[o])
   }
@@ -5510,7 +5720,7 @@ async function openDeckDescriptions(e) {
     if(window.globalCloudDecksCache?.[e]&&window.fetchGlobalDeckEntriesFromCloud&&(t=await window.fetchGlobalDeckEntriesFromCloud(e)||t),!t)throw Error("找不到卡組");
     descriptionDeck= {
       ...t,entries:getDeckEntriesFromRecord(t)
-    },await ensureCatalogData(),renderDeckDescriptions(),document.getElementById("deck-description-modal").classList.remove("hidden")
+    },await ensureCatalogData(),renderDeckDescriptions(),document.getElementById("deck-description-status")&&(document.getElementById("deck-description-status").textContent="點擊卡牌，匯入資料圖片或修改描述。"),document.getElementById("deck-description-modal").classList.remove("hidden")
   }
   catch(e) {
     showNotice("讀取卡組失敗："+e.message)
@@ -5645,7 +5855,7 @@ async function pasteAnalyzeSaveCatalog() {
     if(t!==catalogImageVersion||o!==catalogEditContext||document.getElementById("card-db-modal").classList.contains("hidden"))return;
     const n=parseCatalogText(a);
     if(document.getElementById("catalog-ocr-text").value=a,!n.number||!n.name)return void catalogStatus("文字必須包含編號及卡名，尚未儲存，請檢查貼上的內容。");
-    for(const e of["number","name","type","cost","effect","attribute","family","rarity"])document.getElementById("catalog-"+e).value=n[e];
+    for(const e of["number","name","type","cost","effect","attribute","family","rarity","reduction","symbol"])document.getElementById("catalog-"+e).value=n[e];
     if(setCatalogOC(n.oc),setBraveBonus(n.braveBonus),setCatalogLevels(n.levels),!document.getElementById("card-db-form").reportValidity())return;
     await saveCatalogCard( {
       preventDefault() {
@@ -6056,6 +6266,47 @@ async function deleteRoomAndSubcollections(e) {
     cleanupRead = window.cleanupRoomScan(e);
     try { const count = await cleanupRead; lastCleanup = Date.now(); return count; }
     finally { cleanupRead = null; }
+  }),
+  (window.listActiveRooms = async () => {
+    if (!db) return [];
+    const col = collection(db, "artifacts", appId, "public", "data", "rooms");
+    const snap = await getDocs(col);
+    const now = Date.now();
+    const rooms = [];
+    for (const d of snap.docs) {
+      const code = d.id;
+      const data = d.data() || {};
+      const lastActive = data.lastActive || data.timestamp || 0;
+      const age = now - lastActive;
+      const activeClients = data.activeClients || {};
+      const onlineClients = Object.keys(activeClients).filter(k => now - activeClients[k] < 9e4);
+      let seats = data.seats || {};
+      let seatNames = {};
+      if (data.stateJson) {
+        try {
+          const parsed = JSON.parse(data.stateJson);
+          if (parsed.seats) seats = { ...parsed.seats, ...seats };
+          if (parsed.seatNames) seatNames = parsed.seatNames;
+        } catch (err) {}
+      }
+      const p1Occupied = !!seats.p1;
+      const p2Occupied = !!seats.p2;
+      const hasSeat = p1Occupied || p2Occupied;
+      const isCurrent = code === window.currentRoomCode;
+      if (!isCurrent && (age > 6e5 || (!hasSeat && onlineClients.length === 0 && age > 12e4))) continue;
+      rooms.push({
+        code,
+        p1Occupied,
+        p2Occupied,
+        p1Name: seatNames.p1 || "",
+        p2Name: seatNames.p2 || "",
+        onlineCount: onlineClients.length,
+        lastActive,
+        isCurrent
+      });
+    }
+    rooms.sort((a, b) => (b.isCurrent - a.isCurrent) || (b.lastActive - a.lastActive));
+    return rooms;
   }),
   (window.cleanupRoomScan = async (e = false) => {
     let a = 0;
@@ -9122,6 +9373,2288 @@ Object.assign(window, {
       );
     }
   };
+})();
+</script>
+<!-- #endregion -->
+
+
+<!-- #region 13. [外掛] 減輕 (Reduction) 與標誌 (Symbol) 寶石系統、場上統計與手牌費用試算 -->
+<style>
+  .bs-symbol-picker-box {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 12px;
+    align-items: stretch;
+    padding: 8px 10px;
+    border: 1px solid rgba(176, 148, 102, 0.38);
+    border-radius: 3px;
+    background: rgba(8, 7, 6, 0.72);
+  }
+  .bs-symbol-picker-controls {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 8px;
+    min-width: 0;
+  }
+  .bs-card-corner-panel {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 8px;
+    align-items: stretch;
+    min-width: 0;
+    padding-left: 10px;
+    border-left: 1px solid rgba(176, 148, 102, 0.28);
+  }
+  .bs-corner-card {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+  .bs-corner-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #e0b25b;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .bs-corner-view {
+    flex: 1;
+    min-height: 112px;
+    border: 1px solid rgba(176, 148, 102, 0.55);
+    border-radius: 3px;
+    background-color: #050505;
+    background-repeat: no-repeat;
+    background-size: 165% auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.7);
+  }
+  .bs-corner-tl {
+    background-position: 0% 0%;
+  }
+  .bs-corner-br {
+    background-position: 100% 100%;
+  }
+  .bs-corner-empty {
+    font-size: 11px;
+    color: #78716c;
+    user-select: none;
+  }
+  @media (max-width: 640px) {
+    .bs-symbol-picker-box {
+      grid-template-columns: 1fr;
+    }
+    .bs-card-corner-panel {
+      padding-left: 0;
+      padding-top: 8px;
+      border-left: none;
+      border-top: 1px solid rgba(176, 148, 102, 0.28);
+    }
+  }
+  .bs-picker-row {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .bs-picker-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-size: 12px;
+    color: #e5d6ba;
+    font-weight: 700;
+  }
+  .bs-picker-preview {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+    flex: 1;
+    min-height: 20px;
+  }
+  .bs-picker-clear {
+    padding: 2px 7px !important;
+    font-size: 11px !important;
+  }
+  .bs-picker-quick-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 4px;
+    padding-top: 6px;
+    border-top: 1px solid rgba(176, 148, 102, 0.28);
+  }
+  .bs-picker-save-btn {
+    flex: 1;
+    background: #c8aa76 !important;
+    color: #090807 !important;
+    border: 1px solid #f5d78e !important;
+    font-weight: 900 !important;
+    padding: 5px 10px !important;
+    font-size: 12px !important;
+  }
+  .bs-picker-save-btn:hover {
+    background: #f5d78e !important;
+  }
+  .bs-picker-cancel-btn {
+    padding: 5px 12px !important;
+    font-size: 12px !important;
+  }
+  .bs-picker-btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  .bs-gem-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 7px !important;
+    border-radius: 3px !important;
+    border: 1px solid rgba(176, 148, 102, 0.5) !important;
+    background: #14110f !important;
+    color: #f5efe6 !important;
+    font-size: 11px !important;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform 0.12s ease, border-color 0.15s ease, background-color 0.15s ease;
+  }
+  .bs-gem-btn:hover {
+    border-color: #facc15 !important;
+    background: #231d16 !important;
+    transform: translateY(-1px);
+  }
+  .bs-gem-btn.has-count {
+    border-color: #e0b25b !important;
+    background: rgba(200, 170, 118, 0.22) !important;
+  }
+  .bs-gem-btn.bs-combine-btn {
+    border-color: rgba(250, 204, 21, 0.65) !important;
+    color: #fde047 !important;
+    padding: 3px 9px !important;
+  }
+  .bs-gem-btn.bs-combine-btn.combining-active {
+    background: #facc15 !important;
+    color: #090807 !important;
+    border-color: #ffffff !important;
+    box-shadow: 0 0 12px rgba(250, 204, 21, 0.85);
+  }
+  .bs-gem-hex {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 17px;
+    height: 17px;
+    clip-path: polygon(25% 5%, 75% 5%, 100% 50%, 75% 95%, 25% 95%, 0% 50%);
+    font-size: 10px;
+    font-weight: 900;
+    line-height: 1;
+    flex-shrink: 0;
+    box-shadow: inset 0 0 3px rgba(255, 255, 255, 0.65);
+  }
+  .bs-gem-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 1px 5px;
+    border-radius: 2px;
+    background: rgba(15, 13, 11, 0.88);
+    border: 1px solid rgba(176, 148, 102, 0.45);
+    font-size: 11px;
+    font-weight: 900;
+    color: #f5efe6;
+    line-height: 1.2;
+    vertical-align: middle;
+  }
+  .bs-gem-badge.bs-badge-removable {
+    cursor: pointer;
+  }
+  .bs-gem-badge.bs-badge-removable:hover {
+    border-color: #f87171;
+    background: rgba(127, 29, 29, 0.45);
+  }
+  .bs-gem-and-sep {
+    font-size: 9.5px;
+    font-weight: 900;
+    color: #fde047;
+    margin: 0 1px;
+  }
+  .field-symbol-bar {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    z-index: 26;
+    display: none;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+    max-width: calc(100% - 24px);
+    padding: 3px 7px;
+    border-radius: 3px;
+    background: rgba(10, 9, 8, 0.72);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    border: 1px solid rgba(186, 158, 108, 0.48);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.65);
+    pointer-events: none;
+  }
+  .opponent-field-top .field-symbol-bar {
+    top: auto;
+    bottom: 8px;
+    right: auto;
+    left: 10px;
+  }
+  .field-symbol-bar.has-symbols {
+    display: inline-flex;
+  }
+  .field-symbol-bar-title {
+    font-size: 9.5px;
+    font-weight: 900;
+    color: #c8aa76;
+    letter-spacing: 0.08em;
+    margin-right: 2px;
+  }
+  .trans-symbol-line {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin: 2px 0;
+  }
+</style>
+
+<script>
+(function () {
+  const BS_SYMBOLS = [
+    { key: "紅", label: "紅", aliases: ["赤", "紅", "红", "R"], bg: "radial-gradient(circle at 35% 30%, #fca5a5, #ef4444 55%, #991b1b)", color: "#ffffff" },
+    { key: "紫", label: "紫", aliases: ["紫", "P"], bg: "radial-gradient(circle at 35% 30%, #e9d5ff, #a855f7 55%, #581c87)", color: "#ffffff" },
+    { key: "綠", label: "綠", aliases: ["緑", "綠", "绿", "G"], bg: "radial-gradient(circle at 35% 30%, #bbf7d0, #22c55e 55%, #14532d)", color: "#ffffff" },
+    { key: "白", label: "白", aliases: ["白", "W"], bg: "radial-gradient(circle at 35% 30%, #ffffff, #e2e8f0 60%, #94a3b8)", color: "#0f172a" },
+    { key: "黃", label: "黃", aliases: ["黄", "黃", "Y"], bg: "radial-gradient(circle at 35% 30%, #fef9c3, #facc15 55%, #a16207)", color: "#0f172a" },
+    { key: "藍", label: "藍", aliases: ["青", "藍", "蓝", "B"], bg: "radial-gradient(circle at 35% 30%, #bfdbfe, #3b82f6 55%, #1e3a8a)", color: "#ffffff" },
+    { key: "全", label: "全", aliases: ["全色", "萬能", "万能", "虹", "全"], bg: "conic-gradient(#ef4444, #a855f7, #22c55e, #f8fafc, #facc15, #3b82f6, #ef4444)", color: "#ffffff" },
+    { key: "究", label: "究", aliases: ["究極", "究极", "金", "究", "U"], bg: "radial-gradient(circle at 35% 30%, #fef08a, #f59e0b 55%, #78350f)", color: "#0f172a" },
+    { key: "神", label: "神", aliases: ["創界神", "创界神", "神"], bg: "radial-gradient(circle at 35% 30%, #fef08a, #14b8a6 52%, #134e4a)", color: "#ffffff" }
+  ];
+  const BS_SYMBOL_MAP = new Map(BS_SYMBOLS.map(s => [s.key, s]));
+  const BS_SYMBOL_ORDER = new Map(BS_SYMBOLS.map((s, i) => [s.key, i]));
+  const SIX_COLORS = ["紅", "紫", "綠", "白", "黃", "藍"];
+
+  let symbolCombineMode = false;
+  let symbolCombineFirst = null;
+  let lastAddedSymbolKey = null;
+
+  function resolveSingleKey(tok) {
+    const found = BS_SYMBOLS.find(s => s.aliases.includes(tok));
+    return found ? found.key : null;
+  }
+
+  function makeDualKey(k1, k2) {
+    if (!k1 || !k2 || k1 === k2) return k1 || k2 || "";
+    const i1 = BS_SYMBOL_ORDER.get(k1) ?? 99;
+    const i2 = BS_SYMBOL_ORDER.get(k2) ?? 99;
+    return i1 <= i2 ? `${k1}和${k2}` : `${k2}和${k1}`;
+  }
+
+  function parseBsSymbolMap(raw) {
+    const counts = {};
+    const text = String(raw || "").normalize("NFKC").trim();
+    if (!text) return counts;
+    const atom = "(?:創界神|创界神|全色|萬能|万能|究極|究极|[赤紅红紫緑綠绿白黄黃青藍蓝虹全究神])";
+    const tokenPattern = new RegExp(`(${atom})(?:\\s*(?:和|\\/|／)\\s*(${atom}))?\\s*(?:[x×*]\\s*)?(\\d+)?`, "gi");
+    for (const m of text.matchAll(tokenPattern)) {
+      const k1 = resolveSingleKey(m[1]);
+      if (!k1) continue;
+      const k2 = m[2] ? resolveSingleKey(m[2]) : null;
+      const num = m[3] ? Math.max(1, parseInt(m[3], 10)) : 1;
+      const key = k2 && k2 !== k1 ? makeDualKey(k1, k2) : k1;
+      counts[key] = (counts[key] || 0) + num;
+    }
+    return counts;
+  }
+
+  function formatBsSymbolMap(counts) {
+    const parts = [];
+    for (const s of BS_SYMBOLS) {
+      const n = counts[s.key] || 0;
+      if (n > 0) parts.push(`${s.key}${n}`);
+    }
+    for (const [k, n] of Object.entries(counts)) {
+      if (k.includes("和") && n > 0) {
+        parts.push(`${k}${n}`);
+      }
+    }
+    return parts.join(" ");
+  }
+
+  function createBsGemHexHTML(symKey) {
+    const info = BS_SYMBOL_MAP.get(symKey);
+    if (!info) return "";
+    return `<span class="bs-gem-hex" style="background:${info.bg};color:${info.color}">${info.label}</span>`;
+  }
+
+  function renderBsSymbolsHTML(raw, showEmptyText = false, removableField = null) {
+    const counts = typeof raw === "string" ? parseBsSymbolMap(raw) : (raw || {});
+    const items = [];
+    const cls = removableField ? "bs-gem-badge bs-badge-removable" : "bs-gem-badge";
+    const dataAttr = key => removableField ? ` data-remove-field="${removableField}" data-remove-key="${key}" title="點擊 -1 ${key}"` : "";
+
+    for (const s of BS_SYMBOLS) {
+      const n = counts[s.key] || 0;
+      if (n > 0) {
+        items.push(`<span class="${cls}"${dataAttr(s.key) || ` title="${s.label} × ${n}"`}>${createBsGemHexHTML(s.key)}<span>${n}</span></span>`);
+      }
+    }
+    for (const [k, n] of Object.entries(counts)) {
+      if (k.includes("和") && n > 0) {
+        const [k1, k2] = k.split("和");
+        items.push(`<span class="${cls}"${dataAttr(k) || ` title="${k} × ${n}（單一雙色標誌）"`}>${createBsGemHexHTML(k1)}<span class="bs-gem-and-sep">和</span>${createBsGemHexHTML(k2)}<span>${n}</span></span>`);
+      }
+    }
+    if (!items.length && showEmptyText) {
+      return '<span style="color:#78716c;font-size:11px">未設定</span>';
+    }
+    return items.join("");
+  }
+
+  // === 1. 卡池表單寶石點選器 ===
+  function updatePickerUI(field) {
+    const input = document.getElementById("catalog-" + field);
+    const preview = document.getElementById("picker-preview-" + field);
+    const btnsWrap = document.getElementById("picker-btns-" + field);
+    if (!input || !btnsWrap) return;
+    const counts = parseBsSymbolMap(input.value);
+
+    if (preview) {
+      let html = renderBsSymbolsHTML(counts, !(field === "symbol" && symbolCombineMode), field);
+      if (field === "symbol" && symbolCombineMode) {
+        if (symbolCombineFirst) {
+          html += `<span class="bs-gem-badge" style="border-color:#fde047">${createBsGemHexHTML(symbolCombineFirst)}<span class="bs-gem-and-sep">和</span><span style="color:#fde047">?</span></span>`;
+        } else {
+          html += `<span style="color:#fde047;font-size:11px;font-weight:800">請依序點選 2 個顏色組合</span>`;
+        }
+      }
+      preview.innerHTML = html;
+      preview.querySelectorAll(".bs-badge-removable").forEach(badge => {
+        badge.onclick = () => {
+          const rk = badge.dataset.removeKey;
+          if (!rk || !(counts[rk] > 0)) return;
+          counts[rk] -= 1;
+          if (counts[rk] <= 0) delete counts[rk];
+          input.value = formatBsSymbolMap(counts);
+          updatePickerUI(field);
+        };
+      });
+    }
+
+    btnsWrap.innerHTML = "";
+    for (const s of BS_SYMBOLS) {
+      const n = counts[s.key] || 0;
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "bs-gem-btn" + (n > 0 ? " has-count" : "");
+      btn.title = field === "symbol" && symbolCombineMode
+        ? (symbolCombineFirst ? `點選與「${symbolCombineFirst}」組成「${symbolCombineFirst}和${s.label}」` : `點選雙色標誌的第 1 個顏色`)
+        : `左鍵 +1 ${s.label}，右鍵 -1 ${s.label}`;
+      btn.innerHTML = `${createBsGemHexHTML(s.key)}<span>${n > 0 ? "×" + n : "+"}</span>`;
+      btn.onclick = () => {
+        if (field === "symbol" && symbolCombineMode) {
+          if (!symbolCombineFirst) {
+            symbolCombineFirst = s.key;
+            updatePickerUI(field);
+            return;
+          }
+          if (symbolCombineFirst === s.key) {
+            counts[s.key] = Math.min(12, (counts[s.key] || 0) + 1);
+          } else {
+            const dualKey = makeDualKey(symbolCombineFirst, s.key);
+            counts[dualKey] = Math.min(12, (counts[dualKey] || 0) + 1);
+          }
+          symbolCombineMode = false;
+          symbolCombineFirst = null;
+          lastAddedSymbolKey = null;
+          input.value = formatBsSymbolMap(counts);
+          updatePickerUI(field);
+          return;
+        }
+        counts[s.key] = Math.min(12, (counts[s.key] || 0) + 1);
+        if (field === "symbol") lastAddedSymbolKey = s.key;
+        input.value = formatBsSymbolMap(counts);
+        updatePickerUI(field);
+      };
+      btn.oncontextmenu = e => {
+        e.preventDefault();
+        if ((counts[s.key] || 0) > 0) {
+          counts[s.key] -= 1;
+          input.value = formatBsSymbolMap(counts);
+          updatePickerUI(field);
+        }
+      };
+      btnsWrap.appendChild(btn);
+    }
+
+    // 標誌區額外加入「和」按鈕（組合單一雙色標誌，例如 紅和神 / 紅和紫）
+    if (field === "symbol") {
+      const andBtn = document.createElement("button");
+      andBtn.type = "button";
+      andBtn.className = "bs-gem-btn bs-combine-btn" + (symbolCombineMode ? " combining-active" : "");
+      andBtn.textContent = symbolCombineMode ? "和 (選擇中…)" : "和";
+      andBtn.title = "組合雙色標誌：先點一個顏色再點「和」再點第二個顏色（或先點「和」再依序點兩個顏色）";
+      andBtn.onclick = () => {
+        if (symbolCombineMode) {
+          // 取消組合模式；若是從上一個顏色抽出的，先退還回去
+          if (symbolCombineFirst && lastAddedSymbolKey === "__pending_restore__") {
+            counts[symbolCombineFirst] = (counts[symbolCombineFirst] || 0) + 1;
+            input.value = formatBsSymbolMap(counts);
+          }
+          symbolCombineMode = false;
+          symbolCombineFirst = null;
+          lastAddedSymbolKey = null;
+          updatePickerUI(field);
+          return;
+        }
+        symbolCombineMode = true;
+        if (lastAddedSymbolKey && (counts[lastAddedSymbolKey] || 0) > 0) {
+          // 直接把剛剛點選的單色轉為雙色標誌的第一個顏色
+          counts[lastAddedSymbolKey] -= 1;
+          if (counts[lastAddedSymbolKey] <= 0) delete counts[lastAddedSymbolKey];
+          symbolCombineFirst = lastAddedSymbolKey;
+          lastAddedSymbolKey = "__pending_restore__";
+          input.value = formatBsSymbolMap(counts);
+        } else {
+          symbolCombineFirst = null;
+          lastAddedSymbolKey = null;
+        }
+        updatePickerUI(field);
+      };
+      btnsWrap.appendChild(andBtn);
+    }
+  }
+
+  window.clearCatalogSymbolField = function (field) {
+    const input = document.getElementById("catalog-" + field);
+    if (input) input.value = "";
+    if (field === "symbol") {
+      symbolCombineMode = false;
+      symbolCombineFirst = null;
+      lastAddedSymbolKey = null;
+    }
+    updatePickerUI(field);
+  };
+
+  window.quickSaveAndCloseCatalog = async function () {
+    const form = document.getElementById("card-db-form");
+    const btn = document.getElementById("bs-picker-quick-save");
+    if (!form || catalogBusy) return;
+    if (!form.reportValidity()) return;
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = "⏳ 儲存中…";
+    }
+    try {
+      const ok = await saveCatalogCard({ preventDefault() {} });
+      if (ok) {
+        cancelCatalogEdit();
+      }
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = "💾 儲存並關閉";
+      }
+    }
+  };
+
+  window.updateCatalogCornerPreviews = function () {
+    const src = typeof catalogImage === "string" && catalogImage ? catalogImage : "";
+    ["bs-corner-tl", "bs-corner-br"].forEach(id => {
+      const box = document.getElementById(id);
+      if (!box) return;
+      if (src) {
+        box.style.backgroundImage = `url("${src}")`;
+        box.innerHTML = "";
+      } else {
+        box.style.backgroundImage = "none";
+        box.innerHTML = '<span class="bs-corner-empty">尚未導入卡圖</span>';
+      }
+    });
+  };
+
+  window.syncCatalogSymbolPickers = function () {
+    symbolCombineMode = false;
+    symbolCombineFirst = null;
+    lastAddedSymbolKey = null;
+    updatePickerUI("reduction");
+    updatePickerUI("symbol");
+    updateCatalogCornerPreviews();
+  };
+
+  const baseShowCatalogImageForSym = showCatalogImage;
+  showCatalogImage = function (...args) {
+    const res = baseShowCatalogImageForSym(...args);
+    updateCatalogCornerPreviews();
+    return res;
+  };
+
+  const baseNewCatalogForSym = newCatalogCard;
+  newCatalogCard = function (...args) {
+    const res = baseNewCatalogForSym(...args);
+    syncCatalogSymbolPickers();
+    return res;
+  };
+  const baseEditCatalogForSym = editCatalogCard;
+  editCatalogCard = function (...args) {
+    const res = baseEditCatalogForSym(...args);
+    syncCatalogSymbolPickers();
+    return res;
+  };
+  const baseClearCatalogForSym = clearCatalogFields;
+  clearCatalogFields = function (...args) {
+    const res = baseClearCatalogForSym(...args);
+    syncCatalogSymbolPickers();
+    return res;
+  };
+  const baseApplyTextForSym = applyCatalogText;
+  applyCatalogText = function (...args) {
+    const res = baseApplyTextForSym(...args);
+    syncCatalogSymbolPickers();
+    return res;
+  };
+
+  // === 2. 翻譯側邊欄彩色寶石圖示 ===
+  const baseRenderTranslationForSym = renderTranslation;
+  renderTranslation = function () {
+    baseRenderTranslationForSym();
+    const contentEl = document.getElementById("translation-content");
+    const data = lookupCatalog(translationCard);
+    if (!contentEl || !data || (!data.reduction && !data.symbol)) return;
+
+    const lines = contentEl.textContent.split("\n");
+    const frag = document.createDocumentFragment();
+    lines.forEach((line, idx) => {
+      if (line.startsWith("減輕：") && data.reduction) {
+        const row = document.createElement("div");
+        row.className = "trans-symbol-line";
+        row.innerHTML = `<span>減輕：</span>${renderBsSymbolsHTML(data.reduction) || escapeHtmlSimple(data.reduction)}`;
+        frag.appendChild(row);
+      } else if (line.startsWith("標誌：") && data.symbol) {
+        const row = document.createElement("div");
+        row.className = "trans-symbol-line";
+        row.innerHTML = `<span>標誌：</span>${renderBsSymbolsHTML(data.symbol) || escapeHtmlSimple(data.symbol)}`;
+        frag.appendChild(row);
+      } else {
+        frag.appendChild(document.createTextNode(line + (idx < lines.length - 1 ? "\n" : "")));
+      }
+    });
+    contentEl.replaceChildren(frag);
+  };
+
+  // === 3. 場上標誌即時統計列 ===
+  function getPlayerFieldSymbols(player) {
+    const totals = {};
+    for (const card of Object.values(gameState.cards)) {
+      if (card.owner !== player || card.isFaceDown) continue;
+      if (card.adventHostId) continue; // 煌臨元不計標誌
+      const z = card.zone || "";
+      if (!z.startsWith("field-") && !z.startsWith("zone-god-")) continue;
+      const data = lookupCatalog(card);
+      if (!data?.symbol) continue;
+      const map = parseBsSymbolMap(data.symbol);
+      for (const [k, v] of Object.entries(map)) {
+        totals[k] = (totals[k] || 0) + v;
+      }
+    }
+    return totals;
+  }
+
+  function ensureFieldSymbolBars() {
+    ["p1", "p2"].forEach(p => {
+      const fieldEl = document.getElementById(`field-${p}`);
+      if (!fieldEl) return;
+      let bar = document.getElementById(`field-symbols-${p}`);
+      if (!bar) {
+        bar = document.createElement("div");
+        bar.id = `field-symbols-${p}`;
+        bar.className = "field-symbol-bar";
+        fieldEl.appendChild(bar);
+      }
+      const totals = getPlayerFieldSymbols(p);
+      const gemsHtml = renderBsSymbolsHTML(totals);
+      if (gemsHtml) {
+        bar.innerHTML = `<span class="field-symbol-bar-title">標誌</span>${gemsHtml}`;
+        bar.classList.add("has-symbols");
+      } else {
+        bar.innerHTML = "";
+        bar.classList.remove("has-symbols");
+      }
+    });
+  }
+
+  // === 4. 手牌實際費用試算（支援「和」雙色標誌，單顆雙色標誌可任選其一滿足減輕） ===
+  function calculateReducedCost(costNum, reductionStr, fieldSymbols) {
+    const req = parseBsSymbolMap(reductionStr);
+    const singlePool = {};
+    const dualList = [];
+
+    for (const [k, v] of Object.entries(fieldSymbols || {})) {
+      if (v <= 0) continue;
+      if (k.includes("和")) {
+        const pair = k.split("和");
+        for (let i = 0; i < v; i++) dualList.push(pair);
+      } else {
+        singlePool[k] = (singlePool[k] || 0) + v;
+      }
+    }
+
+    const remReq = {};
+    let discount = 0;
+
+    // 步驟 1：先用單色標誌匹配完全相同顏色的減輕
+    for (const key of [...SIX_COLORS, "究", "神"]) {
+      const need = req[key] || 0;
+      if (need <= 0) continue;
+      const used = Math.min(need, singlePool[key] || 0);
+      singlePool[key] = (singlePool[key] || 0) - used;
+      discount += used;
+      const left = need - used;
+      if (left > 0) remReq[key] = left;
+    }
+    if ((req["全"] || 0) > 0) remReq["全"] = req["全"];
+
+    // 步驟 2：使用雙色標誌（例如「紅和神」）填補剩餘減輕（單顆只能抵扣其二擇一）
+    for (const [c1, c2] of dualList) {
+      const opts = [c1, c2];
+      // 優先抵扣需求量最高的明確顏色
+      const specificCandidates = opts.filter(c => (remReq[c] || 0) > 0);
+      if (specificCandidates.length > 0) {
+        specificCandidates.sort((a, b) => (remReq[b] || 0) - (remReq[a] || 0));
+        const pick = specificCandidates[0];
+        remReq[pick] -= 1;
+        discount += 1;
+        continue;
+      }
+      // 若其中一色為「全」，可抵扣任何六色減輕
+      if (opts.includes("全")) {
+        const sixTarget = SIX_COLORS.find(c => (remReq[c] || 0) > 0);
+        if (sixTarget) {
+          remReq[sixTarget] -= 1;
+          discount += 1;
+          continue;
+        }
+      }
+      // 若仍需要「全」減輕，且雙色中包含任一六色或全
+      if ((remReq["全"] || 0) > 0 && opts.some(c => SIX_COLORS.includes(c) || c === "全")) {
+        remReq["全"] -= 1;
+        discount += 1;
+      }
+    }
+
+    // 步驟 3：剩餘的六色減輕可用單色「全」標誌補上
+    for (const key of SIX_COLORS) {
+      const left = remReq[key] || 0;
+      if (left > 0 && (singlePool["全"] || 0) > 0) {
+        const wildUsed = Math.min(left, singlePool["全"]);
+        singlePool["全"] -= wildUsed;
+        remReq[key] -= wildUsed;
+        discount += wildUsed;
+      }
+    }
+
+    // 步驟 4：剩餘的「全」減輕可用單色池中任意剩餘六色或全補上
+    let needWild = remReq["全"] || 0;
+    if (needWild > 0) {
+      for (const key of [...SIX_COLORS, "全"]) {
+        if (needWild <= 0) break;
+        const avail = singlePool[key] || 0;
+        if (avail > 0) {
+          const take = Math.min(needWild, avail);
+          singlePool[key] -= take;
+          needWild -= take;
+          discount += take;
+        }
+      }
+    }
+
+    const actual = Math.max(0, costNum - discount);
+    return { cost: costNum, discount, actual };
+  }
+
+  function updatePreviewCostCalc(cardId) {
+    const bar = document.getElementById("preview-cost-calc");
+    if (!bar) return;
+    const card = cardId ? gameState.cards[cardId] : null;
+    const isHand = card && !card.isFaceDown && (card.zone?.startsWith("hand-") || card.zone?.startsWith("zone-openhand-"));
+    if (!isHand) {
+      bar.classList.add("hidden");
+      return;
+    }
+    const data = lookupCatalog(card);
+    if (!data || data.cost == null || data.cost === "") {
+      bar.classList.add("hidden");
+      return;
+    }
+    const baseCost = Number(data.cost);
+    if (!Number.isFinite(baseCost)) {
+      bar.classList.add("hidden");
+      return;
+    }
+    const fieldSyms = getPlayerFieldSymbols(card.owner);
+    const { cost, discount, actual } = calculateReducedCost(baseCost, data.reduction || "", fieldSyms);
+    const redHtml = renderBsSymbolsHTML(data.reduction || "");
+
+    const costHtml = discount > 0
+      ? `<span class="text-stone-400 line-through">${cost}</span> <span class="text-[#fde047] text-sm">➔ 實付 ${actual}</span> <span class="text-emerald-300 text-[10px]">(減輕 -${discount})</span>`
+      : `<span class="text-[#f5efe6]">費用 ${cost}</span>`;
+
+    bar.innerHTML = `<div class="flex items-center gap-1.5 flex-wrap">${costHtml}</div><div class="flex items-center gap-1 flex-wrap">${redHtml}</div>`;
+    bar.classList.remove("hidden");
+  }
+
+  const baseShowPreviewForSym = showCardPreviewNextToElement;
+  showCardPreviewNextToElement = function (el, img, cardId = null, interactive = false) {
+    updatePreviewCostCalc(cardId);
+    return baseShowPreviewForSym(el, img, cardId, interactive);
+  };
+
+  const baseHidePreviewForSym = hideCardPreview;
+  hideCardPreview = function (...args) {
+    document.getElementById("preview-cost-calc")?.classList.add("hidden");
+    return baseHidePreviewForSym(...args);
+  };
+
+  const baseUpdateAllForSym = updateAllUI;
+  updateAllUI = function () {
+    baseUpdateAllForSym();
+    ensureFieldSymbolBars();
+  };
+
+  const baseRefreshStatsForSym = refreshFieldStats;
+  refreshFieldStats = function () {
+    baseRefreshStatsForSym();
+    ensureFieldSymbolBars();
+  };
+
+  window.getPlayerFieldSymbols = getPlayerFieldSymbols;
+  window.calculateReducedCost = calculateReducedCost;
+
+  // 初始化
+  syncCatalogSymbolPickers();
+  ensureFieldSymbolBars();
+})();
+</script>
+<!-- #endregion -->
+
+<!-- #region 14. [外掛] 魔法卡 (Magic) 系統：手牌使用按鈕、減輕計算、場上選卡付費、取消退還與屬性魔法特效 -->
+<style>
+  #preview-magic-use-btn {
+    border: 1px solid #b09466;
+    background: #14110eed;
+    color: #e0b25b;
+    padding: 7px 18px;
+    margin-top: 7px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-weight: 700;
+  }
+  #preview-magic-use-btn.magic-disabled,
+  .mini-magic-use-btn.magic-disabled {
+    opacity: 0.45 !important;
+    cursor: not-allowed !important;
+    filter: grayscale(0.35);
+  }
+  body:not(.mobile-mode) #preview-magic-use-btn {
+    display: none !important;
+  }
+  .mini-translation-source.has-magic-use:not(.has-turn) > .mini-translate-btn:not(.mini-magic-use-btn) {
+    transform: translate(-50%, -50%) rotate(var(--card-ui-rotation, 0deg)) translate(-26px, calc(-1 * var(--card-ui-edge, 70px) - 14px));
+  }
+  .mini-translation-source.has-magic-use:not(.has-turn) > .mini-magic-use-btn {
+    transform: translate(-50%, -50%) rotate(var(--card-ui-rotation, 0deg)) translate(26px, calc(-1 * var(--card-ui-edge, 70px) - 14px));
+  }
+  @keyframes magicCandidatePulse {
+    0%, 100% {
+      box-shadow: 0 0 14px 4px rgba(56, 189, 248, 0.95), 0 0 28px 8px rgba(250, 204, 21, 0.55);
+      border-color: #fde047;
+    }
+    50% {
+      box-shadow: 0 0 24px 8px rgba(56, 189, 248, 1), 0 0 42px 14px rgba(250, 204, 21, 0.85);
+      border-color: #ffffff;
+    }
+  }
+  .card.magic-pay-candidate {
+    animation: magicCandidatePulse 1.05s infinite ease-in-out !important;
+    cursor: pointer !important;
+    z-index: 980 !important;
+  }
+  .magic-cancel-bar {
+    pointer-events: auto;
+    position: absolute;
+    top: calc(100% + 18px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 95;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px 14px;
+    border-radius: 3px;
+    background: rgba(10, 9, 8, 0.92);
+    border: 1px solid #facc15;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.9), 0 0 18px rgba(250, 204, 21, 0.45);
+    white-space: nowrap;
+  }
+  .magic-cancel-bar.hidden {
+    display: none !important;
+  }
+  .magic-cancel-btn {
+    border: 1px solid rgba(248, 113, 113, 0.85);
+    background: rgba(153, 27, 27, 0.88);
+    color: #ffffff;
+    padding: 3px 10px;
+    border-radius: 2px;
+    font-size: 11px;
+    font-weight: 900;
+    cursor: pointer;
+    transition: background-color 0.15s ease, transform 0.12s ease;
+  }
+  .magic-cancel-btn:hover {
+    background: #ef4444;
+    transform: scale(1.04);
+  }
+</style>
+
+<script>
+(function () {
+  let magicPaymentState = null;
+
+  function isMagicCard(card) {
+    if (!card) return false;
+    const type = String(lookupCatalog(card)?.type || "").trim();
+    return /^magic$/i.test(type);
+  }
+
+  function canUseMagicInHand(card) {
+    if (!card || card.isFaceDown) return false;
+    if (!card.zone || !card.zone.startsWith("hand-")) return false;
+    const handEl = document.getElementById(card.zone);
+    if (handEl && handEl.classList.contains("opponent-hand")) return false;
+    return isMagicCard(card);
+  }
+
+  function getFieldPayableCards(owner) {
+    const fieldZone = `field-${owner}`;
+    return Object.values(gameState.cards).filter(c => {
+      if (c.owner !== owner || c.zone !== fieldZone) return false;
+      if (c.adventHostId || c.braveHostId) return false;
+      const normal = c.cores || 0;
+      const hasSoul = gameState.soulCoreLocation?.[owner] === c.id;
+      return normal > 0 || hasSoul;
+    });
+  }
+
+  function ensureMagicCancelBar() {
+    let bar = document.getElementById("magic-cancel-bar");
+    if (!bar) {
+      const centerBar = document.getElementById("center-core-bar");
+      if (!centerBar) return null;
+      bar = document.createElement("div");
+      bar.id = "magic-cancel-bar";
+      bar.className = "magic-cancel-bar hidden";
+      bar.innerHTML = `<span id="magic-pay-status-text" class="text-[11px] font-black text-[#fde047] tracking-wider"></span><button type="button" id="btn-cancel-magic-cast" class="magic-cancel-btn">取消魔法</button>`;
+      centerBar.appendChild(bar);
+      bar.querySelector("#btn-cancel-magic-cast").onclick = e => {
+        e.preventDefault();
+        e.stopPropagation();
+        cancelMagicPayment();
+      };
+    }
+    return bar;
+  }
+
+  function refreshMagicPaymentUI() {
+    document.querySelectorAll(".card.magic-pay-candidate").forEach(el => el.classList.remove("magic-pay-candidate"));
+    const bar = ensureMagicCancelBar();
+    if (!magicPaymentState) {
+      bar?.classList.add("hidden");
+      return;
+    }
+    const payable = getFieldPayableCards(magicPaymentState.owner);
+    payable.forEach(c => {
+      const el = document.getElementById(c.id);
+      if (el) el.classList.add("magic-pay-candidate");
+    });
+    if (bar) {
+      const txt = bar.querySelector("#magic-pay-status-text");
+      if (txt) {
+        txt.textContent = `✨ 選擇場上卡牌支付魔法費用（尚需 ${magicPaymentState.remainingCost} Core）`;
+      }
+      bar.classList.remove("hidden");
+    }
+  }
+
+  function playMagicCastEffect(cardId, colors) {
+    const el = document.getElementById(cardId);
+    if (!el) return;
+    const palette = Array.isArray(colors) && colors.length ? colors : ["#38bdf8"];
+    const mainColor = palette[0];
+    const subColor = palette[1] || mainColor;
+    if (typeof playCardAttributeFlash === "function") {
+      playCardAttributeFlash(cardId, palette);
+    }
+    const rect = el.getBoundingClientRect();
+    if (!rect.width || !rect.height) return;
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+
+    const wrap = document.createElement("div");
+    Object.assign(wrap.style, {
+      position: "fixed",
+      left: `${cx}px`,
+      top: `${cy}px`,
+      width: "196px",
+      height: "196px",
+      pointerEvents: "none",
+      zIndex: "16855",
+      transform: "translate(-50%, -50%) scale(0.5) rotate(0deg)",
+      opacity: "0",
+      filter: `drop-shadow(0 0 10px ${mainColor}) drop-shadow(0 0 22px ${subColor})`
+    });
+
+    wrap.innerHTML = `<svg viewBox="0 0 200 200" width="196" height="196" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="100" cy="100" r="90" fill="none" stroke="${mainColor}" stroke-width="2.6"/>
+      <circle cx="100" cy="100" r="80" fill="none" stroke="${subColor}" stroke-width="1.3" stroke-dasharray="10 6"/>
+      <circle cx="100" cy="100" r="56" fill="none" stroke="${mainColor}" stroke-width="1.8"/>
+      <polygon points="100,20 169,140 31,140" fill="none" stroke="${mainColor}" stroke-width="1.8" opacity="0.92"/>
+      <polygon points="100,180 31,60 169,60" fill="none" stroke="${subColor}" stroke-width="1.8" opacity="0.92"/>
+      <circle cx="100" cy="100" r="22" fill="${mainColor}" fill-opacity="0.16" stroke="#ffffff" stroke-width="1.2"/>
+    </svg>`;
+
+    document.body.appendChild(wrap);
+    wrap.animate([
+      { transform: "translate(-50%, -50%) scale(0.45) rotate(0deg)", opacity: 0 },
+      { transform: "translate(-50%, -50%) scale(1.05) rotate(65deg)", opacity: 1, offset: 0.25 },
+      { transform: "translate(-50%, -50%) scale(1.18) rotate(165deg)", opacity: 0.95, offset: 0.72 },
+      { transform: "translate(-50%, -50%) scale(1.32) rotate(225deg)", opacity: 0 }
+    ], { duration: 920, easing: "cubic-bezier(0.22, 1, 0.36, 1)", fill: "forwards" }).onfinish = () => wrap.remove();
+  }
+
+  function finishMagicCast(cardId) {
+    const card = gameState.cards[cardId];
+    magicPaymentState = null;
+    refreshMagicPaymentUI();
+    if (!card) return;
+    card.isFaceDown = false;
+    moveCardToZone(card.id, `field-${card.owner}`, { rx: 0.5, ry: 0.45 });
+    const colors = typeof attributeFlashColors === "function"
+      ? attributeFlashColors(lookupCatalog(card)?.attribute)
+      : ["#38bdf8"];
+    const timestamp = Math.max(Date.now(), (gameState.lastActionEffect?.timestamp || 0) + 1);
+    gameState.lastActionEffect = { type: "magicCast", cardId: card.id, colors, timestamp };
+    lastSeenActionEffectTime = timestamp;
+    playMagicCastEffect(card.id, colors);
+    updateRoomState();
+  }
+
+  window.cancelMagicPayment = function () {
+    if (!magicPaymentState) return;
+    const st = magicPaymentState;
+    const owner = st.owner;
+    magicPaymentState = null;
+
+    if (st.reserveNormalPaid > 0) {
+      gameState[`${owner}_trash_core`] = Math.max(0, (parseInt(gameState[`${owner}_trash_core`], 10) || 0) - st.reserveNormalPaid);
+      gameState[`${owner}_reserve`] = (parseInt(gameState[`${owner}_reserve`], 10) || 0) + st.reserveNormalPaid;
+      playCoreTransferAnimation(`trash-core-box-${owner}`, `reserve-box-${owner}`, `退還 +${st.reserveNormalPaid} CORE`, "refresh", st.reserveNormalPaid);
+      triggerCounterKeyFlash(`${owner}_reserve`, st.reserveNormalPaid);
+    }
+
+    for (const [cid, cnt] of Object.entries(st.fieldNormalPaid)) {
+      if (cnt <= 0) continue;
+      const c = gameState.cards[cid];
+      gameState[`${owner}_trash_core`] = Math.max(0, (parseInt(gameState[`${owner}_trash_core`], 10) || 0) - cnt);
+      if (c) {
+        c.cores = (c.cores || 0) + cnt;
+        const el = document.getElementById(cid);
+        if (el) playCoreTransferAnimation(`trash-core-box-${owner}`, el.querySelector(".card-controls") || el, null, "refresh", cnt);
+        triggerCardCoreFlash(cid, cnt);
+      } else {
+        gameState[`${owner}_reserve`] = (parseInt(gameState[`${owner}_reserve`], 10) || 0) + cnt;
+      }
+    }
+
+    if (st.soulPaid && st.soulPrevLocation) {
+      gameState.soulCoreLocation[owner] = st.soulPrevLocation;
+      playSoulCoreMoveAnimation(owner, "trash", st.soulPrevLocation);
+    }
+
+    refreshMagicPaymentUI();
+    updateAllUI();
+    updateRoomState();
+  };
+
+  function payOneCoreFromFieldCard(cardId) {
+    if (!magicPaymentState) return;
+    const st = magicPaymentState;
+    const owner = st.owner;
+    const card = gameState.cards[cardId];
+    if (!card || card.owner !== owner || card.zone !== `field-${owner}`) return;
+
+    const normal = card.cores || 0;
+    const hasSoul = gameState.soulCoreLocation?.[owner] === card.id;
+    if (normal <= 0 && !hasSoul) return;
+
+    const cardEl = document.getElementById(card.id);
+    const srcAnchor = cardEl ? (cardEl.querySelector(".card-controls") || cardEl) : card.id;
+
+    if (normal > 0) {
+      card.cores = normal - 1;
+      gameState[`${owner}_trash_core`] = (parseInt(gameState[`${owner}_trash_core`], 10) || 0) + 1;
+      st.fieldNormalPaid[card.id] = (st.fieldNormalPaid[card.id] || 0) + 1;
+      playCoreTransferAnimation(srcAnchor, `trash-core-box-${owner}`, "支付魔法 -1 CORE", "cost", 1);
+      triggerCardCoreFlash(card.id, -1);
+      triggerCounterKeyFlash(`${owner}_trash_core`, 1);
+    } else if (hasSoul) {
+      st.soulPaid = true;
+      st.soulPrevLocation = card.id;
+      gameState.soulCoreLocation[owner] = "trash";
+      playSoulCoreMoveAnimation(owner, card.id, "trash");
+      triggerCardCoreFlash(card.id, -1);
+      triggerCounterKeyFlash(`${owner}_trash_core`, 1);
+    }
+
+    st.remainingCost -= 1;
+    updateAllUI();
+    updateRoomState();
+
+    if (st.remainingCost <= 0) {
+      finishMagicCast(st.cardId);
+    } else {
+      refreshMagicPaymentUI();
+    }
+  }
+
+  window.useMagicCard = function (cardId) {
+    if (magicPaymentState) {
+      showNotice("目前正在支付魔法費用中，請先完成支付或點擊「取消魔法」。");
+      return;
+    }
+    const card = gameState.cards[cardId];
+    if (!canUseMagicInHand(card)) return;
+    const owner = card.owner;
+    const data = lookupCatalog(card);
+    const baseCost = Number(data?.cost ?? 0);
+    const safeCost = Number.isFinite(baseCost) ? Math.max(0, baseCost) : 0;
+    const fieldSyms = typeof window.getPlayerFieldSymbols === "function" ? window.getPlayerFieldSymbols(owner) : {};
+    const { actual } = typeof window.calculateReducedCost === "function"
+      ? window.calculateReducedCost(safeCost, data?.reduction || "", fieldSyms)
+      : { actual: safeCost };
+
+    hideCardPreview();
+
+    if (actual <= 0) {
+      finishMagicCast(cardId);
+      return;
+    }
+
+    const reserveNormal = parseInt(gameState[`${owner}_reserve`], 10) || 0;
+    const soulInReserve = gameState.soulCoreLocation?.[owner] === "reserve";
+    const reserveTotal = reserveNormal + (soulInReserve ? 1 : 0);
+
+    const payableFieldCards = getFieldPayableCards(owner);
+    const fieldTotal = payableFieldCards.reduce((sum, c) => sum + getDisplayedCardCoreCount(c), 0);
+
+    if (reserveTotal + fieldTotal < actual) {
+      showNotice(`Core 不足！使用此魔法卡需要 ${actual} Core（目前預備區與場上合計 ${reserveTotal + fieldTotal} Core）。`);
+      return;
+    }
+
+    // 預備區足夠直接支付
+    if (reserveTotal >= actual) {
+      const normalToPay = Math.min(reserveNormal, actual);
+      const needSoul = actual > normalToPay && soulInReserve;
+      if (normalToPay > 0) {
+        gameState[`${owner}_reserve`] = reserveNormal - normalToPay;
+        gameState[`${owner}_trash_core`] = (parseInt(gameState[`${owner}_trash_core`], 10) || 0) + normalToPay;
+        triggerCounterKeyFlash(`${owner}_reserve`, -normalToPay);
+        triggerCounterKeyFlash(`${owner}_trash_core`, normalToPay);
+      }
+      if (needSoul) {
+        gameState.soulCoreLocation[owner] = "trash";
+        playSoulCoreMoveAnimation(owner, "reserve", "trash");
+      }
+      playCoreTransferAnimation(`reserve-box-${owner}`, `trash-core-box-${owner}`, `✨ 支付魔法 (${actual} CORE)`, "cost", actual);
+      updateAllUI();
+      finishMagicCast(cardId);
+      return;
+    }
+
+    // 預備區不足：先全扣預備區 Core 至廢棄區，再讓玩家點擊場上發光卡牌補付剩餘費用
+    let reservePaidNormal = 0;
+    let soulPaid = false;
+    let soulPrevLocation = null;
+
+    if (reserveNormal > 0) {
+      reservePaidNormal = reserveNormal;
+      gameState[`${owner}_reserve`] = 0;
+      gameState[`${owner}_trash_core`] = (parseInt(gameState[`${owner}_trash_core`], 10) || 0) + reserveNormal;
+      triggerCounterKeyFlash(`${owner}_reserve`, -reserveNormal);
+      triggerCounterKeyFlash(`${owner}_trash_core`, reserveNormal);
+    }
+    if (soulInReserve) {
+      soulPaid = true;
+      soulPrevLocation = "reserve";
+      gameState.soulCoreLocation[owner] = "trash";
+      playSoulCoreMoveAnimation(owner, "reserve", "trash");
+    }
+    if (reserveTotal > 0) {
+      playCoreTransferAnimation(`reserve-box-${owner}`, `trash-core-box-${owner}`, `先付預備區 ${reserveTotal} CORE`, "cost", reserveTotal);
+    }
+
+    magicPaymentState = {
+      cardId,
+      owner,
+      totalCost: actual,
+      remainingCost: actual - reserveTotal,
+      reserveNormalPaid: reservePaidNormal,
+      soulPaid,
+      soulPrevLocation,
+      fieldNormalPaid: {}
+    };
+
+    updateAllUI();
+    refreshMagicPaymentUI();
+    updateRoomState();
+  };
+
+  function evaluateMagicCard(card) {
+    if (!canUseMagicInHand(card)) return { canExecute: false, actual: 0, available: 0 };
+    const owner = card.owner;
+    const data = lookupCatalog(card);
+    const baseCost = Number(data?.cost ?? 0);
+    const safeCost = Number.isFinite(baseCost) ? Math.max(0, baseCost) : 0;
+    const fieldSyms = typeof window.getPlayerFieldSymbols === "function" ? window.getPlayerFieldSymbols(owner) : {};
+    const { actual } = typeof window.calculateReducedCost === "function"
+      ? window.calculateReducedCost(safeCost, data?.reduction || "", fieldSyms)
+      : { actual: safeCost };
+    const reserveNormal = parseInt(gameState[`${owner}_reserve`], 10) || 0;
+    const soulInReserve = gameState.soulCoreLocation?.[owner] === "reserve";
+    const reserveTotal = reserveNormal + (soulInReserve ? 1 : 0);
+    const fieldTotal = getFieldPayableCards(owner).reduce((sum, c) => sum + getDisplayedCardCoreCount(c), 0);
+    const available = reserveTotal + fieldTotal;
+    return { canExecute: !magicPaymentState && available >= actual, actual, available };
+  }
+
+  // === 手牌「使用」按鈕掛載 (電腦懸停 & 手機預覽) ===
+  function updateMiniMagicUse(el, card) {
+    const show = canUseMagicInHand(card);
+    el.classList.toggle("has-magic-use", show);
+    let btn = el.querySelector(":scope > .mini-magic-use-btn");
+    if (show) {
+      if (!btn) {
+        btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "mini-translate-btn mini-magic-use-btn";
+        btn.textContent = "使用";
+        btn.draggable = false;
+        ["pointerdown", "mousedown", "dblclick", "dragstart"].forEach(ev =>
+          btn.addEventListener(ev, e => e.stopPropagation())
+        );
+        btn.onclick = e => {
+          e.preventDefault();
+          e.stopPropagation();
+          if (btn.disabled) return;
+          useMagicCard(card.id);
+        };
+        el.append(btn);
+      }
+      const check = evaluateMagicCard(card);
+      btn.disabled = !check.canExecute;
+      btn.classList.toggle("magic-disabled", !check.canExecute);
+    } else {
+      btn?.remove();
+    }
+  }
+
+  const previewMagicUseBtn = document.createElement("button");
+  previewMagicUseBtn.id = "preview-magic-use-btn";
+  previewMagicUseBtn.type = "button";
+  previewMagicUseBtn.textContent = "使用";
+  previewMagicUseBtn.className = "hidden pointer-events-auto";
+  previewMagicUseBtn.onpointerdown = e => e.stopPropagation();
+  previewMagicUseBtn.onclick = e => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (previewMagicUseBtn.disabled) return;
+    if (activePreviewCardId) useMagicCard(activePreviewCardId);
+  };
+  document.getElementById("preview-action-row")?.append(previewMagicUseBtn);
+
+  const baseApplyVisualForMagic = applyCardVisualState;
+  applyCardVisualState = function (card, el) {
+    baseApplyVisualForMagic(card, el);
+    if (el && el.classList.contains("mini-translation-source")) {
+      updateMiniMagicUse(el, card);
+    }
+  };
+
+  const baseAttachMiniForMagic = attachMiniTranslation;
+  attachMiniTranslation = function (el, img, cardId) {
+    baseAttachMiniForMagic(el, img, cardId);
+    if (el && cardId && gameState.cards[cardId]) {
+      updateMiniMagicUse(el, gameState.cards[cardId]);
+    }
+  };
+
+  const baseSyncTurnForMagic = syncTurnPreview;
+  syncTurnPreview = function () {
+    baseSyncTurnForMagic();
+    const card = gameState.cards[activePreviewCardId];
+    const show = !!(canUseMagicInHand(card) && controlMode !== "PC");
+    previewMagicUseBtn.classList.toggle("hidden", !show);
+    if (show) {
+      const check = evaluateMagicCard(card);
+      previewMagicUseBtn.disabled = !check.canExecute;
+      previewMagicUseBtn.classList.toggle("magic-disabled", !check.canExecute);
+    }
+  };
+
+  const baseHidePreviewForMagic = hideCardPreview;
+  hideCardPreview = function (...args) {
+    baseHidePreviewForMagic(...args);
+    previewMagicUseBtn.classList.add("hidden");
+  };
+
+  const baseUpdateAllForMagic = updateAllUI;
+  updateAllUI = function () {
+    baseUpdateAllForMagic();
+    Object.values(gameState.cards).forEach(c => {
+      if (c.zone && c.zone.startsWith("hand-")) {
+        const el = document.getElementById(c.id);
+        if (el && el.classList.contains("mini-translation-source")) {
+          updateMiniMagicUse(el, c);
+        }
+      }
+    });
+    if (activePreviewCardId) {
+      const card = gameState.cards[activePreviewCardId];
+      if (canUseMagicInHand(card) && controlMode !== "PC") {
+        const check = evaluateMagicCard(card);
+        previewMagicUseBtn.disabled = !check.canExecute;
+        previewMagicUseBtn.classList.toggle("magic-disabled", !check.canExecute);
+      }
+    }
+    if (magicPaymentState) refreshMagicPaymentUI();
+  };
+
+  // 攔截場上發光卡牌的點擊以支付 Core（支援電腦 click 與手機 pointerup）
+  document.addEventListener("click", e => {
+    if (!magicPaymentState) return;
+    const cardEl = e.target.closest(".card.magic-pay-candidate");
+    if (!cardEl) return;
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+    payOneCoreFromFieldCard(cardEl.id);
+  }, true);
+
+  document.addEventListener("pointerup", e => {
+    if (!magicPaymentState || controlMode !== "MOBILE") return;
+    const cardEl = e.target.closest(".card.magic-pay-candidate");
+    if (!cardEl) return;
+    e.preventDefault();
+    e.stopPropagation();
+    e.stopImmediatePropagation();
+    payOneCoreFromFieldCard(cardEl.id);
+  }, true);
+
+  // 多人同步魔法特效
+  const baseApplyStateForMagic = window.applyGameState;
+  window.applyGameState = function (state) {
+    const prevEffectTime = gameState.lastActionEffect?.timestamp;
+    baseApplyStateForMagic(state);
+    const eff = state?.lastActionEffect;
+    if (eff?.type === "magicCast" && eff.timestamp !== prevEffectTime && eff.cardId) {
+      const safeColors = Array.isArray(eff.colors)
+        ? eff.colors.filter(c => /^#[a-f0-9]{6}$/i.test(c)).slice(0, 6)
+        : ["#38bdf8"];
+      playMagicCastEffect(eff.cardId, safeColors);
+    }
+  };
+})();
+</script>
+<!-- #endregion -->
+
+
+<!-- #region 15. [外掛] 創界神 Nexus 配置時詢問觸發「神託」與前後動畫視窗 -->
+<style>
+  .god-oracle-window {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 920;
+    width: min(390px, calc(100% - 20px));
+    background: rgba(12, 10, 9, 0.94);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1.5px solid #e0b25b;
+    border-radius: 4px;
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.92), 0 0 24px rgba(224, 178, 91, 0.35);
+    padding: 10px 12px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: auto;
+  }
+  .god-oracle-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    border-bottom: 1px solid rgba(176, 148, 102, 0.38);
+    padding-bottom: 6px;
+  }
+  .god-oracle-title {
+    font-size: 14px;
+    font-weight: 900;
+    color: #fde047;
+    letter-spacing: 0.14em;
+    text-shadow: 0 0 10px rgba(250, 204, 21, 0.45);
+  }
+  .god-oracle-trash-btn {
+    border: 1px solid rgba(248, 113, 113, 0.75);
+    background: rgba(127, 29, 29, 0.85);
+    color: #fecaca;
+    font-size: 11px;
+    font-weight: 900;
+    padding: 4px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+  .god-oracle-trash-btn:hover {
+    background: #ef4444;
+    color: #ffffff;
+  }
+  .god-oracle-cards {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    min-height: 146px;
+    flex-wrap: wrap;
+  }
+  .god-oracle-card-item {
+    width: 100px;
+    height: 140px;
+    border: 1.5px solid rgba(224, 178, 91, 0.8);
+    border-radius: 4px;
+    background-color: #0e0e0e;
+    background-size: cover;
+    background-position: center;
+    cursor: pointer;
+    position: relative;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.85);
+    transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+  }
+  .god-oracle-card-item:hover {
+    transform: translateY(-6px) scale(1.04);
+    border-color: #fde047;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.95), 0 0 16px rgba(250, 204, 21, 0.65);
+  }
+</style>
+
+<div id="oracle-trigger-confirm-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[12150] hidden flex justify-center items-center">
+  <div class="border border-[#c8aa76] bg-[#0a0a0a]/95 p-5 w-[320px] flex flex-col gap-3.5 shadow-2xl rounded-sm">
+    <div class="text-[#e0b25b] font-black tracking-widest text-center text-sm uppercase border-b border-[#b09466]/30 pb-2">神託確認</div>
+    <div id="oracle-trigger-confirm-desc" class="text-[#dcd6cc] text-xs text-center leading-relaxed">是否觸發《神託》，從牌組頂翻開 3 張卡牌？</div>
+    <button id="btn-oracle-trigger-yes" type="button" class="bg-[#c8aa76] py-2.5 text-black font-black hover:bg-white transition-all cursor-pointer text-xs tracking-wider rounded-sm">✨ 觸發神託 (翻開 3 張)</button>
+    <button type="button" class="border border-[#b09466]/40 bg-white/5 py-2 text-[#c8bea8] text-xs hover:bg-white/15 hover:text-white transition-all cursor-pointer rounded-sm" onclick="closeOracleTriggerConfirm()">✕ 暫不觸發</button>
+  </div>
+</div>
+
+<div id="oracle-hand-confirm-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[12200] hidden flex justify-center items-center">
+  <div class="border border-[#c8aa76] bg-[#0a0a0a]/95 p-5 w-[310px] flex flex-col gap-3.5 shadow-2xl rounded-sm">
+    <div class="text-[#e0b25b] font-black tracking-widest text-center text-sm uppercase border-b border-[#b09466]/30 pb-2">神託選擇</div>
+    <div id="oracle-hand-confirm-desc" class="text-[#dcd6cc] text-xs text-center leading-relaxed">是否將此卡牌加入手牌？</div>
+    <button id="btn-oracle-to-hand-yes" type="button" class="bg-[#c8aa76] py-2 text-black font-black hover:bg-white transition-all cursor-pointer text-xs tracking-wider rounded-sm">✓ 加入手牌</button>
+    <button type="button" class="border border-[#b09466]/40 bg-white/5 py-2 text-[#c8bea8] text-xs hover:bg-white/15 hover:text-white transition-all cursor-pointer rounded-sm" onclick="closeOracleHandConfirm()">✕ 取消</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  const oracleWindows = { p1: null, p2: null };
+  let pendingOraclePick = null;
+  let pendingOracleTrigger = null;
+
+  function isGrandwalkerNexusCard(card) {
+    if (!card) return false;
+    const data = lookupCatalog(card);
+    if (!data) return false;
+    const type = String(data.type || "").toLowerCase();
+    const family = String(data.family || "");
+    const hasGod = family.includes("創界神") || type.includes("創界神");
+    if (!hasGod) return false;
+    if (!type) return true;
+    return type.includes("nexus") || type.includes("ネクサス") || type.includes("創界神");
+  }
+
+  window.closeOracleTriggerConfirm = function () {
+    pendingOracleTrigger = null;
+    document.getElementById("oracle-trigger-confirm-modal")?.classList.add("hidden");
+  };
+
+  function promptOracleTrigger(owner, card) {
+    const deck = gameState[`${owner}Deck`];
+    if (!Array.isArray(deck) || deck.length === 0) return;
+    pendingOracleTrigger = { owner, cardId: card?.id || null };
+    const cardName = lookupCatalog(card)?.name || "創界神";
+    const desc = document.getElementById("oracle-trigger-confirm-desc");
+    if (desc) desc.textContent = `已配置「${cardName}」，是否觸發《神託》從牌組頂翻開 3 張卡牌？`;
+    document.getElementById("oracle-trigger-confirm-modal")?.classList.remove("hidden");
+    const yesBtn = document.getElementById("btn-oracle-trigger-yes");
+    if (yesBtn) {
+      yesBtn.onclick = () => {
+        const info = pendingOracleTrigger;
+        closeOracleTriggerConfirm();
+        if (info) triggerGodOracle(info.owner);
+      };
+    }
+  }
+
+  window.closeOracleHandConfirm = function () {
+    pendingOraclePick = null;
+    document.getElementById("oracle-hand-confirm-modal")?.classList.add("hidden");
+  };
+
+  function getOracleTileRect(owner, cardId) {
+    const tile = document.querySelector(`#god-oracle-window-${owner} .god-oracle-card-item[data-card-id="${cardId}"]`);
+    if (!tile) return null;
+    const r = tile.getBoundingClientRect();
+    return r.width > 0 && r.height > 0 ? { left: r.left, top: r.top, width: r.width, height: r.height } : null;
+  }
+
+  function promptOracleCardToHand(owner, cardId) {
+    const card = gameState.cards[cardId];
+    if (!card) return;
+    pendingOraclePick = { owner, cardId };
+    const cardName = lookupCatalog(card)?.name || "此卡牌";
+    const desc = document.getElementById("oracle-hand-confirm-desc");
+    if (desc) desc.textContent = `是否將「${cardName}」加入手牌？`;
+    document.getElementById("oracle-hand-confirm-modal")?.classList.remove("hidden");
+    const yesBtn = document.getElementById("btn-oracle-to-hand-yes");
+    if (yesBtn) {
+      yesBtn.onclick = () => {
+        const pick = pendingOraclePick;
+        closeOracleHandConfirm();
+        if (!pick) return;
+        const st = oracleWindows[pick.owner];
+        if (!st) return;
+        const startRect = getOracleTileRect(pick.owner, pick.cardId);
+        const idx = st.cardIds.indexOf(pick.cardId);
+        if (idx !== -1) st.cardIds.splice(idx, 1);
+        const c = gameState.cards[pick.cardId];
+        if (c) c.isFaceDown = false;
+        if (st.cardIds.length === 0) {
+          closeOracleWindow(pick.owner);
+        } else {
+          renderOracleWindow(pick.owner, false);
+        }
+        moveCardToZone(pick.cardId, `hand-${pick.owner}`, startRect ? { startRect } : {});
+      };
+    }
+  }
+
+  function closeOracleWindow(owner) {
+    oracleWindows[owner] = null;
+    document.getElementById(`god-oracle-window-${owner}`)?.remove();
+    hideCardPreview();
+  }
+
+  function discardAllOracleCards(owner) {
+    const st = oracleWindows[owner];
+    if (!st) return;
+    const items = st.cardIds.map(cid => ({ cid, startRect: getOracleTileRect(owner, cid) }));
+    closeOracleWindow(owner);
+    items.forEach(({ cid, startRect }, idx) => {
+      setTimeout(() => {
+        const c = gameState.cards[cid];
+        if (c) c.isFaceDown = false;
+        moveCardToZone(cid, `zone-trash-${owner}`, startRect ? { startRect } : {});
+      }, idx * 85);
+    });
+  }
+
+  function animateOracleCardsEnter(owner, tiles) {
+    const deckRect = getZoneAnchorBoxRect(`deck-${owner}`, owner);
+    tiles.forEach((tile, idx) => {
+      const targetRect = tile.getBoundingClientRect();
+      if (!targetRect.width || !targetRect.height) return;
+      const cid = tile.dataset.cardId;
+      const card = gameState.cards[cid];
+      const src = card?.imgBase64 || cardImageCache[cid] || "";
+
+      if (deckRect) {
+        tile.style.opacity = "0";
+        const ghost = document.createElement("div");
+        ghost.className = "card-fx-ghost face-down";
+        Object.assign(ghost.style, {
+          left: `${deckRect.left}px`,
+          top: `${deckRect.top}px`,
+          width: `${targetRect.width}px`,
+          height: `${targetRect.height}px`,
+          zIndex: String(16600 + idx)
+        });
+        document.body.appendChild(ghost);
+
+        const dx = targetRect.left - deckRect.left;
+        const dy = targetRect.top - deckRect.top;
+        const delay = idx * 110;
+
+        // 飛行到神託視窗並翻開正面
+        const flyHalf = ghost.animate([
+          { transform: "translate(0px, 0px) scale(0.75) perspective(700px) rotateY(0deg)", opacity: 0.9 },
+          { transform: `translate(${dx * 0.55}px, ${dy * 0.55 - 18}px) scale(1.06) perspective(700px) rotateY(90deg)`, opacity: 1 }
+        ], { duration: 190, delay, easing: "cubic-bezier(0.4, 0, 0.85, 0.65)", fill: "forwards" });
+
+        flyHalf.onfinish = () => {
+          ghost.classList.remove("face-down");
+          if (src) ghost.style.backgroundImage = `url(${src})`;
+          ghost.style.borderColor = "#fde047";
+          const flyEnd = ghost.animate([
+            { transform: `translate(${dx * 0.55}px, ${dy * 0.55 - 18}px) scale(1.06) perspective(700px) rotateY(-90deg)`, opacity: 1 },
+            { transform: `translate(${dx}px, ${dy}px) scale(1) perspective(700px) rotateY(0deg)`, opacity: 1 }
+          ], { duration: 210, easing: "cubic-bezier(0.16, 1, 0.3, 1)", fill: "forwards" });
+          flyEnd.onfinish = () => {
+            ghost.remove();
+            tile.style.opacity = "1";
+          };
+        };
+      } else {
+        tile.animate([
+          { transform: "translateY(-18px) scale(0.85)", opacity: 0 },
+          { transform: "translateY(0px) scale(1)", opacity: 1 }
+        ], { duration: 260, delay: idx * 90, easing: "cubic-bezier(0.22, 1, 0.36, 1)", fill: "both" });
+      }
+    });
+  }
+
+  function renderOracleWindow(owner, withEnterAnim = false) {
+    const fieldEl = document.getElementById(`field-${owner}`);
+    if (!fieldEl) return;
+    document.getElementById(`god-oracle-window-${owner}`)?.remove();
+    const st = oracleWindows[owner];
+    if (!st || !st.cardIds.length) return;
+
+    const win = document.createElement("div");
+    win.id = `god-oracle-window-${owner}`;
+    win.className = "god-oracle-window";
+    ["mousedown", "pointerdown", "click", "dblclick"].forEach(ev =>
+      win.addEventListener(ev, e => e.stopPropagation())
+    );
+
+    const header = document.createElement("div");
+    header.className = "god-oracle-header";
+
+    const title = document.createElement("span");
+    title.className = "god-oracle-title";
+    title.textContent = "神託";
+
+    const trashBtn = document.createElement("button");
+    trashBtn.type = "button";
+    trashBtn.className = "god-oracle-trash-btn";
+    trashBtn.textContent = "放置在廢棄區";
+    trashBtn.onclick = e => {
+      e.preventDefault();
+      e.stopPropagation();
+      discardAllOracleCards(owner);
+    };
+
+    header.append(title, trashBtn);
+
+    const cardsWrap = document.createElement("div");
+    cardsWrap.className = "god-oracle-cards";
+
+    const tiles = [];
+    st.cardIds.forEach(cid => {
+      const card = gameState.cards[cid];
+      if (!card) return;
+      const src = card.imgBase64 || cardImageCache[cid] || "";
+      const tile = document.createElement("div");
+      tile.className = "god-oracle-card-item";
+      tile.dataset.cardId = cid;
+      if (src) tile.style.backgroundImage = `url(${src})`;
+      tile.title = "點擊選擇是否加入手牌";
+
+      tile.addEventListener("mouseenter", () => {
+        if (controlMode === "PC" && src) showCardPreviewNextToElement(tile, src, cid, false);
+      });
+      tile.addEventListener("mouseleave", () => {
+        if (controlMode === "PC") hideCardPreview();
+      });
+      tile.addEventListener("click", e => {
+        e.preventDefault();
+        e.stopPropagation();
+        hideCardPreview();
+        promptOracleCardToHand(owner, cid);
+      });
+
+      tiles.push(tile);
+      cardsWrap.appendChild(tile);
+    });
+
+    win.append(header, cardsWrap);
+    fieldEl.appendChild(win);
+
+    if (withEnterAnim) {
+      win.animate([
+        { opacity: 0, transform: "translate(-50%, -50%) scale(0.92)" },
+        { opacity: 1, transform: "translate(-50%, -50%) scale(1)" }
+      ], { duration: 220, easing: "cubic-bezier(0.22, 1, 0.36, 1)" });
+      requestAnimationFrame(() => animateOracleCardsEnter(owner, tiles));
+    }
+  }
+
+  function triggerGodOracle(owner) {
+    const deck = gameState[`${owner}Deck`];
+    if (!Array.isArray(deck) || deck.length === 0) return;
+
+    if (oracleWindows[owner]?.cardIds?.length) {
+      discardAllOracleCards(owner);
+    }
+
+    const picked = deck.splice(0, 3);
+    if (!picked.length) return;
+
+    picked.forEach(cid => {
+      const c = gameState.cards[cid];
+      if (c) {
+        c.zone = `oracle-${owner}`;
+        c.isFaceDown = false;
+        c.rotation = 0;
+        document.getElementById(cid)?.remove();
+      }
+    });
+
+    oracleWindows[owner] = { owner, cardIds: picked };
+    updateAllUI();
+    renderOracleWindow(owner, true);
+    updateRoomState();
+  }
+
+  const baseMoveForOracle = moveCardToZone;
+  moveCardToZone = function (id, zone, options = {}) {
+    const card = gameState.cards[id];
+    const prevZone = card?.zone || "";
+    const res = baseMoveForOracle(id, zone, options);
+    if (!isSyncing && card && zone.startsWith("zone-god-") && !prevZone.startsWith("zone-god-") && isGrandwalkerNexusCard(card)) {
+      const owner = zone.endsWith("p2") ? "p2" : "p1";
+      setTimeout(() => promptOracleTrigger(owner, card), 180);
+    }
+    return res;
+  };
+
+  const baseResetForOracle = confirmResetGame;
+  confirmResetGame = function (...args) {
+    closeOracleTriggerConfirm();
+    closeOracleHandConfirm();
+    closeOracleWindow("p1");
+    closeOracleWindow("p2");
+    return baseResetForOracle(...args);
+  };
+
+  ["oracle-trigger-confirm-modal", "oracle-hand-confirm-modal"].forEach(mid => {
+    const modal = document.getElementById(mid);
+    if (modal) {
+      modal.addEventListener("pointerdown", e => {
+        if (e.target === modal) {
+          e.stopPropagation();
+          if (mid === "oracle-trigger-confirm-modal") closeOracleTriggerConfirm();
+          else closeOracleHandConfirm();
+        }
+      });
+    }
+  });
+})();
+</script>
+<!-- #endregion -->
+
+
+<!-- #region 16. [外掛] Gemini Vision AI 自動辨識減輕 (Reduction) 與標誌 (Symbol) 系統 -->
+<style>
+  .ai-settings-panel {
+    margin: 8px 0;
+    padding: 10px 12px;
+    border: 1px solid rgba(56, 189, 248, 0.45);
+    border-radius: 3px;
+    background: rgba(8, 15, 24, 0.85);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .ai-settings-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .ai-settings-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .bs-picker-ai-btn {
+    background: rgba(12, 74, 110, 0.78) !important;
+    color: #bae6fd !important;
+    border: 1px solid rgba(56, 189, 248, 0.75) !important;
+    font-weight: 900 !important;
+    padding: 5px 10px !important;
+    font-size: 12px !important;
+  }
+  .bs-picker-ai-btn:hover {
+    background: #0284c7 !important;
+    color: #ffffff !important;
+  }
+  #btn-ai-batch-scan {
+    border-color: rgba(56, 189, 248, 0.75);
+    color: #7dd3fc;
+  }
+  #btn-ai-batch-stop {
+    border-color: rgba(248, 113, 113, 0.85);
+    color: #fecaca;
+    background: rgba(127, 29, 29, 0.7);
+  }
+</style>
+
+<script>
+(function () {
+  const AI_KEY_STORAGE = "bs_gemini_api_key";
+  const AI_MODEL_STORAGE = "bs_gemini_model";
+  let aiBatchRunning = false;
+  let aiBatchStopRequested = false;
+
+  function getSavedApiKey() {
+    try {
+      return (localStorage.getItem(AI_KEY_STORAGE) || "").trim();
+    } catch (e) {
+      return "";
+    }
+  }
+
+  function getSavedModel() {
+    try {
+      const saved = localStorage.getItem(AI_MODEL_STORAGE);
+      if (!saved || saved === "gemini-2.5-flash" || saved === "gemini-2.0-flash") {
+        return "gemini-3.8-flash";
+      }
+      return saved;
+    } catch (e) {
+      return "gemini-3.8-flash";
+    }
+  }
+
+  function syncAiKeyUI() {
+    const key = getSavedApiKey();
+    const model = getSavedModel();
+    const keyInput = document.getElementById("ai-gemini-key-input");
+    const modelSelect = document.getElementById("ai-gemini-model-select");
+    const hint = document.getElementById("ai-settings-hint");
+    const toggleBtn = document.getElementById("btn-ai-settings-toggle");
+    if (keyInput) keyInput.value = key;
+    if (modelSelect) modelSelect.value = model;
+    if (hint) {
+      hint.textContent = key ? "✓ 已儲存本機 API Key，可直接點擊「✨ AI 辨識」或「✨ AI 批次補齊」。" : "尚未設定 API Key（請至 aistudio.google.com 取得免費 Key）。";
+    }
+    if (toggleBtn) {
+      toggleBtn.textContent = key ? "🔑 AI Key ✓" : "🔑 AI Key";
+    }
+  }
+
+  window.toggleAiSettingsPanel = function () {
+    const panel = document.getElementById("ai-settings-panel");
+    if (!panel) return;
+    panel.classList.toggle("hidden");
+    if (!panel.classList.contains("hidden")) {
+      syncAiKeyUI();
+    }
+  };
+
+  window.saveAiSettings = function () {
+    const keyInput = document.getElementById("ai-gemini-key-input");
+    const modelSelect = document.getElementById("ai-gemini-model-select");
+    const key = (keyInput?.value || "").trim();
+    const model = modelSelect?.value || "gemini-2.5-flash";
+    try {
+      if (key) localStorage.setItem(AI_KEY_STORAGE, key);
+      else localStorage.removeItem(AI_KEY_STORAGE);
+      localStorage.setItem(AI_MODEL_STORAGE, model);
+    } catch (e) {}
+    syncAiKeyUI();
+    catalogStatus(key ? "已於本機瀏覽器儲存 Gemini API Key。" : "已清除本機 Gemini API Key。");
+  };
+
+  window.pasteAiApiKey = async function () {
+    const keyInput = document.getElementById("ai-gemini-key-input");
+    let pasted = "";
+    try {
+      if (navigator.clipboard && typeof navigator.clipboard.readText === "function") {
+        pasted = (await navigator.clipboard.readText() || "").trim();
+      }
+    } catch (e) {
+      pasted = "";
+    }
+    if (!pasted) {
+      const manual = window.prompt("無法自動讀取剪貼簿（或剪貼簿為空），請在此貼上你的 Gemini API Key：", keyInput?.value || "");
+      if (manual === null) return;
+      pasted = manual.trim();
+    }
+    if (!pasted) {
+      catalogStatus("未偵測到有效的 API Key。");
+      return;
+    }
+    if (keyInput) keyInput.value = pasted;
+    window.saveAiSettings();
+    catalogStatus("✓ 已貼上並於本機儲存 Gemini API Key！");
+  };
+
+  window.clearAiSettings = function () {
+    try {
+      localStorage.removeItem(AI_KEY_STORAGE);
+    } catch (e) {}
+    syncAiKeyUI();
+    catalogStatus("已清除本機 Gemini API Key。");
+  };
+
+  function cropCardCornersBase64(dataUrl) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => {
+        const w = img.naturalWidth || 400;
+        const h = img.naturalHeight || 560;
+
+        // 左上角（費用與減輕）
+        const tlCanvas = document.createElement("canvas");
+        const tlSx = 0, tlSy = 0, tlSw = Math.round(w * 0.65), tlSh = Math.round(h * 0.30);
+        tlCanvas.width = Math.max(160, tlSw);
+        tlCanvas.height = Math.max(100, tlSh);
+        const tlCtx = tlCanvas.getContext("2d");
+        tlCtx.drawImage(img, tlSx, tlSy, tlSw, tlSh, 0, 0, tlCanvas.width, tlCanvas.height);
+
+        // 右下角（標誌）
+        const brCanvas = document.createElement("canvas");
+        const brSx = Math.round(w * 0.42), brSy = Math.round(h * 0.68), brSw = w - brSx, brSh = h - brSy;
+        brCanvas.width = Math.max(160, brSw);
+        brCanvas.height = Math.max(100, brSh);
+        const brCtx = brCanvas.getContext("2d");
+        brCtx.drawImage(img, brSx, brSy, brSw, brSh, 0, 0, brCanvas.width, brCanvas.height);
+
+        resolve({
+          tl: tlCanvas.toDataURL("image/jpeg", 0.92).split(",")[1],
+          br: brCanvas.toDataURL("image/jpeg", 0.92).split(",")[1]
+        });
+      };
+      img.onerror = () => reject(new Error("無法載入卡圖進行裁切。"));
+      img.src = dataUrl;
+    });
+  }
+
+  async function callGeminiForCardSymbols(imgDataUrl, apiKey, model) {
+    const { tl, br } = await cropCardCornersBase64(imgDataUrl);
+    const prompt = `你是 Battle Spirits (BS) 卡牌專家。請判讀這兩張同一張卡牌的局部裁切圖：
+- 第 1 張圖是卡牌【左上角】，顯示「費用」以及右側的「減輕標誌 (Reduction)」（小六角形寶石圖示）。
+- 第 2 張圖是卡牌【右下角】，顯示卡牌的「標誌 (Symbol)」（大寶石或創界神水滴/神徽圖示）。
+
+可用的單一標誌代碼只有這 9 種：
+紅 (Red)、紫 (Purple)、綠 (Green)、白 (White)、黃 (Yellow)、藍 (Blue)、全 (六色彩虹/萬能)、究 (金色究極)、神 (創界神/神標誌)
+
+規則：
+1. 若某個「單一標誌」同時代表兩種顏色或屬性（例如紅底的創界神標誌，或紅紫雙色寶石），請寫成「紅和神1」或「紅和紫1」（中間用「和」連接）。
+2. 多個相同標誌直接寫總數，例如 6 個紅減輕寫「紅6」，2 個紅標誌寫「紅2」，紅2藍1寫「紅2 藍1」。
+3. 若該區域沒有任何減輕或沒有任何標誌（例如魔法卡通常無標誌），該欄位請回傳空字串 ""。
+4. 只回傳純 JSON 物件，不要加任何解釋文字，格式如下：
+{"reduction": "紅6", "symbol": "紅2"}`;
+
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`;
+    const body = {
+      contents: [{
+        parts: [
+          { text: prompt },
+          { inline_data: { mime_type: "image/jpeg", data: tl } },
+          { inline_data: { mime_type: "image/jpeg", data: br } }
+        ]
+      }],
+      generationConfig: {
+        temperature: 0.1,
+        responseMimeType: "application/json"
+      }
+    };
+
+    async function doRequest(targetModel) {
+      const cleanModel = String(targetModel || "").replace(/^models\//i, "").trim();
+      const targetUrl = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(cleanModel)}:generateContent?key=${encodeURIComponent(apiKey)}`;
+      const r = await fetch(targetUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+      if (r.ok) return { r, usedModel: cleanModel };
+      let errMsg = `HTTP ${r.status}`;
+      try {
+        const errJson = await r.json();
+        errMsg = errJson?.error?.message || errMsg;
+      } catch (e) {}
+      const err = new Error(errMsg);
+      err.status = r.status;
+      throw err;
+    }
+
+    function applySelectedModel(m) {
+      try { localStorage.setItem(AI_MODEL_STORAGE, m); } catch (e) {}
+      const sel = document.getElementById("ai-gemini-model-select");
+      if (sel) {
+        if (![...sel.options].some(o => o.value === m)) {
+          sel.add(new Option(m + " (自動切換)", m));
+        }
+        sel.value = m;
+      }
+    }
+
+    let resp, usedModel = model;
+    try {
+      const out = await doRequest(model);
+      resp = out.r;
+      usedModel = out.usedModel;
+    } catch (err) {
+      const msg = String(err.message || "");
+      // 遇到 API Key 無效或配額上限時直接拋出
+      if (/API_KEY_INVALID|403|401|RESOURCE_EXHAUSTED|429/i.test(msg)) {
+        throw err;
+      }
+      const candidates = [];
+      const suggested = msg.match(/use\s+models\/([a-zA-Z0-9._-]+)/i)?.[1];
+      if (suggested) candidates.push(suggested);
+      ["gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-2.0-flash", "gemini-flash-latest"].forEach(m => {
+        if (!candidates.includes(m) && m !== model) candidates.push(m);
+      });
+
+      let switched = false;
+      for (const cand of candidates) {
+        try {
+          const out = await doRequest(cand);
+          resp = out.r;
+          usedModel = out.usedModel;
+          applySelectedModel(usedModel);
+          switched = true;
+          break;
+        } catch (e2) {
+          if (/API_KEY_INVALID|403|401|RESOURCE_EXHAUSTED|429/i.test(String(e2.message || ""))) {
+            throw e2;
+          }
+        }
+      }
+
+      if (!switched) {
+        // 最後嘗試查詢該 API Key 可用的模型清單
+        try {
+          const listResp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(apiKey)}`);
+          if (listResp.ok) {
+            const listJson = await listResp.json();
+            const avail = (listJson.models || [])
+              .filter(m => Array.isArray(m.supportedGenerationMethods) && m.supportedGenerationMethods.includes("generateContent"))
+              .map(m => String(m.name || "").replace(/^models\//i, ""))
+              .filter(name => /gemini/i.test(name) && !/embedding|imagen|veo|tts|audio/i.test(name));
+            for (const dyn of avail.slice(0, 4)) {
+              try {
+                const out = await doRequest(dyn);
+                resp = out.r;
+                usedModel = out.usedModel;
+                applySelectedModel(usedModel);
+                switched = true;
+                break;
+              } catch (e3) {}
+            }
+          }
+        } catch (eList) {}
+      }
+
+      if (!switched) {
+        throw err;
+      }
+    }
+
+    const data = await resp.json();
+    const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+    const cleaned = rawText.replace(/^```json\s*/i, "").replace(/```$/i, "").trim();
+    const parsed = JSON.parse(cleaned);
+    return {
+      reduction: String(parsed?.reduction || "").trim(),
+      symbol: String(parsed?.symbol || "").trim()
+    };
+  }
+
+  window.aiRecognizeCurrentCard = async function () {
+    const apiKey = getSavedApiKey();
+    if (!apiKey) {
+      const panel = document.getElementById("ai-settings-panel");
+      panel?.classList.remove("hidden");
+      syncAiKeyUI();
+      catalogStatus("請先在上方「🔑 AI Key」貼上並儲存你的 Gemini API Key！");
+      return;
+    }
+    if (!catalogImage) {
+      catalogStatus("此卡尚未導入卡圖，無法進行 AI 辨識。");
+      return;
+    }
+    const btn = document.getElementById("bs-picker-ai-btn");
+    const origText = btn ? btn.textContent : "✨ AI 辨識";
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = "⏳ 辨識中…";
+    }
+    catalogStatus("正在呼叫 Gemini AI 判讀左上角減輕與右下角標誌…");
+    try {
+      const result = await callGeminiForCardSymbols(catalogImage, apiKey, getSavedModel());
+      const redInput = document.getElementById("catalog-reduction");
+      const symInput = document.getElementById("catalog-symbol");
+      if (redInput) redInput.value = result.reduction;
+      if (symInput) symInput.value = result.symbol;
+      if (typeof window.syncCatalogSymbolPickers === "function") {
+        window.syncCatalogSymbolPickers();
+      }
+      catalogStatus(`✨ AI 辨識完成！減輕：「${result.reduction || "無"}」｜標誌：「${result.symbol || "無"}」（確認無誤後可按「💾 儲存並關閉」）`);
+    } catch (err) {
+      console.error("Gemini AI recognize failed:", err);
+      catalogStatus("AI 辨識失敗：" + (err.message || "請檢查 API Key 或網路連線。"));
+    } finally {
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = origText;
+      }
+    }
+  };
+
+  function setDeckDescStatus(msg) {
+    const el = document.getElementById("deck-description-status");
+    if (el) el.textContent = msg;
+  }
+
+  window.stopAiBatchCatalogScan = function () {
+    aiBatchStopRequested = true;
+    catalogStatus("正在停止批次辨識（將於本張完成後停止）…");
+    setDeckDescStatus("正在停止批次辨識（將於本張完成後停止）…");
+  };
+
+  window.runDeckAiBatchScan = async function () {
+    if (aiBatchRunning || catalogBusy) return;
+    if (!descriptionDeck || !Array.isArray(descriptionDeck.entries) || !descriptionDeck.entries.length) {
+      setDeckDescStatus("目前卡組沒有可辨識的卡片。");
+      return;
+    }
+
+    let apiKey = getSavedApiKey();
+    if (!apiKey) {
+      if (confirm("尚未設定 Gemini API Key，是否現在直接貼上 API Key？（僅存於本機瀏覽器）")) {
+        await window.pasteAiApiKey();
+        apiKey = getSavedApiKey();
+      }
+      if (!apiKey) {
+        setDeckDescStatus("請先至「📚 卡池」➔「🔑 AI Key」設定 Gemini API Key 後再執行。");
+        return;
+      }
+    }
+
+    const batchBtn = document.getElementById("btn-deck-ai-batch");
+    const stopBtn = document.getElementById("btn-deck-ai-stop");
+    setDeckDescStatus("正在比對此卡組與卡池資料…");
+    await ensureCatalogData();
+
+    const matchedMap = new Map();
+    let unlinkedCount = 0;
+
+    for (const entry of descriptionDeck.entries) {
+      if (entry.imgBase64) {
+        const key = await cardImageKey(entry.imgBase64);
+        window.resolvedCardKeys ??= new Map();
+        window.resolvedCardKeys.set(entry.imgBase64, key);
+      }
+      const card = lookupCatalog(entry);
+      if (!card) {
+        unlinkedCount++;
+        continue;
+      }
+      const imgSrc = card.image || entry.imgBase64 || "";
+      if (imgSrc && !matchedMap.has(card.number)) {
+        matchedMap.set(card.number, { card, imgSrc });
+      }
+    }
+
+    const allMatched = Array.from(matchedMap.values());
+    if (!allMatched.length) {
+      setDeckDescStatus(unlinkedCount ? `此卡組的 ${unlinkedCount} 張卡皆尚未導入卡池資料，請先點擊卡牌導入資料。` : "找不到可辨識的卡圖。");
+      return;
+    }
+
+    const unfilled = allMatched.filter(({ card }) => !card.reduction && !card.symbol);
+    let targets = unfilled;
+    let overwriteMode = false;
+
+    if (unfilled.length > 0) {
+      const extraNote = unlinkedCount ? `
+（另有 ${unlinkedCount} 張尚未導入卡池，將略過）` : "";
+      if (!confirm(`「${descriptionDeck.name}」共有 ${allMatched.length} 張已連結卡池的卡片，其中 ${unfilled.length} 張尚未填寫減輕與標誌。${extraNote}
+
+是否開始使用 Gemini AI (${getSavedModel()}) 自動批次識別並存檔？`)) {
+        setDeckDescStatus("點擊卡牌，匯入資料圖片或修改描述。");
+        return;
+      }
+    } else {
+      if (!confirm(`「${descriptionDeck.name}」已連結的 ${allMatched.length} 張卡皆已填寫減輕／標誌。
+
+是否全部重新使用 Gemini AI (${getSavedModel()}) 批次識別並覆蓋更新？`)) {
+        setDeckDescStatus("點擊卡牌，匯入資料圖片或修改描述。");
+        return;
+      }
+      targets = allMatched;
+      overwriteMode = true;
+    }
+
+    aiBatchRunning = true;
+    aiBatchStopRequested = false;
+    if (batchBtn) batchBtn.disabled = true;
+    stopBtn?.classList.remove("hidden");
+
+    const model = getSavedModel();
+    let done = 0;
+    let failed = 0;
+    let lastErrMsg = "";
+
+    try {
+      const cloud = await catalogCloud();
+      for (let i = 0; i < targets.length; i++) {
+        if (aiBatchStopRequested) break;
+        const { card, imgSrc } = targets[i];
+        setDeckDescStatus(`✨ AI 批次識別中 (${i + 1} / ${targets.length})：${card.number} ${card.name}…`);
+        try {
+          const result = await callGeminiForCardSymbols(imgSrc, apiKey, model);
+          const updated = normalizeCatalogCard({
+            ...card,
+            reduction: overwriteMode ? result.reduction : (result.reduction || card.reduction || ""),
+            symbol: overwriteMode ? result.symbol : (result.symbol || card.symbol || "")
+          });
+          await cloud.save(updated, card.revision, card.number);
+          done++;
+        } catch (err) {
+          console.warn("Deck Batch AI skip card:", card.number, err);
+          failed++;
+          lastErrMsg = String(err?.message || err || "未知錯誤");
+          if (/API_KEY_INVALID|403|401/i.test(lastErrMsg)) {
+            setDeckDescStatus("API Key 無效或權限不足，已自動停止批次識別：" + lastErrMsg);
+            break;
+          }
+          if (/RESOURCE_EXHAUSTED|429/i.test(lastErrMsg)) {
+            setDeckDescStatus("已達 API 請求速率/配額上限，已停止批次識別（請稍後再試）：" + lastErrMsg);
+            break;
+          }
+        }
+        if (!aiBatchStopRequested && i < targets.length - 1) {
+          await new Promise(r => setTimeout(r, 1200));
+        }
+      }
+      await ensureCatalogData();
+      if (descriptionDeck) renderDeckDescriptions();
+      const errDetail = (done === 0 && failed > 0 && lastErrMsg) ? `（原因：${lastErrMsg}）` : "";
+      setDeckDescStatus(`✨ AI 批次識別完成！成功更新 ${done} 張${failed ? `，失敗/跳過 ${failed} 張` : ""}${errDetail}${unlinkedCount ? `（另有 ${unlinkedCount} 張尚未導入卡池）` : ""}${aiBatchStopRequested ? "（已手動停止）" : ""}。`);
+    } catch (err) {
+      setDeckDescStatus("批次識別發生錯誤：" + (err.message || "未知錯誤"));
+    } finally {
+      aiBatchRunning = false;
+      aiBatchStopRequested = false;
+      if (batchBtn) batchBtn.disabled = false;
+      stopBtn?.classList.add("hidden");
+    }
+  };
+
+  window.runAiBatchCatalogScan = async function () {
+    if (aiBatchRunning || catalogBusy) return;
+    const apiKey = getSavedApiKey();
+    if (!apiKey) {
+      const panel = document.getElementById("ai-settings-panel");
+      panel?.classList.remove("hidden");
+      syncAiKeyUI();
+      catalogStatus("請先在上方「🔑 AI Key」貼上並儲存你的 Gemini API Key！");
+      return;
+    }
+
+    const targets = catalogEntries.filter(c => c.image && (!c.reduction && !c.symbol));
+    if (!targets.length) {
+      catalogStatus("卡池中所有已導入卡圖的卡片皆已填寫減輕或標誌！");
+      return;
+    }
+
+    if (!confirm(`共偵測到 ${targets.length} 張尚未填寫減輕與標誌的卡圖。\n\n是否開始使用 Gemini AI (${getSavedModel()}) 批次自動辨識並儲存至共用卡池？\n（過程中可隨時點擊「⏹ 停止批次」暫停）`)) {
+      return;
+    }
+
+    aiBatchRunning = true;
+    aiBatchStopRequested = false;
+    const batchBtn = document.getElementById("btn-ai-batch-scan");
+    const stopBtn = document.getElementById("btn-ai-batch-stop");
+    if (batchBtn) batchBtn.disabled = true;
+    stopBtn?.classList.remove("hidden");
+
+    const model = getSavedModel();
+    let done = 0;
+    let failed = 0;
+
+    try {
+      const cloud = await catalogCloud();
+      for (let i = 0; i < targets.length; i++) {
+        if (aiBatchStopRequested) break;
+        const card = targets[i];
+        catalogStatus(`✨ AI 批次辨識中 (${i + 1} / ${targets.length})：${card.number} ${card.name}…`);
+        try {
+          const result = await callGeminiForCardSymbols(card.image, apiKey, model);
+          const updated = normalizeCatalogCard({
+            ...card,
+            reduction: result.reduction || card.reduction || "",
+            symbol: result.symbol || card.symbol || ""
+          });
+          await cloud.save(updated, card.revision, card.number);
+          done++;
+        } catch (err) {
+          console.warn("Batch AI skip card:", card.number, err);
+          failed++;
+          // 若遇到 API Key 無效或配額上限，直接中止避免連續失敗
+          if (/API_KEY_INVALID|403|401/i.test(String(err.message || ""))) {
+            catalogStatus("API Key 無效或權限不足，已自動停止批次辨識：" + err.message);
+            break;
+          }
+        }
+        // 間隔 1.2 秒避免觸發免費版 RPM 速率限制
+        if (!aiBatchStopRequested && i < targets.length - 1) {
+          await new Promise(r => setTimeout(r, 1200));
+        }
+      }
+      await refreshCardDatabase();
+      catalogStatus(`✨ AI 批次辨識結束！成功更新 ${done} 張${failed ? `，失敗/跳過 ${failed} 張` : ""}${aiBatchStopRequested ? "（已手動停止）" : ""}。`);
+    } catch (err) {
+      catalogStatus("批次辨識發生錯誤：" + (err.message || "未知錯誤"));
+    } finally {
+      aiBatchRunning = false;
+      aiBatchStopRequested = false;
+      if (batchBtn) batchBtn.disabled = false;
+      stopBtn?.classList.add("hidden");
+    }
+  };
+
+  syncAiKeyUI();
 })();
 </script>
 <!-- #endregion -->
