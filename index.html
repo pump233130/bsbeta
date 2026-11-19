@@ -15,6 +15,7 @@
   8. 匯出與還原完整備份 (.json)    -> 搜尋: function exportFullBackupToFile
   9. 煌臨 (Advent) 系統與爆炸特效  -> 搜尋: function performAdvent
  10. 創界神 (Grandwalker) 技與域   -> 搜尋: function useGrandwalkerSkill
+ 11. 顕現 (Manifest) 系統與特效    -> 搜尋: function triggerManifestFromHand
 ========================================================================= -->
 <!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><title>BS PROTOTYPE - 2-PLAYER EDITION</title><script src="https://cdn.tailwindcss.com"></script><style>
 /* #region 1. 基礎排版、卡背 SVG 與戰場區域樣式 */
@@ -2611,7 +2612,7 @@ function createMainAreaHTML(e,t) {
 }
 !function() {
   const e=document.getElementById("playmat-root");
-  e&&(e.innerHTML='<div id="playmat-scale-outer"><div id="playmat-scale-stage">'+createHandSectionHTML("p2","Opponent Hand (P2)","opponent-hand")+createMainAreaHTML("p2","OPPONENT")+' <div id="center-core-bar" class="center-core-divider"> <div id="center-divider-hud-box" class="center-divider-hud" ondrop="dropOnCenterSpace(event)" ondragover="allowDrop(event)" title="將卡牌或區域的 Core 拖曳至此處即可移除回空間"> <span class="text-[10px] font-black tracking-[0.2em] text-[#d6cbb9] uppercase">BATTLEFIELD</span> <span class="h-3 w-[1px] bg-[#b09466]/45"></span> <div class="flex items-center gap-2"> <div id="center-core-spawner" class="center-core-spawner" draggable="true" title="拖動此實體藍色水晶 Core 到卡牌/區域可 +1 Core；將其他 Core 拖回此處可移除至空間"></div> <span class="text-[10px] font-bold tracking-wider text-[#a89f91]">空間 CORE (拖出+1 / 拖入移除)</span> </div> </div> </div>'+createMainAreaHTML("p1","YOU")+createHandSectionHTML("p1","Player Hand (P1)","")+"</div></div>")
+  e&&(e.innerHTML='<div id="playmat-scale-outer"><div id="playmat-scale-stage">'+createHandSectionHTML("p2","Opponent Hand (P2)","opponent-hand")+createMainAreaHTML("p2","OPPONENT")+' <div id="center-core-bar" class="center-core-divider"> <div id="center-divider-hud-box" class="center-divider-hud" ondrop="dropOnCenterSpace(event)" ondragover="allowDrop(event)" title="將卡牌或區域的 Core 拖曳至此處即可移除回空間"> <span id="turn-counter-badge" class="text-[10px] sm:text-[11px] font-black tracking-wider text-[#e0b25b] bg-black/65 border border-[#b09466]/45 px-2 py-0.5 rounded-sm whitespace-nowrap">回合 1</span> <span class="h-3 w-[1px] bg-[#b09466]/45"></span> <div class="flex items-center gap-2"> <div id="center-core-spawner" class="center-core-spawner" draggable="true" title="拖動此實體藍色水晶 Core 到卡牌/區域可 +1 Core；將其他 Core 拖回此處可移除至空間"></div> <span class="text-[10px] font-bold tracking-wider text-[#a89f91]">空間 CORE (拖出+1 / 拖入移除)</span> </div> <span class="h-3 w-[1px] bg-[#b09466]/45"></span> <button id="btn-end-turn-phase" type="button" class="text-[10px] sm:text-[11px] font-black tracking-wider bg-[#c8aa76]/20 hover:bg-[#c8aa76] text-[#e0b25b] hover:text-black border border-[#c8aa76]/70 px-2.5 py-0.5 rounded-sm cursor-pointer transition-colors whitespace-nowrap" onclick="endTurnPhase()" title="結束回合：回合數 +1 並在對手場地高亮顯示「你的回合」1 秒">結束回合</button> </div> </div>'+createMainAreaHTML("p1","YOU")+createHandSectionHTML("p1","Player Hand (P1)","")+"</div></div>")
 }
 ();
 let boardScale=1;
@@ -3711,7 +3712,10 @@ function updateCounter(e,t) {
   updateAllUI(),updateRoomState()
 }
 function payCost(e) {
-  if(gameState[`${e}_reserve`]<=0)return;
+  if(gameState[`${e}_reserve`]<=0) {
+    if(gameState.soulCoreLocation?.[e]==="reserve")setSoulCoreLocation(e,"trash");
+    return;
+  }
   gameState[`${e}_reserve`]-=1,gameState[`${e}_trash_core`]+=1;
   const t=Date.now();
   lastSeenActionEffectTime=t,gameState.lastActionEffect= {
@@ -4722,7 +4726,7 @@ function createCardElement(e) {
     t.stopPropagation(),addCoreToCard(e.id,-1)
   };
   const r=document.createElement("div");
-  r.className="card-core-pill",r.title="可按住此處將 1 個 Core 拖曳至廢棄區、預備區或其他場上卡牌";
+  r.className="card-core-pill",r.title="點擊直接移 1 個 Core（或剩餘 Soul Core）至預備區；按住可拖曳至其他卡牌或區域";
   const s=document.createElement("span");
   s.className="card-core-dot";
   const l=document.createElement("div");
@@ -4730,39 +4734,58 @@ function createCardElement(e) {
     const o=gameState.cards[e.id];o&&o.zone&&(o.zone.startsWith("field-")||o.zone.startsWith("zone-god-"))&&(o.cores||0)>0?(t.stopPropagation(),draggedGodCoreCardId=e.id,draggedCard=null,draggedSoulOwner=null,isDraggingCenterCore=!1,t.dataTransfer.setData("text/plain",`CARD_CORE:${e.id}`)):t.preventDefault()
   }),r.addEventListener("dragend",()=> {
     draggedGodCoreCardId=null,document.querySelectorAll(".drag-over").forEach(e=>e.classList.remove("drag-over"))
+  }),r.addEventListener("click",t=> {
+    if("MOBILE"===controlMode)return;t.stopPropagation(),moveOneCardCoreToReserve(e.id)
   });
-  let d=null;
+  let d=null,coreTapX=0,coreTapY=0,coreHasDragged=!1;
   r.addEventListener("pointerdown",t=> {
-    const o=gameState.cards[e.id];if(!(o&&o.zone&&(o.zone.startsWith("field-")||o.zone.startsWith("zone-god-"))&&(o.cores||0)>0)||"MOBILE"!==controlMode&&"touch"!==t.pointerType)return;t.preventDefault(),t.stopPropagation(),d=t.pointerId,draggedGodCoreCardId=e.id;try {
+    const o=gameState.cards[e.id];
+    const hasNormalCore=(o?.cores||0)>0;
+    const hasSoulOnly=o&&o.zone?.startsWith("field-")&&gameState.soulCoreLocation?.[o.owner]===o.id;
+    if(!(o&&o.zone&&(o.zone.startsWith("field-")||o.zone.startsWith("zone-god-"))&&(hasNormalCore||hasSoulOnly))||"MOBILE"!==controlMode&&"touch"!==t.pointerType)return;
+    t.preventDefault(),t.stopPropagation(),d=t.pointerId,coreTapX=t.clientX,coreTapY=t.clientY,coreHasDragged=!1;
+    try {
       r.setPointerCapture(t.pointerId)
     }
     catch(e) {
     }
-    const a=document.getElementById("core-drag-ghost");a&&(a.style.left=`${t.clientX}px`,a.style.top=`${t.clientY}px`,a.style.display="block")
-  }),r.addEventListener("pointermove",e=> {
-    if(d!==e.pointerId||!draggedGodCoreCardId)return;e.preventDefault(),e.stopPropagation();const t=document.getElementById("core-drag-ghost");t&&(t.style.left=`${e.clientX}px`,t.style.top=`${e.clientY}px`),document.querySelectorAll(".drag-over").forEach(e=>e.classList.remove("drag-over"));const o=document.elementFromPoint(e.clientX,e.clientY);if(!o)return;const a=o.closest(".card"),n=o.closest("#trash-core-box-p1, #trash-core-box-p2, #reserve-box-p1, #reserve-box-p2, #life-box-p1, #life-box-p2, #count-box-p1, #count-box-p2"),r=o.closest("#center-divider-hud-box, #center-core-spawner");a&&a.id!==draggedGodCoreCardId?a.classList.add("drag-over"):r?r.classList.add("drag-over"):n&&n.classList.add("drag-over")
+  }),r.addEventListener("pointermove",t=> {
+    if(d!==t.pointerId)return;
+    const o=gameState.cards[e.id];
+    if(!coreHasDragged&&(o?.cores||0)>0&&Math.hypot(t.clientX-coreTapX,t.clientY-coreTapY)>6) {
+      coreHasDragged=!0,draggedGodCoreCardId=e.id;
+      const a=document.getElementById("core-drag-ghost");a&&(a.style.left=`${t.clientX}px`,a.style.top=`${t.clientY}px`,a.style.display="block")
+    }
+    if(!coreHasDragged||!draggedGodCoreCardId)return;
+    t.preventDefault(),t.stopPropagation();const a=document.getElementById("core-drag-ghost");a&&(a.style.left=`${t.clientX}px`,a.style.top=`${t.clientY}px`),document.querySelectorAll(".drag-over").forEach(e=>e.classList.remove("drag-over"));const n=document.elementFromPoint(t.clientX,t.clientY);if(!n)return;const s=n.closest(".card"),l=n.closest("#trash-core-box-p1, #trash-core-box-p2, #reserve-box-p1, #reserve-box-p2, #life-box-p1, #life-box-p2, #count-box-p1, #count-box-p2"),c=n.closest("#center-divider-hud-box, #center-core-spawner");s&&s.id!==draggedGodCoreCardId?s.classList.add("drag-over"):c?c.classList.add("drag-over"):l&&l.classList.add("drag-over")
   });
-  const c=e=> {
-    if(d!==e.pointerId)return;
+  const c=t=> {
+    if(d!==t.pointerId)return;
     try {
-      r.hasPointerCapture(e.pointerId)&&r.releasePointerCapture(e.pointerId)
+      r.hasPointerCapture(t.pointerId)&&r.releasePointerCapture(t.pointerId)
     }
     catch(e) {
     }
     d=null;
-    const t=draggedGodCoreCardId;
+    const wasDrag=coreHasDragged;
+    coreHasDragged=!1;
+    const a=draggedGodCoreCardId;
     draggedGodCoreCardId=null;
     const o=document.getElementById("core-drag-ghost");
-    if(o&&(o.style.display="none"),document.querySelectorAll(".drag-over").forEach(e=>e.classList.remove("drag-over")),"pointerup"===e.type&&t) {
-      const o=document.elementFromPoint(e.clientX,e.clientY);
+    if(o&&(o.style.display="none"),document.querySelectorAll(".drag-over").forEach(e=>e.classList.remove("drag-over")),!wasDrag) {
+      if("pointerup"===t.type)moveOneCardCoreToReserve(e.id);
+      return
+    }
+    if("pointerup"===t.type&&a) {
+      const o=document.elementFromPoint(t.clientX,t.clientY);
       if(!o)return;
-      const a=o.closest(".card");
-      if(a&&a.id&&a.id!==t)return void transferCardCoreToTarget(t,"card",a.id);
-      if(o.closest("#center-divider-hud-box, #center-core-spawner"))return void transferCardCoreToTarget(t,"space",null);
-      const n=o.closest("#trash-core-box-p1, #trash-core-box-p2, #reserve-box-p1, #reserve-box-p2, #life-box-p1, #life-box-p2, #count-box-p1, #count-box-p2");
-      if(n) {
-        const e=n.id.endsWith("p2")?"p2":"p1";
-        transferCardCoreToTarget(t,n.id.startsWith("trash-core")?"trash":n.id.startsWith("reserve")?"reserve":n.id.startsWith("life")?"life":"count",e)
+      const n=o.closest(".card");
+      if(n&&n.id&&n.id!==a)return void transferCardCoreToTarget(a,"card",n.id);
+      if(o.closest("#center-divider-hud-box, #center-core-spawner"))return void transferCardCoreToTarget(a,"space",null);
+      const s=o.closest("#trash-core-box-p1, #trash-core-box-p2, #reserve-box-p1, #reserve-box-p2, #life-box-p1, #life-box-p2, #count-box-p1, #count-box-p2");
+      if(s) {
+        const e=s.id.endsWith("p2")?"p2":"p1";
+        transferCardCoreToTarget(a,s.id.startsWith("trash-core")?"trash":s.id.startsWith("reserve")?"reserve":s.id.startsWith("life")?"life":"count",e)
       }
     }
   };
@@ -4897,7 +4920,10 @@ function addCoreToCard(e,t) {
     return r&&(t>0?playCoreTransferAnimation(r,s,null,"cost",t):t<0&&playCoreTransferAnimation(s,r,null,"cost",Math.abs(t))),triggerCardCoreFlash(e,t),triggerElementCoreFlash(document.getElementById(`god-wrapper-${a}`),t),updateAllUI(),void updateRoomState()
   }
   if(t>0&&gameState[`${a}_reserve`]<t)return;
-  if((o.cores||0)+t<0)return;
+  if((o.cores||0)+t<0) {
+    if(t<0&&o.zone&&o.zone.startsWith("field-")&&gameState.soulCoreLocation?.[a]===e)setSoulCoreLocation(a,"reserve");
+    return;
+  }
   o.cores=(o.cores||0)+t,gameState[`${a}_reserve`]-=t;
   const n=document.getElementById(e);
   if(n) {
@@ -7265,6 +7291,8 @@ Object.assign(window, {
     const el = document.getElementById(cardId);
     if (!el) return;
     const palette = Array.isArray(colors) && colors.length ? colors : ["#ffffff"];
+    const mainColor = palette[0];
+    const subColor = palette[1] || "#ffffff";
     if (typeof playCardAttributeFlash === "function") {
       playCardAttributeFlash(cardId, palette);
     }
@@ -7275,61 +7303,91 @@ Object.assign(window, {
 
     const curTransform = el.style.transform || "";
     el.animate([
-      { transform: `${curTransform} scale(1.18)`, filter: "brightness(2.2)" },
-      { transform: `${curTransform} translate(-5px, 3px) scale(1.08)`, filter: "brightness(1.6)", offset: 0.2 },
-      { transform: `${curTransform} translate(5px, -3px) scale(1.04)`, filter: "brightness(1.3)", offset: 0.4 },
+      { transform: `${curTransform} scale(1.24)`, filter: "brightness(2.6)" },
+      { transform: `${curTransform} translate(-7px, 4px) scale(1.12)`, filter: "brightness(1.9)", offset: 0.18 },
+      { transform: `${curTransform} translate(6px, -4px) scale(1.06)`, filter: "brightness(1.45)", offset: 0.38 },
       { transform: `${curTransform} scale(1)`, filter: "brightness(1)" }
-    ], { duration: 420, easing: "cubic-bezier(0.16, 1, 0.3, 1)" });
+    ], { duration: 540, easing: "cubic-bezier(0.16, 1, 0.3, 1)" });
 
+    // 1. 放射狀能量光束（8 道屬性光線）
+    for (let r = 0; r < 8; r++) {
+      const ray = document.createElement("div");
+      const angleDeg = r * 45 + (r % 2 === 0 ? 0 : 12);
+      const col = r % 2 === 0 ? mainColor : subColor;
+      Object.assign(ray.style, {
+        position: "fixed", left: `${cx}px`, top: `${cy}px`,
+        width: "190px", height: "6px",
+        borderRadius: "999px",
+        background: `linear-gradient(90deg, transparent 0%, ${col} 35%, #ffffff 50%, ${col} 65%, transparent 100%)`,
+        boxShadow: `0 0 18px 4px ${col}`,
+        pointerEvents: "none", zIndex: "16856",
+        transform: `translate(-50%, -50%) rotate(${angleDeg}deg) scaleX(0.1)`, opacity: "0"
+      });
+      document.body.appendChild(ray);
+      ray.animate([
+        { transform: `translate(-50%, -50%) rotate(${angleDeg}deg) scaleX(0.1) scaleY(1.6)`, opacity: 0 },
+        { transform: `translate(-50%, -50%) rotate(${angleDeg + 8}deg) scaleX(1.15) scaleY(1)`, opacity: 1, offset: 0.25 },
+        { transform: `translate(-50%, -50%) rotate(${angleDeg + 18}deg) scaleX(1.65) scaleY(0.15)`, opacity: 0 }
+      ], { duration: 580, delay: (r % 2) * 35, easing: "cubic-bezier(0.16, 1, 0.3, 1)", fill: "both" }).onfinish = () => ray.remove();
+    }
+
+    // 2. 中心高熱爆裂光核
     const core = document.createElement("div");
     Object.assign(core.style, {
       position: "fixed", left: `${cx}px`, top: `${cy}px`,
-      width: "44px", height: "44px", borderRadius: "50%",
-      background: `radial-gradient(circle, #ffffff 0%, ${palette[0]} 55%, transparent 100%)`,
-      boxShadow: `0 0 42px 18px ${palette[0]}`,
-      pointerEvents: "none", zIndex: "16860"
+      width: "54px", height: "54px", borderRadius: "50%",
+      background: `radial-gradient(circle, #ffffff 0%, ${mainColor} 45%, transparent 100%)`,
+      boxShadow: `0 0 56px 24px ${mainColor}, 0 0 24px 10px #ffffff`,
+      pointerEvents: "none", zIndex: "16862"
     });
     document.body.appendChild(core);
     core.animate([
-      { transform: "translate(-50%, -50%) scale(0.35)", opacity: 1 },
-      { transform: "translate(-50%, -50%) scale(3.4)", opacity: 0 }
-    ], { duration: 480, easing: "cubic-bezier(0.16, 1, 0.3, 1)" }).onfinish = () => core.remove();
+      { transform: "translate(-50%, -50%) scale(0.25)", opacity: 1 },
+      { transform: "translate(-50%, -50%) scale(4.2)", opacity: 0 }
+    ], { duration: 560, easing: "cubic-bezier(0.16, 1, 0.3, 1)" }).onfinish = () => core.remove();
 
-    palette.slice(0, 2).forEach((color, idx) => {
+    // 3. 三層交錯屬性衝擊波光環
+    [mainColor, subColor, "#ffffff"].forEach((color, idx) => {
       const ring = document.createElement("div");
       Object.assign(ring.style, {
         position: "fixed", left: `${cx}px`, top: `${cy}px`,
-        width: "48px", height: "48px", borderRadius: "50%",
-        border: `4px solid ${color}`,
-        boxShadow: `0 0 28px 10px ${color}, inset 0 0 18px ${color}`,
-        pointerEvents: "none", zIndex: String(16850 + idx)
+        width: "52px", height: "52px", borderRadius: "50%",
+        border: `${idx === 2 ? 2.5 : 4.5}px solid ${color}`,
+        boxShadow: `0 0 34px 12px ${color}, inset 0 0 22px ${color}`,
+        pointerEvents: "none", zIndex: String(16850 + idx),
+        transform: "translate(-50%, -50%) scale(0.35)", opacity: "0"
       });
       document.body.appendChild(ring);
       ring.animate([
-        { transform: "translate(-50%, -50%) scale(0.4)", opacity: 1 },
-        { transform: "translate(-50%, -50%) scale(3.8)", opacity: 0 }
-      ], { duration: 520, delay: idx * 75, easing: "cubic-bezier(0.16, 1, 0.3, 1)" }).onfinish = () => ring.remove();
+        { transform: "translate(-50%, -50%) scale(0.35)", opacity: 1 },
+        { transform: `translate(-50%, -50%) scale(${3.8 + idx * 0.65})`, opacity: 0 }
+      ], { duration: 580 + idx * 70, delay: idx * 65, easing: "cubic-bezier(0.16, 1, 0.3, 1)", fill: "both" }).onfinish = () => ring.remove();
     });
 
-    for (let i = 0; i < 24; i++) {
+    // 4. 36 顆華麗屬性火花與稜晶碎片
+    const diamondClip = "polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)";
+    for (let i = 0; i < 36; i++) {
       const spark = document.createElement("div");
-      const color = palette[i % palette.length];
-      const size = 5 + Math.random() * 6;
+      const color = i % 4 === 0 ? "#ffffff" : palette[i % palette.length];
+      const size = 6 + Math.random() * 9;
       Object.assign(spark.style, {
         position: "fixed", left: `${cx}px`, top: `${cy}px`,
         width: `${size}px`, height: `${size}px`,
-        borderRadius: i % 2 === 0 ? "50%" : "2px",
-        background: i % 4 === 0 ? "#ffffff" : color,
-        boxShadow: `0 0 12px 3px ${color}`,
-        pointerEvents: "none", zIndex: "16870"
+        borderRadius: i % 3 === 0 ? "50%" : "0px",
+        clipPath: i % 3 === 0 ? "none" : diamondClip,
+        background: color,
+        boxShadow: `0 0 14px 4px ${color}`,
+        pointerEvents: "none", zIndex: "16870",
+        transform: "translate(-50%, -50%) scale(0.2)", opacity: "0"
       });
       document.body.appendChild(spark);
-      const angle = (Math.PI * 2 * i) / 24 + (Math.random() - 0.5) * 0.25;
-      const dist = 55 + Math.random() * 95;
+      const angle = (Math.PI * 2 * i) / 36 + (Math.random() - 0.5) * 0.25;
+      const dist = 65 + Math.random() * 125;
       spark.animate([
-        { transform: "translate(-50%, -50%) scale(1.2) rotate(0deg)", opacity: 1 },
-        { transform: `translate(calc(-50% + ${Math.cos(angle) * dist}px), calc(-50% + ${Math.sin(angle) * dist}px)) scale(0.1) rotate(240deg)`, opacity: 0 }
-      ], { duration: 480 + Math.random() * 240, easing: "cubic-bezier(0.16, 1, 0.3, 1)" }).onfinish = () => spark.remove();
+        { transform: "translate(-50%, -50%) scale(1.3) rotate(0deg)", opacity: 1 },
+        { transform: `translate(calc(-50% + ${Math.cos(angle) * dist * 0.55}px), calc(-50% + ${Math.sin(angle) * dist * 0.55}px)) scale(1.1) rotate(140deg)`, opacity: 1, offset: 0.42 },
+        { transform: `translate(calc(-50% + ${Math.cos(angle) * dist}px), calc(-50% + ${Math.sin(angle) * dist}px)) scale(0.1) rotate(320deg)`, opacity: 0 }
+      ], { duration: 540 + Math.random() * 300, delay: Math.random() * 50, easing: "cubic-bezier(0.16, 1, 0.3, 1)", fill: "both" }).onfinish = () => spark.remove();
     }
   }
 
@@ -7404,6 +7462,7 @@ Object.assign(window, {
     if (!cardEl) cardEl = createCardElement(card);
     const zoneEl = document.getElementById(card.zone);
     if (zoneEl && cardEl.parentElement !== zoneEl) zoneEl.appendChild(cardEl);
+    applyCardVisualState(card, cardEl);
 
     card.zOrder = zOrderCounter++;
     allSources.forEach((src, idx) => {
@@ -7708,7 +7767,7 @@ Object.assign(window, {
 <!-- #endregion -->
 
 
-<!-- #region 11. [外掛] 創界神 (Grandwalker) 系統：神聖特效、[技] 翻譯左側按鈕、[域] 整合至 Level、手機區向右延展不重疊 -->
+<!-- #region 11. [外掛] 創界神 (Grandwalker) 系統、回合與結束回合、點擊 Core 移回預備區 -->
 <style>
   /* 創界神 Level 標籤整合【契約域】/【神域】，風格與整體暗金介面統一 */
   .card-level-badge.has-god-domain {
@@ -7737,16 +7796,17 @@ Object.assign(window, {
     box-shadow: none;
   }
 
-  /* 電腦版：【技】按鈕放在【翻譯】左邊，暗金風格統一 */
+  /* 電腦版：【技】與【翻譯】整組置中於卡片上方，暗金風格統一 */
   .mini-god-skill-wrap {
     display: none;
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-100%, -50%) rotate(var(--card-ui-rotation, 0deg)) translate(12px, calc(-1 * var(--card-ui-edge, 70px) - 14px));
-    z-index: 1001;
+    transform: translate(-50%, -50%) rotate(var(--card-ui-rotation, 0deg)) translateY(calc(-1 * var(--card-ui-edge, 70px) - 14px));
+    z-index: 1002;
     gap: 4px;
     align-items: center;
+    justify-content: center;
     white-space: nowrap;
   }
   .mini-god-skill-wrap::after {
@@ -7763,7 +7823,7 @@ Object.assign(window, {
     display: flex;
   }
   body:not(.mobile-mode) .mini-translation-source.has-god-skills > .mini-translate-btn:not(.mini-turn-btn) {
-    transform: translate(-50%, -50%) rotate(var(--card-ui-rotation, 0deg)) translate(38px, calc(-1 * var(--card-ui-edge, 70px) - 14px));
+    display: none !important;
   }
   .mini-god-skill-btn {
     background: #14110f;
@@ -7802,6 +7862,61 @@ Object.assign(window, {
   }
   body:not(.mobile-mode) .preview-god-skill-btn {
     display: none !important;
+  }
+
+  /* 手機 / iPad 創界神檢視視窗內直接顯示【域】與【技】 */
+  .god-modal-abilities {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    width: 100%;
+    margin-top: 2px;
+  }
+  .god-modal-domains,
+  .god-modal-skills {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 4px;
+    width: 100%;
+  }
+  .god-modal-domain-tag {
+    font-size: 10px;
+    font-weight: 900;
+    padding: 1px 5px;
+    border-radius: 2px;
+    white-space: nowrap;
+  }
+  .god-modal-domain-tag.active {
+    background: linear-gradient(135deg, #f5d78e 0%, #c8aa76 100%);
+    color: #090807;
+    border: 1px solid #fef08a;
+    box-shadow: 0 0 8px 1px rgba(224, 178, 91, 0.85);
+  }
+  .god-modal-domain-tag.inactive {
+    background: rgba(20, 18, 16, 0.9);
+    color: #78716c;
+    border: 1px solid #44403c;
+  }
+  .god-modal-skill-btn {
+    background: #14110f;
+    color: #e0b25b;
+    border: 1px solid #b09466;
+    border-radius: 3px;
+    padding: 3px 7px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.15s ease, color 0.15s ease, opacity 0.15s ease;
+  }
+  .god-modal-skill-btn:hover:not(.insufficient) {
+    background: #c8aa76;
+    color: #090807;
+  }
+  .god-modal-skill-btn.insufficient {
+    opacity: 0.45;
   }
 
   /* 手機 / iPad 模式：創界神區卡牌不重疊，不夠空間時向右延展，但保留手元區不被逼出場地 */
@@ -7845,32 +7960,165 @@ Object.assign(window, {
     font-size: 8px !important;
     padding: 1px 2px !important;
   }
+
+  /* 結束回合：對方場地高亮顯示「你的回合」2 秒 */
+  .your-turn-field-highlight {
+    border-color: #facc15 !important;
+    box-shadow: 0 0 36px 8px rgba(250, 204, 21, 0.9), inset 0 0 36px rgba(250, 204, 21, 0.45) !important;
+  }
+  .your-turn-banner-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 960;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: radial-gradient(circle, rgba(234, 179, 8, 0.28) 0%, rgba(10, 9, 8, 0.55) 75%);
+    pointer-events: none;
+    animation: yourTurnBannerFade 1s ease-in-out forwards;
+  }
+  .your-turn-banner-title {
+    font-size: 42px;
+    font-weight: 900;
+    letter-spacing: 0.22em;
+    color: #fef08a;
+    text-shadow: 0 0 24px rgba(250, 204, 21, 1), 0 4px 12px #000;
+  }
+  .your-turn-banner-sub {
+    margin-top: 4px;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    color: #f5efe6;
+    background: rgba(10, 9, 8, 0.8);
+    border: 1px solid rgba(224, 178, 91, 0.75);
+    padding: 2px 12px;
+    border-radius: 2px;
+  }
+  @keyframes yourTurnBannerFade {
+    0% { opacity: 0; transform: scale(0.92); }
+    12% { opacity: 1; transform: scale(1.02); }
+    82% { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: scale(0.98); }
+  }
 </style>
 
 <script>
 (function () {
-  // 1. 判斷是否為創界神卡（系統欄位包含「創界神」）
+  // === A. 場上卡牌點擊 Core 圖標直接移動 1 個 Core（或剩餘 Soul Core）至預備區 ===
+  window.moveOneCardCoreToReserve = function (cardId) {
+    const card = gameState.cards[cardId];
+    if (!card || !card.zone || !card.zone.startsWith("field-")) return;
+    if ((card.cores || 0) > 0) {
+      addCoreToCard(cardId, -1);
+    } else if (gameState.soulCoreLocation?.[card.owner] === cardId) {
+      setSoulCoreLocation(card.owner, "reserve");
+    }
+  };
+
+  // === B. 回合計數與結束回合按鈕 ===
+  if (typeof gameState.turnCount !== "number" || gameState.turnCount < 1) {
+    gameState.turnCount = 1;
+  }
+  const yourTurnTimers = { p1: null, p2: null };
+
+  function updateTurnCounterUI() {
+    const badge = document.getElementById("turn-counter-badge");
+    const count = Math.max(1, parseInt(gameState.turnCount, 10) || 1);
+    if (badge && badge.textContent !== `回合 ${count}`) {
+      badge.textContent = `回合 ${count}`;
+    }
+  }
+
+  function playYourTurnHighlight(targetPlayer, turnNum) {
+    if (!["p1", "p2"].includes(targetPlayer)) return;
+    const mainEl = document.getElementById(`section-main-${targetPlayer}`);
+    const fieldEl = document.getElementById(`field-${targetPlayer}`);
+    if (!fieldEl) return;
+
+    if (yourTurnTimers[targetPlayer]) {
+      clearTimeout(yourTurnTimers[targetPlayer]);
+      yourTurnTimers[targetPlayer] = null;
+    }
+    fieldEl.querySelectorAll(".your-turn-banner-overlay").forEach(el => el.remove());
+
+    mainEl?.classList.add("your-turn-field-highlight");
+    fieldEl.classList.add("your-turn-field-highlight");
+
+    const banner = document.createElement("div");
+    banner.className = "your-turn-banner-overlay";
+    banner.innerHTML = `<div class="your-turn-banner-title">你的回合</div><div class="your-turn-banner-sub">TURN ${turnNum || gameState.turnCount || 1} · ${targetPlayer.toUpperCase()}</div>`;
+    fieldEl.appendChild(banner);
+
+    yourTurnTimers[targetPlayer] = setTimeout(() => {
+      mainEl?.classList.remove("your-turn-field-highlight");
+      fieldEl.classList.remove("your-turn-field-highlight");
+      banner.remove();
+      yourTurnTimers[targetPlayer] = null;
+    }, 1000);
+  }
+
+  window.endTurnPhase = function () {
+    gameState.turnCount = (parseInt(gameState.turnCount, 10) || 1) + 1;
+    let targetPlayer = "p2";
+    if (gameState.viewMode === "P1") targetPlayer = "p2";
+    else if (gameState.viewMode === "P2") targetPlayer = "p1";
+    else targetPlayer = gameState.turnCount % 2 === 0 ? "p2" : "p1";
+
+    const timestamp = Math.max(Date.now(), (gameState.lastActionEffect?.timestamp || 0) + 1);
+    gameState.lastActionEffect = {
+      type: "endTurnBanner",
+      targetPlayer,
+      turnCount: gameState.turnCount,
+      timestamp
+    };
+    lastSeenActionEffectTime = timestamp;
+
+    updateTurnCounterUI();
+    playYourTurnHighlight(targetPlayer, gameState.turnCount);
+    updateRoomState();
+  };
+
+  // === C. 創界神系統（支援有【】與無【】文字偵測） ===
   function isGrandwalkerCard(card) {
     if (!card) return false;
     const family = String(lookupCatalog(card)?.family || "");
     return family.includes("創界神");
   }
 
-  // 2. 解析創界神效果中的【契約技：4】、【神技：3】與【契約域】/【神域】
   function parseGrandwalkerAbilities(effectText) {
     const text = String(effectText || "").normalize("NFKC");
     const skills = [];
-    for (const m of text.matchAll(/【([^】]*技)\s*[：:]\s*(\d+)】/g)) {
-      skills.push({ name: m[1].trim(), cost: Number(m[2]), label: m[0] });
+    const seenSkills = new Set();
+
+    // 支援【契約技：4】、【神技：3】以及無【】的「契約技：4Lv2」「神技:3」
+    const skillRegex = /【([^】]*技)\s*[：:]\s*(\d+)】|(?:^|[\s\n])([^\s【】《》「」『』()（）:：・･]{1,6}技)\s*[：:]\s*(\d+)/g;
+    for (const m of text.matchAll(skillRegex)) {
+      const name = (m[1] || m[3] || "").trim();
+      const cost = Number(m[2] || m[4]);
+      if (!name || isNaN(cost)) continue;
+      const key = `${name}:${cost}`;
+      if (!seenSkills.has(key)) {
+        seenSkills.add(key);
+        skills.push({ name, cost, label: `【${name}：${cost}】` });
+      }
     }
 
     const domainMap = new Map();
     for (const line of text.split(/\r?\n/)) {
-      const domainMatches = [...line.matchAll(/【([^】]*域)】/g)];
-      if (!domainMatches.length) continue;
+      const foundNames = [];
+      for (const dm of line.matchAll(/【([^】]*域)】/g)) {
+        foundNames.push(`【${dm[1].trim()}】`);
+      }
+      if (!foundNames.length) {
+        for (const dm of line.matchAll(/(?:^|[\s\n])((?:超契約|契約|神|聖|魔|界)?域)(?=\s*(?:Lv\s*\d|[：:『「〈《(（]|$))/gi)) {
+          foundNames.push(`【${dm[1].trim()}】`);
+        }
+      }
+      if (!foundNames.length) continue;
       const lineLevels = [...line.matchAll(/Lv\s*(\d+)/gi)].map(m => Number(m[1]));
-      for (const dm of domainMatches) {
-        const fullName = `【${dm[1].trim()}】`;
+      for (const fullName of foundNames) {
         if (!domainMap.has(fullName)) domainMap.set(fullName, new Set());
         const lvSet = domainMap.get(fullName);
         lineLevels.forEach(lv => lvSet.add(lv));
@@ -7894,7 +8142,6 @@ Object.assign(window, {
     return matched ? matched.level : 0;
   }
 
-  // 3. 神聖屬性放置特效（聖光柱 + 雙層光環 + 上升聖光粒子）
   function playGrandwalkerSacredEffect(cardId, colors) {
     const el = document.getElementById(cardId);
     if (!el) return;
@@ -7916,14 +8163,15 @@ Object.assign(window, {
       position: "fixed", left: `${cx}px`, top: `${cy}px`,
       width: `${Math.max(70, rect.width * 1.15)}px`, height: "240px",
       background: `linear-gradient(to top, transparent 0%, ${mainColor}cc 30%, #ffffff 55%, ${mainColor}99 80%, transparent 100%)`,
-      filter: "blur(6px)", pointerEvents: "none", zIndex: "16840", transformOrigin: "center bottom"
+      filter: "blur(6px)", pointerEvents: "none", zIndex: "16840", transformOrigin: "center bottom",
+      transform: "translate(-50%, -65%) scaleX(0.25) scaleY(0.2)", opacity: "0"
     });
     document.body.appendChild(pillar);
     pillar.animate([
       { transform: "translate(-50%, -65%) scaleX(0.25) scaleY(0.2)", opacity: 0 },
       { transform: "translate(-50%, -65%) scaleX(1.1) scaleY(1.05)", opacity: 0.95, offset: 0.3 },
       { transform: "translate(-50%, -65%) scaleX(1.4) scaleY(1.2)", opacity: 0 }
-    ], { duration: 880, easing: "cubic-bezier(0.16, 1, 0.3, 1)" }).onfinish = () => pillar.remove();
+    ], { duration: 880, easing: "cubic-bezier(0.16, 1, 0.3, 1)", fill: "both" }).onfinish = () => pillar.remove();
 
     [mainColor, "#fef08a"].forEach((color, idx) => {
       const halo = document.createElement("div");
@@ -7932,13 +8180,15 @@ Object.assign(window, {
         width: "56px", height: "56px", borderRadius: "50%",
         border: `2.5px solid ${color}`,
         boxShadow: `0 0 24px 6px ${color}, inset 0 0 14px #ffffff`,
-        pointerEvents: "none", zIndex: String(16850 + idx)
+        pointerEvents: "none", zIndex: String(16850 + idx),
+        transform: "translate(-50%, -50%) scale(0.4)", opacity: "0"
       });
       document.body.appendChild(halo);
       halo.animate([
-        { transform: "translate(-50%, -50%) scale(0.4)", opacity: 0.95 },
+        { transform: "translate(-50%, -50%) scale(0.4)", opacity: 0 },
+        { transform: "translate(-50%, -50%) scale(0.85)", opacity: 0.95, offset: 0.14 },
         { transform: "translate(-50%, -50%) scale(2.8)", opacity: 0 }
-      ], { duration: 780, delay: idx * 120, easing: "cubic-bezier(0.16, 1, 0.3, 1)" }).onfinish = () => halo.remove();
+      ], { duration: 780, delay: idx * 120, easing: "cubic-bezier(0.16, 1, 0.3, 1)", fill: "both" }).onfinish = () => halo.remove();
     });
 
     for (let i = 0; i < 18; i++) {
@@ -7951,7 +8201,8 @@ Object.assign(window, {
         position: "fixed", left: `${startX}px`, top: `${startY}px`,
         width: `${size}px`, height: `${size}px`, borderRadius: "50%",
         background: color, boxShadow: `0 0 10px 3px ${color}`,
-        pointerEvents: "none", zIndex: "16860"
+        pointerEvents: "none", zIndex: "16860",
+        transform: "translate(-50%, -50%) scale(0.4)", opacity: "0"
       });
       document.body.appendChild(mote);
       const driftX = (Math.random() - 0.5) * 36;
@@ -7960,7 +8211,7 @@ Object.assign(window, {
         { transform: "translate(-50%, -50%) scale(0.4)", opacity: 0 },
         { transform: `translate(calc(-50% + ${driftX * 0.4}px), calc(-50% + ${riseY * 0.4}px)) scale(1.2)`, opacity: 1, offset: 0.35 },
         { transform: `translate(calc(-50% + ${driftX}px), calc(-50% + ${riseY}px)) scale(0.2)`, opacity: 0 }
-      ], { duration: 750 + Math.random() * 350, delay: Math.random() * 180, easing: "ease-out" }).onfinish = () => mote.remove();
+      ], { duration: 750 + Math.random() * 350, delay: Math.random() * 180, easing: "ease-out", fill: "both" }).onfinish = () => mote.remove();
     }
   }
 
@@ -7971,7 +8222,6 @@ Object.assign(window, {
     playGrandwalkerSacredEffect(cardId, colors);
   }
 
-  // 4. 使用【技】：扣除對應 Core 並移回空間
   window.useGrandwalkerSkill = function (cardId, cost, skillName = "技") {
     const card = gameState.cards[cardId];
     if (!card || !card.zone?.startsWith("zone-god-")) return;
@@ -7995,7 +8245,6 @@ Object.assign(window, {
     updateRoomState();
   };
 
-  // 5. 渲染創界神 Level 上的【契約域】/【神域】 + 電腦版翻譯左邊的【技】按鈕
   function updateGrandwalkerUI(card, el) {
     if (!el) return;
     const isInGodZone = !!(card && card.zone?.startsWith("zone-god-") && !card.isFaceDown && isGrandwalkerCard(card));
@@ -8013,7 +8262,6 @@ Object.assign(window, {
     const data = lookupCatalog(card);
     const { skills, domains } = parseGrandwalkerAbilities(data?.effect || "");
 
-    // 將【契約域】/【神域】整合進創界神 Level 標籤上
     if (domains.length) {
       if (!levelBadge) {
         levelBadge = document.createElement("span");
@@ -8037,7 +8285,7 @@ Object.assign(window, {
       levelBadge.querySelectorAll(".god-domain-inline").forEach(n => n.remove());
     }
 
-    // 電腦版：翻譯左邊的【契約技】/【神技】按鈕
+    // 電腦版：將【技】按鈕與【翻譯】按鈕一起放進置中容器，確保完全置中
     if (skills.length) {
       el.classList.add("has-god-skills");
       if (!skillWrap) {
@@ -8063,13 +8311,22 @@ Object.assign(window, {
         };
         skillWrap.append(btn);
       });
+      const transBtn = document.createElement("button");
+      transBtn.type = "button";
+      transBtn.className = "mini-god-skill-btn";
+      transBtn.textContent = "翻譯";
+      transBtn.onclick = e => {
+        e.preventDefault();
+        e.stopPropagation();
+        openCardTranslation(card);
+      };
+      skillWrap.append(transBtn);
     } else {
       el.classList.remove("has-god-skills");
       skillWrap?.remove();
     }
   }
 
-  // 6. 手機 / iPad 預覽區：在【翻譯】左邊顯示【契約技】/【神技】按鈕
   function syncPreviewGodSkillButtons() {
     const row = document.getElementById("preview-action-row");
     const hintBtn = document.getElementById("card-preview-mobile-hint");
@@ -8098,7 +8355,61 @@ Object.assign(window, {
     });
   }
 
-  // 7. 掛載至現有核心流程
+  // 在 iPad / 手機的「創界神檢視視窗」中直接顯示每張創界神的【域】與【技】
+  const baseRenderZoneForGodModal = renderZoneModalContent;
+  renderZoneModalContent = function () {
+    baseRenderZoneForGodModal();
+    if (currentModalInfo?.type !== "god") return;
+    const tiles = [...document.querySelectorAll("#zone-view-list > div[data-zone-card-id]")];
+    tiles.forEach(tile => {
+      const cardId = tile.dataset.zoneCardId;
+      const card = gameState.cards[cardId];
+      if (!card || card.isFaceDown || !isGrandwalkerCard(card)) return;
+      const { skills, domains } = parseGrandwalkerAbilities(lookupCatalog(card)?.effect || "");
+      if (!skills.length && !domains.length) return;
+
+      tile.querySelector(".god-modal-abilities")?.remove();
+      const box = document.createElement("div");
+      box.className = "god-modal-abilities";
+
+      if (domains.length) {
+        const dRow = document.createElement("div");
+        dRow.className = "god-modal-domains";
+        const curLv = getCardCurrentLevel(card);
+        domains.forEach(d => {
+          const isMet = d.levels.length ? d.levels.includes(curLv) : curLv >= 1;
+          const tag = document.createElement("span");
+          tag.className = "god-modal-domain-tag " + (isMet ? "active" : "inactive");
+          tag.textContent = d.name;
+          dRow.append(tag);
+        });
+        box.append(dRow);
+      }
+
+      if (skills.length) {
+        const sRow = document.createElement("div");
+        sRow.className = "god-modal-skills";
+        const curCores = card.cores || 0;
+        skills.forEach(skill => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "god-modal-skill-btn" + (curCores < skill.cost ? " insufficient" : "");
+          btn.textContent = `${skill.name} ${skill.cost}`;
+          btn.onclick = e => {
+            e.preventDefault();
+            e.stopPropagation();
+            useGrandwalkerSkill(card.id, skill.cost, skill.name);
+          };
+          sRow.append(btn);
+        });
+        box.append(sRow);
+      }
+
+      tile.append(box);
+    });
+  };
+
+  // === D. 掛載至現有核心流程與多人連線同步 ===
   const baseRenderStatsForGod = renderCardStats;
   renderCardStats = function (card, el) {
     baseRenderStatsForGod(card, el);
@@ -8131,7 +8442,19 @@ Object.assign(window, {
     document.querySelectorAll("#preview-action-row .preview-god-skill-btn").forEach(b => b.remove());
   };
 
-  // 移除放置到創界神區時的原綠色閃光特效
+  const baseUpdateAllForTurn = updateAllUI;
+  updateAllUI = function () {
+    baseUpdateAllForTurn();
+    updateTurnCounterUI();
+  };
+
+  const baseConfirmResetForTurn = confirmResetGame;
+  confirmResetGame = function () {
+    gameState.turnCount = 1;
+    return baseConfirmResetForTurn();
+  };
+  window.confirmResetGame = confirmResetGame;
+
   const baseTriggerMoveFlashForGod = triggerCardZoneMoveFlash;
   triggerCardZoneMoveFlash = function (cardId, targetZone) {
     if (targetZone && targetZone.startsWith("zone-god-")) return;
@@ -8155,10 +8478,22 @@ Object.assign(window, {
     return res;
   };
 
+  const baseBuildPayloadForTurn = buildStatePayload;
+  buildStatePayload = function () {
+    const payload = baseBuildPayloadForTurn();
+    payload.turnCount = Math.max(1, parseInt(gameState.turnCount, 10) || 1);
+    return payload;
+  };
+  window.buildStatePayload = buildStatePayload;
+
   const baseApplyStateForGod = window.applyGameState;
   window.applyGameState = function (state) {
     const prevTime = gameState.lastActionEffect?.timestamp;
+    if (typeof state?.turnCount === "number" && state.turnCount >= 1) {
+      gameState.turnCount = state.turnCount;
+    }
     baseApplyStateForGod(state);
+    updateTurnCounterUI();
     const effect = state?.lastActionEffect;
     if (!effect || effect.timestamp === prevTime) return;
     if (effect.type === "godSacredDeploy" && Array.isArray(effect.colors)) {
@@ -8172,6 +8507,619 @@ Object.assign(window, {
       if (el && spawner) {
         playCoreTransferAnimation(el, spawner, `✨ ${effect.skillName || "技"} (-${effect.cost} CORE ➔ 空間)`, "cost", effect.cost || 1);
       }
+    } else if (effect.type === "endTurnBanner" && effect.targetPlayer) {
+      playYourTurnHighlight(effect.targetPlayer, effect.turnCount || gameState.turnCount);
+    }
+  };
+
+  updateTurnCounterUI();
+})();
+</script>
+<!-- #endregion -->
+
+
+<!-- #region 12. [外掛] 顕現 (Manifest) 系統：手牌發動、條件檢查、多創界神選擇發光與屬性閃現特效 -->
+<style>
+  #preview-manifest-btn {
+    border: 1px solid #b09466;
+    background: #14110eed;
+    color: #e0b25b;
+    padding: 7px 18px;
+    margin-top: 7px;
+    border-radius: 3px;
+    cursor: pointer;
+    pointer-events: auto;
+    white-space: nowrap;
+  }
+  #preview-manifest-btn.manifest-disabled {
+    opacity: 0.45;
+  }
+  body:not(.mobile-mode) #preview-manifest-btn {
+    display: none !important;
+  }
+
+  /* 電腦版：手牌顕現按鈕與転醒按鈕位置、風格完全一致 */
+  .mini-translation-source.has-manifest:not(.has-turn) > .mini-translate-btn:not(.mini-manifest-btn) {
+    transform: translate(-50%, -50%) rotate(var(--card-ui-rotation, 0deg)) translate(-26px, calc(-1 * var(--card-ui-edge, 70px) - 14px));
+  }
+  .mini-translation-source.has-manifest:not(.has-turn) > .mini-manifest-btn {
+    transform: translate(-50%, -50%) rotate(var(--card-ui-rotation, 0deg)) translate(26px, calc(-1 * var(--card-ui-edge, 70px) - 14px));
+  }
+  .mini-translation-source.has-manifest.has-turn > .mini-translate-btn:not(.mini-turn-btn):not(.mini-manifest-btn) {
+    transform: translate(-50%, -50%) rotate(var(--card-ui-rotation, 0deg)) translate(-52px, calc(-1 * var(--card-ui-edge, 70px) - 14px));
+  }
+  .mini-translation-source.has-manifest.has-turn > .mini-turn-btn {
+    transform: translate(-50%, -50%) rotate(var(--card-ui-rotation, 0deg)) translate(0px, calc(-1 * var(--card-ui-edge, 70px) - 14px));
+  }
+  .mini-translation-source.has-manifest.has-turn > .mini-manifest-btn {
+    transform: translate(-50%, -50%) rotate(var(--card-ui-rotation, 0deg)) translate(52px, calc(-1 * var(--card-ui-edge, 70px) - 14px));
+  }
+  .mini-manifest-btn.manifest-disabled {
+    opacity: 0.45;
+  }
+
+  /* 多張同名創界神可選發光特效 */
+  @keyframes manifestGodGlowPulse {
+    0%, 100% {
+      box-shadow: 0 0 18px 5px rgba(250, 204, 21, 0.95), 0 0 34px 10px rgba(245, 158, 11, 0.7), inset 0 0 14px rgba(254, 240, 138, 0.75);
+      transform: scale(1.04);
+    }
+    50% {
+      box-shadow: 0 0 28px 9px rgba(254, 240, 138, 1), 0 0 46px 14px rgba(234, 179, 8, 0.9), inset 0 0 20px rgba(255, 255, 255, 0.85);
+      transform: scale(1.09);
+    }
+  }
+  .card.manifest-god-candidate {
+    border: 2px solid #fef08a !important;
+    cursor: pointer !important;
+    z-index: 900 !important;
+    animation: manifestGodGlowPulse 1s infinite ease-in-out !important;
+  }
+
+  /* 選擇創界神頂部提示列 */
+  #manifest-select-banner {
+    position: fixed;
+    top: 56px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 12600;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(10, 9, 8, 0.96);
+    border: 1.5px solid #facc15;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.95), 0 0 22px rgba(250, 204, 21, 0.55);
+    color: #fef08a;
+    padding: 8px 16px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    max-width: 94vw;
+  }
+  #manifest-select-banner.hidden {
+    display: none !important;
+  }
+  #manifest-select-cancel {
+    border: 1px solid #b09466;
+    background: #1a1714;
+    color: #dcd6cc;
+    padding: 3px 10px;
+    border-radius: 2px;
+    font-size: 11px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  #manifest-select-cancel:hover {
+    background: #c8aa76;
+    color: #090807;
+  }
+</style>
+
+<div id="manifest-select-banner" class="hidden" role="status" aria-live="polite">
+  <span id="manifest-select-text">✨ 顕現：請點擊發光的創界神支付 1 個 Core</span>
+  <button id="manifest-select-cancel" type="button" onclick="cancelManifestSelection()">取消</button>
+</div>
+
+<script>
+(function () {
+  let pendingManifestSelection = null;
+
+  // 1. 解析顕現卡條件（必須同時包含 Flash 與 顕現/顯現）
+  function parseManifestCondition(card) {
+    if (!card) return null;
+    const effect = String(lookupCatalog(card)?.effect || "").normalize("NFKC");
+    if (!effect) return null;
+    let m = effect.match(/flash\s*《\s*[顕顯]現\s*[：:]\s*([^》]+)》/i);
+    if (!m) {
+      if (/flash/i.test(effect) && /[顕顯]現/.test(effect)) {
+        m = effect.match(/[顕顯]現\s*[：:]\s*([^\n》』]+)/);
+      }
+    }
+    if (!m) return null;
+    const cond = m[1];
+    const targets = [...cond.matchAll(/「([^」]+)」/g)].map(x => x[1].trim()).filter(Boolean);
+    const isFamily = /系統|系统/.test(cond);
+    const cm = cond.match(/(?:計數值|計數|カウント|count)\s*(?:在\s*)?(\d+)\s*(?:點|点)?\s*(?:或以上|以上|\+)/i);
+    const requiredCount = cm ? Number(cm[1]) : 0;
+    return { targets, isFamily, requiredCount, raw: cond.trim() };
+  }
+
+  function isManifestCardInHand(card) {
+    if (!card || card.isFaceDown || !card.zone || !card.zone.startsWith("hand-")) return false;
+    const handEl = document.getElementById(card.zone);
+    if (handEl && handEl.classList.contains("opponent-hand")) return false;
+    return !!parseManifestCondition(card);
+  }
+
+  // 2. 評估條件 1（對象創界神＋計數值）與條件 2（廢棄區以外的魂Core＋對象創界神至少 1 Core）
+  function evaluateManifest(card) {
+    const parsed = parseManifestCondition(card);
+    if (!parsed || !card?.zone?.startsWith("hand-") || card.isFaceDown) {
+      return { valid: false, canExecute: false };
+    }
+    const owner = card.owner;
+    const curCount = parseInt(gameState[owner + "_count"], 10) || 0;
+    const countMet = curCount >= parsed.requiredCount;
+
+    const godCards = getGodCards(owner).filter(g => !g.isFaceDown);
+    const matchingGods = godCards.filter(g => {
+      if (!parsed.targets.length) return true;
+      const data = lookupCatalog(g);
+      const nameStr = String(data?.name || g.name || "");
+      const familyStr = String(data?.family || "");
+      return parsed.targets.some(t =>
+        nameStr.includes(t) || (parsed.isFamily && familyStr.includes(t))
+      );
+    });
+
+    const cond1Met = countMet && matchingGods.length > 0;
+    const soulLoc = gameState.soulCoreLocation?.[owner] || "reserve";
+    const soulCoreAvailable = soulLoc !== "trash";
+    const payableGods = matchingGods.filter(g => (g.cores || 0) >= 1);
+    const cond2Met = soulCoreAvailable && payableGods.length > 0;
+
+    // 條件 3：支付完魂 Core 後，場上或預備區必須至少剩下 1 粒 Core
+    const reserveNormalCores = parseInt(gameState[owner + "_reserve"], 10) || 0;
+    const fieldNormalCores = Object.values(gameState.cards)
+      .filter(c => c.owner === owner && c.zone === `field-${owner}`)
+      .reduce((sum, c) => sum + (c.cores || 0), 0);
+    const remainingFieldOrReserveCores = reserveNormalCores + fieldNormalCores;
+    const cond3Met = remainingFieldOrReserveCores >= 1;
+
+    return {
+      valid: true,
+      canExecute: cond1Met && cond2Met && cond3Met,
+      cond1Met,
+      cond2Met,
+      cond3Met,
+      remainingFieldOrReserveCores,
+      countMet,
+      curCount,
+      requiredCount: parsed.requiredCount,
+      targets: parsed.targets,
+      matchingGods,
+      payableGods,
+      soulCoreAvailable
+    };
+  }
+
+  // 3. 取消多創界神選擇模式
+  window.cancelManifestSelection = function () {
+    pendingManifestSelection = null;
+    document.querySelectorAll(".card.manifest-god-candidate").forEach(el => {
+      el.classList.remove("manifest-god-candidate");
+    });
+    document.getElementById("manifest-select-banner")?.classList.add("hidden");
+  };
+
+  function startManifestGodSelection(card, payableGods) {
+    cancelManifestSelection();
+    hideCardPreview();
+    if (gameState.zoneCollapsed?.[`god_${card.owner}`]) {
+      toggleGodZone(card.owner, true, true);
+    }
+    pendingManifestSelection = {
+      cardId: card.id,
+      owner: card.owner,
+      candidateIds: payableGods.map(g => g.id)
+    };
+    payableGods.forEach(g => {
+      document.getElementById(g.id)?.classList.add("manifest-god-candidate");
+    });
+    const textEl = document.getElementById("manifest-select-text");
+    if (textEl) {
+      const cardName = lookupCatalog(card)?.name || "顕現卡";
+      textEl.textContent = `✨ 顕現「${cardName}」：請點擊發光的創界神支付 1 個 Core`;
+    }
+    document.getElementById("manifest-select-banner")?.classList.remove("hidden");
+  }
+
+  // 3.5 顕現專屬：大光球自目標創界神跳出飛向場地 ➔ 華麗屬性交叉星星爆發 ➔ 顕現卡才出現
+  function playManifestCrossStarBurstAt(cx, cy, cardW, cardH, palette) {
+    const mainColor = palette[0];
+    const subColor = palette[1] || palette[0];
+    const starClip = "polygon(50% 0%, 58% 42%, 100% 50%, 58% 58%, 50% 100%, 42% 58%, 0% 50%, 42% 42%)";
+
+    // 雙層屬性光環衝擊波
+    [mainColor, subColor].forEach((col, idx) => {
+      const ring = document.createElement("div");
+      Object.assign(ring.style, {
+        position: "fixed", left: `${cx}px`, top: `${cy}px`,
+        width: "46px", height: "46px", borderRadius: "50%",
+        border: `${idx === 0 ? 3.5 : 2.5}px solid ${col}`,
+        boxShadow: `0 0 28px 10px ${col}, inset 0 0 16px #ffffff`,
+        pointerEvents: "none", zIndex: String(16875 + idx),
+        transform: "translate(-50%, -50%) scale(0.35)", opacity: "0"
+      });
+      document.body.appendChild(ring);
+      ring.animate([
+        { transform: "translate(-50%, -50%) scale(0.35)", opacity: 1 },
+        { transform: `translate(-50%, -50%) scale(${3.2 + idx * 0.7})`, opacity: 0 }
+      ], { duration: 540 + idx * 80, delay: idx * 55, easing: "cubic-bezier(0.16, 1, 0.3, 1)", fill: "both" }).onfinish = () => ring.remove();
+    });
+
+    // 24 顆迷你至中等大小的華麗屬性交叉星星（不遮擋卡片中央）
+    const starCount = 24;
+    for (let i = 0; i < starCount; i++) {
+      const star = document.createElement("div");
+      const col = i % 4 === 0 ? "#ffffff" : palette[i % palette.length];
+      const isMedium = i % 3 === 0;
+      const sz = isMedium ? (28 + Math.random() * 14) : (14 + Math.random() * 12);
+      const startOffsetX = (Math.random() - 0.5) * cardW * 0.65;
+      const startOffsetY = (Math.random() - 0.5) * cardH * 0.65;
+      Object.assign(star.style, {
+        position: "fixed", left: `${cx + startOffsetX}px`, top: `${cy + startOffsetY}px`,
+        width: `${sz}px`, height: `${sz}px`,
+        clipPath: starClip,
+        background: `radial-gradient(circle, #ffffff 0%, ${col} 56%, ${col}00 100%)`,
+        filter: `drop-shadow(0 0 ${isMedium ? 12 : 8}px ${col}) drop-shadow(0 0 4px #ffffff)`,
+        pointerEvents: "none", zIndex: "16885",
+        transform: "translate(-50%, -50%) scale(0.18)", opacity: "0"
+      });
+      document.body.appendChild(star);
+      const angle = (Math.PI * 2 * i) / starCount + (Math.random() - 0.5) * 0.3;
+      const dist = (isMedium ? 48 : 66) + Math.random() * 78;
+      const rotStart = i % 2 === 0 ? 0 : 45;
+      const rotEnd = rotStart + (i % 2 === 0 ? 1 : -1) * (85 + Math.random() * 90);
+      star.animate([
+        { transform: `translate(-50%, -50%) scale(0.18) rotate(${rotStart}deg)`, opacity: 0 },
+        { transform: `translate(calc(-50% + ${Math.cos(angle) * dist * 0.5}px), calc(-50% + ${Math.sin(angle) * dist * 0.5}px)) scale(1.22) rotate(${(rotStart + rotEnd) * 0.5}deg)`, opacity: 1, offset: 0.32 },
+        { transform: `translate(calc(-50% + ${Math.cos(angle) * dist}px), calc(-50% + ${Math.sin(angle) * dist}px)) scale(0.12) rotate(${rotEnd}deg)`, opacity: 0 }
+      ], { duration: 600 + Math.random() * 240, delay: Math.random() * 90, easing: "cubic-bezier(0.16, 1, 0.3, 1)", fill: "both" }).onfinish = () => star.remove();
+    }
+  }
+
+  function playManifestCrossStarEffect(cardId, colors, godCardId = null) {
+    const el = document.getElementById(cardId);
+    if (!el) return;
+    const palette = Array.isArray(colors) && colors.length ? colors : ["#ffffff"];
+    const mainColor = palette[0];
+    const subColor = palette[1] || palette[0];
+
+    const dstRect = el.getBoundingClientRect();
+    if (!dstRect.width || !dstRect.height) {
+      el.style.visibility = "visible";
+      el.style.opacity = "1";
+      return;
+    }
+    const dstX = dstRect.left + dstRect.width / 2;
+    const dstY = dstRect.top + dstRect.height / 2;
+
+    const revealCard = () => {
+      el.style.visibility = "visible";
+      el.style.opacity = "1";
+      const curTransform = el.style.transform || "";
+      el.animate([
+        { transform: `${curTransform} scale(0.72)`, filter: "brightness(2.5)", opacity: 0.2 },
+        { transform: `${curTransform} scale(1.1)`, filter: "brightness(1.75)", opacity: 1, offset: 0.45 },
+        { transform: `${curTransform} scale(1)`, filter: "brightness(1)", opacity: 1 }
+      ], { duration: 420, easing: "cubic-bezier(0.16, 1, 0.3, 1)" });
+      if (typeof playCardAttributeFlash === "function") {
+        playCardAttributeFlash(cardId, palette);
+      }
+      playManifestCrossStarBurstAt(dstX, dstY, dstRect.width, dstRect.height, palette);
+    };
+
+    const godEl = godCardId ? document.getElementById(godCardId) : null;
+    const srcRect = godEl ? godEl.getBoundingClientRect() : null;
+    if (!srcRect || !srcRect.width || !srcRect.height) {
+      revealCard();
+      return;
+    }
+
+    // 在大光球飛行期間先隱藏顕現卡
+    el.style.visibility = "hidden";
+    el.style.opacity = "0";
+
+    const srcX = srcRect.left + srcRect.width / 2;
+    const srcY = srcRect.top + srcRect.height / 2;
+    const dx = dstX - srcX;
+    const dy = dstY - srcY;
+    const arcLift = Math.max(70, Math.min(160, Math.hypot(dx, dy) * 0.35));
+
+    // 從目標創界神跳出的屬性光球（已縮小 75%）
+    const orb = document.createElement("div");
+    Object.assign(orb.style, {
+      position: "fixed", left: `${srcX}px`, top: `${srcY}px`,
+      width: "11px", height: "11px", borderRadius: "50%",
+      background: `radial-gradient(circle at 35% 35%, #ffffff 0%, ${mainColor} 52%, ${subColor} 85%, transparent 100%)`,
+      boxShadow: `0 0 8px 3px ${mainColor}, 0 0 15px 5px ${subColor}aa, inset 0 0 4px #ffffff`,
+      pointerEvents: "none", zIndex: "16890",
+      transform: "translate(-50%, -50%) scale(0.35)"
+    });
+    document.body.appendChild(orb);
+
+    const flightDuration = 480;
+    const orbAnim = orb.animate([
+      { transform: "translate(-50%, -50%) scale(0.35)", opacity: 0.4 },
+      { transform: `translate(calc(-50% + ${dx * 0.25}px), calc(-50% + ${dy * 0.25 - arcLift * 0.85}px)) scale(1.25)`, opacity: 1, offset: 0.25 },
+      { transform: `translate(calc(-50% + ${dx * 0.55}px), calc(-50% + ${dy * 0.55 - arcLift}px)) scale(1.35)`, opacity: 1, offset: 0.55 },
+      { transform: `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) scale(1.55)`, opacity: 1 }
+    ], { duration: flightDuration, easing: "cubic-bezier(0.22, 1, 0.36, 1)", fill: "both" });
+
+    // 光球飛行軌跡殘影粒子（等比例縮小 75%）
+    for (let t = 0; t < 10; t++) {
+      const frac = (t + 1) / 11;
+      setTimeout(() => {
+        const px = srcX + dx * frac;
+        const py = srcY + dy * frac - Math.sin(frac * Math.PI) * arcLift;
+        const trail = document.createElement("div");
+        const sz = 4 + (1 - frac) * 4;
+        const col = t % 2 === 0 ? mainColor : subColor;
+        Object.assign(trail.style, {
+          position: "fixed", left: `${px}px`, top: `${py}px`,
+          width: `${sz}px`, height: `${sz}px`, borderRadius: "50%",
+          background: `radial-gradient(circle, #ffffff 0%, ${col} 65%, transparent 100%)`,
+          boxShadow: `0 0 5px 1.5px ${col}`,
+          pointerEvents: "none", zIndex: "16888",
+          transform: "translate(-50%, -50%)"
+        });
+        document.body.appendChild(trail);
+        trail.animate([
+          { transform: "translate(-50%, -50%) scale(1)", opacity: 0.9 },
+          { transform: "translate(-50%, -50%) scale(0.1)", opacity: 0 }
+        ], { duration: 320, easing: "ease-out" }).onfinish = () => trail.remove();
+      }, Math.round(flightDuration * frac * 0.85));
+    }
+
+    orbAnim.onfinish = () => {
+      orb.remove();
+      revealCard();
+    };
+  }
+
+  function announceManifestCrossStar(cardId, colors, godCardId = null) {
+    const timestamp = Math.max(Date.now(), (gameState.lastActionEffect?.timestamp || 0) + 1);
+    gameState.lastActionEffect = { type: "manifestCrossStar", cardId, godCardId, colors, timestamp };
+    lastSeenActionEffectTime = timestamp;
+    playManifestCrossStarEffect(cardId, colors, godCardId);
+  }
+
+  // 4. 實際執行顕現：魂Core進廢棄區、目標創界神 1 Core 進廢棄區、卡牌上場並觸發屬性閃現特效
+  function executeManifest(cardId, godCardId) {
+    cancelManifestSelection();
+    const card = gameState.cards[cardId];
+    const god = gameState.cards[godCardId];
+    if (!card || !god) return;
+
+    const check = evaluateManifest(card);
+    if (!check.canExecute || !check.payableGods.some(g => g.id === godCardId)) {
+      showNotice("顕現條件已變更，無法執行。");
+      return;
+    }
+
+    const owner = card.owner;
+
+    // 步驟 1：將廢棄區以外的魂Core 移至廢棄區
+    const prevSoulLoc = gameState.soulCoreLocation?.[owner] || "reserve";
+    if (prevSoulLoc !== "trash") {
+      if (["reserve", "count", "life"].includes(prevSoulLoc)) {
+        triggerCounterKeyFlash(`${owner}_${prevSoulLoc}`, -1);
+      } else if (gameState.cards[prevSoulLoc]) {
+        triggerCardCoreFlash(prevSoulLoc, -1);
+      }
+      playSoulCoreMoveAnimation(owner, prevSoulLoc, "trash");
+      gameState.soulCoreLocation[owner] = "trash";
+      triggerCounterKeyFlash(`${owner}_trash_core`, 1);
+    }
+
+    // 步驟 2：將對象創界神的 1 個 Core 移至廢棄區
+    god.cores = Math.max(0, (god.cores || 0) - 1);
+    gameState[`${owner}_trash_core`] = (parseInt(gameState[`${owner}_trash_core`], 10) || 0) + 1;
+    const godEl = document.getElementById(god.id);
+    if (godEl) {
+      const coreText = godEl.querySelector(".card-cores");
+      if (coreText) coreText.innerText = getDisplayedCardCoreCount(god);
+      playCoreTransferAnimation(
+        godEl.querySelector(".card-controls") || godEl,
+        `trash-core-box-${owner}`,
+        "✨ 顕現 (-1 CORE ➔ TRASH)",
+        "cost",
+        1
+      );
+    }
+    triggerCardCoreFlash(god.id, -1);
+    triggerCounterKeyFlash(`${owner}_trash_core`, 1);
+
+    // 步驟 3：放置至場上但先隱藏，等大光球從目標創界神飛到場地後才現身
+    card.isFaceDown = false;
+    moveCardToZone(card.id, `field-${owner}`);
+    document.querySelectorAll(".card-fx-ghost").forEach(g => g.remove());
+    const manifestEl = document.getElementById(card.id);
+    if (manifestEl) {
+      manifestEl.style.visibility = "hidden";
+      manifestEl.style.opacity = "0";
+    }
+
+    // 步驟 4：大光球從對象創界神跳出飛向場地 ➔ 華麗交叉星星爆發 ➔ 顕現卡出現（並同步連線對手）
+    const colors = typeof attributeFlashColors === "function"
+      ? attributeFlashColors(lookupCatalog(card)?.attribute)
+      : ["#ffffff"];
+    announceManifestCrossStar(card.id, colors, god.id);
+    updateRoomState();
+  }
+
+  // 5. 點擊「顕現」按鈕入口
+  window.triggerManifestFromHand = function (cardId) {
+    const card = gameState.cards[cardId];
+    if (!card) return;
+    const check = evaluateManifest(card);
+    if (!check.valid) return;
+
+    if (!check.canExecute) {
+      const reasons = [];
+      if (!check.matchingGods.length) {
+        const targetLabel = check.targets.length ? check.targets.map(t => `「${t}」`).join(" / ") : "對象創界神";
+        reasons.push(`・創界神區缺少 ${targetLabel}`);
+      }
+      if (!check.countMet) {
+        reasons.push(`・計數值不足（需要 ${check.requiredCount}，目前 ${check.curCount}）`);
+      }
+      if (!check.soulCoreAvailable) {
+        reasons.push("・魂Core 已經在廢棄區（需要廢棄區以外的魂Core）");
+      }
+      if (check.matchingGods.length > 0 && !check.payableGods.length) {
+        reasons.push("・對象創界神上沒有足夠的 Core（至少需要 1 個）");
+      }
+      if (!check.cond3Met) {
+        reasons.push("・支付魂Core後，場上或預備區必須至少剩下 1 粒 Core");
+      }
+      showNotice("無法發動【顕現】：\n" + reasons.join("\n"));
+      return;
+    }
+
+    if (check.payableGods.length === 1) {
+      executeManifest(card.id, check.payableGods[0].id);
+    } else {
+      startManifestGodSelection(card, check.payableGods);
+    }
+  };
+
+  // 6. 攔截點擊發光的創界神（支援電腦滑鼠與手機/iPad 觸控）
+  document.addEventListener("pointerdown", e => {
+    if (!pendingManifestSelection) return;
+    const cardEl = e.target.closest(".card");
+    if (cardEl && pendingManifestSelection.candidateIds.includes(cardEl.id)) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      const { cardId } = pendingManifestSelection;
+      executeManifest(cardId, cardEl.id);
+    }
+  }, true);
+
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape" && pendingManifestSelection) {
+      cancelManifestSelection();
+    }
+  });
+
+  // 7. 電腦版手牌懸停按鈕 + 手機/iPad 預覽區按鈕（與転醒按鈕相同設計）
+  function updateMiniManifest(el, card) {
+    const isManifest = isManifestCardInHand(card);
+    el.classList.toggle("has-manifest", isManifest);
+    let btn = el.querySelector(":scope > .mini-manifest-btn");
+    if (isManifest) {
+      if (!btn) {
+        btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "mini-translate-btn mini-manifest-btn";
+        btn.textContent = "顕現";
+        btn.draggable = false;
+        ["pointerdown", "mousedown", "dblclick", "dragstart"].forEach(ev =>
+          btn.addEventListener(ev, e => e.stopPropagation())
+        );
+        btn.onclick = e => {
+          e.preventDefault();
+          e.stopPropagation();
+          triggerManifestFromHand(card.id);
+        };
+        el.append(btn);
+      }
+      const check = evaluateManifest(card);
+      btn.classList.toggle("manifest-disabled", !check.canExecute);
+    } else {
+      btn?.remove();
+    }
+  }
+
+  const previewManifestBtn = document.createElement("button");
+  previewManifestBtn.id = "preview-manifest-btn";
+  previewManifestBtn.type = "button";
+  previewManifestBtn.textContent = "顕現";
+  previewManifestBtn.className = "hidden pointer-events-auto";
+  previewManifestBtn.onpointerdown = e => e.stopPropagation();
+  previewManifestBtn.onclick = e => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (activePreviewCardId) triggerManifestFromHand(activePreviewCardId);
+  };
+  document.getElementById("preview-action-row")?.append(previewManifestBtn);
+
+  // 8. 掛載至現有核心更新流程
+  const baseAttachMiniForManifest = attachMiniTranslation;
+  attachMiniTranslation = function (el, img, cardId) {
+    baseAttachMiniForManifest(el, img, cardId);
+    if (el && cardId && gameState.cards[cardId]) {
+      updateMiniManifest(el, gameState.cards[cardId]);
+    }
+  };
+
+  const baseApplyVisualForManifest = applyCardVisualState;
+  applyCardVisualState = function (card, el) {
+    baseApplyVisualForManifest(card, el);
+    if (el && el.classList.contains("mini-translation-source")) {
+      updateMiniManifest(el, card);
+    }
+  };
+
+  const baseSyncTurnForManifest = syncTurnPreview;
+  syncTurnPreview = function () {
+    baseSyncTurnForManifest();
+    const card = gameState.cards[activePreviewCardId];
+    const show = !!(card && isManifestCardInHand(card) && controlMode !== "PC");
+    previewManifestBtn.classList.toggle("hidden", !show);
+    if (show) {
+      const check = evaluateManifest(card);
+      previewManifestBtn.classList.toggle("manifest-disabled", !check.canExecute);
+    }
+  };
+
+  const baseHidePreviewForManifest = hideCardPreview;
+  hideCardPreview = function (...args) {
+    baseHidePreviewForManifest(...args);
+    previewManifestBtn.classList.add("hidden");
+  };
+
+  const baseUpdateAllForManifest = updateAllUI;
+  updateAllUI = function () {
+    baseUpdateAllForManifest();
+    Object.values(gameState.cards).forEach(card => {
+      if (card.zone?.startsWith("hand-")) {
+        const el = document.getElementById(card.id);
+        if (el && el.classList.contains("mini-translation-source")) {
+          updateMiniManifest(el, card);
+        }
+      }
+    });
+    if (pendingManifestSelection) {
+      pendingManifestSelection.candidateIds.forEach(id => {
+        document.getElementById(id)?.classList.add("manifest-god-candidate");
+      });
+    }
+  };
+
+  const baseApplyStateForManifest = window.applyGameState;
+  window.applyGameState = function (state) {
+    const prevTime = gameState.lastActionEffect?.timestamp;
+    baseApplyStateForManifest(state);
+    const effect = state?.lastActionEffect;
+    if (effect?.type === "manifestCrossStar" && effect.timestamp !== prevTime && Array.isArray(effect.colors)) {
+      playManifestCrossStarEffect(
+        effect.cardId,
+        effect.colors.filter(c => /^#[a-f0-9]{6}$/i.test(c)).slice(0, 6),
+        effect.godCardId || null
+      );
     }
   };
 })();
