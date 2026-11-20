@@ -2466,7 +2466,7 @@ body.mobile-mode #playmat-root .brave-god-attached .god-core-badge {
 <div class="card-db-actions">
 <input id="card-db-search" type="search" placeholder="搜尋卡號或卡名" aria-label="搜尋卡號或卡名" oninput="renderCardDatabase()">
 <button onclick="newCatalogCard()">＋ 新增卡片</button>
-<button onclick="refreshCardDatabase()">重新整理</button>
+<button onclick="refreshCardDatabase(true)">重新整理</button>
 <button id="catalog-delete-mode" onclick="toggleCatalogDeleteMode()">刪除模式</button>
 <button id="catalog-delete-selected" class="hidden" onclick="deleteCatalogCards()">刪除所選 (0)</button>
 <button type="button" id="btn-ai-settings-toggle" onclick="toggleAiSettingsPanel()" title="設定自己的 Gemini API Key（僅存於本機瀏覽器）">🔑 AI Key</button>
@@ -2697,7 +2697,7 @@ body.mobile-mode #playmat-root .brave-god-attached .god-core-badge {
 <span id="deck-vault-count-badge" class="bg-black/80 border border-[#b09466]/45 text-[#e0b25b] px-2 py-0.5 rounded-sm text-xs font-bold">0 副卡組</span>
 </div>
 <div class="flex items-center gap-2">
-<input type="file" id="vault-import-zip-input" accept=".zip" class="hidden" onchange="importZipToVaultOnly(event)"> <button class="border border-emerald-500/55 bg-emerald-950/50 text-emerald-300 hover:bg-emerald-500 hover:text-black px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick='document.getElementById("vault-import-zip-input").click()'>＋ 新增匯入 .ZIP 卡組</button> <input type="file" id="vault-restore-backup-input" accept=".json,application/json" class="hidden" onchange="restoreFullBackupFromFile(event)"> <button id="btn-export-full-backup" class="border border-sky-500/55 bg-sky-950/50 text-sky-300 hover:bg-sky-500 hover:text-black px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="exportFullBackupToFile()" title="將所有卡組、卡池資料與自訂卡背打包下載成 .json 備份檔">📥 匯出全部備份</button> <button id="btn-restore-full-backup" class="border border-amber-500/55 bg-amber-950/50 text-amber-300 hover:bg-amber-400 hover:text-black px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick='document.getElementById("vault-restore-backup-input").click()' title="從之前下載的 .json 備份檔還原卡組與卡池">📤 還原備份</button> <button class="border border-rose-500/55 bg-rose-950/50 text-rose-300 hover:bg-rose-600 hover:text-white px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="clearAllDecksFromVault()" title="刪除並清空所有已儲存的匯入卡組資料庫">🗑️ 清空整個資料庫</button> <button class="border border-[#b09466]/45 bg-black/70 text-[#dcd6cc] hover:bg-[#c8aa76] hover:text-black px-3.5 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="closeDeckVaultModal()">CLOSE (✕)</button>
+<input type="file" id="vault-import-zip-input" accept=".zip" class="hidden" onchange="importZipToVaultOnly(event)"> <button class="border border-emerald-500/55 bg-emerald-950/50 text-emerald-300 hover:bg-emerald-500 hover:text-black px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick='document.getElementById("vault-import-zip-input").click()'>＋ 新增匯入 .ZIP 卡組</button> <button class="border border-[#b09466]/55 bg-black/70 text-[#e0b25b] hover:bg-[#c8aa76] hover:text-black px-2.5 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="window.refreshGlobalDecksFromCloud&&window.refreshGlobalDecksFromCloud(true).then(()=>renderDeckVaultList())" title="從雲端重新同步最新卡組列表">🔄 同步</button> <input type="file" id="vault-restore-backup-input" accept=".json,application/json" class="hidden" onchange="restoreFullBackupFromFile(event)"> <button id="btn-export-full-backup" class="border border-sky-500/55 bg-sky-950/50 text-sky-300 hover:bg-sky-500 hover:text-black px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="exportFullBackupToFile()" title="將所有卡組、卡池資料與自訂卡背打包下載成 .json 備份檔">📥 匯出全部備份</button> <button id="btn-restore-full-backup" class="border border-amber-500/55 bg-amber-950/50 text-amber-300 hover:bg-amber-400 hover:text-black px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick='document.getElementById("vault-restore-backup-input").click()' title="從之前下載的 .json 備份檔還原卡組與卡池">📤 還原備份</button> <button class="border border-rose-500/55 bg-rose-950/50 text-rose-300 hover:bg-rose-600 hover:text-white px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="clearAllDecksFromVault()" title="刪除並清空所有已儲存的匯入卡組資料庫">🗑️ 清空整個資料庫</button> <button class="border border-[#b09466]/45 bg-black/70 text-[#dcd6cc] hover:bg-[#c8aa76] hover:text-black px-3.5 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="closeDeckVaultModal()">CLOSE (✕)</button>
 </div>
 </div>
 <div id="deck-vault-list" class="flex-1 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5 p-1 custom-scrollbar">
@@ -4375,15 +4375,15 @@ async function catalogCloud() {
   throw Error("無法連接共用資料庫，請檢查網路並重新載入。")
 }
 async function openCardDatabase() {
-  cancelCatalogEdit(),document.getElementById("card-db-modal").classList.remove("hidden"),await refreshCardDatabase()
+  cancelCatalogEdit(),document.getElementById("card-db-modal").classList.remove("hidden"),await refreshCardDatabase(!1)
 }
 function closeCardDatabase() {
   catalogImageVersion++,catalogEditContext=null,document.getElementById("card-db-modal").classList.add("hidden")
 }
-async function refreshCardDatabase() {
-  catalogStatus("正在載入共用卡片資料…");
+async function refreshCardDatabase(force=!1) {
+  catalogStatus(force?"正在從雲端重新載入卡池…":"正在載入共用卡片資料…");
   try {
-    catalogEntries=await(await catalogCloud()).list(),renderCardDatabase(),await indexCatalogImages(),catalogStatus(`共 ${catalogEntries.length} 張卡片`)
+    catalogEntries=await(await catalogCloud()).list(!!force),renderCardDatabase(),await indexCatalogImages(),catalogStatus(`共 ${catalogEntries.length} 張卡片`)
   }
   catch(e) {
     catalogStatus("載入失敗："+e.message)
@@ -4638,7 +4638,7 @@ async function loadSavedDeckToPlayer(e,t) {
 }
 async function openDeckVaultModal() {
   const e=document.getElementById("deck-vault-modal");
-  e&&e.classList.remove("hidden"),await renderDeckVaultList()
+  e&&e.classList.remove("hidden"),window.refreshGlobalDecksFromCloud&&await window.refreshGlobalDecksFromCloud(!1),await renderDeckVaultList()
 }
 function closeDeckVaultModal() {
   const e=document.getElementById("deck-vault-modal");
@@ -5432,7 +5432,7 @@ if(["p1","p2"].forEach(e=> {
     const t=new Set(e.cards.map(e=>e.id));Object.keys(gameState.cards).forEach(e=> {
       t.has(e)||(document.getElementById(e)?.remove(),releaseCardImage(e,!0),delete gameState.cards[e])
     }),e.cards.forEach(e=> {
-      const t=cardImageCache[e.id]||gameState.cards[e.id]?.imgBase64||"";(e.zOrder||0)>=zOrderCounter&&(zOrderCounter=(e.zOrder||0)+1);const o=void 0!==e.rotation?e.rotation:e.isTapped?90:0;if(gameState.cards[e.id]) {
+      const t=cardImageCache[e.id]||gameState.cards[e.id]?.imgBase64||(e.catalogNumber&&window.catalogByNumber?.get(e.catalogNumber)?.image)||"";(e.zOrder||0)>=zOrderCounter&&(zOrderCounter=(e.zOrder||0)+1);const o=void 0!==e.rotation?e.rotation:e.isTapped?90:0;if(gameState.cards[e.id]) {
         const a=gameState.cards[e.id],n=a.zone,r=a.cores||0,s=e.cores||0;if(s!==r&&l.push( {
           id:e.id,owner:e.owner,zone:e.zone,delta:s-r
         }),e.zone&&e.zone!==n) {
@@ -5754,9 +5754,10 @@ function refreshFieldStats() {
     const t=document.getElementById(e.id);t&&renderCardStats(e,t)
   })
 }
-async function ensureCatalogData() {
+async function ensureCatalogData(force=!1) {
   try {
-    return catalogEntries=await(await catalogCloud()).list(),await indexCatalogImages(),!0
+    if(!force && catalogEntries.length>0 && window.catalogByNumber?.size>0) return !0;
+    return catalogEntries=await(await catalogCloud()).list(!!force),await indexCatalogImages(),!0
   }
   catch(e) {
     return catalogStatus("資料庫載入失敗："+e.message),!1
@@ -6017,7 +6018,7 @@ async function linkTranslationCard() {
 </script>
 <!-- #endregion -->
 
-<!-- #region 2. [雲端] Firebase Firestore 連線、房間同步與自動清理 -->
+<!-- #region 2. [雲端] Firebase Firestore 連線、房間同步與省額度快取最佳化 -->
 <script type="module">
 import {
   initializeApp,
@@ -6038,13 +6039,62 @@ import {
 } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 // Keep the existing Firestore schema and every distinct action/effect.
-// These caches are scoped to a room session and never persist across reloads.
+// Quota optimizations:
+// 1. IndexedDB + 1-doc catalogMeta version cache for globalCards (eliminates 300+ reads per translation/modal open).
+// 2. Lazy-load globalDecks only when Deck Vault is opened (with 5-min TTL).
+// 3. One-time getDoc for global cardback instead of persistent listener.
+// 4. Deduplicated & packed room cardImages + reuse shared catalog images.
+// 5. No automatic full rooms scan on every page load; coalesce rapid non-effect state writes.
 const roomImageCache = new Map(), imageWriteQueues = new Map();
 let catalogRead = null, cleanupRead = null, lastCleanup = 0;
 let roomStateQueue = Promise.resolve(), knownRoomState = null;
 let presenceWrittenAt = 0;
+let catalogMemoryCache = null, catalogCachedUpdatedAt = 0;
+let globalDecksFetchedAt = 0, globalDecksRead = null;
+
 function sameDeckEntry(docData, entry) {
   return Object.keys(entry).every(key => docData[key] === entry[key]);
+}
+
+// --- IndexedDB local cache for globalCards catalog ---
+const CATALOG_CACHE_DB = "BSPrototypeCatalogCacheDB";
+function openCatalogCacheDB() {
+  return new Promise((resolve, reject) => {
+    if (!window.indexedDB) return reject(new Error("IndexedDB unavailable"));
+    const req = window.indexedDB.open(CATALOG_CACHE_DB, 1);
+    req.onupgradeneeded = (ev) => {
+      const idb = ev.target.result;
+      if (!idb.objectStoreNames.contains("cache")) idb.createObjectStore("cache", { keyPath: "key" });
+    };
+    req.onsuccess = (ev) => resolve(ev.target.result);
+    req.onerror = (ev) => reject(ev.target.error);
+  });
+}
+async function readLocalCatalogCache() {
+  try {
+    const idb = await openCatalogCacheDB();
+    try {
+      return await new Promise((resolve, reject) => {
+        const req = idb.transaction("cache", "readonly").objectStore("cache").get("globalCards");
+        req.onsuccess = () => resolve(req.result || null);
+        req.onerror = () => reject(req.error);
+      });
+    } finally { idb.close(); }
+  } catch (e) { return null; }
+}
+async function writeLocalCatalogCache(updatedAt, entries) {
+  try {
+    const idb = await openCatalogCacheDB();
+    try {
+      await new Promise((resolve, reject) => {
+        const tx = idb.transaction("cache", "readwrite");
+        tx.objectStore("cache").put({ key: "globalCards", updatedAt, entries });
+        tx.oncomplete = resolve;
+        tx.onerror = () => reject(tx.error);
+        tx.onabort = () => reject(tx.error);
+      });
+    } finally { idb.close(); }
+  } catch (e) {}
 }
 
 const appId = "bsbeta-52f46",
@@ -6082,6 +6132,15 @@ const globalDecksColRef = collection(
     "globalSettings",
     "cardback",
   ),
+  globalCatalogMetaDocRef = doc(
+    db,
+    "artifacts",
+    appId,
+    "public",
+    "data",
+    "globalSettings",
+    "catalogMeta",
+  ),
   globalCardsColRef = collection(
     db,
     "artifacts",
@@ -6090,6 +6149,7 @@ const globalDecksColRef = collection(
     "data",
     "globalCards",
   );
+
 async function deleteRoomAndSubcollections(e) {
   try {
     const a = collection(
@@ -6110,10 +6170,45 @@ async function deleteRoomAndSubcollections(e) {
     return (console.warn("Failed to delete room:", e, a), !1);
   }
 }
-((window.cardCatalogCloud = {
-  async list() {
+
+window.cardCatalogCloud = {
+  async list(force = false) {
+    if (!force && catalogMemoryCache && catalogMemoryCache.length > 0) {
+      return catalogMemoryCache;
+    }
     if (catalogRead) return catalogRead;
-    catalogRead = this.readFresh();
+    catalogRead = (async () => {
+      let cloudMetaTs = 0;
+      try {
+        const metaSnap = await getDoc(globalCatalogMetaDocRef);
+        if (metaSnap.exists()) cloudMetaTs = Number(metaSnap.data()?.updatedAt || 0);
+      } catch (e) {}
+
+      if (!force) {
+        const local = await readLocalCatalogCache();
+        if (
+          local &&
+          Array.isArray(local.entries) &&
+          local.entries.length > 0 &&
+          cloudMetaTs > 0 &&
+          local.updatedAt === cloudMetaTs
+        ) {
+          catalogMemoryCache = local.entries;
+          catalogCachedUpdatedAt = local.updatedAt;
+          return catalogMemoryCache;
+        }
+      }
+
+      const fresh = await this.readFresh();
+      const ts = cloudMetaTs || Date.now();
+      if (!cloudMetaTs && fresh.length > 0) {
+        setDoc(globalCatalogMetaDocRef, { updatedAt: ts }, { merge: true }).catch(() => {});
+      }
+      catalogMemoryCache = fresh;
+      catalogCachedUpdatedAt = ts;
+      await writeLocalCatalogCache(ts, fresh);
+      return fresh;
+    })();
     try { return await catalogRead; } finally { catalogRead = null; }
   },
   async readFresh() {
@@ -6137,517 +6232,576 @@ async function deleteRoomAndSubcollections(e) {
   async save(e, a, t = e.number) {
     const o = doc(globalCardsColRef, e.number),
       s = doc(globalCardsColRef, t);
-    return runTransaction(db, async (c) => {
+    const newRev = crypto.randomUUID();
+    const now = Date.now();
+    await runTransaction(db, async (c) => {
       const n = await c.get(s);
       if (t !== e.number && (await c.get(o)).exists())
         throw Error("新卡號已存在");
       if (null === a && n.exists()) {
-        const e = new Error("卡號已存在，請搜尋並編輯");
-        throw ((e.code = "catalog-exists"), e);
+        const err = new Error("卡號已存在，請搜尋並編輯");
+        throw ((err.code = "catalog-exists"), err);
       }
       if (null !== a && (!n.exists() || n.data().revision !== a))
         throw new Error("卡片已被其他玩家修改，請重新載入後再編輯");
-      (c.set(o, { ...e, revision: crypto.randomUUID(), updatedAt: Date.now() }),
-        t !== e.number && c.delete(s));
+      c.set(o, { ...e, revision: newRev, updatedAt: now });
+      if (t !== e.number) c.delete(s);
     });
+    setDoc(globalCatalogMetaDocRef, { updatedAt: now }, { merge: true }).catch(() => {});
+    if (Array.isArray(catalogMemoryCache)) {
+      catalogMemoryCache = catalogMemoryCache.filter(c => c.number !== t && c.number !== e.number);
+      catalogMemoryCache.push({ ...e, revision: newRev });
+      catalogMemoryCache.sort((x, y) => x.number.localeCompare(y.number));
+      catalogCachedUpdatedAt = now;
+      writeLocalCatalogCache(now, catalogMemoryCache).catch(() => {});
+    }
   },
   async remove(e) {
     if (e.length > 500) throw Error("一次最多刪除 500 張");
-    return runTransaction(db, async (a) => {
-      ((
-        await Promise.all(e.map((e) => a.get(doc(globalCardsColRef, e.number))))
-      ).forEach((a, t) => {
-        if (!a.exists() || a.data().revision !== e[t].revision)
+    const now = Date.now();
+    await runTransaction(db, async (a) => {
+      (await Promise.all(e.map((c) => a.get(doc(globalCardsColRef, c.number))))).forEach((snap, idx) => {
+        if (!snap.exists() || snap.data().revision !== e[idx].revision)
           throw Error("卡片已變更，請重新整理後再刪除");
-      }),
-        e.forEach((e) => a.delete(doc(globalCardsColRef, e.number))));
+      });
+      e.forEach((c) => a.delete(doc(globalCardsColRef, c.number)));
     });
+    setDoc(globalCatalogMetaDocRef, { updatedAt: now }, { merge: true }).catch(() => {});
+    if (Array.isArray(catalogMemoryCache)) {
+      const removed = new Set(e.map(c => c.number));
+      catalogMemoryCache = catalogMemoryCache.filter(c => !removed.has(c.number));
+      catalogCachedUpdatedAt = now;
+      writeLocalCatalogCache(now, catalogMemoryCache).catch(() => {});
+    }
   },
-}),
-  ensureCatalogData(),
-  onSnapshot(
-    globalSettingsDocRef,
-    (e) => {
-      if (e.exists()) {
-        const a = e.data();
-        if (a && a.base64) {
-          ((cardImageCache.custom_cardback = a.base64),
-            applyCustomCardBackUrl(a.base64));
-          try {
-            localStorage.setItem("bs_custom_cardback_base64", a.base64);
-          } catch (e) {}
-        }
-      }
-    },
-    (e) => console.warn("Global cardback sync warning:", e),
-  ),
-  onSnapshot(
-    globalDecksColRef,
-    (e) => {
-      const a = {};
-      (e.forEach((e) => {
-        const t = e.data();
-        if (t && t.id) {
-          const e = window.globalCloudDecksCache[t.id];
-          a[t.id] = {
-            ...t,
-            entries: t.entries?.length
-              ? t.entries
-              : (e?.updatedAt === t.updatedAt && e.entries) || [],
+};
+
+ensureCatalogData(false);
+
+// One-time read for global cardback on startup (1 read instead of persistent listener)
+getDoc(globalSettingsDocRef).then((e) => {
+  if (e.exists()) {
+    const a = e.data();
+    if (a && a.base64) {
+      cardImageCache.custom_cardback = a.base64;
+      applyCustomCardBackUrl(a.base64);
+      try { localStorage.setItem("bs_custom_cardback_base64", a.base64); } catch (err) {}
+    }
+  }
+}).catch((e) => console.warn("Global cardback read warning:", e));
+
+// Lazy-load global decks only when user opens Deck Vault (5-minute TTL)
+window.refreshGlobalDecksFromCloud = async (force = false) => {
+  if (!db) return;
+  if (!force && globalDecksFetchedAt > 0 && Date.now() - globalDecksFetchedAt < 300000) return;
+  if (globalDecksRead) return globalDecksRead;
+  globalDecksRead = (async () => {
+    try {
+      const snap = await getDocs(globalDecksColRef);
+      const next = {};
+      snap.forEach((d) => {
+        const data = d.data();
+        if (data && data.id) {
+          const prev = window.globalCloudDecksCache[data.id];
+          next[data.id] = {
+            ...data,
+            entries: data.entries?.length
+              ? data.entries
+              : (prev?.updatedAt === data.updatedAt && prev.entries) || [],
           };
         }
-      }),
-        (window.globalCloudDecksCache = a));
-      const t = document.getElementById("deck-vault-modal");
-      t &&
-        !t.classList.contains("hidden") &&
-        window.renderDeckVaultList &&
-        window.renderDeckVaultList();
-    },
-    (e) => console.warn("Global deck vault listener warning:", e),
-  ),
-  (window.saveGlobalCardBackToCloud = async (e) => {
-    if (db && e)
+      });
+      window.globalCloudDecksCache = next;
+      globalDecksFetchedAt = Date.now();
+    } catch (e) {
+      console.warn("Global deck vault fetch warning:", e);
+    }
+  })();
+  try { await globalDecksRead; } finally { globalDecksRead = null; }
+};
+
+window.saveGlobalCardBackToCloud = async (e) => {
+  if (db && e)
+    try {
+      await setDoc(
+        globalSettingsDocRef,
+        { base64: e, updatedAt: Date.now(), updatedBy: clientId },
+        { merge: !0 },
+      );
+    } catch (e) {
+      console.warn("Save global cardback failed:", e);
+    }
+};
+
+window.saveGlobalDeckToCloud = async (e) => {
+  if (db && e && e.id)
+    try {
+      const a = doc(db, "artifacts", appId, "public", "data", "globalDecks", e.id),
+        t = Array.isArray(e.entries) ? e.entries : [],
+        o = collection(a, "entries"),
+        existing = (await getDocs(o)).docs,
+        existingById = new Map(existing.map(row => [row.id, row.data()])),
+        s = existing.filter((d) => !t.some((_, idx) => d.id === `entry_${idx}`));
+      if (t.length + s.length + 1 > 500)
+        throw new Error("此卡組卡圖種類過多，請拆成較小的卡組。");
+      const c = writeBatch(db);
+      t.forEach((item, idx) => {
+        const entry = {
+          idx,
+          imgBase64: item.imgBase64,
+          count: Number(item.count) || 1,
+          name: item.name || `Card #${idx + 1}`,
+          catalogNumber: item.catalogNumber || "",
+        };
+        if (!sameDeckEntry(existingById.get(`entry_${idx}`) || {}, entry))
+          c.set(doc(o, `entry_${idx}`), entry);
+      });
+      s.forEach((d) => c.delete(d.ref));
+      c.set(a, {
+        id: e.id,
+        name: e.name,
+        cardCount: e.cardCount,
+        uniqueCount: t.length,
+        coverImage: e.coverImage || "",
+        cardBack: e.cardBack || null,
+        updatedAt: e.updatedAt,
+      });
+      await c.commit();
+      window.globalCloudDecksCache[e.id] = { ...e, entries: t };
+    } catch (err) {
+      throw (
+        console.warn("Upload global deck to cloud failed:", err),
+        new Error("共享儲存失敗：" + (err.message || err.code))
+      );
+    }
+};
+
+window.fetchGlobalDeckEntriesFromCloud = async (e) => {
+  if (!db || !e) return null;
+  if (window.globalCloudDecksCache[e]?.entries?.length)
+    return window.globalCloudDecksCache[e];
+  const a = window.globalCloudDecksCache[e];
+  try {
+    const t = collection(db, "artifacts", appId, "public", "data", "globalDecks", e, "entries"),
+      o = await getDocs(t),
+      s = [];
+    o.forEach((d) => {
+      const data = d.data();
+      if (data && data.imgBase64) s.push(data);
+    });
+    s.sort((x, y) => (x.idx || 0) - (y.idx || 0));
+    if (window.globalCloudDecksCache[e] && window.globalCloudDecksCache[e].updatedAt === a?.updatedAt) {
+      window.globalCloudDecksCache[e].entries = s;
+      return window.globalCloudDecksCache[e];
+    }
+    return { ...a, id: e, entries: s };
+  } catch (err) {
+    throw (console.warn("Fetch global deck entries failed:", err), err);
+  }
+};
+
+window.deleteGlobalDeckFromCloud = async (e) => {
+  if (db && e)
+    try {
+      const a = collection(db, "artifacts", appId, "public", "data", "globalDecks", e, "entries"),
+        t = await getDocs(a);
+      for (const d of t.docs) await deleteDoc(d.ref);
+      await deleteDoc(doc(db, "artifacts", appId, "public", "data", "globalDecks", e));
+      delete window.globalCloudDecksCache[e];
+    } catch (err) {
+      console.warn("Delete global deck failed:", err);
+    }
+};
+
+window.clearAllGlobalDecksFromCloud = async () => {
+  if (db)
+    try {
+      const e = await getDocs(globalDecksColRef);
+      for (const a of e.docs) await window.deleteGlobalDeckFromCloud(a.id);
+      window.globalCloudDecksCache = {};
+    } catch (err) {
+      console.warn("Clear global decks failed:", err);
+    }
+};
+
+window.cleanupInactiveRooms = async (e = !1) => {
+  if (!db) return 0;
+  if (cleanupRead) return cleanupRead;
+  if (!e && Date.now() - lastCleanup < 180000) return 0;
+  cleanupRead = window.cleanupRoomScan(e);
+  try { const count = await cleanupRead; lastCleanup = Date.now(); return count; }
+  finally { cleanupRead = null; }
+};
+
+window.listActiveRooms = async () => {
+  if (!db) return [];
+  const col = collection(db, "artifacts", appId, "public", "data", "rooms");
+  const snap = await getDocs(col);
+  const now = Date.now();
+  const rooms = [];
+  for (const d of snap.docs) {
+    const code = d.id;
+    const data = d.data() || {};
+    const lastActive = data.lastActive || data.timestamp || 0;
+    const age = now - lastActive;
+    const activeClients = data.activeClients || {};
+    const onlineClients = Object.keys(activeClients).filter(k => now - activeClients[k] < 9e4);
+    let seats = data.seats || {};
+    let seatNames = {};
+    if (data.stateJson) {
       try {
+        const parsed = JSON.parse(data.stateJson);
+        if (parsed.seats) seats = { ...parsed.seats, ...seats };
+        if (parsed.seatNames) seatNames = parsed.seatNames;
+      } catch (err) {}
+    }
+    const p1Occupied = !!seats.p1;
+    const p2Occupied = !!seats.p2;
+    const hasSeat = p1Occupied || p2Occupied;
+    const isCurrent = code === window.currentRoomCode;
+    if (!isCurrent && (age > 6e5 || (!hasSeat && onlineClients.length === 0 && age > 12e4))) continue;
+    rooms.push({
+      code,
+      p1Occupied,
+      p2Occupied,
+      p1Name: seatNames.p1 || "",
+      p2Name: seatNames.p2 || "",
+      onlineCount: onlineClients.length,
+      lastActive,
+      isCurrent
+    });
+  }
+  rooms.sort((a, b) => (b.isCurrent - a.isCurrent) || (b.lastActive - a.lastActive));
+  return rooms;
+};
+
+window.cleanupRoomScan = async (e = false) => {
+  let a = 0;
+  try {
+    const t = collection(db, "artifacts", appId, "public", "data", "rooms"),
+      o = await getDocs(t),
+      s = Date.now(),
+      c = 6e5,
+      n = 12e4;
+    for (const d of o.docs) {
+      const code = d.id;
+      if (code === window.currentRoomCode) continue;
+      const l = d.data() || {},
+        last = l.lastActive || l.timestamp || 0,
+        r = s - last;
+      let i = !1;
+      const w = l.activeClients || {},
+        b = Object.keys(w).filter((k) => s - w[k] < 9e4);
+      if (l.stateJson)
+        try {
+          const parsed = JSON.parse(l.stateJson);
+          if (parsed.seats && (parsed.seats.p1 || parsed.seats.p2)) i = !0;
+        } catch (err) {}
+      const m = r > c,
+        u = !i && 0 === b.length && r > n;
+      if ((m || u || (e && (!i || r > 9e4))) && (await deleteRoomAndSubcollections(code))) a++;
+    }
+  } catch (err) {
+    console.warn("Cleanup scan error:", err);
+  }
+  return a;
+};
+
+window.initMultiplayer = async (e, a = !1) => {
+  const t = document.getElementById("mp-status-msg");
+  t.className = "text-xs text-yellow-400 mr-2";
+  t.innerText = "Connecting...";
+  try {
+    unsubscribeRoom && unsubscribeRoom();
+    unsubscribeImages && unsubscribeImages();
+    heartbeatTimer && clearInterval(heartbeatTimer);
+    if (a) await window.cleanupInactiveRooms(!1);
+    window.currentRoomCode = e;
+    roomImageCache.clear();
+    imageWriteQueues.clear();
+    knownRoomState = null;
+    presenceWrittenAt = 0;
+
+    const o = doc(db, "artifacts", appId, "public", "data", "rooms", e);
+    if (a) await window.sendGameState(buildStatePayload());
+    else {
+      const snap = await getDoc(o);
+      if (snap.exists()) {
+        const data = snap.data();
+        if (data.stateJson) {
+          const parsed = JSON.parse(data.stateJson);
+          if (data.seats) parsed.seats = { ...(parsed.seats || {}), ...data.seats };
+          window.applyGameState(parsed);
+        }
         await setDoc(
-          globalSettingsDocRef,
-          { base64: e, updatedAt: Date.now(), updatedBy: clientId },
+          o,
+          { lastActive: Date.now(), [`activeClients.${clientId}`]: Date.now() },
           { merge: !0 },
         );
-      } catch (e) {
-        console.warn("Save global cardback failed:", e);
-      }
-  }),
-  (window.saveGlobalDeckToCloud = async (e) => {
-    if (db && e && e.id)
-      try {
-        const a = doc(
-            db,
-            "artifacts",
-            appId,
-            "public",
-            "data",
-            "globalDecks",
-            e.id,
-          ),
-          t = Array.isArray(e.entries) ? e.entries : [],
-          o = collection(a, "entries"),
-          existing = (await getDocs(o)).docs,
-          existingById = new Map(existing.map(row => [row.id, row.data()])),
-          s = existing.filter(
-            (e) => !t.some((a, t) => e.id === `entry_${t}`),
-          );
-        if (t.length + s.length + 1 > 500)
-          throw new Error("此卡組卡圖種類過多，請拆成較小的卡組。");
-        const c = writeBatch(db);
-        (t.forEach((e, a) =>
-          (() => { const entry = {
-            idx: a,
-            imgBase64: e.imgBase64,
-            count: Number(e.count) || 1,
-            name: e.name || `Card #${a + 1}`,
-            catalogNumber: e.catalogNumber || "",
-          };
-          if (!sameDeckEntry(existingById.get(`entry_${a}`) || {}, entry))
-            c.set(doc(o, `entry_${a}`), entry);
-          })(),
-        ),
-          s.forEach((e) => c.delete(e.ref)),
-          c.set(a, {
-            id: e.id,
-            name: e.name,
-            cardCount: e.cardCount,
-            uniqueCount: t.length,
-            coverImage: e.coverImage || "",
-            cardBack: e.cardBack || null,
-            updatedAt: e.updatedAt,
-          }),
-          await c.commit(),
-          (window.globalCloudDecksCache[e.id] = { ...e }),
-          window.globalCloudDecksCache[e.id] &&
-            (window.globalCloudDecksCache[e.id].entries = t));
-      } catch (e) {
-        throw (
-          console.warn("Upload global deck to cloud failed:", e),
-          new Error("共享儲存失敗：" + (e.message || e.code))
-        );
-      }
-  }),
-  (window.fetchGlobalDeckEntriesFromCloud = async (e) => {
-    if (!db || !e) return null;
-    if (window.globalCloudDecksCache[e]?.entries?.length)
-      return window.globalCloudDecksCache[e];
-    const a = window.globalCloudDecksCache[e];
-    try {
-      const t = collection(
-          db,
-          "artifacts",
-          appId,
-          "public",
-          "data",
-          "globalDecks",
-          e,
-          "entries",
-        ),
-        o = await getDocs(t),
-        s = [];
-      return (
-        o.forEach((e) => {
-          const a = e.data();
-          a && a.imgBase64 && s.push(a);
-        }),
-        s.sort((e, a) => (e.idx || 0) - (a.idx || 0)),
-        window.globalCloudDecksCache[e] &&
-        window.globalCloudDecksCache[e].updatedAt === a?.updatedAt
-          ? ((window.globalCloudDecksCache[e].entries = s),
-            window.globalCloudDecksCache[e])
-          : { ...a, id: e, entries: s }
-      );
-    } catch (e) {
-      throw (console.warn("Fetch global deck entries failed:", e), e);
-    }
-  }),
-  (window.deleteGlobalDeckFromCloud = async (e) => {
-    if (db && e)
-      try {
-        const a = collection(
-            db,
-            "artifacts",
-            appId,
-            "public",
-            "data",
-            "globalDecks",
-            e,
-            "entries",
-          ),
-          t = await getDocs(a);
-        for (const e of t.docs) await deleteDoc(e.ref);
-        (await deleteDoc(
-          doc(db, "artifacts", appId, "public", "data", "globalDecks", e),
-        ),
-          delete window.globalCloudDecksCache[e]);
-      } catch (e) {
-        console.warn("Delete global deck failed:", e);
-      }
-  }),
-  (window.clearAllGlobalDecksFromCloud = async () => {
-    if (db)
-      try {
-        const e = await getDocs(globalDecksColRef);
-        for (const a of e.docs) await window.deleteGlobalDeckFromCloud(a.id);
-        window.globalCloudDecksCache = {};
-      } catch (e) {
-        console.warn("Clear global decks failed:", e);
-      }
-  }),
-  (window.cleanupInactiveRooms = async (e = !1) => {
-    if (!db) return 0;
-    if (cleanupRead) return cleanupRead;
-    // Startup and immediate room joins share one scan within a minute.
-    if (!e && Date.now() - lastCleanup < 60000) return 0;
-    cleanupRead = window.cleanupRoomScan(e);
-    try { const count = await cleanupRead; lastCleanup = Date.now(); return count; }
-    finally { cleanupRead = null; }
-  }),
-  (window.listActiveRooms = async () => {
-    if (!db) return [];
-    const col = collection(db, "artifacts", appId, "public", "data", "rooms");
-    const snap = await getDocs(col);
-    const now = Date.now();
-    const rooms = [];
-    for (const d of snap.docs) {
-      const code = d.id;
-      const data = d.data() || {};
-      const lastActive = data.lastActive || data.timestamp || 0;
-      const age = now - lastActive;
-      const activeClients = data.activeClients || {};
-      const onlineClients = Object.keys(activeClients).filter(k => now - activeClients[k] < 9e4);
-      let seats = data.seats || {};
-      let seatNames = {};
-      if (data.stateJson) {
-        try {
-          const parsed = JSON.parse(data.stateJson);
-          if (parsed.seats) seats = { ...parsed.seats, ...seats };
-          if (parsed.seatNames) seatNames = parsed.seatNames;
-        } catch (err) {}
-      }
-      const p1Occupied = !!seats.p1;
-      const p2Occupied = !!seats.p2;
-      const hasSeat = p1Occupied || p2Occupied;
-      const isCurrent = code === window.currentRoomCode;
-      if (!isCurrent && (age > 6e5 || (!hasSeat && onlineClients.length === 0 && age > 12e4))) continue;
-      rooms.push({
-        code,
-        p1Occupied,
-        p2Occupied,
-        p1Name: seatNames.p1 || "",
-        p2Name: seatNames.p2 || "",
-        onlineCount: onlineClients.length,
-        lastActive,
-        isCurrent
-      });
-    }
-    rooms.sort((a, b) => (b.isCurrent - a.isCurrent) || (b.lastActive - a.lastActive));
-    return rooms;
-  }),
-  (window.cleanupRoomScan = async (e = false) => {
-    let a = 0;
-    try {
-      const t = collection(db, "artifacts", appId, "public", "data", "rooms"),
-        o = await getDocs(t),
-        s = Date.now(),
-        c = 6e5,
-        n = 12e4;
-      for (const t of o.docs) {
-        const o = t.id;
-        if (o === window.currentRoomCode) continue;
-        const l = t.data() || {},
-          d = l.lastActive || l.timestamp || 0,
-          r = s - d;
-        let i = !1;
-        const w = l.activeClients || {},
-          b = Object.keys(w).filter((e) => s - w[e] < 9e4);
-        if (l.stateJson)
-          try {
-            const e = JSON.parse(l.stateJson);
-            e.seats && (e.seats.p1 || e.seats.p2) && (i = !0);
-          } catch (e) {}
-        const m = r > c,
-          u = !i && 0 === b.length && r > n;
-        (m || u || (e && (!i || r > 9e4))) &&
-          (await deleteRoomAndSubcollections(o)) &&
-          a++;
-      }
-    } catch (e) {
-      console.warn("Cleanup scan error:", e);
-    }
-    return a;
-  }),
-  setTimeout(() => window.cleanupInactiveRooms(!1), 1500),
-  (window.initMultiplayer = async (e, a = !1) => {
-    const t = document.getElementById("mp-status-msg");
-    ((t.className = "text-xs text-yellow-400 mr-2"),
-      (t.innerText = "Connecting..."));
-    try {
-      (unsubscribeRoom && unsubscribeRoom(),
-        unsubscribeImages && unsubscribeImages(),
-        heartbeatTimer && clearInterval(heartbeatTimer),
-        await window.cleanupInactiveRooms(!1),
-        (window.currentRoomCode = e),
-        roomImageCache.clear(), imageWriteQueues.clear(),
-        knownRoomState = null, presenceWrittenAt = 0);
-      const o = doc(db, "artifacts", appId, "public", "data", "rooms", e);
-      if (a) await window.sendGameState(buildStatePayload());
-      else {
-        const e = await getDoc(o);
-        if (e.exists()) {
-          const a = e.data();
-          if (a.stateJson) {
-            const e = JSON.parse(a.stateJson);
-            (a.seats && (e.seats = { ...(e.seats || {}), ...a.seats }),
-              window.applyGameState(e));
-          }
-          (await setDoc(
-            o,
-            {
-              lastActive: Date.now(),
-              [`activeClients.${clientId}`]: Date.now(),
-            },
-            { merge: !0 },
-          ),
-            ("P1" !== gameState.viewMode && "P2" !== gameState.viewMode) ||
-              (await window.syncPlayerSeat(gameState.viewMode, null)));
+        if ("P1" === gameState.viewMode || "P2" === gameState.viewMode) {
+          await window.syncPlayerSeat(gameState.viewMode, null);
         }
       }
-      heartbeatTimer = setInterval(async () => {
-        // A normal game write already carries the same heartbeat fields.
-        if (Date.now() - presenceWrittenAt < 25000) return;
-        if (window.currentRoomCode)
-          try {
-            const e = doc(
-              db,
-              "artifacts",
-              appId,
-              "public",
-              "data",
-              "rooms",
-              window.currentRoomCode,
-            );
-            await setDoc(
-              e,
-              {
-                lastActive: Date.now(),
-                [`activeClients.${clientId}`]: Date.now(),
-              },
-              { merge: !0 },
-            );
-            presenceWrittenAt = Date.now();
-          } catch (e) {}
-      }, 3e4);
-      let s = null;
-      unsubscribeRoom = onSnapshot(
-        o,
-        (e) => {
-          if (e.exists()) {
-            const a = e.data();
-            knownRoomState = a.stateJson || null;
-            a.seats &&
-              (gameState.seats || (gameState.seats = { p1: null, p2: null }),
-              void 0 !== a.seats.p1 && (gameState.seats.p1 = a.seats.p1),
-              void 0 !== a.seats.p2 && (gameState.seats.p2 = a.seats.p2),
-              "P1" === gameState.viewMode && (gameState.seats.p1 = localSeatId),
-              "P2" === gameState.viewMode && (gameState.seats.p2 = localSeatId),
-              document
-                .getElementById("status-light-p1")
-                ?.classList.toggle("online", !!gameState.seats.p1),
-              document
-                .getElementById("status-light-p2")
-                ?.classList.toggle("online", !!gameState.seats.p2));
-            const t = a.stateJson && a.stateJson !== s;
-            if (
-              (a.stateJson && (s = a.stateJson),
-              a.lastUpdatedBy !== clientId && t)
-            ) {
-              const e = JSON.parse(a.stateJson);
-              (a.seats && (e.seats = { ...(e.seats || {}), ...a.seats }),
-                window.applyGameState(e));
+    }
+
+    heartbeatTimer = setInterval(async () => {
+      if (Date.now() - presenceWrittenAt < 45000) return;
+      if (window.currentRoomCode)
+        try {
+          const rDoc = doc(db, "artifacts", appId, "public", "data", "rooms", window.currentRoomCode);
+          await setDoc(
+            rDoc,
+            { lastActive: Date.now(), [`activeClients.${clientId}`]: Date.now() },
+            { merge: !0 },
+          );
+          presenceWrittenAt = Date.now();
+        } catch (err) {}
+    }, 5e4);
+
+    let s = null;
+    unsubscribeRoom = onSnapshot(
+      o,
+      (snap) => {
+        if (snap.exists()) {
+          const data = snap.data();
+          knownRoomState = data.stateJson || null;
+          if (data.seats) {
+            gameState.seats || (gameState.seats = { p1: null, p2: null });
+            void 0 !== data.seats.p1 && (gameState.seats.p1 = data.seats.p1);
+            void 0 !== data.seats.p2 && (gameState.seats.p2 = data.seats.p2);
+            "P1" === gameState.viewMode && (gameState.seats.p1 = localSeatId);
+            "P2" === gameState.viewMode && (gameState.seats.p2 = localSeatId);
+            document.getElementById("status-light-p1")?.classList.toggle("online", !!gameState.seats.p1);
+            document.getElementById("status-light-p2")?.classList.toggle("online", !!gameState.seats.p2);
+          }
+          const changed = data.stateJson && data.stateJson !== s;
+          if (data.stateJson) s = data.stateJson;
+          if (data.lastUpdatedBy !== clientId && changed) {
+            const parsed = JSON.parse(data.stateJson);
+            if (data.seats) parsed.seats = { ...(parsed.seats || {}), ...data.seats };
+            window.applyGameState(parsed);
+          }
+        }
+      },
+      (err) => {
+        console.error("Room listener error:", err);
+        t.className = "text-xs text-red-500 mr-2";
+        t.innerText = "Sync Error: " + err.code;
+      },
+    );
+
+    const c = collection(db, "artifacts", appId, "public", "data", "rooms", e, "cardImages");
+    unsubscribeImages = onSnapshot(c, (snap) => {
+      const a = {};
+      snap.docChanges().forEach((chg) => {
+        const d = chg.doc;
+        if ("removed" === chg.type) { roomImageCache.delete(d.id); return; }
+        const data = d.data();
+        if (!data) return;
+        if (data.packed && data.uniqueImages && data.cardMap) {
+          for (const [cid, uKey] of Object.entries(data.cardMap)) {
+            const b64 = data.uniqueImages[uKey];
+            if (b64) {
+              roomImageCache.set(cid, b64);
+              a[cid] = b64;
             }
           }
-        },
-        (e) => {
-          (console.error("Room listener error:", e),
-            (t.className = "text-xs text-red-500 mr-2"),
-            (t.innerText = "Sync Error: " + e.code));
-        },
-      );
-      const c = collection(
-        db,
-        "artifacts",
-        appId,
-        "public",
-        "data",
-        "rooms",
-        e,
-        "cardImages",
-      );
-      unsubscribeImages = onSnapshot(c, (e) => {
-        const a = {};
-        (e.docChanges().forEach((e) => {
-          const t = e.doc;
-          if ("removed" === e.type) { roomImageCache.delete(t.id); return; }
-          const o = t.data();
-          if (o && o.base64) {
-            roomImageCache.set(t.id, o.base64);
-            a[t.id] = o.base64;
-          }
-        }),
-          Object.keys(a).length && window.applyCardImages(a));
+        } else if (data.base64) {
+          roomImageCache.set(d.id, data.base64);
+          a[d.id] = data.base64;
+        }
       });
-      const n = {};
-      return (
-        Object.values(gameState.cards).forEach((e) => {
-          e.imgBase64 && (n[e.id] = e.imgBase64);
-        }),
-        cardImageCache.custom_cardback &&
-          (n.custom_cardback = cardImageCache.custom_cardback),
-        Object.keys(n).length > 0 && window.uploadPlayerCardImages("all", n),
-        (t.className = "text-xs text-green-400 mr-2"),
-        (t.innerText = "SYNCED"),
-        !0
-      );
-    } catch (e) {
-      return (
-        console.error("Firebase init failed:", e),
-        (t.className = "text-xs text-red-500 mr-2"),
-        (t.innerText = "Connection failed: " + (e.code || e.message)),
-        !1
-      );
+      if (Object.keys(a).length) window.applyCardImages(a);
+    });
+
+    const n = {};
+    Object.values(gameState.cards).forEach((card) => {
+      if (card.imgBase64) n[card.id] = card.imgBase64;
+    });
+    if (cardImageCache.custom_cardback) n.custom_cardback = cardImageCache.custom_cardback;
+    if (Object.keys(n).length > 0) window.uploadPlayerCardImages("all", n);
+    t.className = "text-xs text-green-400 mr-2";
+    t.innerText = "SYNCED";
+    return !0;
+  } catch (err) {
+    console.error("Firebase init failed:", err);
+    t.className = "text-xs text-red-500 mr-2";
+    t.innerText = "Connection failed: " + (err.code || err.message);
+    return !1;
+  }
+};
+
+// Coalesce rapid non-effect writes (e.g. clicking +Core 5 times in a row) while flushing distinct effects immediately.
+let stateDebounceTimer = null, pendingStatePayload = null, pendingEffectSig = "";
+function flushQueuedRoomState() {
+  if (!pendingStatePayload) return Promise.resolve();
+  const { room, stateJson, view } = pendingStatePayload;
+  pendingStatePayload = null;
+  pendingEffectSig = "";
+  const write = roomStateQueue.then(async () => {
+    if (room === window.currentRoomCode && stateJson === knownRoomState) return;
+    const payload = {
+      stateJson, lastUpdatedBy: clientId, timestamp: Date.now(),
+      lastActive: Date.now(), [`activeClients.${clientId}`]: Date.now()
+    };
+    if (view === "P1") payload["seats.p1"] = localSeatId;
+    if (view === "P2") payload["seats.p2"] = localSeatId;
+    await setDoc(doc(db, "artifacts", appId, "public", "data", "rooms", room), payload, { merge: true });
+    if (room === window.currentRoomCode) {
+      knownRoomState = stateJson;
+      presenceWrittenAt = Date.now();
     }
-  }),
-  (window.sendGameState = (state) => {
-    if (!db || !window.currentRoomCode) return Promise.resolve();
-    const room = window.currentRoomCode;
-    const stateJson = JSON.stringify(state);
-    const view = gameState.viewMode;
-    // Serialize writes, without throttling away shuffle, core or action effects.
-    const write = roomStateQueue.then(async () => {
-      if (room === window.currentRoomCode && stateJson === knownRoomState) return;
-      const payload = {
-        stateJson, lastUpdatedBy: clientId, timestamp: Date.now(),
-        lastActive: Date.now(), [`activeClients.${clientId}`]: Date.now()
-      };
-      if (view === "P1") payload["seats.p1"] = localSeatId;
-      if (view === "P2") payload["seats.p2"] = localSeatId;
-      await setDoc(doc(db,"artifacts",appId,"public","data","rooms",room),payload,{merge:true});
-      if (room === window.currentRoomCode) {
-        knownRoomState = stateJson;
-        presenceWrittenAt = Date.now();
-      }
-    });
-    roomStateQueue = write.catch(error => {
-      console.error("Sync failed:",error);
-      const status = document.getElementById("mp-status-msg");
-      if (status) { status.className="text-xs text-red-500 mr-2"; status.innerText="Sync failed: "+(error.code || error.message); }
-    });
-    return roomStateQueue;
-  }),
-  (window.syncPlayerSeat = async (e, a) => {
-    if (db && window.currentRoomCode)
-      try {
-        const t = doc(
-            db,
-            "artifacts",
-            appId,
-            "public",
-            "data",
-            "rooms",
-            window.currentRoomCode,
-          ),
-          o = { lastActive: Date.now() };
-        ("P1" === a && "P1" !== e && (o["seats.p1"] = null),
-          "P2" === a && "P2" !== e && (o["seats.p2"] = null),
-          "P1" === e && (o["seats.p1"] = localSeatId),
-          "P2" === e && (o["seats.p2"] = localSeatId),
-          await setDoc(t, o, { merge: !0 }));
-      } catch (e) {}
-  }),
-  window.addEventListener("beforeunload", () => {
-    if (!db || !window.currentRoomCode) return;
-    const e = window.currentRoomCode;
-    (gameState.seats &&
-      (gameState.seats.p1 === localSeatId && (gameState.seats.p1 = null),
-      gameState.seats.p2 === localSeatId && (gameState.seats.p2 = null)),
-      gameState.seats?.p1 || gameState.seats?.p2
-        ? window.sendGameState(buildStatePayload())
-        : deleteRoomAndSubcollections(e));
-  }),
-  (window.uploadPlayerCardImages = async (owner, images) => {
-    if (!db || !window.currentRoomCode) return;
-    const room = window.currentRoomCode;
+  });
+  roomStateQueue = write.catch(error => {
+    console.error("Sync failed:", error);
+    const status = document.getElementById("mp-status-msg");
+    if (status) { status.className = "text-xs text-red-500 mr-2"; status.innerText = "Sync failed: " + (error.code || error.message); }
+  });
+  return roomStateQueue;
+}
+
+window.sendGameState = (state) => {
+  if (!db || !window.currentRoomCode) return Promise.resolve();
+  const room = window.currentRoomCode;
+  const stateJson = JSON.stringify(state);
+  const view = gameState.viewMode;
+  const effectSig = `${state.lastActionEffect?.timestamp || 0}|${state.lastShuffle?.timestamp || 0}|${state.lastLottery?.timestamp || 0}`;
+
+  if (stateDebounceTimer && effectSig !== pendingEffectSig) {
+    clearTimeout(stateDebounceTimer);
+    stateDebounceTimer = null;
+    flushQueuedRoomState();
+  }
+  pendingStatePayload = { room, stateJson, view };
+  if (effectSig !== pendingEffectSig && (state.lastActionEffect?.timestamp || state.lastShuffle?.timestamp || state.lastLottery?.timestamp)) {
+    pendingEffectSig = effectSig;
+    if (stateDebounceTimer) { clearTimeout(stateDebounceTimer); stateDebounceTimer = null; }
+    return flushQueuedRoomState();
+  }
+  pendingEffectSig = effectSig;
+  if (stateDebounceTimer) clearTimeout(stateDebounceTimer);
+  stateDebounceTimer = setTimeout(() => {
+    stateDebounceTimer = null;
+    flushQueuedRoomState();
+  }, 160);
+  return roomStateQueue;
+};
+
+window.syncPlayerSeat = async (e, a) => {
+  if (db && window.currentRoomCode)
     try {
-      await Promise.all(Object.entries(images).map(([id, base64]) => {
-        const key = room + "/" + id;
-        const previous = imageWriteQueues.get(key) || Promise.resolve();
-        const pending = previous.catch(()=>{}).then(async () => {
-          if (room === window.currentRoomCode && roomImageCache.get(id) === base64) return;
-          await setDoc(doc(db,"artifacts",appId,"public","data","rooms",room,"cardImages",id),{owner,base64});
-          if (room === window.currentRoomCode) roomImageCache.set(id,base64);
+      const t = doc(db, "artifacts", appId, "public", "data", "rooms", window.currentRoomCode),
+        o = { lastActive: Date.now() };
+      "P1" === a && "P1" !== e && (o["seats.p1"] = null);
+      "P2" === a && "P2" !== e && (o["seats.p2"] = null);
+      "P1" === e && (o["seats.p1"] = localSeatId);
+      "P2" === e && (o["seats.p2"] = localSeatId);
+      await setDoc(t, o, { merge: !0 });
+    } catch (err) {}
+};
+
+window.addEventListener("beforeunload", () => {
+  if (!db || !window.currentRoomCode) return;
+  const e = window.currentRoomCode;
+  if (gameState.seats) {
+    if (gameState.seats.p1 === localSeatId) gameState.seats.p1 = null;
+    if (gameState.seats.p2 === localSeatId) gameState.seats.p2 = null;
+  }
+  if (gameState.seats?.p1 || gameState.seats?.p2) {
+    pendingStatePayload = { room: e, stateJson: JSON.stringify(buildStatePayload()), view: gameState.viewMode };
+    flushQueuedRoomState();
+  } else {
+    deleteRoomAndSubcollections(e);
+  }
+});
+
+// Deduplicate & pack room card images, skipping cards already identical in shared catalog.
+window.uploadPlayerCardImages = async (owner, images) => {
+  if (!db || !window.currentRoomCode || !images) return;
+  const room = window.currentRoomCode;
+  const toUpload = [];
+  for (const [id, base64] of Object.entries(images)) {
+    if (!base64) continue;
+    if (roomImageCache.get(id) === base64) continue;
+    // Skip uploading if card is in shared catalog with identical image
+    if (id !== "custom_cardback" && !id.startsWith("turn_")) {
+      const cNum = gameState.cards[id]?.catalogNumber;
+      const cat = cNum && window.catalogByNumber?.get(cNum);
+      if (cat && cat.image && cat.image === base64) {
+        roomImageCache.set(id, base64);
+        continue;
+      }
+    }
+    toUpload.push([id, base64]);
+  }
+  if (!toUpload.length) return;
+
+  // Deduplicate identical base64 strings and pack into <= 600KB chunks
+  const b64ToKey = new Map();
+  const chunks = [];
+  let curUnique = {}, curMap = {}, curBytes = 0, uIdx = 0;
+
+  const pushChunk = () => {
+    if (Object.keys(curMap).length > 0) {
+      chunks.push({ uniqueImages: curUnique, cardMap: curMap });
+      curUnique = {}; curMap = {}; curBytes = 0; b64ToKey.clear();
+    }
+  };
+
+  for (const [id, base64] of toUpload) {
+    let uKey = b64ToKey.get(base64);
+    const addBytes = uKey ? (id.length + 12) : (base64.length + id.length + 20);
+    if (curBytes > 0 && curBytes + addBytes > 600000) {
+      pushChunk();
+      uKey = undefined;
+    }
+    if (!uKey) {
+      uKey = "u" + (uIdx++);
+      b64ToKey.set(base64, uKey);
+      curUnique[uKey] = base64;
+    }
+    curMap[id] = uKey;
+    curBytes += addBytes;
+  }
+  pushChunk();
+
+  try {
+    const safeOwner = String(owner || "all").replace(/[^a-zA-Z0-9_-]/g, "_");
+    await Promise.all(chunks.map((chunk, idx) => {
+      const docId = `pack_${safeOwner}_${idx}`;
+      const qKey = room + "/" + docId;
+      const prev = imageWriteQueues.get(qKey) || Promise.resolve();
+      const pending = prev.catch(() => {}).then(async () => {
+        if (room !== window.currentRoomCode) return;
+        await setDoc(doc(db, "artifacts", appId, "public", "data", "rooms", room, "cardImages", docId), {
+          owner: safeOwner,
+          packed: true,
+          uniqueImages: chunk.uniqueImages,
+          cardMap: chunk.cardMap,
+          updatedAt: Date.now()
         });
-        imageWriteQueues.set(key,pending);
-        return pending.finally(()=> {
-          if (imageWriteQueues.get(key) === pending) imageWriteQueues.delete(key);
-        });
-      }));
-    } catch (error) { console.error("Card image upload failed:",error); }
-  }));
+        for (const [cid, uKey] of Object.entries(chunk.cardMap)) {
+          roomImageCache.set(cid, chunk.uniqueImages[uKey]);
+        }
+      });
+      imageWriteQueues.set(qKey, pending);
+      return pending.finally(() => {
+        if (imageWriteQueues.get(qKey) === pending) imageWriteQueues.delete(qKey);
+      });
+    }));
+  } catch (error) {
+    console.error("Card image pack upload failed:", error);
+  }
+};
+
 // Metadata revisions already invalidate completed deck reads; also share in-flight requests.
 const deckReads = new Map();
 const readDeckEntries = window.fetchGlobalDeckEntriesFromCloud;
 window.fetchGlobalDeckEntriesFromCloud = function(id) {
   const key = id + ":" + (window.globalCloudDecksCache[id]?.updatedAt || 0);
   if (deckReads.has(key)) return deckReads.get(key);
-  const pending = readDeckEntries(id).finally(()=>deckReads.delete(key));
-  deckReads.set(key,pending);
+  const pending = readDeckEntries(id).finally(() => deckReads.delete(key));
+  deckReads.set(key, pending);
   return pending;
 };
 </script>
@@ -7140,6 +7294,14 @@ indexCatalogImages = async function() {
   await indexCatalogVisuals(entries);
   if(version!==catalogKeysVersion)return;
   catalogCompletedStamp=stamp;
+  Object.values(gameState.cards).forEach(c=>{
+    if(!c.imgBase64 && c.catalogNumber && byNumber.get(c.catalogNumber)?.image){
+      c.imgBase64=byNumber.get(c.catalogNumber).image;
+      cardImageCache[c.id]=c.imgBase64;
+      const el=document.getElementById(c.id);
+      if(el)applyCardVisualState(c,el);
+    }
+  });
   refreshTurnCounts();refreshTurnImages();refreshFieldStats();
   if(descriptionDeck)renderDeckDescriptions();
   if(translationCard)renderTranslation();
@@ -10402,13 +10564,9 @@ Object.assign(window, {
     ], { duration: 920, easing: "cubic-bezier(0.22, 1, 0.36, 1)", fill: "forwards" }).onfinish = () => wrap.remove();
   }
 
-  function finishMagicCast(cardId) {
+  window.triggerMagicCastEffect = function (cardId) {
     const card = gameState.cards[cardId];
-    magicPaymentState = null;
-    refreshMagicPaymentUI();
     if (!card) return;
-    card.isFaceDown = false;
-    moveCardToZone(card.id, `field-${card.owner}`, { rx: 0.5, ry: 0.45 });
     const colors = typeof attributeFlashColors === "function"
       ? attributeFlashColors(lookupCatalog(card)?.attribute)
       : ["#38bdf8"];
@@ -10417,6 +10575,21 @@ Object.assign(window, {
     lastSeenActionEffectTime = timestamp;
     playMagicCastEffect(card.id, colors);
     updateRoomState();
+  };
+
+  function finishMagicCast(cardId) {
+    const card = gameState.cards[cardId];
+    magicPaymentState = null;
+    refreshMagicPaymentUI();
+    if (!card) return;
+    card.isFaceDown = false;
+    window.__bsBypassPlayPayment = true;
+    try {
+      moveCardToZone(card.id, `field-${card.owner}`, { rx: 0.5, ry: 0.45, fromMagicBtn: true });
+    } finally {
+      window.__bsBypassPlayPayment = false;
+    }
+    window.triggerMagicCastEffect(card.id);
   }
 
   window.cancelMagicPayment = function () {
@@ -12835,7 +13008,21 @@ Object.assign(window, {
         }
       }
     }
-    return baseMoveForPlayPay(id, zone, options);
+    const res = baseMoveForPlayPay(id, zone, options);
+    if (
+      !isSyncing &&
+      !options?.fromMagicBtn &&
+      card &&
+      !card.isFaceDown &&
+      card.zone === zone &&
+      zone.startsWith("field-") &&
+      (prevZone.startsWith("hand-") || prevZone.startsWith("zone-openhand-")) &&
+      /^magic$/i.test(String(lookupCatalog(card)?.type || "").trim()) &&
+      typeof window.triggerMagicCastEffect === "function"
+    ) {
+      setTimeout(() => window.triggerMagicCastEffect(id), 80);
+    }
+    return res;
   };
 
   const baseUpdateAllUIForPlayPay = updateAllUI;
@@ -13915,7 +14102,7 @@ Object.assign(window, {
     const card = gameState.cards[id];
     const prevZone = card?.zone || "";
     const res = baseMoveForGodCount(id, zone, options);
-    if (!isSyncing && card) {
+    if (!isSyncing && card && card.zone === zone) {
       const enteringBoard = (zone.startsWith("field-") || zone.startsWith("zone-god-")) &&
         !prevZone.startsWith("field-") && !prevZone.startsWith("zone-god-");
       if (enteringBoard) {
