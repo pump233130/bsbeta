@@ -5164,7 +5164,10 @@ function addCoreToCard(e,t) {
     const r=document.getElementById("center-core-spawner"),s=n?n.querySelector(".card-controls")||n:e;
     return r&&(t>0?playCoreTransferAnimation(r,s,null,"cost",t):t<0&&playCoreTransferAnimation(s,r,null,"cost",Math.abs(t))),triggerCardCoreFlash(e,t),triggerElementCoreFlash(document.getElementById(`god-wrapper-${a}`),t),updateAllUI(),void updateRoomState()
   }
-  if(t>0&&gameState[`${a}_reserve`]<t)return;
+  if(t>0&&gameState[`${a}_reserve`]<t) {
+    if(o.zone&&o.zone.startsWith("field-")&&gameState.soulCoreLocation?.[a]==="reserve")setSoulCoreLocation(a,e);
+    return;
+  }
   if((o.cores||0)+t<0) {
     if(t<0&&o.zone&&o.zone.startsWith("field-")&&gameState.soulCoreLocation?.[a]===e)setSoulCoreLocation(a,"reserve");
     return;
@@ -14467,17 +14470,14 @@ Object.assign(window, {
   body.phone-mode .hand-panel.sticky-bottom-hand [id^="title-hand-"] {
     font-size: 11px !important;
   }
-  body.phone-mode .hand-panel.sticky-bottom-hand [id^="btn-pin-hand-"],
-  body.phone-mode .hand-panel.sticky-bottom-hand [id^="btn-toggle-hand-"] {
-    font-size: 11px !important;
-    padding: 3px 8px !important;
-    min-height: 24px !important;
-    font-weight: 800 !important;
+  body.phone-mode [id^="btn-pin-hand-"],
+  body.phone-mode [id^="btn-toggle-hand-"] {
+    display: none !important;
   }
   body.phone-mode .hand-panel.sticky-bottom-hand .hand-zone {
     min-height: 108px !important;
-    padding: 40px 6px 4px 6px !important;
-    margin-top: -38px !important;
+    padding: 4px 6px 4px 6px !important;
+    margin-top: 0 !important;
   }
   body.phone-mode .hand-panel.sticky-bottom-hand .hand-zone .card {
     width: 74px !important;
@@ -14505,6 +14505,7 @@ Object.assign(window, {
   body.phone-mode #preview-advent-release-btn,
   body.phone-mode #preview-manifest-btn,
   body.phone-mode #preview-magic-use-btn,
+  body.phone-mode #preview-god-deploy-btn,
   body.phone-mode .preview-god-skill-btn {
     font-size: 15px !important;
     font-weight: 900 !important;
@@ -14596,6 +14597,54 @@ Object.assign(window, {
       if (typeof updatePlaymatResponsiveScale === "function") updatePlaymatResponsiveScale();
       if (typeof refreshAllFieldCardsPosition === "function") refreshAllFieldCardsPosition();
     }, 60);
+  };
+
+  // 手機模式：創界神預覽時在「翻譯」旁邊顯示「設置」按鈕，一鍵設置至創界神區
+  const godDeployBtn = document.createElement("button");
+  godDeployBtn.type = "button";
+  godDeployBtn.id = "preview-god-deploy-btn";
+  godDeployBtn.className = "hidden pointer-events-auto";
+  godDeployBtn.textContent = "設置";
+  godDeployBtn.style.cssText = "border:1px solid #c8aa76;background:linear-gradient(135deg,#92400e,#78350f);color:#fef3c7;margin-top:7px;cursor:pointer;";
+  godDeployBtn.addEventListener("pointerdown", e => e.stopPropagation());
+  godDeployBtn.addEventListener("click", e => {
+    e.preventDefault();
+    e.stopPropagation();
+    const card = gameState.cards[activePreviewCardId];
+    if (!card) return;
+    const owner = card.owner || "p1";
+    toggleGodZone(owner, true);
+    moveCardToZone(card.id, `zone-god-${owner}`);
+    hideCardPreview();
+  });
+
+  const hintBtn = document.getElementById("card-preview-mobile-hint");
+  if (hintBtn) hintBtn.after(godDeployBtn);
+
+  function isGrandwalkerForPhoneDeploy(card) {
+    if (!card || card.isFaceDown) return false;
+    const data = lookupCatalog(card);
+    if (!data) return false;
+    const fam = String(data.family || "");
+    const typ = String(data.type || "");
+    return fam.includes("創界神") || typ.includes("創界神") || typ.includes("契約神");
+  }
+
+  const baseSyncCoreForGodDeploy = syncPreviewCoreControlBar;
+  syncPreviewCoreControlBar = function () {
+    baseSyncCoreForGodDeploy();
+    const card = activePreviewCardId ? gameState.cards[activePreviewCardId] : null;
+    const show = deviceMode === "PHONE" &&
+      !!card &&
+      !card.zone?.startsWith("zone-god-") &&
+      isGrandwalkerForPhoneDeploy(card);
+    godDeployBtn.classList.toggle("hidden", !show);
+  };
+
+  const baseHidePreviewForGodDeploy = hideCardPreview;
+  hideCardPreview = function (...args) {
+    baseHidePreviewForGodDeploy(...args);
+    godDeployBtn.classList.add("hidden");
   };
 })();
 </script>
