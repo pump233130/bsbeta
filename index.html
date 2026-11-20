@@ -17,7 +17,7 @@
  10. 創界神 (Grandwalker) 技與域   -> 搜尋: function useGrandwalkerSkill
  11. 顕現 (Manifest) 系統與特效    -> 搜尋: function triggerManifestFromHand
 ========================================================================= -->
-<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><title>BS PROTOTYPE - 2-PLAYER EDITION</title><script src="https://cdn.tailwindcss.com"></script><style>
+<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><title>BS v3.0</title><script src="https://cdn.tailwindcss.com"></script><style>
 /* #region 1. 基礎排版、卡背 SVG 與戰場區域樣式 */
 body,html {
   touch-action:manipulation;
@@ -1702,11 +1702,45 @@ body:not(.mobile-mode) #card-preview {
   font-size:11px;
   overflow-wrap:anywhere
 }
+.deck-description-card {
+  position:relative
+}
+.deck-description-card.missing-sym-card {
+  border-color:rgba(248,113,113,0.85)!important;
+  box-shadow:inset 0 0 10px rgba(239,68,68,0.22)
+}
 .deck-description-card img {
   width:100%;
   max-width:106px;
   aspect-ratio:5/7;
   object-fit:contain
+}
+.deck-desc-badge {
+  width:100%;
+  text-align:center;
+  font-size:10px;
+  line-height:1.25;
+  padding:2px 4px;
+  border-radius:2px;
+  font-weight:700;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis
+}
+.deck-desc-badge.is-missing {
+  background:rgba(127,29,29,0.92);
+  color:#fecaca;
+  border:1px solid rgba(248,113,113,0.8)
+}
+.deck-desc-badge.is-unlinked {
+  background:rgba(55,48,40,0.85);
+  color:#d6cbb9;
+  border:1px solid rgba(176,148,102,0.45)
+}
+.deck-desc-badge.is-filled {
+  background:rgba(6,78,59,0.85);
+  color:#a7f3d0;
+  border:1px solid rgba(52,211,153,0.55)
 }
 .mini-translate-btn {
   display:none;
@@ -2254,7 +2288,15 @@ body.mobile-mode #playmat-root .brave-god-attached .god-core-badge {
 <!-- #region 頂部控制列與遊戲主戰場桌面 -->
 <header id="main-top-header" class="flex flex-wrap justify-between items-center bg-[#0a0a0a]/90 border border-[#b09466]/40 rounded-sm py-1.5 px-3 flex-none gap-x-2 gap-y-1.5 shadow-lg transition-all duration-200">
 <div class="flex items-center gap-2 flex-shrink-0">
-<div class="text-sm sm:text-base font-black tracking-wider text-[#e5dccb] flex items-center gap-1.5 whitespace-nowrap">BS PROTOTYPE <span class="text-[8px] sm:text-[9px] font-semibold bg-black/60 border border-[#b09466]/40 text-[#c8bea8] px-1.5 py-0.5 rounded-sm tracking-widest">2-PLAYER</span>
+<div class="relative text-sm sm:text-base font-black tracking-wider text-[#e5dccb] flex items-center gap-1.5 whitespace-nowrap">
+<span id="bs-brand-title-text">BS v3.0</span>
+<button id="btn-version-gear" type="button" class="text-xs bg-black/70 border border-[#b09466]/50 hover:bg-[#c8aa76] hover:text-black text-[#e0b25b] px-1.5 py-0.5 rounded-sm cursor-pointer transition-colors leading-none" onclick="toggleVersionGearMenu(event)" title="點擊調整版本號數字">⚙️</button>
+<div id="bs-version-gear-menu" class="hidden absolute left-0 top-full mt-1.5 z-[12500] bg-[#0d0c0b]/95 border border-[#c8aa76] rounded-sm shadow-2xl p-2 flex items-center gap-1.5">
+<button type="button" class="text-[11px] font-black bg-[#c8aa76] text-black hover:bg-white px-2 py-1 rounded-sm cursor-pointer" onclick="bumpBsVersion(0.1)">+0.1</button>
+<button type="button" class="text-[11px] font-black bg-sky-950/80 border border-sky-400/60 text-sky-200 hover:bg-sky-500 hover:text-black px-2 py-1 rounded-sm cursor-pointer" onclick="bumpBsVersion(1)">+1</button>
+<button type="button" class="text-[11px] font-bold bg-black/80 border border-[#b09466]/50 text-[#dcd6cc] hover:bg-[#c8aa76] hover:text-black px-2 py-1 rounded-sm cursor-pointer" onclick="bumpBsVersion(-0.1)">-0.1</button>
+<button type="button" class="text-[10px] font-bold bg-rose-950/70 border border-rose-500/50 text-rose-200 hover:bg-rose-600 hover:text-white px-2 py-1 rounded-sm cursor-pointer" onclick="resetBsVersion()">3.0</button>
+</div>
 </div>
 <span id="room-status-badge" class="hidden text-[10px] bg-emerald-950/80 border border-emerald-500/50 text-emerald-300 px-2 py-0.5 rounded-sm font-bold cursor-pointer hover:bg-emerald-800/80 transition-colors whitespace-nowrap" onclick="copyRoomCode()" title="點擊複製房間代碼">
 </span> <span id="mp-status-msg" class="text-[10px] sm:text-xs text-[#c8bea8] whitespace-nowrap">
@@ -2428,6 +2470,9 @@ body.mobile-mode #playmat-root .brave-god-attached .god-core-badge {
 <button id="catalog-delete-mode" onclick="toggleCatalogDeleteMode()">刪除模式</button>
 <button id="catalog-delete-selected" class="hidden" onclick="deleteCatalogCards()">刪除所選 (0)</button>
 <button type="button" id="btn-ai-settings-toggle" onclick="toggleAiSettingsPanel()" title="設定自己的 Gemini API Key（僅存於本機瀏覽器）">🔑 AI Key</button>
+<input type="file" id="catalog-symbols-import-input" accept=".json,application/json" class="hidden" onchange="importSymbolsResultFile(event, 'catalog')">
+<button type="button" id="btn-catalog-export-sym" style="border-color:rgba(56,189,248,0.7);color:#bae6fd;background:rgba(12,74,110,0.55)" onclick="exportCatalogUnfilledSymbolsForAI()" title="微縮匯出卡池中所有未填寫輕減/標誌卡片的左上/右下截圖 (.json)，傳給 AI 批次辨識">📤 匯出未填輕減/標誌</button>
+<button type="button" id="btn-catalog-import-sym" style="border-color:rgba(52,211,153,0.7);color:#a7f3d0;background:rgba(6,78,59,0.55)" onclick="document.getElementById('catalog-symbols-import-input').click()" title="匯入 AI 辨識完成的輕減/標誌結果檔 (.json) 並自動批次寫入卡池">📥 導入識別結果</button>
 <button type="button" id="btn-ai-batch-scan" onclick="runAiBatchCatalogScan()" title="自動對卡池中尚未填寫減輕或標誌的卡圖進行 AI 辨識並儲存">✨ AI 批次補齊</button>
 <button type="button" id="btn-ai-batch-stop" class="hidden" onclick="stopAiBatchCatalogScan()">⏹ 停止批次</button>
 </div>
@@ -2573,6 +2618,9 @@ body.mobile-mode #playmat-root .brave-god-attached .god-core-badge {
 <h2 id="deck-description-name">
 </h2>
 <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+<input type="file" id="deck-symbols-import-input" accept=".json,application/json" class="hidden" onchange="importSymbolsResultFile(event, 'deck')">
+<button type="button" id="btn-deck-export-sym" style="border-color:rgba(56,189,248,0.7);color:#bae6fd;background:rgba(12,74,110,0.55)" onclick="exportDeckSymbolsForAI()" title="微縮匯出此卡組待識別卡片的左上/右下截圖與基本資料 (.json)，傳給 AI 辨識">📤 匯出待識別</button>
+<button type="button" id="btn-deck-import-sym" style="border-color:rgba(52,211,153,0.7);color:#a7f3d0;background:rgba(6,78,59,0.55)" onclick="document.getElementById('deck-symbols-import-input').click()" title="匯入 AI 辨識完成的輕減/標誌結果檔 (.json) 並自動寫入卡池">📥 導入識別結果</button>
 <button type="button" id="btn-deck-ai-batch" class="bs-picker-ai-btn" onclick="runDeckAiBatchScan()" title="使用 Gemini Vision AI 自動批次辨識此卡組所有卡片的減輕與標誌並存檔">✨ AI 自動批次識別</button>
 <button type="button" id="btn-deck-ai-stop" class="hidden" style="border-color:rgba(248,113,113,0.85);color:#fecaca;background:rgba(127,29,29,0.7)" onclick="stopAiBatchCatalogScan()">⏹ 停止</button>
 <button type="button" onclick="closeDeckDescriptions()">關閉 ✕</button>
@@ -4402,7 +4450,7 @@ async function saveCatalogCard(e) {
   const t=catalogEditContext,o=catalogRevision;
   try {
     const e= {
-      number:document.getElementById("catalog-number").value,name:document.getElementById("catalog-name").value,type:document.getElementById("catalog-type").value,cost:document.getElementById("catalog-cost").value,...Object.fromEntries(["attribute","family","rarity","reduction","symbol"].map(e=>[e,document.getElementById("catalog-"+e).value])),levels:readCatalogLevels(),braveBonus:readBraveBonus(),oc:readCatalogOC(),effect:document.getElementById("catalog-effect").value,image:catalogImage
+      number:document.getElementById("catalog-number").value,name:document.getElementById("catalog-name").value,type:document.getElementById("catalog-type").value,cost:document.getElementById("catalog-cost").value,...Object.fromEntries(["attribute","family","rarity","reduction","symbol"].map(e=>[e,document.getElementById("catalog-"+e).value])),mirageCost:document.getElementById("catalog-mirage-cost")?.value??"",mirageReduction:document.getElementById("catalog-mirage-reduction")?.value??"",levels:readCatalogLevels(),braveBonus:readBraveBonus(),oc:readCatalogOC(),effect:document.getElementById("catalog-effect").value,image:catalogImage
     };
     e.imageKey=catalogSourceKey||await cardImageKey(e.image),e.imageKeys=catalogEntries.find(t=>t.number===(document.getElementById("catalog-number").dataset.original||e.number))?.imageKeys||[];
     const a=normalizeCatalogCard(e);
@@ -5731,11 +5779,45 @@ function closeDeckDescriptions() {
 }
 function renderDeckDescriptions() {
   const e=document.getElementById("deck-description-grid");
-  e.replaceChildren(),document.getElementById("deck-description-name").textContent=descriptionDeck.name,descriptionDeck.entries.forEach(t=> {
-    const o=document.createElement("button");o.className="deck-description-card";const a=document.createElement("img");a.src=t.imgBase64,a.alt=t.name;const n=document.createElement("span");n.textContent=lookupCatalog(t)?.name||t.catalogNumber||"尚未導入",o.append(a,n),o.onclick=()=>editCardDescription( {
-      entry:t,deck:descriptionDeck
-    }),e.append(o)
-  })
+  e.replaceChildren();
+  let missingCount=0,unlinkedCount=0;
+  descriptionDeck.entries.forEach(t=> {
+    const cat=lookupCatalog(t);
+    const o=document.createElement("button");
+    o.className="deck-description-card";
+    const a=document.createElement("img");
+    a.src=t.imgBase64,a.alt=t.name;
+    const badge=document.createElement("div");
+    badge.className="deck-desc-badge";
+    if(!cat) {
+      unlinkedCount++;
+      badge.classList.add("is-unlinked");
+      badge.textContent="未導入卡池";
+    } else if(!cat.reduction && !cat.symbol) {
+      missingCount++;
+      o.classList.add("missing-sym-card");
+      badge.classList.add("is-missing");
+      badge.textContent="⚠ 未填輕減/標誌";
+      badge.title="尚未填寫減輕與標誌";
+    } else {
+      badge.classList.add("is-filled");
+      const parts=[];
+      if(cat.reduction) parts.push("減:"+cat.reduction);
+      if(cat.symbol) parts.push("標:"+cat.symbol);
+      badge.textContent="✓ "+parts.join(" ");
+      badge.title=badge.textContent;
+    }
+    const n=document.createElement("span");
+    n.textContent=cat?.name||t.catalogNumber||"尚未導入";
+    o.append(a,badge,n);
+    o.onclick=()=>editCardDescription({entry:t,deck:descriptionDeck});
+    e.append(o);
+  });
+  const titleEl=document.getElementById("deck-description-name");
+  if(titleEl) {
+    const summary=missingCount>0?`（未填輕減/標誌：${missingCount} 張）`:(unlinkedCount>0?`（未導入卡池：${unlinkedCount} 張）`:"（已全數填寫）");
+    titleEl.textContent=descriptionDeck.name+" "+summary;
+  }
 }
 async function editCardDescription(e) {
   if(catalogBusy)return catalogStatus("請等候目前辨識或儲存完成。");
@@ -10086,33 +10168,10 @@ Object.assign(window, {
 
   function updatePreviewCostCalc(cardId) {
     const bar = document.getElementById("preview-cost-calc");
-    if (!bar) return;
-    const card = cardId ? gameState.cards[cardId] : null;
-    const isHand = card && !card.isFaceDown && (card.zone?.startsWith("hand-") || card.zone?.startsWith("zone-openhand-"));
-    if (!isHand) {
+    if (bar) {
       bar.classList.add("hidden");
-      return;
+      bar.innerHTML = "";
     }
-    const data = lookupCatalog(card);
-    if (!data || data.cost == null || data.cost === "") {
-      bar.classList.add("hidden");
-      return;
-    }
-    const baseCost = Number(data.cost);
-    if (!Number.isFinite(baseCost)) {
-      bar.classList.add("hidden");
-      return;
-    }
-    const fieldSyms = getPlayerFieldSymbols(card.owner);
-    const { cost, discount, actual } = calculateReducedCost(baseCost, data.reduction || "", fieldSyms);
-    const redHtml = renderBsSymbolsHTML(data.reduction || "");
-
-    const costHtml = discount > 0
-      ? `<span class="text-stone-400 line-through">${cost}</span> <span class="text-[#fde047] text-sm">➔ 實付 ${actual}</span> <span class="text-emerald-300 text-[10px]">(減輕 -${discount})</span>`
-      : `<span class="text-[#f5efe6]">費用 ${cost}</span>`;
-
-    bar.innerHTML = `<div class="flex items-center gap-1.5 flex-wrap">${costHtml}</div><div class="flex items-center gap-1 flex-wrap">${redHtml}</div>`;
-    bar.classList.remove("hidden");
   }
 
   const baseShowPreviewForSym = showCardPreviewNextToElement;
@@ -10690,7 +10749,7 @@ Object.assign(window, {
 <!-- #endregion -->
 
 
-<!-- #region 15. [外掛] 創界神 Nexus 配置時詢問觸發「神託」與前後動畫視窗 -->
+<!-- #region 15. [外掛] 創界神 Nexus 配置時詢問觸發「神託」自動偵測對象加 Core 與卡牌左上角減輕費用徽章 -->
 <style>
   .god-oracle-window {
     position: absolute;
@@ -10767,6 +10826,53 @@ Object.assign(window, {
     border-color: #fde047;
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.95), 0 0 16px rgba(250, 204, 21, 0.65);
   }
+  .god-oracle-card-item.oracle-matched {
+    border-color: #38bdf8;
+    box-shadow: 0 0 14px 3px rgba(56, 189, 248, 0.75), 0 6px 16px rgba(0, 0, 0, 0.85);
+  }
+  .god-oracle-match-tag {
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(12, 74, 110, 0.94);
+    border: 1px solid #38bdf8;
+    color: #e0f2fe;
+    font-size: 9.5px;
+    font-weight: 900;
+    padding: 1px 5px;
+    border-radius: 2px;
+    white-space: nowrap;
+    pointer-events: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.85);
+  }
+
+  /* 卡牌左上角上方：僅顯示減輕後實際費用數字（無背景、不重疊卡牌） */
+  .card-reduced-cost-badge {
+    position: absolute;
+    top: -17px;
+    left: 2px;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0;
+    color: #f3c668;
+    font-family: Cinzel, Georgia, serif;
+    font-size: 13px;
+    font-weight: 900;
+    line-height: 1;
+    z-index: 45;
+    pointer-events: none;
+    text-shadow: 0 1px 3px #000, 0 0 6px rgba(0, 0, 0, 0.95);
+  }
+  .card-reduced-cost-badge.is-discounted {
+    color: #7dd3fc;
+    text-shadow: 0 1px 3px #000, 0 0 8px rgba(56, 189, 248, 0.95);
+  }
+  .card.face-down .card-reduced-cost-badge,
+  .hand-zone.opponent-hand .card .card-reduced-cost-badge {
+    display: none !important;
+  }
 </style>
 
 <div id="oracle-trigger-confirm-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[12150] hidden flex justify-center items-center">
@@ -10793,16 +10899,186 @@ Object.assign(window, {
   let pendingOraclePick = null;
   let pendingOracleTrigger = null;
 
+  // 日文/繁體/簡體常見系統異體字標準化，確保「獣/獸」「剣/劍」「竜/龍」等能準確比對
+  function normalizeBsText(str) {
+    return String(str || "")
+      .normalize("NFKC")
+      .replace(/獸/g, "獣")
+      .replace(/劍/g, "剣")
+      .replace(/龍/g, "竜")
+      .replace(/裝/g, "装")
+      .replace(/機/g, "機")
+      .replace(/鬪|鬥/g, "闘")
+      .replace(/靈/g, "霊")
+      .replace(/屬/g, "属")
+      .replace(/締/g, "締")
+      .replace(/創/g, "創")
+      .replace(/契約/g, "契約");
+  }
+
   function isGrandwalkerNexusCard(card) {
     if (!card) return false;
     const data = lookupCatalog(card);
     if (!data) return false;
     const type = String(data.type || "").toLowerCase();
     const family = String(data.family || "");
-    const hasGod = family.includes("創界神") || type.includes("創界神");
+    const hasGod = family.includes("創界神") || type.includes("創界神") || type.includes("契約nexus") || type.includes("契約神");
     if (!hasGod) return false;
     if (!type) return true;
-    return type.includes("nexus") || type.includes("ネクサス") || type.includes("創界神");
+    return type.includes("nexus") || type.includes("ネクサス") || type.includes("創界神") || type.includes("契約神");
+  }
+
+  // 取得卡牌的標準種類（嚴格區分：Brave 不算 Spirit；創界神/契約神 不算 Nexus）
+  function classifyCardKind(data) {
+    if (!data) return "OTHER";
+    const typeRaw = String(data.type || "").toLowerCase();
+    const familyRaw = String(data.family || "");
+    const isGod = familyRaw.includes("創界神") || typeRaw.includes("創界神") || typeRaw.includes("契約神") || typeRaw.includes("契約nexus");
+    if (isGod) return "GOD_NEXUS";
+    if (typeRaw.includes("brave") || typeRaw.includes("ブレイヴ")) return "BRAVE";
+    if (typeRaw.includes("ultimate") || typeRaw.includes("アルティメット")) return "ULTIMATE";
+    if (typeRaw.includes("magic") || typeRaw.includes("マジック")) return "MAGIC";
+    if (typeRaw.includes("nexus") || typeRaw.includes("ネクサス")) return "NEXUS";
+    if (typeRaw.includes("spirit") || typeRaw.includes("スピリット")) return "SPIRIT";
+    return "OTHER";
+  }
+
+  /**
+   * 解析創界神效果文字中的《神託》/《真・神託》規則
+   * 支援格式例如：
+   *   《真・神託》〔爬獣/原初/締皇 & Cost 3或以上〕〔原初 & Nexus〕
+   *   自己的對象Spirit/Nexus召喚/配置時，這張Nexus上可以+1個Core。
+   * 或：
+   *   《真・神託》〔剣獣/眷属/締皇 & Cost 3或以上〕
+   *   自己的對象Spirit召喚時，這張Nexus上可以+1個Core。
+   */
+  function parseOracleRules(effectText) {
+    const text = normalizeBsText(effectText || "");
+    const oracleMatch = text.match(/《[^》]*神託》([^\n]*(?:\n[^\n]*)?)/);
+    if (!oracleMatch) return null;
+
+    const block = oracleMatch[1] || "";
+    const firstLine = block.split(/\r?\n/)[0] || "";
+    const secondLine = block.split(/\r?\n/)[1] || "";
+    const triggerSentence = `${firstLine} ${secondLine}`;
+
+    // 判斷預設允許的卡牌種類（例如 Spirit/Nexus 或僅 Spirit）
+    const defaultKinds = new Set();
+    const hasSpirit = /spirit|スピリット/i.test(triggerSentence);
+    const hasNexus = /nexus|ネクサス/i.test(triggerSentence);
+    const hasUltimate = /ultimate|アルティメット/i.test(triggerSentence);
+    const hasBrave = /brave|ブレイヴ/i.test(triggerSentence);
+
+    if (hasSpirit) defaultKinds.add("SPIRIT");
+    if (hasNexus) defaultKinds.add("NEXUS");
+    if (hasUltimate) defaultKinds.add("ULTIMATE");
+    if (hasBrave) defaultKinds.add("BRAVE");
+    if (defaultKinds.size === 0) defaultKinds.add("SPIRIT");
+
+    // 擷取所有 〔...〕 條件群組（群組之間為 OR 關係）
+    const clauses = [];
+    for (const m of firstLine.matchAll(/〔([^〕]+)〕/g)) {
+      const rawClause = m[1].trim();
+      if (!rawClause) continue;
+      const parts = rawClause.split(/\s*(?:&|＆|且|同時)\s*/).filter(Boolean);
+      const clause = {
+        families: [],      // OR 關係：符合任一系統即可
+        minCost: null,
+        maxCost: null,
+        explicitKinds: new Set() // 若條件內明確寫了 Nexus / Spirit 等，覆寫預設種類
+      };
+
+      for (const part of parts) {
+        const p = part.trim();
+        // 1. 費用條件：Cost 3或以上 / Cost3以上 / コスト3以上 / 費用3以上
+        const minCostMatch = p.match(/(?:cost|コスト|費用)\s*(\d+)\s*(?:或以上|以上|\+)/i);
+        if (minCostMatch) {
+          clause.minCost = parseInt(minCostMatch[1], 10);
+          continue;
+        }
+        const maxCostMatch = p.match(/(?:cost|コスト|費用)\s*(\d+)\s*(?:或以下|以下)/i);
+        if (maxCostMatch) {
+          clause.maxCost = parseInt(maxCostMatch[1], 10);
+          continue;
+        }
+        // 2. 種類條件：例如 〔原初 & Nexus〕
+        if (/^(?:spirit|スピリット|nexus|ネクサス|ultimate|アルティメット|brave|ブレイヴ)(?:\s*[/／]\s*(?:spirit|スピリット|nexus|ネクサス|ultimate|アルティメット|brave|ブレイヴ))*$/i.test(p)) {
+          if (/spirit|スピリット/i.test(p)) clause.explicitKinds.add("SPIRIT");
+          if (/nexus|ネクサス/i.test(p)) clause.explicitKinds.add("NEXUS");
+          if (/ultimate|アルティメット/i.test(p)) clause.explicitKinds.add("ULTIMATE");
+          if (/brave|ブレイヴ/i.test(p)) clause.explicitKinds.add("BRAVE");
+          continue;
+        }
+        // 3. 系統條件：例如 爬獣/原初/締皇
+        const fams = p.split(/\s*[/／・･、,]\s*/).map(s => s.trim()).filter(Boolean);
+        clause.families.push(...fams);
+      }
+
+      clauses.push(clause);
+    }
+
+    if (!clauses.length) return null;
+    return { defaultKinds, clauses };
+  }
+
+  function matchesOracleRule(targetCard, oracleRule) {
+    if (!targetCard || !oracleRule) return false;
+    const data = lookupCatalog(targetCard);
+    if (!data) return false;
+
+    const kind = classifyCardKind(data);
+    // 創界神/契約神不計為 Nexus；Magic 不符合；Brave 不計為 Spirit
+    if (kind === "GOD_NEXUS" || kind === "MAGIC" || kind === "OTHER") return false;
+
+    const cardCost = data.cost != null && data.cost !== "" ? parseInt(data.cost, 10) : null;
+    const familyNorm = normalizeBsText(data.family || "");
+
+    return oracleRule.clauses.some(clause => {
+      const allowedKinds = clause.explicitKinds.size > 0 ? clause.explicitKinds : oracleRule.defaultKinds;
+      if (!allowedKinds.has(kind)) return false;
+
+      if (clause.minCost !== null && (cardCost === null || isNaN(cardCost) || cardCost < clause.minCost)) {
+        return false;
+      }
+      if (clause.maxCost !== null && (cardCost === null || isNaN(cardCost) || cardCost > clause.maxCost)) {
+        return false;
+      }
+      if (clause.families.length > 0) {
+        const hitFam = clause.families.some(f => familyNorm.includes(f));
+        if (!hitFam) return false;
+      }
+      return true;
+    });
+  }
+
+  function grantOracleCoresFromSpace(godCardId, count) {
+    if (!godCardId || !count || count <= 0) return;
+    const godCard = gameState.cards[godCardId];
+    if (!godCard || !godCard.zone?.startsWith("zone-god-")) return;
+
+    godCard.cores = (godCard.cores || 0) + count;
+    const el = document.getElementById(godCardId);
+    if (el) {
+      const coreLabel = el.querySelector(".card-cores");
+      if (coreLabel) coreLabel.innerText = getDisplayedCardCoreCount(godCard);
+    }
+    const spawner = document.getElementById("center-core-spawner");
+    const targetAnchor = el ? (el.querySelector(".card-controls") || el) : godCardId;
+    if (spawner) {
+      playCoreTransferAnimation(spawner, targetAnchor, `✨ 神託 +${count} CORE`, "cost", count);
+    }
+    const timestamp = Math.max(Date.now(), (gameState.lastActionEffect?.timestamp || 0) + 1);
+    lastSeenActionEffectTime = timestamp;
+    gameState.lastActionEffect = {
+      type: "centerCoreAdd",
+      cardId: godCardId,
+      player: godCard.owner,
+      count,
+      timestamp
+    };
+    triggerCardCoreFlash(godCardId, count);
+    updateAllUI();
+    updateRoomState();
   }
 
   window.closeOracleTriggerConfirm = function () {
@@ -10816,14 +11092,14 @@ Object.assign(window, {
     pendingOracleTrigger = { owner, cardId: card?.id || null };
     const cardName = lookupCatalog(card)?.name || "創界神";
     const desc = document.getElementById("oracle-trigger-confirm-desc");
-    if (desc) desc.textContent = `已配置「${cardName}」，是否觸發《神託》從牌組頂翻開 3 張卡牌？`;
+    if (desc) desc.textContent = `已配置「${cardName}」，是否觸發《神託》從牌組頂翻開 3 張卡牌並自動偵測對象 +Core？`;
     document.getElementById("oracle-trigger-confirm-modal")?.classList.remove("hidden");
     const yesBtn = document.getElementById("btn-oracle-trigger-yes");
     if (yesBtn) {
       yesBtn.onclick = () => {
         const info = pendingOracleTrigger;
         closeOracleTriggerConfirm();
-        if (info) triggerGodOracle(info.owner);
+        if (info) triggerGodOracle(info.owner, info.cardId);
       };
     }
   }
@@ -10917,7 +11193,6 @@ Object.assign(window, {
         const dy = targetRect.top - deckRect.top;
         const delay = idx * 110;
 
-        // 飛行到神託視窗並翻開正面
         const flyHalf = ghost.animate([
           { transform: "translate(0px, 0px) scale(0.75) perspective(700px) rotateY(0deg)", opacity: 0.9 },
           { transform: `translate(${dx * 0.55}px, ${dy * 0.55 - 18}px) scale(1.06) perspective(700px) rotateY(90deg)`, opacity: 1 }
@@ -10964,7 +11239,8 @@ Object.assign(window, {
 
     const title = document.createElement("span");
     title.className = "god-oracle-title";
-    title.textContent = "神託";
+    const hitCount = st.matchedIds ? st.matchedIds.size : 0;
+    title.textContent = hitCount > 0 ? `神託（對象 ${hitCount} 張 ➔ +${hitCount} Core）` : "神託";
 
     const trashBtn = document.createElement("button");
     trashBtn.type = "button";
@@ -10987,10 +11263,18 @@ Object.assign(window, {
       if (!card) return;
       const src = card.imgBase64 || cardImageCache[cid] || "";
       const tile = document.createElement("div");
-      tile.className = "god-oracle-card-item";
+      const isMatched = st.matchedIds?.has(cid);
+      tile.className = "god-oracle-card-item" + (isMatched ? " oracle-matched" : "");
       tile.dataset.cardId = cid;
       if (src) tile.style.backgroundImage = `url(${src})`;
-      tile.title = "點擊選擇是否加入手牌";
+      tile.title = isMatched ? "符合神託對象（已自動 +1 Core 至創界神）；點擊選擇是否加入手牌" : "點擊選擇是否加入手牌";
+
+      if (isMatched) {
+        const tag = document.createElement("span");
+        tag.className = "god-oracle-match-tag";
+        tag.textContent = "✨ 對象 +1 Core";
+        tile.appendChild(tag);
+      }
 
       tile.addEventListener("mouseenter", () => {
         if (controlMode === "PC" && src) showCardPreviewNextToElement(tile, src, cid, false);
@@ -11021,7 +11305,7 @@ Object.assign(window, {
     }
   }
 
-  function triggerGodOracle(owner) {
+  function triggerGodOracle(owner, godCardId = null) {
     const deck = gameState[`${owner}Deck`];
     if (!Array.isArray(deck) || deck.length === 0) return;
 
@@ -11032,6 +11316,10 @@ Object.assign(window, {
     const picked = deck.splice(0, 3);
     if (!picked.length) return;
 
+    const godCard = godCardId ? gameState.cards[godCardId] : null;
+    const oracleRule = godCard ? parseOracleRules(lookupCatalog(godCard)?.effect || "") : null;
+    const matchedIds = new Set();
+
     picked.forEach(cid => {
       const c = gameState.cards[cid];
       if (c) {
@@ -11039,13 +11327,90 @@ Object.assign(window, {
         c.isFaceDown = false;
         c.rotation = 0;
         document.getElementById(cid)?.remove();
+        if (oracleRule && matchesOracleRule(c, oracleRule)) {
+          matchedIds.add(cid);
+        }
       }
     });
 
-    oracleWindows[owner] = { owner, cardIds: picked };
+    oracleWindows[owner] = { owner, godCardId, cardIds: picked, matchedIds };
     updateAllUI();
     renderOracleWindow(owner, true);
     updateRoomState();
+
+    // 偵測到符合對象卡牌：翻牌動畫後從空間放對應數量的 Core 到該創界神上
+    if (godCardId && matchedIds.size > 0) {
+      setTimeout(() => {
+        grantOracleCoresFromSpace(godCardId, matchedIds.size);
+      }, 520);
+    }
+  }
+
+  // 當我方對象 Spirit / Nexus 召喚／配置到場上時，自動偵測我方創界神區的所有創界神並 +1 Core
+  function checkFieldSummonOracle(owner, deployedCard) {
+    if (!deployedCard || deployedCard.isFaceDown) return;
+    const godCards = typeof getGodCards === "function" ? getGodCards(owner) : [];
+    if (!godCards.length) return;
+
+    godCards.forEach((godCard, idx) => {
+      if (godCard.isFaceDown || godCard.id === deployedCard.id) return;
+      const rule = parseOracleRules(lookupCatalog(godCard)?.effect || "");
+      if (rule && matchesOracleRule(deployedCard, rule)) {
+        setTimeout(() => {
+          grantOracleCoresFromSpace(godCard.id, 1);
+        }, 260 + idx * 140);
+      }
+    });
+  }
+
+  /* =========================================================================
+     卡牌左上角：即時顯示減輕後的 Cost 數字徽章（手牌與手元區）
+  ========================================================================= */
+  function refreshAllCardReducedCostBadges() {
+    if (typeof window.getPlayerFieldSymbols !== "function" || typeof window.calculateReducedCost !== "function") return;
+    const symbolsByOwner = {
+      p1: window.getPlayerFieldSymbols("p1"),
+      p2: window.getPlayerFieldSymbols("p2")
+    };
+
+    for (const card of Object.values(gameState.cards)) {
+      const el = document.getElementById(card.id);
+      if (!el) continue;
+
+      const z = card.zone || "";
+      const isPlayableZone = z.startsWith("hand-") || z.startsWith("zone-openhand-");
+      let badge = el.querySelector(":scope > .card-reduced-cost-badge");
+
+      if (!isPlayableZone || card.isFaceDown) {
+        if (badge) badge.remove();
+        continue;
+      }
+
+      const data = lookupCatalog(card);
+      if (!data || data.cost == null || data.cost === "") {
+        if (badge) badge.remove();
+        continue;
+      }
+
+      const baseCost = parseInt(data.cost, 10);
+      if (isNaN(baseCost)) {
+        if (badge) badge.remove();
+        continue;
+      }
+
+      const calc = window.calculateReducedCost(baseCost, data.reduction || "", symbolsByOwner[card.owner] || {});
+      if (!badge) {
+        badge = document.createElement("span");
+        badge.className = "card-reduced-cost-badge";
+        el.appendChild(badge);
+      }
+      const nextText = String(calc.actual);
+      if (badge.textContent !== nextText) badge.textContent = nextText;
+      badge.classList.toggle("is-discounted", calc.discount > 0);
+      badge.title = calc.discount > 0
+        ? `原費 ${calc.cost} － 減輕 ${calc.discount} ＝ 實付 ${calc.actual}`
+        : `費用 ${calc.cost}`;
+    }
   }
 
   const baseMoveForOracle = moveCardToZone;
@@ -11053,11 +11418,24 @@ Object.assign(window, {
     const card = gameState.cards[id];
     const prevZone = card?.zone || "";
     const res = baseMoveForOracle(id, zone, options);
-    if (!isSyncing && card && zone.startsWith("zone-god-") && !prevZone.startsWith("zone-god-") && isGrandwalkerNexusCard(card)) {
-      const owner = zone.endsWith("p2") ? "p2" : "p1";
-      setTimeout(() => promptOracleTrigger(owner, card), 180);
+    if (!isSyncing && card) {
+      if (zone.startsWith("zone-god-") && !prevZone.startsWith("zone-god-") && isGrandwalkerNexusCard(card)) {
+        const owner = zone.endsWith("p2") ? "p2" : "p1";
+        setTimeout(() => promptOracleTrigger(owner, card), 180);
+      } else if (zone.startsWith("field-") && !prevZone.startsWith("field-")) {
+        const owner = zone.endsWith("p2") ? "p2" : "p1";
+        if (card.owner === owner) {
+          checkFieldSummonOracle(owner, card);
+        }
+      }
     }
     return res;
+  };
+
+  const baseUpdateAllUIForOracleCost = updateAllUI;
+  updateAllUI = function () {
+    baseUpdateAllUIForOracleCost();
+    refreshAllCardReducedCostBadges();
   };
 
   const baseResetForOracle = confirmResetGame;
@@ -11081,6 +11459,8 @@ Object.assign(window, {
       });
     }
   });
+
+  refreshAllCardReducedCostBadges();
 })();
 </script>
 <!-- #endregion -->
@@ -11445,6 +11825,299 @@ Object.assign(window, {
     if (el) el.textContent = msg;
   }
 
+  function cropCardCornersCompact(dataUrl) {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => {
+        const w = img.naturalWidth || 400;
+        const h = img.naturalHeight || 560;
+
+        // 左上角（費用與減輕）：精簡微縮至 200x115
+        const tlC = document.createElement("canvas");
+        tlC.width = 200;
+        tlC.height = 115;
+        const tlCtx = tlC.getContext("2d");
+        tlCtx.imageSmoothingEnabled = true;
+        tlCtx.imageSmoothingQuality = "high";
+        tlCtx.drawImage(img, 0, 0, Math.round(w * 0.65), Math.round(h * 0.28), 0, 0, tlC.width, tlC.height);
+
+        // 右下角（標誌）：精簡微縮至 108x136
+        const brC = document.createElement("canvas");
+        brC.width = 108;
+        brC.height = 136;
+        const brCtx = brC.getContext("2d");
+        brCtx.imageSmoothingEnabled = true;
+        brCtx.imageSmoothingQuality = "high";
+        const brSx = Math.round(w * 0.68), brSy = Math.round(h * 0.70);
+        brCtx.drawImage(img, brSx, brSy, w - brSx, h - brSy, 0, 0, brC.width, brC.height);
+
+        resolve({
+          tl: tlC.toDataURL("image/jpeg", 0.68).split(",")[1],
+          br: brC.toDataURL("image/jpeg", 0.68).split(",")[1]
+        });
+      };
+      img.onerror = () => reject(new Error("卡圖載入失敗"));
+      img.src = dataUrl;
+    });
+  }
+
+  function downloadCompactJsonFile(payload, filename) {
+    const jsonStr = JSON.stringify(payload);
+    const blob = new Blob([jsonStr], { type: "application/json;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+    return blob.size;
+  }
+
+  async function buildAndDownloadSymbolExport(items, scopeLabel, filename, setStatusFn) {
+    const outCards = [];
+    for (let i = 0; i < items.length; i++) {
+      const { card, imgSrc } = items[i];
+      setStatusFn(`📤 正在微縮打包 (${i + 1} / ${items.length})：${card.number} ${card.name}…`);
+      try {
+        const { tl, br } = await cropCardCornersCompact(imgSrc);
+        outCards.push({
+          n: card.number,
+          name: card.name,
+          t: card.type || "",
+          c: card.cost ?? null,
+          tl,
+          br
+        });
+      } catch (err) {
+        console.warn("Skip card during compact symbol export:", card.number, err);
+      }
+      if (i % 10 === 9) await new Promise(r => setTimeout(r, 0));
+    }
+    if (!outCards.length) {
+      setStatusFn("沒有可匯出的有效卡圖。");
+      return;
+    }
+    const payload = {
+      app: "BS_SYMBOL_EXPORT",
+      v: 1,
+      scope: scopeLabel,
+      count: outCards.length,
+      exportedAt: new Date().toISOString(),
+      cards: outCards
+    };
+    const bytes = downloadCompactJsonFile(payload, filename);
+    const kb = (bytes / 1024).toFixed(1);
+    setStatusFn(`✅ 已匯出「${filename}」（共 ${outCards.length} 張，僅 ${kb} KB）！請將此檔案傳給 AI 辨識後再導入結果。`);
+  }
+
+  window.exportDeckSymbolsForAI = async function () {
+    if (aiBatchRunning || catalogBusy) return;
+    if (!descriptionDeck || !Array.isArray(descriptionDeck.entries) || !descriptionDeck.entries.length) {
+      setDeckDescStatus("目前卡組沒有可匯出的卡片。");
+      return;
+    }
+    const btn = document.getElementById("btn-deck-export-sym");
+    if (btn) btn.disabled = true;
+    try {
+      setDeckDescStatus("正在整理此卡組待識別卡片…");
+      await ensureCatalogData();
+
+      const matchedMap = new Map();
+      let unlinkedCount = 0;
+      for (const entry of descriptionDeck.entries) {
+        if (entry.imgBase64) {
+          const key = await cardImageKey(entry.imgBase64);
+          window.resolvedCardKeys ??= new Map();
+          window.resolvedCardKeys.set(entry.imgBase64, key);
+        }
+        const card = lookupCatalog(entry);
+        if (!card) {
+          unlinkedCount++;
+          continue;
+        }
+        const imgSrc = card.image || entry.imgBase64 || "";
+        if (imgSrc && !matchedMap.has(card.number)) {
+          matchedMap.set(card.number, { card, imgSrc });
+        }
+      }
+
+      const allMatched = Array.from(matchedMap.values());
+      if (!allMatched.length) {
+        setDeckDescStatus(unlinkedCount ? `此卡組的 ${unlinkedCount} 張卡皆尚未導入卡池，請先導入卡池資料。` : "找不到可匯出的卡圖。");
+        return;
+      }
+
+      const unfilled = allMatched.filter(({ card }) => !card.reduction && !card.symbol);
+      let targets = unfilled;
+      if (unfilled.length === 0) {
+        if (!confirm(`「${descriptionDeck.name}」已連結的 ${allMatched.length} 張卡皆已填寫輕減／標誌。
+
+是否改為匯出此卡組全部 ${allMatched.length} 張卡重新識別？`)) {
+          setDeckDescStatus("已取消匯出。");
+          return;
+        }
+        targets = allMatched;
+      }
+
+      const safeName = String(descriptionDeck.name || "deck").replace(/[\\/:*?"<>|\s]+/g, "_").slice(0, 32);
+      const dateTag = new Date().toISOString().slice(0, 10);
+      await buildAndDownloadSymbolExport(
+        targets,
+        `deck:${descriptionDeck.name}`,
+        `BS_待識別_${safeName}_${targets.length}張_${dateTag}.json`,
+        setDeckDescStatus
+      );
+    } catch (err) {
+      setDeckDescStatus("匯出失敗：" + (err.message || "未知錯誤"));
+    } finally {
+      if (btn) btn.disabled = false;
+    }
+  };
+
+  window.exportCatalogUnfilledSymbolsForAI = async function () {
+    if (aiBatchRunning || catalogBusy) return;
+    const btn = document.getElementById("btn-catalog-export-sym");
+    if (btn) btn.disabled = true;
+    try {
+      catalogStatus("正在掃描卡池中尚未填寫輕減/標誌的卡片…");
+      await ensureCatalogData();
+      const targets = catalogEntries
+        .filter(c => c.image && !c.reduction && !c.symbol)
+        .map(card => ({ card, imgSrc: card.image }));
+
+      if (!targets.length) {
+        catalogStatus("卡池中所有已導入卡圖的卡片皆已填寫輕減或標誌！");
+        return;
+      }
+
+      if (!confirm(`共偵測到卡池中有 ${targets.length} 張尚未填寫輕減與標誌的卡片。
+
+是否微縮匯出這 ${targets.length} 張卡片的左上／右下截圖檔 (.json)？`)) {
+        catalogStatus(`共 ${catalogEntries.length} 張卡片`);
+        return;
+      }
+
+      const dateTag = new Date().toISOString().slice(0, 10);
+      await buildAndDownloadSymbolExport(
+        targets,
+        "catalog_unfilled",
+        `BS_卡池未填輕減標誌_${targets.length}張_${dateTag}.json`,
+        catalogStatus
+      );
+    } catch (err) {
+      catalogStatus("匯出失敗：" + (err.message || "未知錯誤"));
+    } finally {
+      if (btn) btn.disabled = false;
+    }
+  };
+
+  window.importSymbolsResultFile = async function (event, sourceMode) {
+    const file = event.target.files && event.target.files[0];
+    event.target.value = "";
+    if (!file || aiBatchRunning || catalogBusy) return;
+
+    const setStatus = sourceMode === "deck" ? setDeckDescStatus : catalogStatus;
+    try {
+      const text = await file.text();
+      const parsed = JSON.parse(text);
+
+      // 支援陣列、{ cards: [...] } 或 { "BS69-001": { reduction, symbol } } 格式
+      let rows = [];
+      if (Array.isArray(parsed)) {
+        rows = parsed;
+      } else if (parsed && Array.isArray(parsed.cards)) {
+        rows = parsed.cards;
+      } else if (parsed && typeof parsed === "object") {
+        rows = Object.entries(parsed).map(([k, v]) => ({
+          number: k,
+          ...(v && typeof v === "object" ? v : {})
+        }));
+      }
+
+      const normalizedRows = rows
+        .map(item => ({
+          number: String(item?.number || item?.n || "").trim().toUpperCase(),
+          reduction: item?.reduction !== undefined ? String(item.reduction ?? "").trim()
+            : (item?.r !== undefined ? String(item.r ?? "").trim() : undefined),
+          symbol: item?.symbol !== undefined ? String(item.symbol ?? "").trim()
+            : (item?.s !== undefined ? String(item.s ?? "").trim() : undefined)
+        }))
+        .filter(item => item.number && (item.reduction !== undefined || item.symbol !== undefined));
+
+      if (!normalizedRows.length) {
+        setStatus("檔案中找不到有效的輕減／標誌識別資料。");
+        return;
+      }
+
+      setStatus("正在載入最新卡池資料…");
+      await ensureCatalogData();
+      const byNum = new Map(catalogEntries.map(c => [c.number, c]));
+
+      const toUpdate = [];
+      let notFound = 0;
+      let unchanged = 0;
+
+      for (const row of normalizedRows) {
+        const card = byNum.get(row.number);
+        if (!card) {
+          notFound++;
+          continue;
+        }
+        const nextRed = row.reduction !== undefined ? row.reduction : (card.reduction || "");
+        const nextSym = row.symbol !== undefined ? row.symbol : (card.symbol || "");
+        if (nextRed === (card.reduction || "") && nextSym === (card.symbol || "")) {
+          unchanged++;
+          continue;
+        }
+        toUpdate.push({ card, nextRed, nextSym });
+      }
+
+      if (!toUpdate.length) {
+        setStatus(`無需更新（相符且內容相同 ${unchanged} 張${notFound ? `，卡池找不到 ${notFound} 張` : ""}）。`);
+        return;
+      }
+
+      if (!confirm(`共讀取到 ${normalizedRows.length} 筆識別結果，其中有 ${toUpdate.length} 張需要更新至雲端卡池${unchanged ? `（另有 ${unchanged} 張內容相同將略過）` : ""}${notFound ? `（${notFound} 張卡號不在卡池中）` : ""}。
+
+是否立即寫入卡池？`)) {
+        setStatus("已取消導入。");
+        return;
+      }
+
+      catalogBusy = true;
+      const cloud = await catalogCloud();
+      let saved = 0;
+      let failed = 0;
+
+      for (let i = 0; i < toUpdate.length; i++) {
+        const { card, nextRed, nextSym } = toUpdate[i];
+        setStatus(`📥 正在導入寫入 (${i + 1} / ${toUpdate.length})：${card.number} ${card.name}…`);
+        try {
+          const updated = normalizeCatalogCard({
+            ...card,
+            reduction: nextRed,
+            symbol: nextSym
+          });
+          await cloud.save(updated, card.revision, card.number);
+          saved++;
+        } catch (err) {
+          console.warn("Import symbol save failed:", card.number, err);
+          failed++;
+        }
+      }
+
+      await refreshCardDatabase();
+      if (descriptionDeck) renderDeckDescriptions();
+      setStatus(`✅ 導入完成！成功更新 ${saved} 張${unchanged ? `，略過相同 ${unchanged} 張` : ""}${notFound ? `，卡池未找到 ${notFound} 張` : ""}${failed ? `，寫入失敗 ${failed} 張` : ""}。`);
+    } catch (err) {
+      setStatus("導入失敗：" + (err.message || "JSON 格式不正確"));
+    } finally {
+      catalogBusy = false;
+    }
+  };
+
   window.stopAiBatchCatalogScan = function () {
     aiBatchStopRequested = true;
     catalogStatus("正在停止批次辨識（將於本張完成後停止）…");
@@ -11655,6 +12328,1605 @@ Object.assign(window, {
   };
 
   syncAiKeyUI();
+})();
+</script>
+<!-- #endregion -->
+
+
+<!-- #region 17. [外掛] 出牌完整支付系統：Life上方開關、確認彈窗、預備區優先扣費、場上與魂Core高亮點擊支付、空間下方取消列 -->
+<style>
+  .play-pay-toggle-btn {
+    width: 100%;
+    padding: 3px 6px;
+    border-radius: 2px;
+    font-size: 9.5px;
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    border: 1px solid rgba(56, 189, 248, 0.65);
+    background: rgba(12, 74, 110, 0.55);
+    color: #bae6fd;
+    transition: all 0.15s ease;
+    text-align: center;
+    white-space: nowrap;
+  }
+  .play-pay-toggle-btn:hover {
+    background: #0284c7;
+    color: #ffffff;
+    border-color: #ffffff;
+  }
+  .play-pay-toggle-btn.is-off {
+    border-color: rgba(176, 148, 102, 0.4);
+    background: rgba(16, 15, 14, 0.78);
+    color: #9e9484;
+  }
+  body.phone-mode .play-pay-toggle-btn {
+    font-size: 11px !important;
+    padding: 5px 4px !important;
+  }
+
+  @keyframes playPayPulse {
+    0%, 100% {
+      box-shadow: 0 0 14px 4px rgba(56, 189, 248, 0.95), 0 0 26px 8px rgba(250, 204, 21, 0.55);
+      border-color: #fde047;
+    }
+    50% {
+      box-shadow: 0 0 24px 8px rgba(56, 189, 248, 1), 0 0 40px 14px rgba(250, 204, 21, 0.85);
+      border-color: #ffffff;
+    }
+  }
+  .card.play-pay-candidate {
+    animation: playPayPulse 1.05s infinite ease-in-out !important;
+    cursor: pointer !important;
+    z-index: 980 !important;
+  }
+  @keyframes playPaySoulPulse {
+    0%, 100% {
+      transform: scale(1.18);
+      filter: drop-shadow(0 0 10px rgba(250, 204, 21, 1)) drop-shadow(0 0 16px rgba(239, 68, 68, 1));
+    }
+    50% {
+      transform: scale(1.38);
+      filter: drop-shadow(0 0 16px rgba(255, 255, 255, 1)) drop-shadow(0 0 22px rgba(250, 204, 21, 1));
+    }
+  }
+  .soul-core-token.play-pay-soul-candidate {
+    animation: playPaySoulPulse 0.95s infinite ease-in-out !important;
+    cursor: pointer !important;
+    z-index: 990 !important;
+  }
+
+  .play-pay-cancel-bar {
+    pointer-events: auto;
+    position: absolute;
+    top: calc(100% + 18px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 96;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 5px 14px;
+    border-radius: 3px;
+    background: rgba(10, 9, 8, 0.94);
+    border: 1px solid #38bdf8;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.92), 0 0 18px rgba(56, 189, 248, 0.45);
+    white-space: nowrap;
+  }
+  .play-pay-cancel-bar.hidden {
+    display: none !important;
+  }
+  .play-pay-cancel-btn {
+    border: 1px solid rgba(248, 113, 113, 0.85);
+    background: rgba(153, 27, 27, 0.88);
+    color: #ffffff;
+    padding: 3px 10px;
+    border-radius: 2px;
+    font-size: 11px;
+    font-weight: 900;
+    cursor: pointer;
+    transition: background-color 0.15s ease, transform 0.12s ease;
+  }
+  .play-pay-cancel-btn:hover {
+    background: #ef4444;
+    transform: scale(1.04);
+  }
+</style>
+
+<div id="play-pay-confirm-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[12300] hidden flex justify-center items-center">
+  <div class="border border-[#c8aa76] bg-[#0a0a0a]/95 p-5 w-[340px] max-w-[92vw] flex flex-col gap-3.5 shadow-2xl rounded-sm">
+    <div class="text-[#e0b25b] font-black tracking-widest text-center text-sm uppercase border-b border-[#b09466]/30 pb-2">💎 支付費用確認</div>
+    <div id="play-pay-confirm-desc" class="text-[#dcd6cc] text-xs text-center leading-relaxed"></div>
+    <button id="btn-play-pay-confirm-yes" type="button" class="bg-[#c8aa76] py-2.5 text-black font-black hover:bg-white transition-all cursor-pointer text-xs tracking-wider rounded-sm">💎 確認支付費用</button>
+    <button id="btn-play-pay-confirm-free" type="button" class="border border-sky-400/50 bg-sky-950/40 py-2 text-sky-200 hover:bg-sky-500 hover:text-black font-bold transition-all cursor-pointer text-xs tracking-wider rounded-sm">🆓 免付費直接放置</button>
+    <button type="button" class="border border-[#b09466]/40 bg-white/5 py-2 text-[#c8bea8] text-xs hover:bg-white/15 hover:text-white transition-all cursor-pointer rounded-sm" onclick="closePlayPayConfirmModal()">✕ 取消</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  const STORAGE_KEY = "bs_play_payment_enabled";
+  let playPaymentEnabled = true;
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved === "0") playPaymentEnabled = false;
+  } catch (e) {}
+
+  let pendingPlayConfirm = null;
+  let playPaymentState = null; // { cardId, owner, targetZone, options, remainingCost, reserveNormalPaid, fieldNormalPaid: { [cid]: n }, soulPaidFrom: null | 'reserve' | cardId }
+  window.__bsBypassPlayPayment = false;
+
+  // 1. 在 P1 / P2 的 Life 區塊上方插入「支付系統 ON/OFF」開關按鈕
+  function ensurePlayPayToggleButtons() {
+    ["p1", "p2"].forEach(owner => {
+      const lifeBox = document.getElementById(`life-box-${owner}`);
+      if (!lifeBox || !lifeBox.parentElement) return;
+      let btn = document.getElementById(`btn-toggle-play-pay-${owner}`);
+      if (!btn) {
+        btn = document.createElement("button");
+        btn.type = "button";
+        btn.id = `btn-toggle-play-pay-${owner}`;
+        btn.className = "play-pay-toggle-btn";
+        btn.title = "切換開啟／關閉：從手牌或手元打出卡牌時自動詢問並扣除減輕後的 Cost";
+        btn.onclick = e => {
+          e.stopPropagation();
+          togglePlayPaymentSystem();
+        };
+        lifeBox.parentElement.insertBefore(btn, lifeBox);
+      }
+      btn.textContent = playPaymentEnabled ? "💎 支付系統: ON" : "💎 支付系統: OFF";
+      btn.classList.toggle("is-off", !playPaymentEnabled);
+    });
+  }
+
+  window.togglePlayPaymentSystem = function () {
+    playPaymentEnabled = !playPaymentEnabled;
+    try {
+      localStorage.setItem(STORAGE_KEY, playPaymentEnabled ? "1" : "0");
+    } catch (e) {}
+    if (!playPaymentEnabled && playPaymentState) {
+      cancelPlayPayment();
+    }
+    ensurePlayPayToggleButtons();
+  };
+
+  // 2. 空間下方的取消支付與剩餘 Cost 提示列
+  function ensurePlayPayCancelBar() {
+    let bar = document.getElementById("play-pay-cancel-bar");
+    if (!bar) {
+      const centerBar = document.getElementById("center-core-bar");
+      if (!centerBar) return null;
+      bar = document.createElement("div");
+      bar.id = "play-pay-cancel-bar";
+      bar.className = "play-pay-cancel-bar hidden";
+      bar.innerHTML = `<span id="play-pay-status-text" class="text-[11px] font-black text-[#7dd3fc] tracking-wider"></span><button type="button" id="btn-cancel-play-pay" class="play-pay-cancel-btn">取消支付</button>`;
+      centerBar.appendChild(bar);
+      bar.querySelector("#btn-cancel-play-pay").onclick = e => {
+        e.preventDefault();
+        e.stopPropagation();
+        cancelPlayPayment();
+      };
+    }
+    return bar;
+  }
+
+  function getFieldPayableCardsForPlay(owner) {
+    const fieldZone = `field-${owner}`;
+    return Object.values(gameState.cards).filter(c => {
+      if (c.owner !== owner || c.zone !== fieldZone) return false;
+      if (c.adventHostId || c.braveHostId) return false;
+      const normal = c.cores || 0;
+      const hasSoul = gameState.soulCoreLocation?.[owner] === c.id;
+      return normal > 0 || hasSoul;
+    });
+  }
+
+  function getTotalAvailableCoresForPlay(owner) {
+    let total = Math.max(0, parseInt(gameState[`${owner}_reserve`], 10) || 0);
+    if (gameState.soulCoreLocation?.[owner] === "reserve") total += 1;
+    getFieldPayableCardsForPlay(owner).forEach(c => {
+      total += Math.max(0, parseInt(c.cores, 10) || 0);
+      if (gameState.soulCoreLocation?.[owner] === c.id) total += 1;
+    });
+    return total;
+  }
+
+  function refreshPlayPaymentUI() {
+    document.querySelectorAll(".card.play-pay-candidate").forEach(el => el.classList.remove("play-pay-candidate"));
+    document.querySelectorAll(".soul-core-token.play-pay-soul-candidate").forEach(el => el.classList.remove("play-pay-soul-candidate"));
+    const bar = ensurePlayPayCancelBar();
+
+    if (!playPaymentState) {
+      bar?.classList.add("hidden");
+      return;
+    }
+
+    const owner = playPaymentState.owner;
+    // 高亮場上可支付卡牌
+    getFieldPayableCardsForPlay(owner).forEach(c => {
+      const el = document.getElementById(c.id);
+      if (el) el.classList.add("play-pay-candidate");
+    });
+
+    // 若預備區仍有魂 Core，高亮該魂 Core 讓玩家可點擊支付
+    if (gameState.soulCoreLocation?.[owner] === "reserve") {
+      const soulEl = document.querySelector(`#slot_${owner}_soul_reserve .soul-core-token`);
+      if (soulEl) soulEl.classList.add("play-pay-soul-candidate");
+    }
+
+    if (bar) {
+      const txt = bar.querySelector("#play-pay-status-text");
+      if (txt) {
+        txt.innerHTML = `💎 尚需支付：<b class="text-[#fde047] text-sm mx-0.5">${playPaymentState.remainingCost}</b> 粒 Core（點擊場上高亮卡牌或魂Core）`;
+      }
+      bar.classList.remove("hidden");
+    }
+  }
+
+  function finalizePlayPayment() {
+    if (!playPaymentState) return;
+    const st = playPaymentState;
+    playPaymentState = null;
+    refreshPlayPaymentUI();
+
+    window.__bsBypassPlayPayment = true;
+    try {
+      moveCardToZone(st.cardId, st.targetZone, st.options || {});
+    } finally {
+      window.__bsBypassPlayPayment = false;
+    }
+    updateAllUI();
+    updateRoomState();
+  }
+
+  function cancelPlayPayment() {
+    if (!playPaymentState) return;
+    const st = playPaymentState;
+    const owner = st.owner;
+    playPaymentState = null;
+
+    let totalNormalRefund = st.reserveNormalPaid || 0;
+    if (st.reserveNormalPaid > 0) {
+      gameState[`${owner}_reserve`] = (parseInt(gameState[`${owner}_reserve`], 10) || 0) + st.reserveNormalPaid;
+      playCoreTransferAnimation(`trash-core-box-${owner}`, `reserve-box-${owner}`, `↺ 退還 +${st.reserveNormalPaid}`, "refresh", st.reserveNormalPaid);
+    }
+
+    for (const [cid, count] of Object.entries(st.fieldNormalPaid || {})) {
+      if (count > 0 && gameState.cards[cid]) {
+        gameState.cards[cid].cores = (gameState.cards[cid].cores || 0) + count;
+        totalNormalRefund += count;
+        const el = document.getElementById(cid);
+        if (el) playCoreTransferAnimation(`trash-core-box-${owner}`, el, `↺ +${count}`, "refresh", count);
+      }
+    }
+
+    if (totalNormalRefund > 0) {
+      gameState[`${owner}_trash_core`] = Math.max(0, (parseInt(gameState[`${owner}_trash_core`], 10) || 0) - totalNormalRefund);
+    }
+
+    if (st.soulPaidFrom) {
+      gameState.soulCoreLocation[owner] = st.soulPaidFrom;
+    }
+
+    refreshPlayPaymentUI();
+    updateAllUI();
+    updateRoomState();
+  }
+
+  function payOneFromFieldCard(cardId) {
+    if (!playPaymentState) return false;
+    const st = playPaymentState;
+    const owner = st.owner;
+    const card = gameState.cards[cardId];
+    if (!card || card.owner !== owner || card.zone !== `field-${owner}`) return false;
+
+    const normal = card.cores || 0;
+    const hasSoul = gameState.soulCoreLocation?.[owner] === cardId;
+    if (normal <= 0 && !hasSoul) return false;
+
+    const el = document.getElementById(cardId);
+    if (normal > 0) {
+      card.cores = normal - 1;
+      gameState[`${owner}_trash_core`] = (parseInt(gameState[`${owner}_trash_core`], 10) || 0) + 1;
+      st.fieldNormalPaid[cardId] = (st.fieldNormalPaid[cardId] || 0) + 1;
+      playCoreTransferAnimation(el || `field-${owner}`, `trash-core-box-${owner}`, "💎 PAY -1", "cost", 1);
+      triggerCardCoreFlash(cardId, -1);
+      triggerCounterKeyFlash(`${owner}_trash_core`, 1);
+    } else if (hasSoul) {
+      gameState.soulCoreLocation[owner] = "trash";
+      st.soulPaidFrom = cardId;
+      playCoreTransferAnimation(el || `field-${owner}`, `trash-core-box-${owner}`, "🔥 魂CORE PAY", "soulP1", 1);
+      triggerCardCoreFlash(cardId, -1);
+      triggerCounterKeyFlash(`${owner}_trash_core`, 1);
+    }
+
+    st.remainingCost = Math.max(0, st.remainingCost - 1);
+    updateAllUI();
+    updateRoomState();
+
+    if (st.remainingCost <= 0) {
+      finalizePlayPayment();
+    } else {
+      refreshPlayPaymentUI();
+    }
+    return true;
+  }
+
+  function payOneFromReserveSoul() {
+    if (!playPaymentState) return false;
+    const st = playPaymentState;
+    const owner = st.owner;
+    if (gameState.soulCoreLocation?.[owner] !== "reserve") return false;
+
+    gameState.soulCoreLocation[owner] = "trash";
+    st.soulPaidFrom = "reserve";
+    playCoreTransferAnimation(`reserve-box-${owner}`, `trash-core-box-${owner}`, "🔥 魂CORE PAY", "soulP1", 1);
+    triggerCounterKeyFlash(`${owner}_reserve`, -1);
+    triggerCounterKeyFlash(`${owner}_trash_core`, 1);
+
+    st.remainingCost = Math.max(0, st.remainingCost - 1);
+    updateAllUI();
+    updateRoomState();
+
+    if (st.remainingCost <= 0) {
+      finalizePlayPayment();
+    } else {
+      refreshPlayPaymentUI();
+    }
+    return true;
+  }
+
+  function startPlayPayment(cardId, targetZone, options, actualCost) {
+    const card = gameState.cards[cardId];
+    if (!card) return;
+    const owner = card.owner;
+
+    if (actualCost <= 0) {
+      window.__bsBypassPlayPayment = true;
+      try { moveCardToZone(cardId, targetZone, options || {}); } finally { window.__bsBypassPlayPayment = false; }
+      return;
+    }
+
+    // 先由預備區普通 Core 扣除
+    const reserveNormal = Math.max(0, parseInt(gameState[`${owner}_reserve`], 10) || 0);
+    const takeReserve = Math.min(actualCost, reserveNormal);
+    if (takeReserve > 0) {
+      gameState[`${owner}_reserve`] = reserveNormal - takeReserve;
+      gameState[`${owner}_trash_core`] = (parseInt(gameState[`${owner}_trash_core`], 10) || 0) + takeReserve;
+      playCoreTransferAnimation(`reserve-box-${owner}`, `trash-core-box-${owner}`, `💎 PAY -${takeReserve}`, "cost", takeReserve);
+      triggerCounterKeyFlash(`${owner}_reserve`, -takeReserve);
+      triggerCounterKeyFlash(`${owner}_trash_core`, takeReserve);
+    }
+
+    const remain = actualCost - takeReserve;
+    if (remain <= 0) {
+      window.__bsBypassPlayPayment = true;
+      try { moveCardToZone(cardId, targetZone, options || {}); } finally { window.__bsBypassPlayPayment = false; }
+      updateAllUI();
+      updateRoomState();
+      return;
+    }
+
+    // 不足夠：進入場上卡牌／魂Core 點擊支付模式
+    playPaymentState = {
+      cardId,
+      owner,
+      targetZone,
+      options,
+      remainingCost: remain,
+      reserveNormalPaid: takeReserve,
+      fieldNormalPaid: {},
+      soulPaidFrom: null
+    };
+    updateAllUI();
+    refreshPlayPaymentUI();
+    updateRoomState();
+  }
+
+  window.closePlayPayConfirmModal = function () {
+    pendingPlayConfirm = null;
+    document.getElementById("play-pay-confirm-modal")?.classList.add("hidden");
+  };
+
+  function promptPlayPaymentConfirm(cardId, targetZone, options) {
+    const card = gameState.cards[cardId];
+    if (!card) return false;
+    const data = lookupCatalog(card);
+    if (!data || data.cost == null || data.cost === "") return false;
+    const baseCost = parseInt(data.cost, 10);
+    if (isNaN(baseCost)) return false;
+
+    const fieldSymbols = typeof window.getPlayerFieldSymbols === "function"
+      ? window.getPlayerFieldSymbols(card.owner)
+      : {};
+    const calc = typeof window.calculateReducedCost === "function"
+      ? window.calculateReducedCost(baseCost, data.reduction || "", fieldSymbols)
+      : { cost: baseCost, discount: 0, actual: baseCost };
+
+    const totalAvail = getTotalAvailableCoresForPlay(card.owner);
+    pendingPlayConfirm = { cardId, targetZone, options, calc };
+
+    const desc = document.getElementById("play-pay-confirm-desc");
+    if (desc) {
+      desc.innerHTML = `
+        打出「<b class="text-[#fde047]">${data.name || card.catalogNumber || "卡牌"}</b>」<br>
+        原費 <b>${calc.cost}</b> － 減輕 <b class="text-sky-300">${calc.discount}</b> ＝
+        需支付 <b class="text-[#fde047] text-base">${calc.actual}</b> 粒 Core<br>
+        <span class="text-[11px] text-[#a89f91]">（目前可用總 Core：${totalAvail}，將優先由預備區扣除）</span>
+      `;
+    }
+
+    const yesBtn = document.getElementById("btn-play-pay-confirm-yes");
+    if (yesBtn) {
+      yesBtn.disabled = totalAvail < calc.actual;
+      yesBtn.style.opacity = totalAvail < calc.actual ? "0.45" : "1";
+      yesBtn.textContent = totalAvail < calc.actual
+        ? `Core 不足（需 ${calc.actual} / 可用 ${totalAvail}）`
+        : `💎 確認支付 ${calc.actual} 費`;
+      yesBtn.onclick = () => {
+        const info = pendingPlayConfirm;
+        closePlayPayConfirmModal();
+        if (info) startPlayPayment(info.cardId, info.targetZone, info.options, info.calc.actual);
+      };
+    }
+
+    const freeBtn = document.getElementById("btn-play-pay-confirm-free");
+    if (freeBtn) {
+      freeBtn.textContent = "🆓 免付費直接放置";
+      freeBtn.onclick = () => {
+        const info = pendingPlayConfirm;
+        closePlayPayConfirmModal();
+        if (info) {
+          window.__bsBypassPlayPayment = true;
+          try { moveCardToZone(info.cardId, info.targetZone, info.options || {}); } finally { window.__bsBypassPlayPayment = false; }
+        }
+      };
+    }
+
+    document.getElementById("play-pay-confirm-modal")?.classList.remove("hidden");
+    return true;
+  }
+
+  // 攔截場上高亮卡牌與預備區高亮魂 Core 的點擊事件（支援 PC 與手機/iPad）
+  document.addEventListener("pointerdown", e => {
+    if (!playPaymentState) return;
+    const soulToken = e.target.closest(".soul-core-token.play-pay-soul-candidate");
+    if (soulToken) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      payOneFromReserveSoul();
+      return;
+    }
+    const cardEl = e.target.closest(".card.play-pay-candidate");
+    if (cardEl && cardEl.id && !e.target.closest(".card-controls")) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+      payOneFromFieldCard(cardEl.id);
+    }
+  }, true);
+
+  document.addEventListener("click", e => {
+    if (!playPaymentState) return;
+    if (e.target.closest(".soul-core-token.play-pay-soul-candidate") || (e.target.closest(".card.play-pay-candidate") && !e.target.closest(".card-controls"))) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+    }
+  }, true);
+
+  // 掛鉤 moveCardToZone：手牌／手元拖到場上時觸發支付詢問
+  const baseMoveForPlayPay = moveCardToZone;
+  moveCardToZone = function (id, zone, options = {}) {
+    const card = gameState.cards[id];
+    const prevZone = card?.zone || "";
+    if (
+      playPaymentEnabled &&
+      !isSyncing &&
+      !window.__bsBypassPlayPayment &&
+      !playPaymentState &&
+      card &&
+      !card.isFaceDown &&
+      (prevZone.startsWith("hand-") || prevZone.startsWith("zone-openhand-")) &&
+      (zone.startsWith("field-") || zone.startsWith("zone-god-"))
+    ) {
+      const data = lookupCatalog(card);
+      if (data && data.cost != null && data.cost !== "") {
+        if (promptPlayPaymentConfirm(id, zone, options)) {
+          return;
+        }
+      }
+    }
+    return baseMoveForPlayPay(id, zone, options);
+  };
+
+  const baseUpdateAllUIForPlayPay = updateAllUI;
+  updateAllUI = function () {
+    baseUpdateAllUIForPlayPay();
+    ensurePlayPayToggleButtons();
+    if (playPaymentState) refreshPlayPaymentUI();
+  };
+
+  const baseResetForPlayPay = confirmResetGame;
+  confirmResetGame = function (...args) {
+    closePlayPayConfirmModal();
+    if (playPaymentState) {
+      playPaymentState = null;
+      refreshPlayPaymentUI();
+    }
+    return baseResetForPlayPay(...args);
+  };
+
+  const modalEl = document.getElementById("play-pay-confirm-modal");
+  if (modalEl) {
+    modalEl.addEventListener("pointerdown", e => {
+      if (e.target === modalEl) {
+        e.stopPropagation();
+        closePlayPayConfirmModal();
+      }
+    });
+  }
+
+  window.isPlayPaymentEnabled = () => playPaymentEnabled;
+  window.promptCustomPlayPayment = function (cardId, targetZone, options, cfg) {
+    const card = gameState.cards[cardId];
+    if (!card || playPaymentState) return false;
+    const owner = card.owner;
+    const baseCost = parseInt(cfg.baseCost, 10) || 0;
+    const fieldSymbols = typeof window.getPlayerFieldSymbols === "function"
+      ? window.getPlayerFieldSymbols(owner)
+      : {};
+    const calc = typeof window.calculateReducedCost === "function"
+      ? window.calculateReducedCost(baseCost, cfg.reductionStr || "", fieldSymbols)
+      : { cost: baseCost, discount: 0, actual: baseCost };
+
+    const totalAvail = getTotalAvailableCoresForPlay(owner);
+    pendingPlayConfirm = { cardId, targetZone, options, calc, customCfg: cfg };
+
+    const desc = document.getElementById("play-pay-confirm-desc");
+    if (desc) {
+      desc.innerHTML = `
+        ${cfg.actionLabel || "打出"}「<b class="text-[#fde047]">${cfg.cardName || card.catalogNumber || "卡牌"}</b>」<br>
+        ${cfg.costTitle || "原費"} <b>${calc.cost}</b> － 減輕 <b class="text-sky-300">${calc.discount}</b> ＝
+        需支付 <b class="text-[#fde047] text-base">${calc.actual}</b> 粒 Core<br>
+        <span class="text-[11px] text-[#a89f91]">${cfg.subHint || `（目前可用總 Core：${totalAvail}，將優先由預備區扣除）`}</span>
+      `;
+    }
+
+    const yesBtn = document.getElementById("btn-play-pay-confirm-yes");
+    if (yesBtn) {
+      yesBtn.disabled = totalAvail < calc.actual;
+      yesBtn.style.opacity = totalAvail < calc.actual ? "0.45" : "1";
+      yesBtn.textContent = totalAvail < calc.actual
+        ? `Core 不足（需 ${calc.actual} / 可用 ${totalAvail}）`
+        : `${cfg.yesLabel || "💎 確認支付"} ${calc.actual} 費`;
+      yesBtn.onclick = () => {
+        const info = pendingPlayConfirm;
+        closePlayPayConfirmModal();
+        if (info) {
+          if (info.customCfg?.forceFaceUp && gameState.cards[info.cardId]) {
+            gameState.cards[info.cardId].isFaceDown = false;
+          }
+          startPlayPayment(info.cardId, info.targetZone, info.options, info.calc.actual);
+        }
+      };
+    }
+
+    const freeBtn = document.getElementById("btn-play-pay-confirm-free");
+    if (freeBtn) {
+      freeBtn.textContent = cfg.freeLabel || "🆓 免付費直接放置";
+      freeBtn.onclick = () => {
+        const info = pendingPlayConfirm;
+        closePlayPayConfirmModal();
+        if (info) {
+          window.__bsBypassPlayPayment = true;
+          try { moveCardToZone(info.cardId, info.targetZone, info.options || {}); } finally { window.__bsBypassPlayPayment = false; }
+        }
+      };
+    }
+
+    document.getElementById("play-pay-confirm-modal")?.classList.remove("hidden");
+    return true;
+  };
+
+  ensurePlayPayToggleButtons();
+})();
+</script>
+<!-- #endregion -->
+
+
+<!-- #region 18. [外掛] 公開卡牌視窗（排序／卡組頂底／廢棄區／加入手牌）與 幻境 (Mirage) 系統 -->
+<style>
+  .reveal-cards-window {
+    width: min(490px, calc(100% - 20px));
+  }
+  .reveal-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  .reveal-action-btn {
+    border: 1px solid rgba(200, 170, 118, 0.72);
+    background: rgba(24, 21, 18, 0.92);
+    color: #f3c668;
+    font-size: 10.5px;
+    font-weight: 900;
+    padding: 3.5px 8px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    white-space: nowrap;
+  }
+  .reveal-action-btn:hover {
+    background: #c8aa76;
+    color: #090807;
+    border-color: #ffffff;
+  }
+  .reveal-order-badge {
+    position: absolute;
+    top: -9px;
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 20px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 999px;
+    background: #0d0c0b;
+    border: 1.5px solid #fde047;
+    color: #fde047;
+    font-size: 10px;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.9);
+    z-index: 5;
+  }
+  .god-oracle-card-item.reveal-dragging {
+    opacity: 0.42;
+    transform: scale(0.96);
+  }
+  .god-oracle-card-item.reveal-drop-target {
+    border-color: #38bdf8 !important;
+    box-shadow: 0 0 18px 4px rgba(56, 189, 248, 0.9) !important;
+    transform: translateY(-6px) scale(1.05);
+  }
+
+  /* 幻境設定區（卡池編輯表單內） */
+  .bs-mirage-box {
+    border: 1px solid rgba(168, 85, 247, 0.65);
+    background: rgba(38, 16, 58, 0.35);
+    border-radius: 4px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .bs-mirage-box.hidden {
+    display: none !important;
+  }
+  .bs-mirage-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-size: 12px;
+    font-weight: 900;
+    color: #d8b4fe;
+  }
+  .bs-mirage-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+</style>
+
+<div id="reveal-hand-confirm-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[12220] hidden flex justify-center items-center">
+  <div class="border border-[#c8aa76] bg-[#0a0a0a]/95 p-5 w-[310px] flex flex-col gap-3.5 shadow-2xl rounded-sm">
+    <div class="text-[#e0b25b] font-black tracking-widest text-center text-sm uppercase border-b border-[#b09466]/30 pb-2">公開卡牌選擇</div>
+    <div id="reveal-hand-confirm-desc" class="text-[#dcd6cc] text-xs text-center leading-relaxed">是否將此卡牌加入手牌？</div>
+    <button id="btn-reveal-to-hand-yes" type="button" class="bg-[#c8aa76] py-2 text-black font-black hover:bg-white transition-all cursor-pointer text-xs tracking-wider rounded-sm">✓ 加入手牌</button>
+    <button type="button" class="border border-[#b09466]/40 bg-white/5 py-2 text-[#c8bea8] text-xs hover:bg-white/15 hover:text-white transition-all cursor-pointer rounded-sm" onclick="closeRevealHandConfirm()">✕ 取消</button>
+  </div>
+</div>
+
+<script>
+(function () {
+  /* =========================================================================
+     PART 1: 公開卡牌視窗（取代原本 deployTop 直接放場上）
+  ========================================================================= */
+  const revealWindows = { p1: null, p2: null };
+  let pendingRevealPick = null;
+  let draggingRevealInfo = null; // { owner, fromIdx }
+
+  window.closeRevealHandConfirm = function () {
+    pendingRevealPick = null;
+    document.getElementById("reveal-hand-confirm-modal")?.classList.add("hidden");
+  };
+
+  function closeRevealWindow(owner) {
+    revealWindows[owner] = null;
+    document.getElementById(`reveal-cards-window-${owner}`)?.remove();
+    hideCardPreview();
+  }
+
+  function getRevealTileRect(owner, cardId) {
+    const tile = document.querySelector(`#reveal-cards-window-${owner} .god-oracle-card-item[data-card-id="${cardId}"]`);
+    if (!tile) return null;
+    const r = tile.getBoundingClientRect();
+    return r.width > 0 && r.height > 0 ? { left: r.left, top: r.top, width: r.width, height: r.height } : null;
+  }
+
+  function promptRevealCardToHand(owner, cardId) {
+    const card = gameState.cards[cardId];
+    if (!card) return;
+    pendingRevealPick = { owner, cardId };
+    const cardName = lookupCatalog(card)?.name || "此卡牌";
+    const desc = document.getElementById("reveal-hand-confirm-desc");
+    if (desc) desc.textContent = `是否將「${cardName}」加入手牌？`;
+    document.getElementById("reveal-hand-confirm-modal")?.classList.remove("hidden");
+    const yesBtn = document.getElementById("btn-reveal-to-hand-yes");
+    if (yesBtn) {
+      yesBtn.onclick = () => {
+        const pick = pendingRevealPick;
+        closeRevealHandConfirm();
+        if (!pick) return;
+        const st = revealWindows[pick.owner];
+        if (!st) return;
+        const startRect = getRevealTileRect(pick.owner, pick.cardId);
+        const idx = st.cardIds.indexOf(pick.cardId);
+        if (idx !== -1) st.cardIds.splice(idx, 1);
+        const c = gameState.cards[pick.cardId];
+        if (c) c.isFaceDown = false;
+        if (st.cardIds.length === 0) {
+          closeRevealWindow(pick.owner);
+        } else {
+          renderRevealWindow(pick.owner);
+        }
+        moveCardToZone(pick.cardId, `hand-${pick.owner}`, startRect ? { startRect } : {});
+      };
+    }
+  }
+
+  function reorderRevealCard(owner, fromIdx, toIdx) {
+    const st = revealWindows[owner];
+    if (!st || fromIdx === toIdx) return;
+    if (fromIdx < 0 || toIdx < 0 || fromIdx >= st.cardIds.length || toIdx >= st.cardIds.length) return;
+    const [moved] = st.cardIds.splice(fromIdx, 1);
+    st.cardIds.splice(toIdx, 0, moved);
+    renderRevealWindow(owner);
+  }
+
+  function sendAllRevealCards(owner, destination) {
+    const st = revealWindows[owner];
+    if (!st || !st.cardIds.length) return;
+    const items = st.cardIds.map(cid => ({ cid, startRect: getRevealTileRect(owner, cid) }));
+    closeRevealWindow(owner);
+
+    if (destination === "top") {
+      // 左至右 1, 2, 3...：1 在最頂、2 次之、3 第三，因此反向 unshift
+      const ordered = items.slice().reverse();
+      ordered.forEach(({ cid, startRect }, idx) => {
+        setTimeout(() => {
+          const c = gameState.cards[cid];
+          if (c) c.isFaceDown = false;
+          moveCardToZone(cid, `deck-${owner}-top`, startRect ? { startRect } : {});
+        }, idx * 75);
+      });
+    } else if (destination === "bottom") {
+      // 左至右 1, 2, 3... 依序放至牌組底
+      items.forEach(({ cid, startRect }, idx) => {
+        setTimeout(() => {
+          const c = gameState.cards[cid];
+          if (c) c.isFaceDown = false;
+          moveCardToZone(cid, `deck-${owner}-bottom`, startRect ? { startRect } : {});
+        }, idx * 75);
+      });
+    } else {
+      // 放到廢棄區
+      items.forEach(({ cid, startRect }, idx) => {
+        setTimeout(() => {
+          const c = gameState.cards[cid];
+          if (c) c.isFaceDown = false;
+          moveCardToZone(cid, `zone-trash-${owner}`, startRect ? { startRect } : {});
+        }, idx * 75);
+      });
+    }
+  }
+
+  function animateRevealSingleCardEnter(owner, tile) {
+    if (!tile) return;
+    const deckRect = getZoneAnchorBoxRect(`deck-${owner}`, owner);
+    const targetRect = tile.getBoundingClientRect();
+    if (!targetRect.width || !targetRect.height) return;
+    const cid = tile.dataset.cardId;
+    const card = gameState.cards[cid];
+    const src = card?.imgBase64 || cardImageCache[cid] || "";
+
+    if (deckRect) {
+      tile.style.opacity = "0";
+      const ghost = document.createElement("div");
+      ghost.className = "card-fx-ghost face-down";
+      Object.assign(ghost.style, {
+        left: `${deckRect.left}px`,
+        top: `${deckRect.top}px`,
+        width: `${targetRect.width}px`,
+        height: `${targetRect.height}px`,
+        zIndex: "16650"
+      });
+      document.body.appendChild(ghost);
+
+      const dx = targetRect.left - deckRect.left;
+      const dy = targetRect.top - deckRect.top;
+
+      const flyHalf = ghost.animate([
+        { transform: "translate(0px, 0px) scale(0.75) perspective(700px) rotateY(0deg)", opacity: 0.9 },
+        { transform: `translate(${dx * 0.55}px, ${dy * 0.55 - 18}px) scale(1.06) perspective(700px) rotateY(90deg)`, opacity: 1 }
+      ], { duration: 180, easing: "cubic-bezier(0.4, 0, 0.85, 0.65)", fill: "forwards" });
+
+      flyHalf.onfinish = () => {
+        ghost.classList.remove("face-down");
+        if (src) ghost.style.backgroundImage = `url(${src})`;
+        ghost.style.borderColor = "#fde047";
+        const flyEnd = ghost.animate([
+          { transform: `translate(${dx * 0.55}px, ${dy * 0.55 - 18}px) scale(1.06) perspective(700px) rotateY(-90deg)`, opacity: 1 },
+          { transform: `translate(${dx}px, ${dy}px) scale(1) perspective(700px) rotateY(0deg)`, opacity: 1 }
+        ], { duration: 200, easing: "cubic-bezier(0.16, 1, 0.3, 1)", fill: "forwards" });
+        flyEnd.onfinish = () => {
+          ghost.remove();
+          tile.style.opacity = "1";
+        };
+      };
+    }
+  }
+
+  function renderRevealWindow(owner, newlyAddedCardId = null) {
+    const fieldEl = document.getElementById(`field-${owner}`);
+    if (!fieldEl) return;
+    document.getElementById(`reveal-cards-window-${owner}`)?.remove();
+    const st = revealWindows[owner];
+    if (!st || !st.cardIds.length) return;
+
+    const win = document.createElement("div");
+    win.id = `reveal-cards-window-${owner}`;
+    win.className = "god-oracle-window reveal-cards-window";
+    ["mousedown", "pointerdown", "click", "dblclick"].forEach(ev =>
+      win.addEventListener(ev, e => e.stopPropagation())
+    );
+
+    const header = document.createElement("div");
+    header.className = "god-oracle-header";
+
+    const title = document.createElement("span");
+    title.className = "god-oracle-title";
+    title.textContent = "公開";
+
+    const actions = document.createElement("div");
+    actions.className = "reveal-header-actions";
+
+    const topBtn = document.createElement("button");
+    topBtn.type = "button";
+    topBtn.className = "reveal-action-btn";
+    topBtn.textContent = "放到卡組頂";
+    topBtn.title = "依左至右 1→2→3 順序放回卡組頂（1 在最上方）";
+    topBtn.onclick = e => { e.preventDefault(); e.stopPropagation(); sendAllRevealCards(owner, "top"); };
+
+    const bottomBtn = document.createElement("button");
+    bottomBtn.type = "button";
+    bottomBtn.className = "reveal-action-btn";
+    bottomBtn.textContent = "放到卡組底";
+    bottomBtn.title = "依左至右 1→2→3 順序放回卡組底";
+    bottomBtn.onclick = e => { e.preventDefault(); e.stopPropagation(); sendAllRevealCards(owner, "bottom"); };
+
+    const trashBtn = document.createElement("button");
+    trashBtn.type = "button";
+    trashBtn.className = "god-oracle-trash-btn";
+    trashBtn.textContent = "放到廢棄區";
+    trashBtn.onclick = e => { e.preventDefault(); e.stopPropagation(); sendAllRevealCards(owner, "trash"); };
+
+    actions.append(topBtn, bottomBtn, trashBtn);
+    header.append(title, actions);
+
+    const cardsWrap = document.createElement("div");
+    cardsWrap.className = "god-oracle-cards";
+    cardsWrap.style.paddingTop = "8px";
+
+    let newTileRef = null;
+    st.cardIds.forEach((cid, idx) => {
+      const card = gameState.cards[cid];
+      if (!card) return;
+      const src = card.imgBase64 || cardImageCache[cid] || "";
+      const tile = document.createElement("div");
+      tile.className = "god-oracle-card-item";
+      tile.dataset.cardId = cid;
+      tile.dataset.revealIdx = String(idx);
+      tile.draggable = true;
+      if (src) tile.style.backgroundImage = `url(${src})`;
+      tile.title = `順序 ${idx + 1}：點擊可加入手牌；拖動可調整順序`;
+
+      const orderBadge = document.createElement("span");
+      orderBadge.className = "reveal-order-badge";
+      orderBadge.textContent = String(idx + 1);
+      tile.appendChild(orderBadge);
+
+      // 桌面滑鼠預覽
+      tile.addEventListener("mouseenter", () => {
+        if (controlMode === "PC" && src && !draggingRevealInfo) {
+          showCardPreviewNextToElement(tile, src, cid, false);
+        }
+      });
+      tile.addEventListener("mouseleave", () => {
+        if (controlMode === "PC") hideCardPreview();
+      });
+
+      // 桌面 HTML5 拖曳：視窗內交換順序，拖出視窗可直接放置到場上／卡組／廢棄區／手牌／手元等
+      tile.addEventListener("dragstart", e => {
+        if (controlMode === "MOBILE") return e.preventDefault();
+        e.stopPropagation();
+        hideCardPreview();
+        draggingRevealInfo = { owner, fromIdx: idx, cardId: cid };
+        draggedCard = cid;
+        draggedSoulOwner = null;
+        tile.classList.add("reveal-dragging");
+        e.dataTransfer.effectAllowed = "move";
+        e.dataTransfer.setData("text/plain", cid);
+      });
+      tile.addEventListener("dragover", e => {
+        if (!draggingRevealInfo || draggingRevealInfo.owner !== owner) return;
+        e.preventDefault();
+        e.stopPropagation();
+        cardsWrap.querySelectorAll(".reveal-drop-target").forEach(el => el.classList.remove("reveal-drop-target"));
+        if (draggingRevealInfo.fromIdx !== idx) tile.classList.add("reveal-drop-target");
+      });
+      tile.addEventListener("drop", e => {
+        if (!draggingRevealInfo || draggingRevealInfo.owner !== owner) return;
+        e.preventDefault();
+        e.stopPropagation();
+        const fromIdx = draggingRevealInfo.fromIdx;
+        draggingRevealInfo = null;
+        draggedCard = null;
+        reorderRevealCard(owner, fromIdx, idx);
+      });
+      tile.addEventListener("dragend", () => {
+        draggingRevealInfo = null;
+        draggedCard = null;
+        tile.classList.remove("reveal-dragging");
+        cardsWrap.querySelectorAll(".reveal-drop-target").forEach(el => el.classList.remove("reveal-drop-target"));
+        document.querySelectorAll(".drag-over").forEach(el => el.classList.remove("drag-over"));
+      });
+
+      // 手機 / iPad 觸控拖曳：視窗內交換順序，拖出視窗可直接放置到任意區域 + 點擊加入手牌
+      let ptrId = null, startX = 0, startY = 0, hasMoved = false;
+      tile.addEventListener("pointerdown", e => {
+        if (controlMode !== "MOBILE" && e.pointerType === "mouse") return;
+        e.stopPropagation();
+        ptrId = e.pointerId;
+        startX = e.clientX;
+        startY = e.clientY;
+        hasMoved = false;
+        try { tile.setPointerCapture(e.pointerId); } catch (err) {}
+      });
+      tile.addEventListener("pointermove", e => {
+        if (ptrId !== e.pointerId) return;
+        if (!hasMoved && Math.hypot(e.clientX - startX, e.clientY - startY) > 8) {
+          hasMoved = true;
+          hideCardPreview();
+          draggingRevealInfo = { owner, fromIdx: idx, cardId: cid };
+          tile.classList.add("reveal-dragging");
+          startTouchCardDrag(cid, tile, e.clientX, e.clientY);
+        }
+        if (hasMoved) {
+          e.preventDefault();
+          moveTouchCardDrag(e.clientX, e.clientY);
+          cardsWrap.querySelectorAll(".reveal-drop-target").forEach(el => el.classList.remove("reveal-drop-target"));
+          const under = document.elementFromPoint(e.clientX, e.clientY)?.closest(`#reveal-cards-window-${owner} .god-oracle-card-item`);
+          if (under && under !== tile) under.classList.add("reveal-drop-target");
+        }
+      });
+      const finishPtr = e => {
+        if (ptrId !== e.pointerId) return;
+        try { tile.hasPointerCapture(e.pointerId) && tile.releasePointerCapture(e.pointerId); } catch (err) {}
+        ptrId = null;
+        tile.classList.remove("reveal-dragging");
+        cardsWrap.querySelectorAll(".reveal-drop-target").forEach(el => el.classList.remove("reveal-drop-target"));
+        if (hasMoved) {
+          hasMoved = false;
+          const info = draggingRevealInfo;
+          draggingRevealInfo = null;
+          if (e.type === "pointerup" && info) {
+            const under = document.elementFromPoint(e.clientX, e.clientY)?.closest(`#reveal-cards-window-${owner} .god-oracle-card-item`);
+            if (under && under.dataset.revealIdx != null) {
+              tile.style.opacity = "1";
+              const ghost = document.getElementById("touch-drag-ghost");
+              if (ghost) ghost.style.display = "none";
+              document.querySelectorAll(".drag-over").forEach(el => el.classList.remove("drag-over"));
+              draggedCard = null;
+              reorderRevealCard(owner, info.fromIdx, parseInt(under.dataset.revealIdx, 10));
+            } else {
+              endTouchCardDrag(cid, e.clientX, e.clientY);
+            }
+          } else {
+            tile.style.opacity = "1";
+            const ghost = document.getElementById("touch-drag-ghost");
+            if (ghost) ghost.style.display = "none";
+            document.querySelectorAll(".drag-over").forEach(el => el.classList.remove("drag-over"));
+            draggedCard = null;
+          }
+          return;
+        }
+        if (e.type === "pointerup") {
+          hideCardPreview();
+          promptRevealCardToHand(owner, cid);
+        }
+      };
+      tile.addEventListener("pointerup", finishPtr);
+      tile.addEventListener("pointercancel", finishPtr);
+
+      // 桌面點擊加入手牌
+      tile.addEventListener("click", e => {
+        if (controlMode === "MOBILE") return;
+        e.preventDefault();
+        e.stopPropagation();
+        hideCardPreview();
+        promptRevealCardToHand(owner, cid);
+      });
+
+      if (cid === newlyAddedCardId) newTileRef = tile;
+      cardsWrap.appendChild(tile);
+    });
+
+    win.append(header, cardsWrap);
+    fieldEl.appendChild(win);
+
+    if (newlyAddedCardId && newTileRef) {
+      requestAnimationFrame(() => animateRevealSingleCardEnter(owner, newTileRef));
+    }
+  }
+
+  // 覆寫原本的 deployTop：改為公開至「公開」視窗，連點可持續追加
+  window.deployTop = function (owner) {
+    const deck = gameState[`${owner}Deck`];
+    if (!Array.isArray(deck) || deck.length === 0) return showNotice("牌組已經空了！");
+    const cid = deck.shift();
+    const card = gameState.cards[cid];
+    if (card) {
+      card.zone = `reveal-${owner}`;
+      card.isFaceDown = false;
+      card.rotation = 0;
+      document.getElementById(cid)?.remove();
+    }
+    if (!revealWindows[owner]) {
+      revealWindows[owner] = { owner, cardIds: [] };
+    }
+    revealWindows[owner].cardIds.push(cid);
+    updateAllUI();
+    renderRevealWindow(owner, cid);
+    updateRoomState();
+  };
+
+  /* =========================================================================
+     PART 2: 幻境 (Mirage) 系統
+     - 偵測【幻境：Cost X(Y)】
+     - 添加描述（卡池表單）支援幻境 Cost 與自選輕減顏色
+     - 設置在 Burst 區時，計算並詢問支付幻境輕減後 Cost
+     - 設置在 Burst 區不會為創界神加 Core，也不提供輕減標誌
+  ========================================================================= */
+  const MIRAGE_GEMS = [
+    { key: "紅", label: "紅", bg: "radial-gradient(circle at 35% 30%, #fecaca, #ef4444 55%, #7f1d1d)" },
+    { key: "紫", label: "紫", bg: "radial-gradient(circle at 35% 30%, #e9d5ff, #a855f7 55%, #581c87)" },
+    { key: "綠", label: "綠", bg: "radial-gradient(circle at 35% 30%, #bbf7d0, #22c55e 55%, #14532d)" },
+    { key: "白", label: "白", bg: "radial-gradient(circle at 35% 30%, #ffffff, #cbd5e1 60%, #64748b)" },
+    { key: "黃", label: "黃", bg: "radial-gradient(circle at 35% 30%, #fef9c3, #facc15 55%, #854d0e)" },
+    { key: "藍", label: "藍", bg: "radial-gradient(circle at 35% 30%, #bfdbfe, #3b82f6 55%, #1e3a8a)" },
+    { key: "究", label: "究", bg: "radial-gradient(circle at 35% 30%, #fef08a, #d97706 55%, #451a03)" },
+    { key: "神", label: "神", bg: "radial-gradient(circle at 35% 30%, #e0f2fe, #38bdf8 55%, #0c4a6e)" },
+    { key: "全", label: "全", bg: "conic-gradient(#ef4444,#facc15,#22c55e,#3b82f6,#a855f7,#ffffff,#ef4444)" }
+  ];
+
+  function parseMirageFromEffect(effectText) {
+    const text = String(effectText || "").normalize("NFKC");
+    const m = text.match(/【\s*(?:幻境|ミラージュ)\s*[：:]\s*(?:Cost|コスト|費用)?\s*(\d+)\s*(?:\(\s*(\d+)\s*\))?\s*】/i);
+    if (!m) return null;
+    return {
+      cost: parseInt(m[1], 10),
+      reductionCount: m[2] != null ? parseInt(m[2], 10) : 0
+    };
+  }
+
+  function parseSimpleSymCounts(raw) {
+    const counts = {};
+    for (const tok of String(raw || "").trim().split(/\s+/)) {
+      const m = tok.match(/^([紅紫綠白黃藍究神全])(\d+)$/);
+      if (m) counts[m[1]] = (counts[m[1]] || 0) + parseInt(m[2], 10);
+    }
+    return counts;
+  }
+
+  function formatSimpleSymCounts(counts) {
+    return MIRAGE_GEMS
+      .filter(g => (counts[g.key] || 0) > 0)
+      .map(g => `${g.key}${counts[g.key]}`)
+      .join(" ");
+  }
+
+  function ensureMirageFormUI() {
+    let box = document.getElementById("catalog-mirage-box");
+    if (box) return box;
+    const pickerBox = document.querySelector("#card-db-form .bs-symbol-picker-box");
+    if (!pickerBox) return null;
+
+    box = document.createElement("div");
+    box.id = "catalog-mirage-box";
+    box.className = "bs-mirage-box hidden";
+    box.innerHTML = `
+      <div class="bs-mirage-head">
+        <span id="catalog-mirage-detect-title">✨ 幻境設定（Mirage）</span>
+        <button type="button" class="bs-picker-clear" onclick="clearCatalogMirageReduction()">清空幻境輕減</button>
+      </div>
+      <div class="bs-mirage-row">
+        <label style="width:110px;margin:0">幻境 Cost
+          <input id="catalog-mirage-cost" type="number" min="0" max="99" step="1" placeholder="例：2">
+        </label>
+        <input id="catalog-mirage-reduction" type="hidden">
+        <div style="flex:1;min-width:200px">
+          <div style="font-size:11.5px;color:#e9d5ff;margin-bottom:4px">
+            幻境輕減顏色（點擊 +1 / 右鍵 -1）：<span id="catalog-mirage-red-preview" style="color:#fde047;font-weight:900"></span>
+          </div>
+          <div id="catalog-mirage-red-btns" class="bs-picker-btns"></div>
+        </div>
+      </div>
+    `;
+    pickerBox.after(box);
+    return box;
+  }
+
+  function renderMirageReductionPicker() {
+    const input = document.getElementById("catalog-mirage-reduction");
+    const preview = document.getElementById("catalog-mirage-red-preview");
+    const btnsWrap = document.getElementById("catalog-mirage-red-btns");
+    if (!input || !btnsWrap) return;
+
+    const counts = parseSimpleSymCounts(input.value);
+    if (preview) {
+      preview.textContent = formatSimpleSymCounts(counts) || "尚未設定";
+    }
+    btnsWrap.innerHTML = "";
+    for (const g of MIRAGE_GEMS) {
+      const n = counts[g.key] || 0;
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "bs-gem-btn" + (n > 0 ? " has-count" : "");
+      btn.title = `左鍵 +1 ${g.label}，右鍵 -1 ${g.label}`;
+      btn.innerHTML = `<span style="display:inline-block;width:13px;height:13px;clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0% 50%);background:${g.bg};vertical-align:middle"></span><span>${n > 0 ? "×" + n : "+"}</span>`;
+      btn.onclick = () => {
+        counts[g.key] = Math.min(12, (counts[g.key] || 0) + 1);
+        input.value = formatSimpleSymCounts(counts);
+        renderMirageReductionPicker();
+      };
+      btn.oncontextmenu = e => {
+        e.preventDefault();
+        if ((counts[g.key] || 0) > 0) {
+          counts[g.key] -= 1;
+          input.value = formatSimpleSymCounts(counts);
+          renderMirageReductionPicker();
+        }
+      };
+      btnsWrap.appendChild(btn);
+    }
+  }
+
+  window.clearCatalogMirageReduction = function () {
+    const inp = document.getElementById("catalog-mirage-reduction");
+    if (inp) inp.value = "";
+    renderMirageReductionPicker();
+  };
+
+  function syncMirageFormState(cardData = null) {
+    const box = ensureMirageFormUI();
+    if (!box) return;
+    const costInput = document.getElementById("catalog-mirage-cost");
+    const redInput = document.getElementById("catalog-mirage-reduction");
+    const titleEl = document.getElementById("catalog-mirage-detect-title");
+    const effectText = document.getElementById("catalog-effect")?.value || "";
+
+    if (cardData) {
+      if (costInput) costInput.value = cardData.mirageCost ?? "";
+      if (redInput) redInput.value = cardData.mirageReduction || "";
+    }
+
+    const detected = parseMirageFromEffect(effectText);
+    if (detected && costInput && costInput.value === "") {
+      costInput.value = String(detected.cost);
+    }
+
+    const hasMirage = Boolean(detected || (costInput && costInput.value !== "") || (redInput && redInput.value.trim() !== ""));
+    box.classList.toggle("hidden", !hasMirage);
+    if (titleEl) {
+      titleEl.textContent = detected
+        ? `✨ 偵測到幻境卡：【幻境：Cost ${detected.cost}${detected.reductionCount ? `(${detected.reductionCount})` : ""}】`
+        : "✨ 幻境設定（Mirage）";
+    }
+    renderMirageReductionPicker();
+  }
+
+  // 掛鉤 normalizeCatalogCard 以保存與載入 mirageCost / mirageReduction
+  const baseNormalizeForMirage = normalizeCatalogCard;
+  normalizeCatalogCard = function (value) {
+    const result = baseNormalizeForMirage(value);
+    const rawCost = value?.mirageCost;
+    if (rawCost !== "" && rawCost != null) {
+      const n = Number(rawCost);
+      if (!Number.isSafeInteger(n) || n < 0 || n > 99) {
+        throw Error(`${result.number} 的幻境 Cost 不正確`);
+      }
+      result.mirageCost = n;
+    } else {
+      result.mirageCost = null;
+    }
+    const rawRed = String(value?.mirageReduction || "").trim();
+    if (rawRed.length > 200) throw Error(`${result.number} 的幻境輕減資料太長`);
+    result.mirageReduction = rawRed;
+    return result;
+  };
+
+  // 掛鉤表單開啟、編輯、清空與文字分析
+  const baseNewForMirage = newCatalogCard;
+  newCatalogCard = function (...args) {
+    const res = baseNewForMirage(...args);
+    syncMirageFormState({ mirageCost: "", mirageReduction: "" });
+    return res;
+  };
+  const baseEditForMirage = editCatalogCard;
+  editCatalogCard = function (num) {
+    const res = baseEditForMirage(num);
+    const entry = catalogEntries.find(c => c.number === num);
+    syncMirageFormState(entry || { mirageCost: "", mirageReduction: "" });
+    return res;
+  };
+  const baseClearForMirage = clearCatalogFields;
+  clearCatalogFields = function (...args) {
+    const res = baseClearForMirage(...args);
+    syncMirageFormState({ mirageCost: "", mirageReduction: "" });
+    return res;
+  };
+  const baseApplyTextForMirage = applyCatalogText;
+  applyCatalogText = function (...args) {
+    const res = baseApplyTextForMirage(...args);
+    syncMirageFormState(null);
+    return res;
+  };
+
+  // 監聽效果輸入框即時偵測【幻境：Cost X(Y)】
+  const effectTextarea = document.getElementById("catalog-effect");
+  if (effectTextarea) {
+    effectTextarea.addEventListener("input", () => syncMirageFormState(null));
+  }
+
+  // 在翻譯側邊欄顯示幻境 Cost 與幻境輕減
+  const baseRenderTransForMirage = renderTranslation;
+  renderTranslation = function () {
+    baseRenderTransForMirage();
+    const contentEl = document.getElementById("translation-content");
+    const data = lookupCatalog(translationCard);
+    if (!contentEl || !data) return;
+    const detected = parseMirageFromEffect(data.effect);
+    const mCost = data.mirageCost != null ? data.mirageCost : detected?.cost ?? null;
+    if (mCost == null) return;
+    const infoDiv = document.createElement("div");
+    infoDiv.style.cssText = "margin-bottom:8px;padding:6px 8px;border:1px solid rgba(168,85,247,0.65);background:rgba(59,7,100,0.35);border-radius:3px;color:#e9d5ff;font-size:12.5px;font-weight:700;";
+    infoDiv.textContent = `✨ 幻境：Cost ${mCost}${data.mirageReduction ? `（輕減：${data.mirageReduction}）` : ""}`;
+    contentEl.prepend(infoDiv);
+  };
+
+  // 掛鉤 moveCardToZone：將幻境卡從手牌／手元區移至 Burst 區時，計算並詢問支付幻境 Cost
+  const baseMoveForMirage = moveCardToZone;
+  moveCardToZone = function (id, zone, options = {}) {
+    const card = gameState.cards[id];
+    const prevZone = card?.zone || "";
+    const payOn = typeof window.isPlayPaymentEnabled === "function" ? window.isPlayPaymentEnabled() : false;
+
+    if (
+      payOn &&
+      !isSyncing &&
+      !window.__bsBypassPlayPayment &&
+      card &&
+      (prevZone.startsWith("hand-") || prevZone.startsWith("zone-openhand-")) &&
+      zone.startsWith("zone-burst-") &&
+      typeof window.promptCustomPlayPayment === "function"
+    ) {
+      const data = lookupCatalog(card);
+      if (data) {
+        const detected = parseMirageFromEffect(data.effect);
+        const mirageCost = data.mirageCost != null ? data.mirageCost : (detected ? detected.cost : null);
+        if (mirageCost != null) {
+          const redStr = data.mirageReduction || "";
+          const missingRedNote = !redStr && detected?.reductionCount > 0
+            ? `（提醒：尚未在卡池設定幻境輕減顏色，目前以 0 輕減計算）`
+            : `（設置在 Burst 區不觸發創界神神託、不提供輕減標誌）`;
+          if (window.promptCustomPlayPayment(id, zone, options, {
+            actionLabel: "✨ 以【幻境】設置",
+            cardName: data.name || card.catalogNumber || "幻境卡",
+            costTitle: "幻境原費",
+            baseCost: mirageCost,
+            reductionStr: redStr,
+            yesLabel: "✨ 幻境設置支付",
+            freeLabel: "🎴 免付費放置（一般 Burst / 效果）",
+            subHint: missingRedNote,
+            forceFaceUp: true
+          })) {
+            return;
+          }
+        }
+      }
+    }
+    const prevRevealOwner = prevZone === "reveal-p1" ? "p1" : (prevZone === "reveal-p2" ? "p2" : null);
+    const res = baseMoveForMirage(id, zone, options);
+    if (prevRevealOwner && revealWindows[prevRevealOwner]) {
+      const st = revealWindows[prevRevealOwner];
+      const idx = st.cardIds.indexOf(id);
+      if (idx !== -1) {
+        st.cardIds.splice(idx, 1);
+        if (st.cardIds.length === 0) closeRevealWindow(prevRevealOwner);
+        else renderRevealWindow(prevRevealOwner);
+      }
+    }
+    return res;
+  };
+
+  // 重設對局時一併關閉公開視窗
+  const baseResetForReveal = confirmResetGame;
+  confirmResetGame = function (...args) {
+    closeRevealHandConfirm();
+    closeRevealWindow("p1");
+    closeRevealWindow("p2");
+    return baseResetForReveal(...args);
+  };
+
+  const revealModal = document.getElementById("reveal-hand-confirm-modal");
+  if (revealModal) {
+    revealModal.addEventListener("pointerdown", e => {
+      if (e.target === revealModal) {
+        e.stopPropagation();
+        closeRevealHandConfirm();
+      }
+    });
+  }
+
+  ensureMirageFormUI();
+})();
+</script>
+<!-- #endregion -->
+
+
+<!-- #region 19. [外掛] BS 版本號齒輪控制與創界神「契約技／神技／契約域」自動計數 (Count) 系統 -->
+<script>
+(function () {
+  /* =========================================================================
+     PART 1: 左上角 BS v3.0 版本號齒輪控制
+  ========================================================================= */
+  const VER_KEY = "bs_app_version_num";
+  let currentVersionNum = 3.0;
+  try {
+    const saved = parseFloat(localStorage.getItem(VER_KEY));
+    if (!isNaN(saved) && saved >= 0) currentVersionNum = saved;
+  } catch (e) {}
+
+  function renderBsVersionLabel() {
+    const text = `BS v${currentVersionNum.toFixed(1)}`;
+    const el = document.getElementById("bs-brand-title-text");
+    if (el) el.textContent = text;
+    document.title = text;
+  }
+
+  window.toggleVersionGearMenu = function (e) {
+    if (e) e.stopPropagation();
+    const menu = document.getElementById("bs-version-gear-menu");
+    if (menu) menu.classList.toggle("hidden");
+  };
+
+  window.bumpBsVersion = function (delta) {
+    currentVersionNum = Math.max(0, Math.round((currentVersionNum + delta) * 10) / 10);
+    try { localStorage.setItem(VER_KEY, currentVersionNum.toFixed(1)); } catch (e) {}
+    renderBsVersionLabel();
+  };
+
+  window.resetBsVersion = function () {
+    currentVersionNum = 3.0;
+    try { localStorage.setItem(VER_KEY, "3.0"); } catch (e) {}
+    renderBsVersionLabel();
+  };
+
+  document.addEventListener("pointerdown", e => {
+    const menu = document.getElementById("bs-version-gear-menu");
+    if (!menu || menu.classList.contains("hidden")) return;
+    if (!e.target.closest("#bs-version-gear-menu") && !e.target.closest("#btn-version-gear")) {
+      menu.classList.add("hidden");
+    }
+  });
+
+  renderBsVersionLabel();
+
+  /* =========================================================================
+     PART 2: 創界神「契約技／神技」與「契約域／神域」自動計數 (Count) 系統
+  ========================================================================= */
+  function normBsCountText(str) {
+    return String(str || "")
+      .normalize("NFKC")
+      .replace(/獸/g, "獣")
+      .replace(/劍/g, "剣")
+      .replace(/龍/g, "竜")
+      .replace(/裝/g, "装")
+      .replace(/屬/g, "属")
+      .replace(/鬪|鬥/g, "闘")
+      .replace(/靈/g, "霊");
+  }
+
+  function getGodCardLevelNow(card) {
+    if (!card) return 0;
+    const data = lookupCatalog(card);
+    if (!data || !Array.isArray(data.levels) || !data.levels.length) return 1;
+    const cores = getDisplayedCardCoreCount(card);
+    const cnt = gameState[`${card.owner}_count`] || 0;
+    const matched = data.levels
+      .filter(l => (l.count != null ? cnt >= l.count : cores >= l.core))
+      .sort((a, b) => b.level - a.level)[0];
+    return matched ? matched.level : 0;
+  }
+
+  function addCountWithEffect(owner, delta, maxCap, sourceCardId, reasonLabel) {
+    if (!owner || !delta || delta <= 0) return;
+    const key = `${owner}_count`;
+    const cur = parseInt(gameState[key], 10) || 0;
+    let next = cur + delta;
+    if (maxCap != null && !isNaN(maxCap)) {
+      if (cur >= maxCap) return;
+      next = Math.min(maxCap, next);
+    }
+    const actualDelta = next - cur;
+    if (actualDelta <= 0) return;
+
+    gameState[key] = next;
+    triggerCounterKeyFlash(key, actualDelta);
+    const srcEl = sourceCardId ? document.getElementById(sourceCardId) : null;
+    const targetBox = document.getElementById(`count-box-${owner}`);
+    if (srcEl && targetBox) {
+      playCoreTransferAnimation(srcEl, targetBox, `${reasonLabel} +${actualDelta} COUNT`, "refresh", actualDelta);
+    }
+    updateAllUI();
+    updateRoomState();
+  }
+
+  // 解析效果文字中各個【...】技能區塊
+  function splitEffectBlocks(effectText) {
+    const text = normBsCountText(effectText || "");
+    const headers = [...text.matchAll(/【([^】]+)】/g)];
+    if (!headers.length) return [];
+    const blocks = [];
+    for (let i = 0; i < headers.length; i++) {
+      const start = headers[i].index;
+      const end = i + 1 < headers.length ? headers[i + 1].index : text.length;
+      blocks.push({
+        header: headers[i][1].trim(),
+        body: text.slice(start, end)
+      });
+    }
+    return blocks;
+  }
+
+  // 1) 掛鉤 useGrandwalkerSkill：使用契約技／神技時自動偵測「自己計數值須+N」
+  if (typeof window.useGrandwalkerSkill === "function") {
+    const baseUseGodSkill = window.useGrandwalkerSkill;
+    window.useGrandwalkerSkill = function (cardId, cost, skillName = "技") {
+      const card = gameState.cards[cardId];
+      const beforeCores = card ? (card.cores || 0) : 0;
+      const res = baseUseGodSkill(cardId, cost, skillName);
+      const afterCores = card ? (card.cores || 0) : 0;
+
+      // 確認技能有成功扣費發動
+      if (card && afterCores < beforeCores) {
+        const data = lookupCatalog(card);
+        const blocks = splitEffectBlocks(data?.effect || "");
+        const normSkill = normBsCountText(skillName || "");
+        const matchedBlock = blocks.find(b => {
+          const h = b.header;
+          if (!/(?:神技|契約技)/.test(h)) return false;
+          if (normSkill && h.includes(normSkill)) return true;
+          const mCost = h.match(/[：:]\s*(\d+)/);
+          return mCost && parseInt(mCost[1], 10) === Number(cost);
+        });
+        if (matchedBlock) {
+          const cntMatch = matchedBlock.body.match(/(?:自己)?(?:計數值|カウント)(?:須|要|可以)?\s*\+\s*(\d+)/);
+          if (cntMatch) {
+            const addAmt = parseInt(cntMatch[1], 10) || 0;
+            const capMatch = matchedBlock.body.match(/(?:計數值)?最多為\s*(\d+)\s*點?/);
+            const cap = capMatch ? parseInt(capMatch[1], 10) : null;
+            if (addAmt > 0) {
+              setTimeout(() => addCountWithEffect(card.owner, addAmt, cap, card.id, `✨ ${skillName}`), 220);
+            }
+          }
+        }
+      }
+      return res;
+    };
+  }
+
+  // 2) 偵測【契約域】／【神域】：「這張Nexus以外自己持有系統：「原初」的Nexus配置時，自己計數值須+1(計數值最多為8點)」
+  function checkGrandwalkerDomainCountTriggers(owner, deployedCard) {
+    if (!deployedCard || deployedCard.isFaceDown) return;
+    const depData = lookupCatalog(deployedCard);
+    if (!depData) return;
+
+    const depType = String(depData.type || "").toLowerCase();
+    const depFam = normBsCountText(depData.family || "");
+    const isDepNexus = depType.includes("nexus") || depType.includes("ネクサス") || depType.includes("創界神") || depType.includes("契約神");
+    const isDepSpirit = depType.includes("spirit") || depType.includes("スピリット");
+
+    const godCards = typeof getGodCards === "function" ? getGodCards(owner) : [];
+    godCards.forEach((godCard, idx) => {
+      if (godCard.isFaceDown || godCard.id === deployedCard.id) return;
+      const godData = lookupCatalog(godCard);
+      if (!godData?.effect) return;
+
+      const curLv = getGodCardLevelNow(godCard);
+      const blocks = splitEffectBlocks(godData.effect);
+      for (const b of blocks) {
+        if (!/(?:契約域|神域)/.test(b.header)) continue;
+
+        // 檢查等級條件（例如 Lv1・Lv2）
+        const lvMatches = [...b.body.split(/\r?\n/)[0].matchAll(/Lv\s*(\d+)/gi)].map(m => parseInt(m[1], 10));
+        if (lvMatches.length > 0 && !lvMatches.includes(curLv)) continue;
+
+        // 必須包含計數值增加效果
+        const cntMatch = b.body.match(/(?:自己)?(?:計數值|カウント)(?:須|要|可以)?\s*\+\s*(\d+)/);
+        if (!cntMatch) continue;
+        const addAmt = parseInt(cntMatch[1], 10) || 0;
+        if (addAmt <= 0) continue;
+
+        // 檢查是否為配置／召喚時觸發
+        if (!/(?:配置時|召喚時)/.test(b.body)) continue;
+
+        // 檢查系統條件：系統：「原初」
+        const famMatch = b.body.match(/系統\s*[：:]\s*[「『]([^」』]+)[」』]/);
+        if (famMatch) {
+          const reqFams = famMatch[1].split(/\s*[/／・･、,]\s*/).filter(Boolean);
+          if (reqFams.length && !reqFams.some(f => depFam.includes(f))) continue;
+        }
+
+        // 檢查卡牌種類條件（Nexus / Spirit）
+        const wantsNexus = /的\s*Nexus\s*(?:配置|召喚)|Nexus\s*配置時/i.test(b.body);
+        const wantsSpirit = /的\s*Spirit\s*(?:召喚|配置)|Spirit\s*召喚時/i.test(b.body);
+        if (wantsNexus && !wantsSpirit && !isDepNexus) continue;
+        if (wantsSpirit && !wantsNexus && !isDepSpirit) continue;
+        if (wantsNexus && wantsSpirit && !isDepNexus && !isDepSpirit) continue;
+
+        const capMatch = b.body.match(/(?:計數值)?最多為\s*(\d+)\s*點?/);
+        const cap = capMatch ? parseInt(capMatch[1], 10) : null;
+
+        setTimeout(() => addCountWithEffect(owner, addAmt, cap, godCard.id, `✨ ${b.header}`), 260 + idx * 140);
+      }
+    });
+  }
+
+  const baseMoveForGodCount = moveCardToZone;
+  moveCardToZone = function (id, zone, options = {}) {
+    const card = gameState.cards[id];
+    const prevZone = card?.zone || "";
+    const res = baseMoveForGodCount(id, zone, options);
+    if (!isSyncing && card) {
+      const enteringBoard = (zone.startsWith("field-") || zone.startsWith("zone-god-")) &&
+        !prevZone.startsWith("field-") && !prevZone.startsWith("zone-god-");
+      if (enteringBoard) {
+        const owner = zone.endsWith("p2") ? "p2" : "p1";
+        if (card.owner === owner) {
+          checkGrandwalkerDomainCountTriggers(owner, card);
+        }
+      }
+    }
+    return res;
+  };
 })();
 </script>
 <!-- #endregion -->
