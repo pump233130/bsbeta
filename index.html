@@ -17,7 +17,7 @@
  10. 創界神 (Grandwalker) 技與域   -> 搜尋: function useGrandwalkerSkill
  11. 顕現 (Manifest) 系統與特效    -> 搜尋: function triggerManifestFromHand
 ========================================================================= -->
-<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><title>BS v3.11</title><script src="https://cdn.tailwindcss.com"></script><style>
+<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><title>BS v3.12</title><script src="https://cdn.tailwindcss.com"></script><style>
 /* #region 1. 基礎排版、卡背 SVG 與戰場區域樣式 */
 body,html {
   touch-action:manipulation;
@@ -2289,14 +2289,14 @@ body.mobile-mode #playmat-root .brave-god-attached .god-core-badge {
 <header id="main-top-header" class="flex flex-wrap justify-between items-center bg-[#0a0a0a]/90 border border-[#b09466]/40 rounded-sm py-1.5 px-3 flex-none gap-x-2 gap-y-1.5 shadow-lg transition-all duration-200">
 <div class="header-brand-row flex items-center gap-2 flex-shrink-0">
 <div class="relative text-sm sm:text-base font-black tracking-wider text-[#e5dccb] flex items-center gap-1.5 whitespace-nowrap">
-<span id="bs-brand-title-text" class="cursor-pointer hover:text-[#e0b25b] transition-colors" onclick="openChangelogModal()" title="點擊查看更新日誌">BS v3.11</span>
+<span id="bs-brand-title-text" class="cursor-pointer hover:text-[#e0b25b] transition-colors" onclick="openChangelogModal()" title="點擊查看更新日誌">BS v3.12</span>
 <button id="btn-changelog" type="button" class="text-[10px] sm:text-xs bg-black/70 border border-[#b09466]/50 hover:bg-[#c8aa76] hover:text-black text-[#e0b25b] px-1.5 py-0.5 rounded-sm cursor-pointer transition-colors leading-none font-bold" onclick="openChangelogModal()" title="查看版本更新日誌">📜 日誌</button>
 <button id="btn-version-gear" type="button" class="text-xs bg-black/70 border border-[#b09466]/50 hover:bg-[#c8aa76] hover:text-black text-[#e0b25b] px-1.5 py-0.5 rounded-sm cursor-pointer transition-colors leading-none" onclick="toggleVersionGearMenu(event)" title="點擊調整版本號數字">⚙️</button>
 <div id="bs-version-gear-menu" class="hidden absolute left-0 top-full mt-1.5 z-[12500] bg-[#0d0c0b]/95 border border-[#c8aa76] rounded-sm shadow-2xl p-2 flex items-center gap-1.5">
 <button type="button" class="text-[11px] font-black bg-[#c8aa76] text-black hover:bg-white px-2 py-1 rounded-sm cursor-pointer" onclick="bumpBsVersion(0, 1)" title="次版本 +1 (例：3.9 ➔ 3.10)">+0.1</button>
 <button type="button" class="text-[11px] font-black bg-sky-950/80 border border-sky-400/60 text-sky-200 hover:bg-sky-500 hover:text-black px-2 py-1 rounded-sm cursor-pointer" onclick="bumpBsVersion(1, 0)" title="主版本 +1">+1</button>
 <button type="button" class="text-[11px] font-bold bg-black/80 border border-[#b09466]/50 text-[#dcd6cc] hover:bg-[#c8aa76] hover:text-black px-2 py-1 rounded-sm cursor-pointer" onclick="bumpBsVersion(0, -1)" title="次版本 -1">-0.1</button>
-<button type="button" class="text-[10px] font-bold bg-rose-950/70 border border-rose-500/50 text-rose-200 hover:bg-rose-600 hover:text-white px-2 py-1 rounded-sm cursor-pointer" onclick="resetBsVersion()">3.11</button>
+<button type="button" class="text-[10px] font-bold bg-rose-950/70 border border-rose-500/50 text-rose-200 hover:bg-rose-600 hover:text-white px-2 py-1 rounded-sm cursor-pointer" onclick="resetBsVersion()">3.12</button>
 </div>
 </div>
 <span id="room-status-badge" class="hidden text-[10px] bg-emerald-950/80 border border-emerald-500/50 text-emerald-300 px-2 py-0.5 rounded-sm font-bold cursor-pointer hover:bg-emerald-800/80 transition-colors whitespace-nowrap" onclick="copyRoomCode()" title="點擊複製房間代碼">
@@ -2799,7 +2799,7 @@ const localSeatId="seat_"+Math.random().toString(36).substring(2,10)+"_"+Date.no
     p1:"reserve",p2:"reserve"
   },zoneCollapsed: {
     god_p1:!1,god_p2:!1,openhand_p1:!1,openhand_p2:!1
-  },lastShuffle:null,lastLottery:null,lastActionEffect:null,lotteryPendingWinner:null,lotteryUsed:!1,seats: {
+  },lastShuffle:null,lastLottery:null,lastActionEffect:null,lotteryPendingWinner:null,lotteryUsed:!1,oracleWindows:{p1:null,p2:null},revealWindows:{p1:null,p2:null},seats: {
     p1:null,p2:null
   },seatNames: {
     p1:"",p2:""
@@ -3360,7 +3360,7 @@ function closeResetModal() {
 function confirmResetGame() {
   closeResetModal(),hideCardPreview(),closeZoneModal(),closeDeckChoiceModal(),closeGodConfirmModal(),document.getElementById("core-return-modal")?.classList.add("hidden"),lotteryStepTimer&&(clearTimeout(lotteryStepTimer),lotteryStepTimer=null),isLotteryRunning=!1,gameState.lotteryPendingWinner=null,applyLotteryPendingUI(),gameState.p1_life=5,gameState.p1_reserve=3,gameState.p1_count=0,gameState.p1_trash_core=0,gameState.p2_life=5,gameState.p2_reserve=3,gameState.p2_count=0,gameState.p2_trash_core=0,gameState.soulCoreLocation= {
     p1:"reserve",p2:"reserve"
-  },gameState.lotteryUsed=!1;
+  },gameState.lotteryUsed=!1;gameState.oracleWindows={p1:null,p2:null};gameState.revealWindows={p1:null,p2:null};window.syncOracleWindowsFromState&&window.syncOracleWindowsFromState();window.syncRevealWindowsFromState&&window.syncRevealWindowsFromState();
   const e=[],t=[];
   Object.values(gameState.cards).forEach(o=> {
     restoreTurnFront(o),delete o.braveHostId,delete o.braveOrder,delete o.adventHostId,delete o.adventOrder,document.getElementById(o.id)?.remove(),o.zone=`deck-${o.owner}`,o.x=0,o.y=0,o.rotation=0,o.isFaceDown=!1,o.cores=0,o.zOrder=zOrderCounter++,"p1"===o.owner?e.push(o.id):"p2"===o.owner&&t.push(o.id)
@@ -5364,7 +5364,7 @@ function buildStatePayload() {
     turnFaces:gameState.turnFaces|| {
     },p1_life:gameState.p1_life,p1_reserve:gameState.p1_reserve,p1_count:gameState.p1_count,p1_trash_core:gameState.p1_trash_core,p2_life:gameState.p2_life,p2_reserve:gameState.p2_reserve,p2_count:gameState.p2_count,p2_trash_core:gameState.p2_trash_core,p1Deck:gameState.p1Deck,p2Deck:gameState.p2Deck,soulCoreLocation:gameState.soulCoreLocation,zoneCollapsed:gameState.zoneCollapsed|| {
       god_p1:!1,god_p2:!1,openhand_p1:!1,openhand_p2:!1
-    },lastShuffle:gameState.lastShuffle,lastLottery:gameState.lastLottery,lastActionEffect:gameState.lastActionEffect,lotteryPendingWinner:gameState.lotteryPendingWinner||null,lotteryUsed:!!gameState.lotteryUsed,seats:gameState.seats|| {
+    },lastShuffle:gameState.lastShuffle,lastLottery:gameState.lastLottery,lastActionEffect:gameState.lastActionEffect,lotteryPendingWinner:gameState.lotteryPendingWinner||null,lotteryUsed:!!gameState.lotteryUsed,oracleWindows:gameState.oracleWindows||{p1:null,p2:null},revealWindows:gameState.revealWindows||{p1:null,p2:null},seats:gameState.seats|| {
       p1:null,p2:null
     },seatNames:gameState.seatNames|| {
       p1:"",p2:""
@@ -5432,7 +5432,7 @@ if(["p1","p2"].forEach(e=> {
     void 0!==e[t]&&e[t]!==gameState[t]&&triggerCounterKeyFlash(t,e[t]-gameState[t])
   }),void 0!==e.p1_life&&t>0&&0===e.p1_life&&triggerZeroLifeSequence("p1"),void 0!==e.p2_life&&o>0&&0===e.p2_life&&triggerZeroLifeSequence("p2");let a=null;e.lastShuffle&&e.lastShuffle.timestamp>lastSeenShuffleTime&&(lastSeenShuffleTime=e.lastShuffle.timestamp,gameState.lastShuffle=e.lastShuffle,a=e.lastShuffle.player);let n=null;e.lastLottery&&e.lastLottery.timestamp>lastSeenLotteryTime&&(lastSeenLotteryTime=e.lastLottery.timestamp,gameState.lastLottery=e.lastLottery,n=e.lastLottery.winner);let r=null;e.lastActionEffect&&e.lastActionEffect.timestamp>lastSeenActionEffectTime&&(lastSeenActionEffectTime=e.lastActionEffect.timestamp,gameState.lastActionEffect=e.lastActionEffect,r=e.lastActionEffect);const s= {
     p1:gameState.soulCoreLocation?.p1,p2:gameState.soulCoreLocation?.p2
-  };["p1_life","p1_reserve","p1_count","p1_trash_core","p2_life","p2_reserve","p2_count","p2_trash_core","turnFaces","soulCoreLocation","zoneCollapsed","lotteryUsed","lotteryPendingWinner","seats","seatNames"].forEach(t=> {
+  };["p1_life","p1_reserve","p1_count","p1_trash_core","p2_life","p2_reserve","p2_count","p2_trash_core","turnFaces","soulCoreLocation","zoneCollapsed","lotteryUsed","lotteryPendingWinner","oracleWindows","revealWindows","seats","seatNames"].forEach(t=> {
     void 0!==e[t]&&(gameState[t]=e[t])
   }),Array.isArray(e.p1Deck)&&(gameState.p1Deck=e.p1Deck),Array.isArray(e.p2Deck)&&(gameState.p2Deck=e.p2Deck),gameState.seats||(gameState.seats= {
     p1:null,p2:null
@@ -5497,11 +5497,11 @@ if(["p1","p2"].forEach(e=> {
       const e=document.getElementById("center-core-spawner"),t=r.delta||0,o=r.orbTheme||"cost";e&&0!==t&&(t>0?playCoreTransferAnimation(e,r.boxId,null,o,t):playCoreTransferAnimation(r.boxId,e,null,o,Math.abs(t)))
     }
   }
-  isSyncing=!1
+  window.syncOracleWindowsFromState&&window.syncOracleWindowsFromState();window.syncRevealWindowsFromState&&window.syncRevealWindowsFromState();isSyncing=!1
 },window.applyCardImages=e=> {
   e&&(Object.entries(e).forEach(([e,t])=> {
     if(("custom_cardback"===e||"__custom_cardback__"===e)&&t)return cardImageCache.custom_cardback=t,void applyCustomCardBackUrl(t);cardImageCache[e]=t,gameState.cards[e]&&(gameState.cards[e].imgBase64=t);const o=document.getElementById(e);o&&gameState.cards[e]&&applyCardVisualState(gameState.cards[e],o)
-  }),currentModalInfo&&renderZoneModalContent(),refreshTurnImages())
+  }),currentModalInfo&&renderZoneModalContent(),refreshTurnImages(),window.syncOracleWindowsFromState&&window.syncOracleWindowsFromState(),window.syncRevealWindowsFromState&&window.syncRevealWindowsFromState())
 },Object.assign(window, {
   gameState:gameState,cardImageCache:cardImageCache,localSeatId:localSeatId,applyCustomCardBackUrl:applyCustomCardBackUrl,buildStatePayload:buildStatePayload,setControlMode:setControlMode,toggleBgmPlayback:toggleBgmPlayback,changeBgmVolume:changeBgmVolume,toggleBgmMiniVideo:toggleBgmMiniVideo,changePreviewCardScale:changePreviewCardScale,uploadCustomCardBack:uploadCustomCardBack,adjustPreviewCardCore:adjustPreviewCardCore,togglePreviewCardSoul:togglePreviewCardSoul,openResetModal:openResetModal,closeResetModal:closeResetModal,confirmResetGame:confirmResetGame,openMultiplayerModal:openMultiplayerModal,closeMultiplayerModal:closeMultiplayerModal,openDeckVaultModal:openDeckVaultModal,closeDeckVaultModal:closeDeckVaultModal,importZipToVaultOnly:importZipToVaultOnly,loadSavedDeckToPlayer:loadSavedDeckToPlayer,deleteDeckFromVaultDB:deleteDeckFromVaultDB,clearAllDecksFromVault:clearAllDecksFromVault,openDeckEditorModal:openDeckEditorModal,closeDeckEditorModal:closeDeckEditorModal,addExtraCardImagesToEditor:addExtraCardImagesToEditor,saveDeckEditorChanges:saveDeckEditorChanges,createRoom:createRoom,joinRoom:joinRoom,pasteAndJoinRoom:pasteAndJoinRoom,copyRoomCode:copyRoomCode,manualCleanupRooms:manualCleanupRooms,setView:setView,setLocalPlayerName:setLocalPlayerName,clearLocalPlayerName:clearLocalPlayerName,pasteLocalPlayerName:pasteLocalPlayerName,joinRoomByCode:joinRoomByCode,refreshOnlineRoomsList:refreshOnlineRoomsList,toggleHand:toggleHand,toggleStickyHand:toggleStickyHand,toggleTopHeader:toggleTopHeader,toggleGodZone:toggleGodZone,toggleOpenHandZone:toggleOpenHandZone,startPlayerLottery:startPlayerLottery,confirmLotteryResult:confirmLotteryResult,updateCounter:updateCounter,takeLife:takeLife,payCost:payCost,recoverCore:recoverCore,recoverAllCores:recoverAllCores,refreshState:refreshState,moveAllTrashToExclude:moveAllTrashToExclude,shuffleDeck:shuffleDeck,drawCard:drawCard,deployTop:deployTop,importZip:importZip,openZoneModal:openZoneModal,closeZoneModal:closeZoneModal,openDeckActionMenu:openDeckActionMenu,openTrashActionMenu:openTrashActionMenu,closeZoneActionMenu:closeZoneActionMenu,closeDeckChoiceModal:closeDeckChoiceModal,closeGodConfirmModal:closeGodConfirmModal,closeNoticeModal:closeNoticeModal,allowDrop:allowDrop,drop:drop,dropOnDeck:dropOnDeck,dropOnGodZone:dropOnGodZone,dropOnCounterBox:dropOnCounterBox,dropOnTrashCoreBox:dropOnTrashCoreBox,dropOnCenterSpace:dropOnCenterSpace,dropSoulCore:dropSoulCore,launchBurstFireworks:launchBurstFireworks,renderDeckVaultList:renderDeckVaultList
 }),window.addEventListener("resize",()=> {
@@ -11202,13 +11202,30 @@ Object.assign(window, {
    */
   function parseOracleRules(effectText) {
     const text = normalizeBsText(effectText || "");
-    const oracleMatch = text.match(/《[^》]*神託》([^\n]*(?:\n[^\n]*)?)/);
-    if (!oracleMatch) return null;
+    let firstLine = "";
+    let secondLine = "";
 
-    const block = oracleMatch[1] || "";
-    const firstLine = block.split(/\r?\n/)[0] || "";
-    const secondLine = block.split(/\r?\n/)[1] || "";
-    const triggerSentence = `${firstLine} ${secondLine}`;
+    const oracleMatch = text.match(/《[^》]*神託》([^\n]*(?:\n[^\n]*)?)/);
+    if (oracleMatch) {
+      const block = oracleMatch[1] || "";
+      const lines = block.split(/\r?\n/);
+      firstLine = lines[0] || "";
+      secondLine = lines[1] || "";
+    } else {
+      // 支援未寫《神託》/《真・神託》標題、直接以〔條件〕開頭的契約創界神（如 BSC47-CX04）
+      const fallbackMatch = text.match(/(?:^|\n)([^\n]*〔[^〕]+〕[^\n]*)(?:\n([^\n]*))?/);
+      if (!fallbackMatch) return null;
+      const cand1 = fallbackMatch[1] || "";
+      const cand2 = fallbackMatch[2] || "";
+      if (!/(?:召喚|配置|對象|対象|core|コア)/i.test(`${cand1} ${cand2}`)) return null;
+      firstLine = cand1;
+      secondLine = cand2;
+    }
+
+    // 只檢查觸發條件句（「時」之前，並排除「這張Nexus/此Nexus/このネクサス」加 Core 敘述）
+    const condBeforeTime = (secondLine.split(/[時とき]/)[0] || secondLine)
+      .replace(/(?:這張|此|這個|この)\s*(?:nexus|ネクサス)/gi, "");
+    const triggerSentence = condBeforeTime.trim() || firstLine.replace(/〔[^〕]+〕/g, "");
 
     // 判斷預設允許的卡牌種類（例如 Spirit/Nexus 或僅 Spirit）
     const defaultKinds = new Set();
@@ -11266,6 +11283,10 @@ Object.assign(window, {
     }
 
     if (!clauses.length) return null;
+    // 若已有獨立的〔... & Nexus〕條款且預設同時含 Spirit 與 Nexus，則未明寫種類的條款僅套用於 Spirit/Ultimate/Brave（不誤觸其他系統的 Nexus）
+    if (defaultKinds.has("SPIRIT") && defaultKinds.has("NEXUS") && clauses.some(c => c.explicitKinds.has("NEXUS"))) {
+      defaultKinds.delete("NEXUS");
+    }
     return { defaultKinds, clauses };
   }
 
@@ -11388,6 +11409,7 @@ Object.assign(window, {
         if (st.cardIds.length === 0) {
           closeOracleWindow(pick.owner);
         } else {
+          pushOracleWindowState(pick.owner);
           renderOracleWindow(pick.owner, false);
         }
         moveCardToZone(pick.cardId, `hand-${pick.owner}`, startRect ? { startRect } : {});
@@ -11395,11 +11417,44 @@ Object.assign(window, {
     }
   }
 
-  function closeOracleWindow(owner) {
+  function pushOracleWindowState(owner) {
+    gameState.oracleWindows ||= { p1: null, p2: null };
+    const st = oracleWindows[owner];
+    gameState.oracleWindows[owner] = st && st.cardIds?.length
+      ? { cardIds: [...st.cardIds], matchedIds: [...(st.matchedIds || [])], godCardId: st.godCardId || "" }
+      : null;
+  }
+
+  function closeOracleWindow(owner, skipSync = false) {
     oracleWindows[owner] = null;
     document.getElementById(`god-oracle-window-${owner}`)?.remove();
     hideCardPreview();
+    if (!skipSync) {
+      pushOracleWindowState(owner);
+      updateRoomState();
+    }
   }
+
+  window.syncOracleWindowsFromState = function () {
+    const remote = gameState.oracleWindows || { p1: null, p2: null };
+    ["p1", "p2"].forEach(owner => {
+      const r = remote[owner];
+      if (!r || !Array.isArray(r.cardIds) || !r.cardIds.length) {
+        if (oracleWindows[owner]) closeOracleWindow(owner, true);
+        return;
+      }
+      const prev = oracleWindows[owner];
+      const prevSig = prev ? prev.cardIds.join(",") + "|" + [...(prev.matchedIds || [])].join(",") : "";
+      const nextSig = r.cardIds.join(",") + "|" + (r.matchedIds || []).join(",");
+      oracleWindows[owner] = {
+        owner,
+        godCardId: r.godCardId || null,
+        cardIds: [...r.cardIds],
+        matchedIds: new Set(r.matchedIds || [])
+      };
+      renderOracleWindow(owner, prevSig !== nextSig && !prev);
+    });
+  };
 
   function discardAllOracleCards(owner) {
     const st = oracleWindows[owner];
@@ -11582,6 +11637,7 @@ Object.assign(window, {
     });
 
     oracleWindows[owner] = { owner, godCardId, cardIds: picked, matchedIds };
+    pushOracleWindowState(owner);
     updateAllUI();
     renderOracleWindow(owner, true);
     updateRoomState();
@@ -12856,11 +12912,39 @@ Object.assign(window, {
     document.getElementById("reveal-hand-confirm-modal")?.classList.add("hidden");
   };
 
-  function closeRevealWindow(owner) {
+  function pushRevealWindowState(owner) {
+    gameState.revealWindows ||= { p1: null, p2: null };
+    const st = revealWindows[owner];
+    gameState.revealWindows[owner] = st && st.cardIds?.length
+      ? { cardIds: [...st.cardIds] }
+      : null;
+  }
+
+  function closeRevealWindow(owner, skipSync = false) {
     revealWindows[owner] = null;
     document.getElementById(`reveal-cards-window-${owner}`)?.remove();
     hideCardPreview();
+    if (!skipSync) {
+      pushRevealWindowState(owner);
+      updateRoomState();
+    }
   }
+
+  window.syncRevealWindowsFromState = function () {
+    const remote = gameState.revealWindows || { p1: null, p2: null };
+    ["p1", "p2"].forEach(owner => {
+      const r = remote[owner];
+      if (!r || !Array.isArray(r.cardIds) || !r.cardIds.length) {
+        if (revealWindows[owner]) closeRevealWindow(owner, true);
+        return;
+      }
+      const prev = revealWindows[owner];
+      const prevIds = prev ? prev.cardIds : [];
+      const newIds = r.cardIds.filter(id => !prevIds.includes(id));
+      revealWindows[owner] = { owner, cardIds: [...r.cardIds] };
+      renderRevealWindow(owner, newIds.length === 1 ? newIds[0] : null);
+    });
+  };
 
   function getRevealTileRect(owner, cardId) {
     const tile = document.querySelector(`#reveal-cards-window-${owner} .god-oracle-card-item[data-card-id="${cardId}"]`);
@@ -12893,6 +12977,7 @@ Object.assign(window, {
         if (st.cardIds.length === 0) {
           closeRevealWindow(pick.owner);
         } else {
+          pushRevealWindowState(pick.owner);
           renderRevealWindow(pick.owner);
         }
         moveCardToZone(pick.cardId, `hand-${pick.owner}`, startRect ? { startRect } : {});
@@ -12906,7 +12991,9 @@ Object.assign(window, {
     if (fromIdx < 0 || toIdx < 0 || fromIdx >= st.cardIds.length || toIdx >= st.cardIds.length) return;
     const [moved] = st.cardIds.splice(fromIdx, 1);
     st.cardIds.splice(toIdx, 0, moved);
+    pushRevealWindowState(owner);
     renderRevealWindow(owner);
+    updateRoomState();
   }
 
   function sendAllRevealCards(owner, destination) {
@@ -13211,6 +13298,7 @@ Object.assign(window, {
       revealWindows[owner] = { owner, cardIds: [] };
     }
     revealWindows[owner].cardIds.push(cid);
+    pushRevealWindowState(owner);
     updateAllUI();
     renderRevealWindow(owner, cid);
     updateRoomState();
@@ -13479,7 +13567,7 @@ Object.assign(window, {
       if (idx !== -1) {
         st.cardIds.splice(idx, 1);
         if (st.cardIds.length === 0) closeRevealWindow(prevRevealOwner);
-        else renderRevealWindow(prevRevealOwner);
+        else { pushRevealWindowState(prevRevealOwner); renderRevealWindow(prevRevealOwner); updateRoomState(); }
       }
     }
     return res;
@@ -13516,7 +13604,7 @@ Object.assign(window, {
   /* =========================================================================
      PART 1: 左上角 BS 版本號齒輪控制（語意化 major.minor：支援 3.7 -> 3.8 -> 3.9 -> 3.10 -> 3.11）
   ========================================================================= */
-  const BS_DEFAULT_VERSION = "3.11";
+  const BS_DEFAULT_VERSION = "3.12";
   const VER_KEY = "bs_app_version_str";
   const VER_BASE_KEY = "bs_app_version_base";
   window.BS_APP_VERSION = BS_DEFAULT_VERSION;
@@ -14406,7 +14494,7 @@ Object.assign(window, {
     <div class="changelog-header">
       <div class="flex items-center gap-2.5 flex-wrap">
         <h2 id="changelog-modal-title" class="text-base sm:text-lg font-black tracking-widest text-[#e0b25b]">📜 更新日誌 (CHANGELOG)</h2>
-        <span id="changelog-current-ver" class="text-xs font-black bg-emerald-950/80 border border-emerald-500/60 text-emerald-300 px-2 py-0.5 rounded-sm">v3.11</span>
+        <span id="changelog-current-ver" class="text-xs font-black bg-emerald-950/80 border border-emerald-500/60 text-emerald-300 px-2 py-0.5 rounded-sm">v3.12</span>
       </div>
       <button type="button" class="border border-[#b09466]/55 bg-black/70 text-[#dcd6cc] hover:bg-[#c8aa76] hover:text-black px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="closeChangelogModal()">關閉 (✕)</button>
     </div>
@@ -14420,6 +14508,26 @@ Object.assign(window, {
      版本更新日誌資料（往後每次更新 3.8、3.9、3.10、3.11… 請於陣列最上方新增物件）
   ========================================================================= */
   window.BS_CHANGELOG = [
+    {
+      version: "3.12",
+      date: "2026-11-21",
+      title: "神託／公開卡牌視窗雙方即時同步、修復創界神神託對象判斷失誤",
+      sections: [
+        {
+          heading: "👁️ 雙方即時同步視窗",
+          items: [
+            "神託視窗與「公開卡牌」視窗狀態納入多人房間即時同步，任一方觸發神託、公開卡牌、調整順序、加入手牌或移至廢棄區／牌組時，雙方與觀戰者皆可同步看見。"
+          ]
+        },
+        {
+          heading: "🛠️ 創界神神託判斷精準修復",
+          items: [
+            "修復《真・神託》敘述句中因包含「這張Nexus上可以+1個Core」而誤將 Nexus（地卡）計入預設對象的問題，現在僅依「時」之前的對象條件（如 Spirit）精準判斷。",
+            "新增支援未標註《神託》／《真・神託》標題、直接以〔條件〕開頭的契約創界神（如 BSC47-CX04 時空の契約神クロノス），正確觸發對象加 Core。"
+          ]
+        }
+      ]
+    },
     {
       version: "3.11",
       date: "2026-11-21",
