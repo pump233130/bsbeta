@@ -17,7 +17,7 @@
  10. 創界神 (Grandwalker) 技與域   -> 搜尋: function useGrandwalkerSkill
  11. 顕現 (Manifest) 系統與特效    -> 搜尋: function triggerManifestFromHand
 ========================================================================= -->
-<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><title>BS v3.0</title><script src="https://cdn.tailwindcss.com"></script><style>
+<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><title>BS v3.10</title><script src="https://cdn.tailwindcss.com"></script><style>
 /* #region 1. 基礎排版、卡背 SVG 與戰場區域樣式 */
 body,html {
   touch-action:manipulation;
@@ -2289,13 +2289,14 @@ body.mobile-mode #playmat-root .brave-god-attached .god-core-badge {
 <header id="main-top-header" class="flex flex-wrap justify-between items-center bg-[#0a0a0a]/90 border border-[#b09466]/40 rounded-sm py-1.5 px-3 flex-none gap-x-2 gap-y-1.5 shadow-lg transition-all duration-200">
 <div class="header-brand-row flex items-center gap-2 flex-shrink-0">
 <div class="relative text-sm sm:text-base font-black tracking-wider text-[#e5dccb] flex items-center gap-1.5 whitespace-nowrap">
-<span id="bs-brand-title-text">BS v3.0</span>
+<span id="bs-brand-title-text" class="cursor-pointer hover:text-[#e0b25b] transition-colors" onclick="openChangelogModal()" title="點擊查看更新日誌">BS v3.10</span>
+<button id="btn-changelog" type="button" class="text-[10px] sm:text-xs bg-black/70 border border-[#b09466]/50 hover:bg-[#c8aa76] hover:text-black text-[#e0b25b] px-1.5 py-0.5 rounded-sm cursor-pointer transition-colors leading-none font-bold" onclick="openChangelogModal()" title="查看版本更新日誌">📜 日誌</button>
 <button id="btn-version-gear" type="button" class="text-xs bg-black/70 border border-[#b09466]/50 hover:bg-[#c8aa76] hover:text-black text-[#e0b25b] px-1.5 py-0.5 rounded-sm cursor-pointer transition-colors leading-none" onclick="toggleVersionGearMenu(event)" title="點擊調整版本號數字">⚙️</button>
 <div id="bs-version-gear-menu" class="hidden absolute left-0 top-full mt-1.5 z-[12500] bg-[#0d0c0b]/95 border border-[#c8aa76] rounded-sm shadow-2xl p-2 flex items-center gap-1.5">
-<button type="button" class="text-[11px] font-black bg-[#c8aa76] text-black hover:bg-white px-2 py-1 rounded-sm cursor-pointer" onclick="bumpBsVersion(0.1)">+0.1</button>
-<button type="button" class="text-[11px] font-black bg-sky-950/80 border border-sky-400/60 text-sky-200 hover:bg-sky-500 hover:text-black px-2 py-1 rounded-sm cursor-pointer" onclick="bumpBsVersion(1)">+1</button>
-<button type="button" class="text-[11px] font-bold bg-black/80 border border-[#b09466]/50 text-[#dcd6cc] hover:bg-[#c8aa76] hover:text-black px-2 py-1 rounded-sm cursor-pointer" onclick="bumpBsVersion(-0.1)">-0.1</button>
-<button type="button" class="text-[10px] font-bold bg-rose-950/70 border border-rose-500/50 text-rose-200 hover:bg-rose-600 hover:text-white px-2 py-1 rounded-sm cursor-pointer" onclick="resetBsVersion()">3.0</button>
+<button type="button" class="text-[11px] font-black bg-[#c8aa76] text-black hover:bg-white px-2 py-1 rounded-sm cursor-pointer" onclick="bumpBsVersion(0, 1)" title="次版本 +1 (例：3.9 ➔ 3.10)">+0.1</button>
+<button type="button" class="text-[11px] font-black bg-sky-950/80 border border-sky-400/60 text-sky-200 hover:bg-sky-500 hover:text-black px-2 py-1 rounded-sm cursor-pointer" onclick="bumpBsVersion(1, 0)" title="主版本 +1">+1</button>
+<button type="button" class="text-[11px] font-bold bg-black/80 border border-[#b09466]/50 text-[#dcd6cc] hover:bg-[#c8aa76] hover:text-black px-2 py-1 rounded-sm cursor-pointer" onclick="bumpBsVersion(0, -1)" title="次版本 -1">-0.1</button>
+<button type="button" class="text-[10px] font-bold bg-rose-950/70 border border-rose-500/50 text-rose-200 hover:bg-rose-600 hover:text-white px-2 py-1 rounded-sm cursor-pointer" onclick="resetBsVersion()">3.10</button>
 </div>
 </div>
 <span id="room-status-badge" class="hidden text-[10px] bg-emerald-950/80 border border-emerald-500/50 text-emerald-300 px-2 py-0.5 rounded-sm font-bold cursor-pointer hover:bg-emerald-800/80 transition-colors whitespace-nowrap" onclick="copyRoomCode()" title="點擊複製房間代碼">
@@ -2470,33 +2471,10 @@ body.mobile-mode #playmat-root .brave-god-attached .god-core-badge {
 <button onclick="refreshCardDatabase(true)">重新整理</button>
 <button id="catalog-delete-mode" onclick="toggleCatalogDeleteMode()">刪除模式</button>
 <button id="catalog-delete-selected" class="hidden" onclick="deleteCatalogCards()">刪除所選 (0)</button>
-<button type="button" id="btn-ai-settings-toggle" onclick="toggleAiSettingsPanel()" title="設定自己的 Gemini API Key（僅存於本機瀏覽器）">🔑 AI Key</button>
 <input type="file" id="catalog-symbols-import-input" accept=".json,application/json" class="hidden" onchange="importSymbolsResultFile(event, 'catalog')">
-<button type="button" id="btn-catalog-export-sym" style="border-color:rgba(56,189,248,0.7);color:#bae6fd;background:rgba(12,74,110,0.55)" onclick="exportCatalogUnfilledSymbolsForAI()" title="微縮匯出卡池中所有未填寫輕減/標誌卡片的左上/右下截圖 (.json)，傳給 AI 批次辨識">📤 匯出未填輕減/標誌</button>
-<button type="button" id="btn-catalog-import-sym" style="border-color:rgba(52,211,153,0.7);color:#a7f3d0;background:rgba(6,78,59,0.55)" onclick="document.getElementById('catalog-symbols-import-input').click()" title="匯入 AI 辨識完成的輕減/標誌結果檔 (.json) 並自動批次寫入卡池">📥 導入識別結果</button>
-<button type="button" id="btn-ai-batch-scan" onclick="runAiBatchCatalogScan()" title="自動對卡池中尚未填寫減輕或標誌的卡圖進行 AI 辨識並儲存">✨ AI 批次補齊</button>
-<button type="button" id="btn-ai-batch-stop" class="hidden" onclick="stopAiBatchCatalogScan()">⏹ 停止批次</button>
-</div>
-<div id="ai-settings-panel" class="ai-settings-panel hidden">
-  <div class="ai-settings-row">
-    <label style="flex:1;min-width:200px">Gemini API Key（僅存於本機瀏覽器，不會上傳）
-      <input id="ai-gemini-key-input" type="password" placeholder="貼上 AIza... 開頭的 Gemini API Key" autocomplete="off">
-    </label>
-    <label style="width:170px">模型
-      <select id="ai-gemini-model-select" style="width:100%;background:#080706;color:#e0b25b;border:1px solid #8d7955;padding:6px;border-radius:3px">
-        <option value="gemini-3.8-flash">gemini-3.8-flash (最新推薦)</option>
-        <option value="gemini-3.0-flash">gemini-3.0-flash</option>
-        <option value="gemini-2.5-flash">gemini-2.5-flash</option>
-        <option value="gemini-2.5-flash-lite">gemini-2.5-flash-lite (快速)</option>
-      </select>
-    </label>
-  </div>
-  <div class="ai-settings-actions">
-    <button type="button" class="bs-picker-ai-btn" onclick="pasteAiApiKey()">📋 貼上 API Key</button>
-    <button type="button" onclick="saveAiSettings()">💾 儲存本機 Key</button>
-    <button type="button" onclick="clearAiSettings()">清除 Key</button>
-    <span id="ai-settings-hint" class="card-db-hint"></span>
-  </div>
+<button type="button" id="btn-catalog-export-light" style="border-color:rgba(250,204,21,0.75);color:#fef08a;background:rgba(113,63,18,0.55)" onclick="exportCatalogLightNumberList()" title="極輕量純文字匯出未填輕減/標誌的卡號清單 (.json，不含圖片，僅數 KB)">📄 匯出純卡號清單</button>
+<button type="button" id="btn-catalog-import-sym" style="border-color:rgba(52,211,153,0.7);color:#a7f3d0;background:rgba(6,78,59,0.55)" onclick="document.getElementById('catalog-symbols-import-input').click()" title="匯入查表完成的輕減/標誌結果檔 (.json) 並自動批次寫入卡池">📥 導入輕減/標誌</button>
+<button type="button" id="btn-catalog-clear-all-sym" style="border-color:rgba(248,113,113,0.75);color:#fecaca;background:rgba(127,29,29,0.55)" onclick="clearAllCatalogSymbols()" title="一鍵移除卡池中所有卡片的輕減與標誌資料（方便重新匯出與修復）">🧹 移除全部輕減/標誌</button>
 </div>
 <p id="card-db-status" role="status" aria-live="polite">載入中…</p>
 <div id="card-db-list" class="card-db-list">
@@ -2542,7 +2520,6 @@ body.mobile-mode #playmat-root .brave-god-attached .god-core-badge {
       <div id="picker-btns-symbol" class="bs-picker-btns"></div>
     </div>
     <div class="bs-picker-quick-actions">
-      <button type="button" id="bs-picker-ai-btn" class="bs-picker-ai-btn" onclick="aiRecognizeCurrentCard()" title="使用 Gemini Vision AI 自動辨識右側左上角與右下角圖片的減輕與標誌">✨ AI 辨識</button>
       <button type="button" id="bs-picker-quick-save" class="bs-picker-save-btn" onclick="quickSaveAndCloseCatalog()">💾 儲存並關閉</button>
       <button type="button" class="bs-picker-cancel-btn" onclick="cancelCatalogEdit()">✕ 取消</button>
     </div>
@@ -2620,10 +2597,9 @@ body.mobile-mode #playmat-root .brave-god-attached .god-core-badge {
 </h2>
 <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
 <input type="file" id="deck-symbols-import-input" accept=".json,application/json" class="hidden" onchange="importSymbolsResultFile(event, 'deck')">
-<button type="button" id="btn-deck-export-sym" style="border-color:rgba(56,189,248,0.7);color:#bae6fd;background:rgba(12,74,110,0.55)" onclick="exportDeckSymbolsForAI()" title="微縮匯出此卡組待識別卡片的左上/右下截圖與基本資料 (.json)，傳給 AI 辨識">📤 匯出待識別</button>
-<button type="button" id="btn-deck-import-sym" style="border-color:rgba(52,211,153,0.7);color:#a7f3d0;background:rgba(6,78,59,0.55)" onclick="document.getElementById('deck-symbols-import-input').click()" title="匯入 AI 辨識完成的輕減/標誌結果檔 (.json) 並自動寫入卡池">📥 導入識別結果</button>
-<button type="button" id="btn-deck-ai-batch" class="bs-picker-ai-btn" onclick="runDeckAiBatchScan()" title="使用 Gemini Vision AI 自動批次辨識此卡組所有卡片的減輕與標誌並存檔">✨ AI 自動批次識別</button>
-<button type="button" id="btn-deck-ai-stop" class="hidden" style="border-color:rgba(248,113,113,0.85);color:#fecaca;background:rgba(127,29,29,0.7)" onclick="stopAiBatchCatalogScan()">⏹ 停止</button>
+<button type="button" id="btn-deck-export-light" style="border-color:rgba(250,204,21,0.75);color:#fef08a;background:rgba(113,63,18,0.55)" onclick="exportDeckLightNumberList(descriptionDeck?.id)" title="極輕量匯出此卡組的純卡號清單 (.json，不含圖片)">📄 匯出純卡號清單</button>
+<button type="button" id="btn-deck-import-sym" style="border-color:rgba(52,211,153,0.7);color:#a7f3d0;background:rgba(6,78,59,0.55)" onclick="document.getElementById('deck-symbols-import-input').click()" title="匯入輕減/標誌結果檔 (.json) 並自動寫入卡池">📥 導入輕減/標誌</button>
+<button type="button" id="btn-deck-clear-sym" style="border-color:rgba(248,113,113,0.75);color:#fecaca;background:rgba(127,29,29,0.55)" onclick="clearDeckSymbols(descriptionDeck?.id, 'deck')" title="移除此卡組所有卡片的輕減與標誌資料">🧹 移除此卡組輕減/標誌</button>
 <button type="button" onclick="closeDeckDescriptions()">關閉 ✕</button>
 </div>
 </header>
@@ -2698,7 +2674,7 @@ body.mobile-mode #playmat-root .brave-god-attached .god-core-badge {
 <span id="deck-vault-count-badge" class="bg-black/80 border border-[#b09466]/45 text-[#e0b25b] px-2 py-0.5 rounded-sm text-xs font-bold">0 副卡組</span>
 </div>
 <div class="flex items-center gap-2">
-<input type="file" id="vault-import-zip-input" accept=".zip" class="hidden" onchange="importZipToVaultOnly(event)"> <button class="border border-emerald-500/55 bg-emerald-950/50 text-emerald-300 hover:bg-emerald-500 hover:text-black px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick='document.getElementById("vault-import-zip-input").click()'>＋ 新增匯入 .ZIP 卡組</button> <button class="border border-[#b09466]/55 bg-black/70 text-[#e0b25b] hover:bg-[#c8aa76] hover:text-black px-2.5 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="window.refreshGlobalDecksFromCloud&&window.refreshGlobalDecksFromCloud(true).then(()=>renderDeckVaultList())" title="從雲端重新同步最新卡組列表">🔄 同步</button> <input type="file" id="vault-restore-backup-input" accept=".json,application/json" class="hidden" onchange="restoreFullBackupFromFile(event)"> <button id="btn-export-full-backup" class="border border-sky-500/55 bg-sky-950/50 text-sky-300 hover:bg-sky-500 hover:text-black px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="exportFullBackupToFile()" title="將所有卡組、卡池資料與自訂卡背打包下載成 .json 備份檔">📥 匯出全部備份</button> <button id="btn-restore-full-backup" class="border border-amber-500/55 bg-amber-950/50 text-amber-300 hover:bg-amber-400 hover:text-black px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick='document.getElementById("vault-restore-backup-input").click()' title="從之前下載的 .json 備份檔還原卡組與卡池">📤 還原備份</button> <button class="border border-rose-500/55 bg-rose-950/50 text-rose-300 hover:bg-rose-600 hover:text-white px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="clearAllDecksFromVault()" title="刪除並清空所有已儲存的匯入卡組資料庫">🗑️ 清空整個資料庫</button> <button class="border border-[#b09466]/45 bg-black/70 text-[#dcd6cc] hover:bg-[#c8aa76] hover:text-black px-3.5 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="closeDeckVaultModal()">CLOSE (✕)</button>
+<input type="file" id="vault-import-zip-input" accept=".zip" class="hidden" onchange="importZipToVaultOnly(event)"> <button class="border border-emerald-500/55 bg-emerald-950/50 text-emerald-300 hover:bg-emerald-500 hover:text-black px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick='document.getElementById("vault-import-zip-input").click()'>＋ 新增匯入 .ZIP 卡組</button> <button class="border border-[#b09466]/55 bg-black/70 text-[#e0b25b] hover:bg-[#c8aa76] hover:text-black px-2.5 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="window.refreshGlobalDecksFromCloud&&window.refreshGlobalDecksFromCloud(true).then(()=>renderDeckVaultList())" title="從雲端重新同步最新卡組列表">🔄 同步</button> <input type="file" id="vault-restore-backup-input" accept=".json,application/json" class="hidden" onchange="restoreFullBackupFromFile(event)"> <button id="btn-export-full-backup" class="border border-sky-500/55 bg-sky-950/50 text-sky-300 hover:bg-sky-500 hover:text-black px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="exportFullBackupToFile()" title="將所有卡組、卡池資料與自訂卡背打包下載成 .json 備份檔">📥 匯出全部備份</button> <button id="btn-restore-full-backup" class="border border-amber-500/55 bg-amber-950/50 text-amber-300 hover:bg-amber-400 hover:text-black px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick='document.getElementById("vault-restore-backup-input").click()' title="從之前下載的 .json 備份檔還原卡組與卡池">📤 還原備份</button> <button class="border border-amber-400/65 bg-amber-950/60 text-amber-200 hover:bg-amber-400 hover:text-black px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="openDeckSymbolToolsModal()" title="單獨選擇某一副卡組移除所有輕減/標誌，或單獨匯出/導入該卡組純卡號清單">🧹 移除卡組輕減/標誌</button> <button class="border border-rose-500/55 bg-rose-950/50 text-rose-300 hover:bg-rose-600 hover:text-white px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="clearAllDecksFromVault()" title="刪除並清空所有已儲存的匯入卡組資料庫">🗑️ 清空整個資料庫</button> <button class="border border-[#b09466]/45 bg-black/70 text-[#dcd6cc] hover:bg-[#c8aa76] hover:text-black px-3.5 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="closeDeckVaultModal()">CLOSE (✕)</button>
 </div>
 </div>
 <div id="deck-vault-list" class="flex-1 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5 p-1 custom-scrollbar">
@@ -6304,6 +6280,50 @@ window.cardCatalogCloud = {
       catalogCachedUpdatedAt = now;
       writeLocalCatalogCache(now, catalogMemoryCache).catch(() => {});
     }
+  },
+  async batchPatchSymbols(items, onProgress) {
+    if (!Array.isArray(items) || !items.length) return { count: 0, updatedMap: new Map() };
+    const CHUNK = 400;
+    const now = Date.now();
+    const updatedMap = new Map();
+    let done = 0;
+
+    for (let i = 0; i < items.length; i += CHUNK) {
+      const slice = items.slice(i, i + CHUNK);
+      const batch = writeBatch(db);
+      for (const item of slice) {
+        const num = String(item.number || "").trim().toUpperCase();
+        if (!num) continue;
+        const newRev = crypto.randomUUID();
+        const reduction = String(item.reduction ?? "").trim().slice(0, 200);
+        const symbol = String(item.symbol ?? "").trim().slice(0, 200);
+        batch.set(
+          doc(globalCardsColRef, num),
+          { reduction, symbol, revision: newRev, updatedAt: now },
+          { merge: true }
+        );
+        updatedMap.set(num, { reduction, symbol, revision: newRev });
+      }
+      await batch.commit();
+      done += slice.length;
+      if (typeof onProgress === "function") onProgress(done, items.length);
+    }
+
+    await setDoc(globalCatalogMetaDocRef, { updatedAt: now }, { merge: true }).catch(() => {});
+
+    if (Array.isArray(catalogMemoryCache)) {
+      for (const c of catalogMemoryCache) {
+        const patch = updatedMap.get(c.number);
+        if (patch) {
+          c.reduction = patch.reduction;
+          c.symbol = patch.symbol;
+          c.revision = patch.revision;
+        }
+      }
+      catalogCachedUpdatedAt = now;
+      writeLocalCatalogCache(now, catalogMemoryCache).catch(() => {});
+    }
+    return { count: updatedMap.size, updatedMap };
   },
 };
 
@@ -11670,404 +11690,35 @@ Object.assign(window, {
 <!-- #endregion -->
 
 
-<!-- #region 16. [外掛] Gemini Vision AI 自動辨識減輕 (Reduction) 與標誌 (Symbol) 系統 -->
-<style>
-  .ai-settings-panel {
-    margin: 8px 0;
-    padding: 10px 12px;
-    border: 1px solid rgba(56, 189, 248, 0.45);
-    border-radius: 3px;
-    background: rgba(8, 15, 24, 0.85);
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .ai-settings-row {
-    display: flex;
-    align-items: flex-end;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-  .ai-settings-actions {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-  .bs-picker-ai-btn {
-    background: rgba(12, 74, 110, 0.78) !important;
-    color: #bae6fd !important;
-    border: 1px solid rgba(56, 189, 248, 0.75) !important;
-    font-weight: 900 !important;
-    padding: 5px 10px !important;
-    font-size: 12px !important;
-  }
-  .bs-picker-ai-btn:hover {
-    background: #0284c7 !important;
-    color: #ffffff !important;
-  }
-  #btn-ai-batch-scan {
-    border-color: rgba(56, 189, 248, 0.75);
-    color: #7dd3fc;
-  }
-  #btn-ai-batch-stop {
-    border-color: rgba(248, 113, 113, 0.85);
-    color: #fecaca;
-    background: rgba(127, 29, 29, 0.7);
-  }
-</style>
+<!-- #region 16. [外掛] 純卡號清單匯出／輕減標誌極速批次導入與單副卡組修復工具 -->
+<div id="deck-symbol-tools-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-[12600] hidden flex justify-center items-center p-4">
+  <div class="border border-[#c8aa76] bg-[#0a0a0a]/98 w-full max-w-2xl max-h-[85vh] flex flex-col p-5 gap-3 shadow-2xl rounded-sm">
+    <div class="flex justify-between items-center border-b border-[#b09466]/35 pb-2.5 gap-2">
+      <div class="text-[#e0b25b] font-black tracking-widest text-base">🧹 單副卡組輕減／標誌管理</div>
+      <button type="button" class="border border-[#b09466]/45 bg-black/70 text-[#dcd6cc] hover:bg-[#c8aa76] hover:text-black px-3 py-1 rounded-sm text-xs font-bold cursor-pointer" onclick="closeDeckSymbolToolsModal()">關閉 (✕)</button>
+    </div>
+    <p id="deck-symbol-tools-status" class="text-xs text-[#c8bea8]">選擇要處理的卡組：可單獨移除該卡組所有卡片的輕減／標誌，或單獨匯出純卡號清單／導入修復結果。</p>
+    <input type="file" id="vault-single-deck-import-input" accept=".json,application/json" class="hidden" onchange="importSymbolsResultFile(event, 'vaultTools')">
+    <div id="deck-symbol-tools-list" class="flex-1 overflow-y-auto flex flex-col gap-2 pr-1 custom-scrollbar"></div>
+  </div>
+</div>
 
 <script>
 (function () {
-  const AI_KEY_STORAGE = "bs_gemini_api_key";
-  const AI_MODEL_STORAGE = "bs_gemini_model";
-  let aiBatchRunning = false;
-  let aiBatchStopRequested = false;
-
-  function getSavedApiKey() {
-    try {
-      return (localStorage.getItem(AI_KEY_STORAGE) || "").trim();
-    } catch (e) {
-      return "";
-    }
-  }
-
-  function getSavedModel() {
-    try {
-      const saved = localStorage.getItem(AI_MODEL_STORAGE);
-      if (!saved || saved === "gemini-2.5-flash" || saved === "gemini-2.0-flash") {
-        return "gemini-3.8-flash";
-      }
-      return saved;
-    } catch (e) {
-      return "gemini-3.8-flash";
-    }
-  }
-
-  function syncAiKeyUI() {
-    const key = getSavedApiKey();
-    const model = getSavedModel();
-    const keyInput = document.getElementById("ai-gemini-key-input");
-    const modelSelect = document.getElementById("ai-gemini-model-select");
-    const hint = document.getElementById("ai-settings-hint");
-    const toggleBtn = document.getElementById("btn-ai-settings-toggle");
-    if (keyInput) keyInput.value = key;
-    if (modelSelect) modelSelect.value = model;
-    if (hint) {
-      hint.textContent = key ? "✓ 已儲存本機 API Key，可直接點擊「✨ AI 辨識」或「✨ AI 批次補齊」。" : "尚未設定 API Key（請至 aistudio.google.com 取得免費 Key）。";
-    }
-    if (toggleBtn) {
-      toggleBtn.textContent = key ? "🔑 AI Key ✓" : "🔑 AI Key";
-    }
-  }
-
-  window.toggleAiSettingsPanel = function () {
-    const panel = document.getElementById("ai-settings-panel");
-    if (!panel) return;
-    panel.classList.toggle("hidden");
-    if (!panel.classList.contains("hidden")) {
-      syncAiKeyUI();
-    }
-  };
-
-  window.saveAiSettings = function () {
-    const keyInput = document.getElementById("ai-gemini-key-input");
-    const modelSelect = document.getElementById("ai-gemini-model-select");
-    const key = (keyInput?.value || "").trim();
-    const model = modelSelect?.value || "gemini-2.5-flash";
-    try {
-      if (key) localStorage.setItem(AI_KEY_STORAGE, key);
-      else localStorage.removeItem(AI_KEY_STORAGE);
-      localStorage.setItem(AI_MODEL_STORAGE, model);
-    } catch (e) {}
-    syncAiKeyUI();
-    catalogStatus(key ? "已於本機瀏覽器儲存 Gemini API Key。" : "已清除本機 Gemini API Key。");
-  };
-
-  window.pasteAiApiKey = async function () {
-    const keyInput = document.getElementById("ai-gemini-key-input");
-    let pasted = "";
-    try {
-      if (navigator.clipboard && typeof navigator.clipboard.readText === "function") {
-        pasted = (await navigator.clipboard.readText() || "").trim();
-      }
-    } catch (e) {
-      pasted = "";
-    }
-    if (!pasted) {
-      const manual = window.prompt("無法自動讀取剪貼簿（或剪貼簿為空），請在此貼上你的 Gemini API Key：", keyInput?.value || "");
-      if (manual === null) return;
-      pasted = manual.trim();
-    }
-    if (!pasted) {
-      catalogStatus("未偵測到有效的 API Key。");
-      return;
-    }
-    if (keyInput) keyInput.value = pasted;
-    window.saveAiSettings();
-    catalogStatus("✓ 已貼上並於本機儲存 Gemini API Key！");
-  };
-
-  window.clearAiSettings = function () {
-    try {
-      localStorage.removeItem(AI_KEY_STORAGE);
-    } catch (e) {}
-    syncAiKeyUI();
-    catalogStatus("已清除本機 Gemini API Key。");
-  };
-
-  function cropCardCornersBase64(dataUrl) {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      img.onload = () => {
-        const w = img.naturalWidth || 400;
-        const h = img.naturalHeight || 560;
-
-        // 左上角（費用與減輕）
-        const tlCanvas = document.createElement("canvas");
-        const tlSx = 0, tlSy = 0, tlSw = Math.round(w * 0.65), tlSh = Math.round(h * 0.30);
-        tlCanvas.width = Math.max(160, tlSw);
-        tlCanvas.height = Math.max(100, tlSh);
-        const tlCtx = tlCanvas.getContext("2d");
-        tlCtx.drawImage(img, tlSx, tlSy, tlSw, tlSh, 0, 0, tlCanvas.width, tlCanvas.height);
-
-        // 右下角（標誌）
-        const brCanvas = document.createElement("canvas");
-        const brSx = Math.round(w * 0.42), brSy = Math.round(h * 0.68), brSw = w - brSx, brSh = h - brSy;
-        brCanvas.width = Math.max(160, brSw);
-        brCanvas.height = Math.max(100, brSh);
-        const brCtx = brCanvas.getContext("2d");
-        brCtx.drawImage(img, brSx, brSy, brSw, brSh, 0, 0, brCanvas.width, brCanvas.height);
-
-        resolve({
-          tl: tlCanvas.toDataURL("image/jpeg", 0.92).split(",")[1],
-          br: brCanvas.toDataURL("image/jpeg", 0.92).split(",")[1]
-        });
-      };
-      img.onerror = () => reject(new Error("無法載入卡圖進行裁切。"));
-      img.src = dataUrl;
-    });
-  }
-
-  async function callGeminiForCardSymbols(imgDataUrl, apiKey, model) {
-    const { tl, br } = await cropCardCornersBase64(imgDataUrl);
-    const prompt = `你是 Battle Spirits (BS) 卡牌專家。請判讀這兩張同一張卡牌的局部裁切圖：
-- 第 1 張圖是卡牌【左上角】，顯示「費用」以及右側的「減輕標誌 (Reduction)」（小六角形寶石圖示）。
-- 第 2 張圖是卡牌【右下角】，顯示卡牌的「標誌 (Symbol)」（大寶石或創界神水滴/神徽圖示）。
-
-可用的單一標誌代碼只有這 9 種：
-紅 (Red)、紫 (Purple)、綠 (Green)、白 (White)、黃 (Yellow)、藍 (Blue)、全 (六色彩虹/萬能)、究 (金色究極)、神 (創界神/神標誌)
-
-規則：
-1. 若某個「單一標誌」同時代表兩種顏色或屬性（例如紅底的創界神標誌，或紅紫雙色寶石），請寫成「紅和神1」或「紅和紫1」（中間用「和」連接）。
-2. 多個相同標誌直接寫總數，例如 6 個紅減輕寫「紅6」，2 個紅標誌寫「紅2」，紅2藍1寫「紅2 藍1」。
-3. 若該區域沒有任何減輕或沒有任何標誌（例如魔法卡通常無標誌），該欄位請回傳空字串 ""。
-4. 只回傳純 JSON 物件，不要加任何解釋文字，格式如下：
-{"reduction": "紅6", "symbol": "紅2"}`;
-
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`;
-    const body = {
-      contents: [{
-        parts: [
-          { text: prompt },
-          { inline_data: { mime_type: "image/jpeg", data: tl } },
-          { inline_data: { mime_type: "image/jpeg", data: br } }
-        ]
-      }],
-      generationConfig: {
-        temperature: 0.1,
-        responseMimeType: "application/json"
-      }
-    };
-
-    async function doRequest(targetModel) {
-      const cleanModel = String(targetModel || "").replace(/^models\//i, "").trim();
-      const targetUrl = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(cleanModel)}:generateContent?key=${encodeURIComponent(apiKey)}`;
-      const r = await fetch(targetUrl, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body)
-      });
-      if (r.ok) return { r, usedModel: cleanModel };
-      let errMsg = `HTTP ${r.status}`;
-      try {
-        const errJson = await r.json();
-        errMsg = errJson?.error?.message || errMsg;
-      } catch (e) {}
-      const err = new Error(errMsg);
-      err.status = r.status;
-      throw err;
-    }
-
-    function applySelectedModel(m) {
-      try { localStorage.setItem(AI_MODEL_STORAGE, m); } catch (e) {}
-      const sel = document.getElementById("ai-gemini-model-select");
-      if (sel) {
-        if (![...sel.options].some(o => o.value === m)) {
-          sel.add(new Option(m + " (自動切換)", m));
-        }
-        sel.value = m;
-      }
-    }
-
-    let resp, usedModel = model;
-    try {
-      const out = await doRequest(model);
-      resp = out.r;
-      usedModel = out.usedModel;
-    } catch (err) {
-      const msg = String(err.message || "");
-      // 遇到 API Key 無效或配額上限時直接拋出
-      if (/API_KEY_INVALID|403|401|RESOURCE_EXHAUSTED|429/i.test(msg)) {
-        throw err;
-      }
-      const candidates = [];
-      const suggested = msg.match(/use\s+models\/([a-zA-Z0-9._-]+)/i)?.[1];
-      if (suggested) candidates.push(suggested);
-      ["gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-2.0-flash", "gemini-flash-latest"].forEach(m => {
-        if (!candidates.includes(m) && m !== model) candidates.push(m);
-      });
-
-      let switched = false;
-      for (const cand of candidates) {
-        try {
-          const out = await doRequest(cand);
-          resp = out.r;
-          usedModel = out.usedModel;
-          applySelectedModel(usedModel);
-          switched = true;
-          break;
-        } catch (e2) {
-          if (/API_KEY_INVALID|403|401|RESOURCE_EXHAUSTED|429/i.test(String(e2.message || ""))) {
-            throw e2;
-          }
-        }
-      }
-
-      if (!switched) {
-        // 最後嘗試查詢該 API Key 可用的模型清單
-        try {
-          const listResp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(apiKey)}`);
-          if (listResp.ok) {
-            const listJson = await listResp.json();
-            const avail = (listJson.models || [])
-              .filter(m => Array.isArray(m.supportedGenerationMethods) && m.supportedGenerationMethods.includes("generateContent"))
-              .map(m => String(m.name || "").replace(/^models\//i, ""))
-              .filter(name => /gemini/i.test(name) && !/embedding|imagen|veo|tts|audio/i.test(name));
-            for (const dyn of avail.slice(0, 4)) {
-              try {
-                const out = await doRequest(dyn);
-                resp = out.r;
-                usedModel = out.usedModel;
-                applySelectedModel(usedModel);
-                switched = true;
-                break;
-              } catch (e3) {}
-            }
-          }
-        } catch (eList) {}
-      }
-
-      if (!switched) {
-        throw err;
-      }
-    }
-
-    const data = await resp.json();
-    const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
-    const cleaned = rawText.replace(/^```json\s*/i, "").replace(/```$/i, "").trim();
-    const parsed = JSON.parse(cleaned);
-    return {
-      reduction: String(parsed?.reduction || "").trim(),
-      symbol: String(parsed?.symbol || "").trim()
-    };
-  }
-
-  window.aiRecognizeCurrentCard = async function () {
-    const apiKey = getSavedApiKey();
-    if (!apiKey) {
-      const panel = document.getElementById("ai-settings-panel");
-      panel?.classList.remove("hidden");
-      syncAiKeyUI();
-      catalogStatus("請先在上方「🔑 AI Key」貼上並儲存你的 Gemini API Key！");
-      return;
-    }
-    if (!catalogImage) {
-      catalogStatus("此卡尚未導入卡圖，無法進行 AI 辨識。");
-      return;
-    }
-    const btn = document.getElementById("bs-picker-ai-btn");
-    const origText = btn ? btn.textContent : "✨ AI 辨識";
-    if (btn) {
-      btn.disabled = true;
-      btn.textContent = "⏳ 辨識中…";
-    }
-    catalogStatus("正在呼叫 Gemini AI 判讀左上角減輕與右下角標誌…");
-    try {
-      const result = await callGeminiForCardSymbols(catalogImage, apiKey, getSavedModel());
-      const redInput = document.getElementById("catalog-reduction");
-      const symInput = document.getElementById("catalog-symbol");
-      if (redInput) redInput.value = result.reduction;
-      if (symInput) symInput.value = result.symbol;
-      if (typeof window.syncCatalogSymbolPickers === "function") {
-        window.syncCatalogSymbolPickers();
-      }
-      catalogStatus(`✨ AI 辨識完成！減輕：「${result.reduction || "無"}」｜標誌：「${result.symbol || "無"}」（確認無誤後可按「💾 儲存並關閉」）`);
-    } catch (err) {
-      console.error("Gemini AI recognize failed:", err);
-      catalogStatus("AI 辨識失敗：" + (err.message || "請檢查 API Key 或網路連線。"));
-    } finally {
-      if (btn) {
-        btn.disabled = false;
-        btn.textContent = origText;
-      }
-    }
-  };
+  let symBatchRunning = false;
 
   function setDeckDescStatus(msg) {
     const el = document.getElementById("deck-description-status");
     if (el) el.textContent = msg;
   }
 
-  function cropCardCornersCompact(dataUrl) {
-    return new Promise((resolve, reject) => {
-      const img = new Image();
-      img.onload = () => {
-        const w = img.naturalWidth || 400;
-        const h = img.naturalHeight || 560;
-
-        // 左上角（費用與減輕）：精簡微縮至 200x115
-        const tlC = document.createElement("canvas");
-        tlC.width = 200;
-        tlC.height = 115;
-        const tlCtx = tlC.getContext("2d");
-        tlCtx.imageSmoothingEnabled = true;
-        tlCtx.imageSmoothingQuality = "high";
-        tlCtx.drawImage(img, 0, 0, Math.round(w * 0.65), Math.round(h * 0.28), 0, 0, tlC.width, tlC.height);
-
-        // 右下角（標誌）：精簡微縮至 108x136
-        const brC = document.createElement("canvas");
-        brC.width = 108;
-        brC.height = 136;
-        const brCtx = brC.getContext("2d");
-        brCtx.imageSmoothingEnabled = true;
-        brCtx.imageSmoothingQuality = "high";
-        const brSx = Math.round(w * 0.68), brSy = Math.round(h * 0.70);
-        brCtx.drawImage(img, brSx, brSy, w - brSx, h - brSy, 0, 0, brC.width, brC.height);
-
-        resolve({
-          tl: tlC.toDataURL("image/jpeg", 0.68).split(",")[1],
-          br: brC.toDataURL("image/jpeg", 0.68).split(",")[1]
-        });
-      };
-      img.onerror = () => reject(new Error("卡圖載入失敗"));
-      img.src = dataUrl;
-    });
+  function setVaultToolsStatus(msg) {
+    const el = document.getElementById("deck-symbol-tools-status");
+    if (el) el.textContent = msg;
   }
 
-  function downloadCompactJsonFile(payload, filename) {
-    const jsonStr = JSON.stringify(payload);
-    const blob = new Blob([jsonStr], { type: "application/json;charset=utf-8" });
+  function downloadJsonFile(payload, filename) {
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -12079,137 +11730,93 @@ Object.assign(window, {
     return blob.size;
   }
 
-  async function buildAndDownloadSymbolExport(items, scopeLabel, filename, setStatusFn) {
-    const outCards = [];
-    for (let i = 0; i < items.length; i++) {
-      const { card, imgSrc } = items[i];
-      setStatusFn(`📤 正在微縮打包 (${i + 1} / ${items.length})：${card.number} ${card.name}…`);
-      try {
-        const { tl, br } = await cropCardCornersCompact(imgSrc);
-        outCards.push({
-          n: card.number,
-          name: card.name,
-          t: card.type || "",
-          c: card.cost ?? null,
-          tl,
-          br
-        });
-      } catch (err) {
-        console.warn("Skip card during compact symbol export:", card.number, err);
+  function applyLocalSymbolPatchFast(updatedMap) {
+    if (!updatedMap || !updatedMap.size) return;
+    for (const c of catalogEntries) {
+      const patch = updatedMap.get(c.number);
+      if (patch) {
+        c.reduction = patch.reduction;
+        c.symbol = patch.symbol;
+        c.revision = patch.revision;
       }
-      if (i % 10 === 9) await new Promise(r => setTimeout(r, 0));
     }
-    if (!outCards.length) {
-      setStatusFn("沒有可匯出的有效卡圖。");
-      return;
+    // 同步 stamp 避免重算所有卡圖視覺雜湊，直接即時更新 UI
+    if (catalogEntries.length && catalogEntries.every(c => c.revision)) {
+      const stamp = catalogEntries.map(c => c.number + ":" + c.revision).join("|");
+      if (typeof catalogCompletedStamp !== "undefined") catalogCompletedStamp = stamp;
+      if (typeof catalogActiveStamp !== "undefined") catalogActiveStamp = stamp;
     }
-    const payload = {
-      app: "BS_SYMBOL_EXPORT",
-      v: 1,
-      scope: scopeLabel,
-      count: outCards.length,
-      exportedAt: new Date().toISOString(),
-      cards: outCards
-    };
-    const bytes = downloadCompactJsonFile(payload, filename);
-    const kb = (bytes / 1024).toFixed(1);
-    setStatusFn(`✅ 已匯出「${filename}」（共 ${outCards.length} 張，僅 ${kb} KB）！請將此檔案傳給 AI 辨識後再導入結果。`);
+    renderCardDatabase();
+    if (descriptionDeck) renderDeckDescriptions();
+    if (translationCard) renderTranslation();
+    if (typeof updateAllUI === "function") updateAllUI();
   }
 
-  window.exportDeckSymbolsForAI = async function () {
-    if (aiBatchRunning || catalogBusy) return;
-    if (!descriptionDeck || !Array.isArray(descriptionDeck.entries) || !descriptionDeck.entries.length) {
-      setDeckDescStatus("目前卡組沒有可匯出的卡片。");
-      return;
+  async function resolveDeckFullRecord(deckId) {
+    if (!deckId) return null;
+    let rec = await getDeckFromVaultDB(deckId);
+    if (window.globalCloudDecksCache?.[deckId] && window.fetchGlobalDeckEntriesFromCloud) {
+      rec = (await window.fetchGlobalDeckEntriesFromCloud(deckId)) || rec;
     }
-    const btn = document.getElementById("btn-deck-export-sym");
-    if (btn) btn.disabled = true;
-    try {
-      setDeckDescStatus("正在整理此卡組待識別卡片…");
-      await ensureCatalogData();
+    return rec;
+  }
 
-      const matchedMap = new Map();
-      let unlinkedCount = 0;
-      for (const entry of descriptionDeck.entries) {
-        if (entry.imgBase64) {
+  async function getDeckLinkedCatalogCards(deckRecord) {
+    await ensureCatalogData();
+    const entries = getDeckEntriesFromRecord(deckRecord);
+    window.resolvedCardKeys ??= new Map();
+    await Promise.all(
+      entries.map(async entry => {
+        if (entry.imgBase64 && !window.resolvedCardKeys.get(entry.imgBase64)) {
           const key = await cardImageKey(entry.imgBase64);
-          window.resolvedCardKeys ??= new Map();
           window.resolvedCardKeys.set(entry.imgBase64, key);
         }
-        const card = lookupCatalog(entry);
-        if (!card) {
-          unlinkedCount++;
-          continue;
-        }
-        const imgSrc = card.image || entry.imgBase64 || "";
-        if (imgSrc && !matchedMap.has(card.number)) {
-          matchedMap.set(card.number, { card, imgSrc });
-        }
+      })
+    );
+    const seen = new Set();
+    const matched = [];
+    for (const entry of entries) {
+      const cat = lookupCatalog(entry);
+      if (cat && !seen.has(cat.number)) {
+        seen.add(cat.number);
+        matched.push(cat);
       }
-
-      const allMatched = Array.from(matchedMap.values());
-      if (!allMatched.length) {
-        setDeckDescStatus(unlinkedCount ? `此卡組的 ${unlinkedCount} 張卡皆尚未導入卡池，請先導入卡池資料。` : "找不到可匯出的卡圖。");
-        return;
-      }
-
-      const unfilled = allMatched.filter(({ card }) => !card.reduction && !card.symbol);
-      let targets = unfilled;
-      if (unfilled.length === 0) {
-        if (!confirm(`「${descriptionDeck.name}」已連結的 ${allMatched.length} 張卡皆已填寫輕減／標誌。
-
-是否改為匯出此卡組全部 ${allMatched.length} 張卡重新識別？`)) {
-          setDeckDescStatus("已取消匯出。");
-          return;
-        }
-        targets = allMatched;
-      }
-
-      const safeName = String(descriptionDeck.name || "deck").replace(/[\\/:*?"<>|\s]+/g, "_").slice(0, 32);
-      const dateTag = new Date().toISOString().slice(0, 10);
-      await buildAndDownloadSymbolExport(
-        targets,
-        `deck:${descriptionDeck.name}`,
-        `BS_待識別_${safeName}_${targets.length}張_${dateTag}.json`,
-        setDeckDescStatus
-      );
-    } catch (err) {
-      setDeckDescStatus("匯出失敗：" + (err.message || "未知錯誤"));
-    } finally {
-      if (btn) btn.disabled = false;
     }
-  };
+    return matched;
+  }
 
-  window.exportCatalogUnfilledSymbolsForAI = async function () {
-    if (aiBatchRunning || catalogBusy) return;
-    const btn = document.getElementById("btn-catalog-export-sym");
+  // 1. 卡池：匯出未填寫輕減/標誌的極輕量純卡號清單
+  window.exportCatalogLightNumberList = async function () {
+    if (symBatchRunning || catalogBusy) return;
+    const btn = document.getElementById("btn-catalog-export-light");
     if (btn) btn.disabled = true;
     try {
-      catalogStatus("正在掃描卡池中尚未填寫輕減/標誌的卡片…");
+      catalogStatus("正在掃描卡池中尚未填寫輕減/標誌的卡號…");
       await ensureCatalogData();
-      const targets = catalogEntries
-        .filter(c => c.image && !c.reduction && !c.symbol)
-        .map(card => ({ card, imgSrc: card.image }));
-
+      const targets = catalogEntries.filter(c => !c.reduction && !c.symbol);
       if (!targets.length) {
-        catalogStatus("卡池中所有已導入卡圖的卡片皆已填寫輕減或標誌！");
+        catalogStatus("卡池中所有卡片皆已填寫輕減或標誌！");
         return;
       }
-
-      if (!confirm(`共偵測到卡池中有 ${targets.length} 張尚未填寫輕減與標誌的卡片。
-
-是否微縮匯出這 ${targets.length} 張卡片的左上／右下截圖檔 (.json)？`)) {
-        catalogStatus(`共 ${catalogEntries.length} 張卡片`);
-        return;
-      }
-
       const dateTag = new Date().toISOString().slice(0, 10);
-      await buildAndDownloadSymbolExport(
-        targets,
-        "catalog_unfilled",
-        `BS_卡池未填輕減標誌_${targets.length}張_${dateTag}.json`,
-        catalogStatus
-      );
+      const payload = {
+        app: "BS_PROTOTYPE_SYMBOL_QUERY_LIST",
+        version: 1,
+        scope: "catalog",
+        exportedAt: new Date().toISOString(),
+        total: targets.length,
+        cards: targets.map(c => ({
+          number: c.number,
+          name: c.name || "",
+          type: c.type || "",
+          cost: c.cost ?? "",
+          attribute: c.attribute || "",
+          reduction: c.reduction || "",
+          symbol: c.symbol || ""
+        }))
+      };
+      const bytes = downloadJsonFile(payload, `BS_純卡號清單_${targets.length}張_${dateTag}.json`);
+      catalogStatus(`已匯出極輕量純卡號清單（共 ${targets.length} 張，約 ${Math.max(1, Math.round(bytes / 1024))} KB）！`);
     } catch (err) {
       catalogStatus("匯出失敗：" + (err.message || "未知錯誤"));
     } finally {
@@ -12217,17 +11824,62 @@ Object.assign(window, {
     }
   };
 
+  // 2. 單副卡組：匯出該卡組的極輕量純卡號清單（並行雜湊，瞬間完成）
+  window.exportDeckLightNumberList = async function (deckId, statusTarget) {
+    if (symBatchRunning || catalogBusy || !deckId) return;
+    const setStatus = statusTarget === "vaultTools" ? setVaultToolsStatus : setDeckDescStatus;
+    try {
+      setStatus("正在讀取卡組卡片資料…");
+      const rec = await resolveDeckFullRecord(deckId);
+      if (!rec) {
+        setStatus("找不到該卡組資料。");
+        return;
+      }
+      const cards = await getDeckLinkedCatalogCards(rec);
+      if (!cards.length) {
+        setStatus("此卡組尚無已連結至卡池的卡片，請先為卡片導入編號資料。");
+        return;
+      }
+      const dateTag = new Date().toISOString().slice(0, 10);
+      const safeName = String(rec.name || "deck").replace(/[\\/:*?"<>|\s]+/g, "_").slice(0, 24);
+      const payload = {
+        app: "BS_PROTOTYPE_SYMBOL_QUERY_LIST",
+        version: 1,
+        scope: "deck",
+        deckName: rec.name || "",
+        exportedAt: new Date().toISOString(),
+        total: cards.length,
+        cards: cards.map(c => ({
+          number: c.number,
+          name: c.name || "",
+          type: c.type || "",
+          cost: c.cost ?? "",
+          attribute: c.attribute || "",
+          reduction: c.reduction || "",
+          symbol: c.symbol || ""
+        }))
+      };
+      const bytes = downloadJsonFile(payload, `BS_純卡號清單_卡組_${safeName}_${cards.length}張_${dateTag}.json`);
+      setStatus(`已匯出卡組「${rec.name}」純卡號清單（共 ${cards.length} 張，約 ${Math.max(1, Math.round(bytes / 1024))} KB）！`);
+    } catch (err) {
+      setStatus("匯出失敗：" + (err.message || "未知錯誤"));
+    }
+  };
+
+  // 3. 極速批次導入輕減/標誌結果檔 (.json)（使用 Firestore writeBatch 一次打包提交）
   window.importSymbolsResultFile = async function (event, sourceMode) {
     const file = event.target.files && event.target.files[0];
     event.target.value = "";
-    if (!file || aiBatchRunning || catalogBusy) return;
+    if (!file || symBatchRunning || catalogBusy) return;
 
-    const setStatus = sourceMode === "deck" ? setDeckDescStatus : catalogStatus;
+    const setStatus = sourceMode === "deck"
+      ? setDeckDescStatus
+      : (sourceMode === "vaultTools" ? setVaultToolsStatus : catalogStatus);
+
     try {
       const text = await file.text();
       const parsed = JSON.parse(text);
 
-      // 支援陣列、{ cards: [...] } 或 { "BS69-001": { reduction, symbol } } 格式
       let rows = [];
       if (Array.isArray(parsed)) {
         rows = parsed;
@@ -12251,11 +11903,11 @@ Object.assign(window, {
         .filter(item => item.number && (item.reduction !== undefined || item.symbol !== undefined));
 
       if (!normalizedRows.length) {
-        setStatus("檔案中找不到有效的輕減／標誌識別資料。");
+        setStatus("檔案中找不到有效的輕減／標誌資料。");
         return;
       }
 
-      setStatus("正在載入最新卡池資料…");
+      setStatus("正在比對卡池資料…");
       await ensureCatalogData();
       const byNum = new Map(catalogEntries.map(c => [c.number, c]));
 
@@ -12275,267 +11927,182 @@ Object.assign(window, {
           unchanged++;
           continue;
         }
-        toUpdate.push({ card, nextRed, nextSym });
+        toUpdate.push({ number: card.number, reduction: nextRed, symbol: nextSym });
       }
 
       if (!toUpdate.length) {
-        setStatus(`無需更新（相符且內容相同 ${unchanged} 張${notFound ? `，卡池找不到 ${notFound} 張` : ""}）。`);
+        setStatus(`匯入完成：沒有需要變更的卡片（未變動 ${unchanged} 張${notFound ? `，卡池無此編號 ${notFound} 張` : ""}）。`);
         return;
       }
 
-      if (!confirm(`共讀取到 ${normalizedRows.length} 筆識別結果，其中有 ${toUpdate.length} 張需要更新至雲端卡池${unchanged ? `（另有 ${unchanged} 張內容相同將略過）` : ""}${notFound ? `（${notFound} 張卡號不在卡池中）` : ""}。
-
-是否立即寫入卡池？`)) {
+      if (!confirm(`偵測到 ${toUpdate.length} 張卡片的輕減／標誌將被更新（略過未變動 ${unchanged} 張${notFound ? `、卡池未收錄 ${notFound} 張` : ""}）。\n\n是否立即批次寫入卡池並同步雲端？`)) {
         setStatus("已取消導入。");
         return;
       }
 
-      catalogBusy = true;
+      symBatchRunning = true;
+      const t0 = performance.now();
+      setStatus(`⚡ 正在極速批次寫入 ${toUpdate.length} 張卡片…`);
       const cloud = await catalogCloud();
-      let saved = 0;
-      let failed = 0;
+      const { count, updatedMap } = await cloud.batchPatchSymbols(toUpdate, (done, total) => {
+        setStatus(`⚡ 正在批次寫入 (${done}/${total})…`);
+      });
 
-      for (let i = 0; i < toUpdate.length; i++) {
-        const { card, nextRed, nextSym } = toUpdate[i];
-        setStatus(`📥 正在導入寫入 (${i + 1} / ${toUpdate.length})：${card.number} ${card.name}…`);
-        try {
-          const updated = normalizeCatalogCard({
-            ...card,
-            reduction: nextRed,
-            symbol: nextSym
-          });
-          await cloud.save(updated, card.revision, card.number);
-          saved++;
-        } catch (err) {
-          console.warn("Import symbol save failed:", card.number, err);
-          failed++;
-        }
-      }
-
-      await refreshCardDatabase();
-      if (descriptionDeck) renderDeckDescriptions();
-      setStatus(`✅ 導入完成！成功更新 ${saved} 張${unchanged ? `，略過相同 ${unchanged} 張` : ""}${notFound ? `，卡池未找到 ${notFound} 張` : ""}${failed ? `，寫入失敗 ${failed} 張` : ""}。`);
+      applyLocalSymbolPatchFast(updatedMap);
+      const sec = ((performance.now() - t0) / 1000).toFixed(2);
+      setStatus(`✅ 極速導入完成（耗時 ${sec} 秒）！已更新 ${count} 張卡片${notFound ? `（卡池未收錄 ${notFound} 張）` : ""}。`);
     } catch (err) {
-      setStatus("導入失敗：" + (err.message || "JSON 格式不正確"));
+      setStatus("導入失敗：" + (err.message || "檔案格式不正確"));
     } finally {
-      catalogBusy = false;
+      symBatchRunning = false;
     }
   };
 
-  window.stopAiBatchCatalogScan = function () {
-    aiBatchStopRequested = true;
-    catalogStatus("正在停止批次辨識（將於本張完成後停止）…");
-    setDeckDescStatus("正在停止批次辨識（將於本張完成後停止）…");
-  };
-
-  window.runDeckAiBatchScan = async function () {
-    if (aiBatchRunning || catalogBusy) return;
-    if (!descriptionDeck || !Array.isArray(descriptionDeck.entries) || !descriptionDeck.entries.length) {
-      setDeckDescStatus("目前卡組沒有可辨識的卡片。");
-      return;
-    }
-
-    let apiKey = getSavedApiKey();
-    if (!apiKey) {
-      if (confirm("尚未設定 Gemini API Key，是否現在直接貼上 API Key？（僅存於本機瀏覽器）")) {
-        await window.pasteAiApiKey();
-        apiKey = getSavedApiKey();
-      }
-      if (!apiKey) {
-        setDeckDescStatus("請先至「📚 卡池」➔「🔑 AI Key」設定 Gemini API Key 後再執行。");
-        return;
-      }
-    }
-
-    const batchBtn = document.getElementById("btn-deck-ai-batch");
-    const stopBtn = document.getElementById("btn-deck-ai-stop");
-    setDeckDescStatus("正在比對此卡組與卡池資料…");
-    await ensureCatalogData();
-
-    const matchedMap = new Map();
-    let unlinkedCount = 0;
-
-    for (const entry of descriptionDeck.entries) {
-      if (entry.imgBase64) {
-        const key = await cardImageKey(entry.imgBase64);
-        window.resolvedCardKeys ??= new Map();
-        window.resolvedCardKeys.set(entry.imgBase64, key);
-      }
-      const card = lookupCatalog(entry);
-      if (!card) {
-        unlinkedCount++;
-        continue;
-      }
-      const imgSrc = card.image || entry.imgBase64 || "";
-      if (imgSrc && !matchedMap.has(card.number)) {
-        matchedMap.set(card.number, { card, imgSrc });
-      }
-    }
-
-    const allMatched = Array.from(matchedMap.values());
-    if (!allMatched.length) {
-      setDeckDescStatus(unlinkedCount ? `此卡組的 ${unlinkedCount} 張卡皆尚未導入卡池資料，請先點擊卡牌導入資料。` : "找不到可辨識的卡圖。");
-      return;
-    }
-
-    const unfilled = allMatched.filter(({ card }) => !card.reduction && !card.symbol);
-    let targets = unfilled;
-    let overwriteMode = false;
-
-    if (unfilled.length > 0) {
-      const extraNote = unlinkedCount ? `
-（另有 ${unlinkedCount} 張尚未導入卡池，將略過）` : "";
-      if (!confirm(`「${descriptionDeck.name}」共有 ${allMatched.length} 張已連結卡池的卡片，其中 ${unfilled.length} 張尚未填寫減輕與標誌。${extraNote}
-
-是否開始使用 Gemini AI (${getSavedModel()}) 自動批次識別並存檔？`)) {
-        setDeckDescStatus("點擊卡牌，匯入資料圖片或修改描述。");
-        return;
-      }
-    } else {
-      if (!confirm(`「${descriptionDeck.name}」已連結的 ${allMatched.length} 張卡皆已填寫減輕／標誌。
-
-是否全部重新使用 Gemini AI (${getSavedModel()}) 批次識別並覆蓋更新？`)) {
-        setDeckDescStatus("點擊卡牌，匯入資料圖片或修改描述。");
-        return;
-      }
-      targets = allMatched;
-      overwriteMode = true;
-    }
-
-    aiBatchRunning = true;
-    aiBatchStopRequested = false;
-    if (batchBtn) batchBtn.disabled = true;
-    stopBtn?.classList.remove("hidden");
-
-    const model = getSavedModel();
-    let done = 0;
-    let failed = 0;
-    let lastErrMsg = "";
-
+  // 4. 卡池：極速一鍵移除所有卡片的輕減與標誌
+  window.clearAllCatalogSymbols = async function () {
+    if (symBatchRunning || catalogBusy) return;
+    const btn = document.getElementById("btn-catalog-clear-all-sym");
+    if (btn) btn.disabled = true;
     try {
-      const cloud = await catalogCloud();
-      for (let i = 0; i < targets.length; i++) {
-        if (aiBatchStopRequested) break;
-        const { card, imgSrc } = targets[i];
-        setDeckDescStatus(`✨ AI 批次識別中 (${i + 1} / ${targets.length})：${card.number} ${card.name}…`);
-        try {
-          const result = await callGeminiForCardSymbols(imgSrc, apiKey, model);
-          const updated = normalizeCatalogCard({
-            ...card,
-            reduction: overwriteMode ? result.reduction : (result.reduction || card.reduction || ""),
-            symbol: overwriteMode ? result.symbol : (result.symbol || card.symbol || "")
-          });
-          await cloud.save(updated, card.revision, card.number);
-          done++;
-        } catch (err) {
-          console.warn("Deck Batch AI skip card:", card.number, err);
-          failed++;
-          lastErrMsg = String(err?.message || err || "未知錯誤");
-          if (/API_KEY_INVALID|403|401/i.test(lastErrMsg)) {
-            setDeckDescStatus("API Key 無效或權限不足，已自動停止批次識別：" + lastErrMsg);
-            break;
-          }
-          if (/RESOURCE_EXHAUSTED|429/i.test(lastErrMsg)) {
-            setDeckDescStatus("已達 API 請求速率/配額上限，已停止批次識別（請稍後再試）：" + lastErrMsg);
-            break;
-          }
-        }
-        if (!aiBatchStopRequested && i < targets.length - 1) {
-          await new Promise(r => setTimeout(r, 1200));
-        }
-      }
+      catalogStatus("正在掃描卡池中已填寫輕減/標誌的卡片…");
       await ensureCatalogData();
-      if (descriptionDeck) renderDeckDescriptions();
-      const errDetail = (done === 0 && failed > 0 && lastErrMsg) ? `（原因：${lastErrMsg}）` : "";
-      setDeckDescStatus(`✨ AI 批次識別完成！成功更新 ${done} 張${failed ? `，失敗/跳過 ${failed} 張` : ""}${errDetail}${unlinkedCount ? `（另有 ${unlinkedCount} 張尚未導入卡池）` : ""}${aiBatchStopRequested ? "（已手動停止）" : ""}。`);
-    } catch (err) {
-      setDeckDescStatus("批次識別發生錯誤：" + (err.message || "未知錯誤"));
-    } finally {
-      aiBatchRunning = false;
-      aiBatchStopRequested = false;
-      if (batchBtn) batchBtn.disabled = false;
-      stopBtn?.classList.add("hidden");
-    }
-  };
-
-  window.runAiBatchCatalogScan = async function () {
-    if (aiBatchRunning || catalogBusy) return;
-    const apiKey = getSavedApiKey();
-    if (!apiKey) {
-      const panel = document.getElementById("ai-settings-panel");
-      panel?.classList.remove("hidden");
-      syncAiKeyUI();
-      catalogStatus("請先在上方「🔑 AI Key」貼上並儲存你的 Gemini API Key！");
-      return;
-    }
-
-    const targets = catalogEntries.filter(c => c.image && (!c.reduction && !c.symbol));
-    if (!targets.length) {
-      catalogStatus("卡池中所有已導入卡圖的卡片皆已填寫減輕或標誌！");
-      return;
-    }
-
-    if (!confirm(`共偵測到 ${targets.length} 張尚未填寫減輕與標誌的卡圖。\n\n是否開始使用 Gemini AI (${getSavedModel()}) 批次自動辨識並儲存至共用卡池？\n（過程中可隨時點擊「⏹ 停止批次」暫停）`)) {
-      return;
-    }
-
-    aiBatchRunning = true;
-    aiBatchStopRequested = false;
-    const batchBtn = document.getElementById("btn-ai-batch-scan");
-    const stopBtn = document.getElementById("btn-ai-batch-stop");
-    if (batchBtn) batchBtn.disabled = true;
-    stopBtn?.classList.remove("hidden");
-
-    const model = getSavedModel();
-    let done = 0;
-    let failed = 0;
-
-    try {
-      const cloud = await catalogCloud();
-      for (let i = 0; i < targets.length; i++) {
-        if (aiBatchStopRequested) break;
-        const card = targets[i];
-        catalogStatus(`✨ AI 批次辨識中 (${i + 1} / ${targets.length})：${card.number} ${card.name}…`);
-        try {
-          const result = await callGeminiForCardSymbols(card.image, apiKey, model);
-          const updated = normalizeCatalogCard({
-            ...card,
-            reduction: result.reduction || card.reduction || "",
-            symbol: result.symbol || card.symbol || ""
-          });
-          await cloud.save(updated, card.revision, card.number);
-          done++;
-        } catch (err) {
-          console.warn("Batch AI skip card:", card.number, err);
-          failed++;
-          // 若遇到 API Key 無效或配額上限，直接中止避免連續失敗
-          if (/API_KEY_INVALID|403|401/i.test(String(err.message || ""))) {
-            catalogStatus("API Key 無效或權限不足，已自動停止批次辨識：" + err.message);
-            break;
-          }
-        }
-        // 間隔 1.2 秒避免觸發免費版 RPM 速率限制
-        if (!aiBatchStopRequested && i < targets.length - 1) {
-          await new Promise(r => setTimeout(r, 1200));
-        }
+      const targets = catalogEntries.filter(c => (c.reduction || "").trim() || (c.symbol || "").trim());
+      if (!targets.length) {
+        catalogStatus("卡池中目前沒有任何已填寫的輕減或標誌資料。");
+        return;
       }
-      await refreshCardDatabase();
-      catalogStatus(`✨ AI 批次辨識結束！成功更新 ${done} 張${failed ? `，失敗/跳過 ${failed} 張` : ""}${aiBatchStopRequested ? "（已手動停止）" : ""}。`);
+      if (!confirm(`確定要移除卡池中全部 ${targets.length} 張卡片的「輕減」與「標誌」嗎？\n\n（卡名、費用、效果與圖片皆會完整保留，此操作可方便你重新用 Python 腳本批次導入正確資料）`)) {
+        catalogStatus(`共 ${catalogEntries.length} 張卡片`);
+        return;
+      }
+      symBatchRunning = true;
+      const t0 = performance.now();
+      catalogStatus(`⚡ 正在極速清除 ${targets.length} 張卡片的輕減與標誌…`);
+      const cloud = await catalogCloud();
+      const patchItems = targets.map(c => ({ number: c.number, reduction: "", symbol: "" }));
+      const { count, updatedMap } = await cloud.batchPatchSymbols(patchItems, (done, total) => {
+        catalogStatus(`⚡ 正在批次清除 (${done}/${total})…`);
+      });
+
+      applyLocalSymbolPatchFast(updatedMap);
+      const sec = ((performance.now() - t0) / 1000).toFixed(2);
+      catalogStatus(`🧹 極速清除完成（耗時 ${sec} 秒）！已移除 ${count} 張卡片的輕減與標誌。`);
     } catch (err) {
-      catalogStatus("批次辨識發生錯誤：" + (err.message || "未知錯誤"));
+      catalogStatus("清除失敗：" + (err.message || "未知錯誤"));
     } finally {
-      aiBatchRunning = false;
-      aiBatchStopRequested = false;
-      if (batchBtn) batchBtn.disabled = false;
-      stopBtn?.classList.add("hidden");
+      symBatchRunning = false;
+      if (btn) btn.disabled = false;
     }
   };
 
-  syncAiKeyUI();
+  // 5. 單副卡組：極速移除該卡組所有卡片的輕減與標誌
+  window.clearDeckSymbols = async function (deckId, sourceMode) {
+    if (symBatchRunning || catalogBusy || !deckId) return;
+    const setStatus = sourceMode === "vaultTools" ? setVaultToolsStatus : setDeckDescStatus;
+    try {
+      setStatus("正在讀取卡組卡片資料…");
+      const rec = await resolveDeckFullRecord(deckId);
+      if (!rec) {
+        setStatus("找不到該卡組資料。");
+        return;
+      }
+      const cards = await getDeckLinkedCatalogCards(rec);
+      const targets = cards.filter(c => (c.reduction || "").trim() || (c.symbol || "").trim());
+      if (!targets.length) {
+        setStatus(`卡組「${rec.name}」目前沒有已填寫的輕減或標誌資料。`);
+        return;
+      }
+      if (!confirm(`確定要移除卡組「${rec.name}」內 ${targets.length} 張卡片的「輕減」與「標誌」嗎？\n\n（其他卡組未共用的卡片不受影響）`)) {
+        setStatus("已取消清除。");
+        return;
+      }
+      symBatchRunning = true;
+      const t0 = performance.now();
+      setStatus(`⚡ 正在極速清除「${rec.name}」(${targets.length} 張)…`);
+      const cloud = await catalogCloud();
+      const patchItems = targets.map(c => ({ number: c.number, reduction: "", symbol: "" }));
+      const { count, updatedMap } = await cloud.batchPatchSymbols(patchItems, (done, total) => {
+        setStatus(`⚡ 正在批次清除「${rec.name}」(${done}/${total})…`);
+      });
+
+      applyLocalSymbolPatchFast(updatedMap);
+      const sec = ((performance.now() - t0) / 1000).toFixed(2);
+      setStatus(`🧹 極速清除完成（耗時 ${sec} 秒）！已清除卡組「${rec.name}」共 ${count} 張卡片的輕減與標誌！`);
+    } catch (err) {
+      setStatus("清除失敗：" + (err.message || "未知錯誤"));
+    } finally {
+      symBatchRunning = false;
+    }
+  };
+
+  // 6. 卡組庫「單副卡組輕減／標誌管理」彈窗
+  window.openDeckSymbolToolsModal = async function () {
+    const modal = document.getElementById("deck-symbol-tools-modal");
+    const list = document.getElementById("deck-symbol-tools-list");
+    if (!modal || !list) return;
+    modal.classList.remove("hidden");
+    setVaultToolsStatus("載入卡組列表中…");
+    list.innerHTML = "";
+    try {
+      const decks = await getAllDecksFromVaultDB(true);
+      if (!decks.length) {
+        setVaultToolsStatus("目前卡組庫尚無任何卡組。");
+        return;
+      }
+      setVaultToolsStatus("請選擇要處理的卡組：可單獨移除輕減／標誌，或單獨匯出／導入純卡號清單。");
+      decks.forEach(d => {
+        const row = document.createElement("div");
+        row.className = "flex items-center justify-between gap-2 p-2.5 border border-[#b09466]/40 bg-[#141210] rounded-sm flex-wrap";
+        const info = document.createElement("div");
+        info.className = "min-w-0 flex-1";
+        info.innerHTML = `<div class="text-sm font-black text-[#f5efe6] truncate">${escapeHtmlSimple(d.name || "未命名卡組")}</div><div class="text-[11px] text-[#a89f91]">${d.cardCount || 0} 張 (${d.uniqueCount || 0} 種卡圖)</div>`;
+
+        const acts = document.createElement("div");
+        acts.className = "flex items-center gap-1.5 flex-wrap";
+
+        const btnClear = document.createElement("button");
+        btnClear.type = "button";
+        btnClear.className = "text-xs font-bold px-2.5 py-1 rounded-sm border border-rose-500/60 bg-rose-950/60 text-rose-200 hover:bg-rose-600 hover:text-white cursor-pointer";
+        btnClear.textContent = "🧹 移除輕減/標誌";
+        btnClear.onclick = () => window.clearDeckSymbols(d.id, "vaultTools");
+
+        const btnExport = document.createElement("button");
+        btnExport.type = "button";
+        btnExport.className = "text-xs font-bold px-2.5 py-1 rounded-sm border border-amber-400/65 bg-amber-950/60 text-amber-200 hover:bg-amber-400 hover:text-black cursor-pointer";
+        btnExport.textContent = "📄 匯出純卡號";
+        btnExport.onclick = () => window.exportDeckLightNumberList(d.id, "vaultTools");
+
+        const btnImport = document.createElement("button");
+        btnImport.type = "button";
+        btnImport.className = "text-xs font-bold px-2.5 py-1 rounded-sm border border-emerald-500/65 bg-emerald-950/60 text-emerald-200 hover:bg-emerald-500 hover:text-black cursor-pointer";
+        btnImport.textContent = "📥 導入輕減/標誌";
+        btnImport.onclick = () => document.getElementById("vault-single-deck-import-input")?.click();
+
+        acts.append(btnClear, btnExport, btnImport);
+        row.append(info, acts);
+        list.appendChild(row);
+      });
+    } catch (err) {
+      setVaultToolsStatus("讀取卡組失敗：" + (err.message || "未知錯誤"));
+    }
+  };
+
+  window.closeDeckSymbolToolsModal = function () {
+    document.getElementById("deck-symbol-tools-modal")?.classList.add("hidden");
+  };
+
+  const modalEl = document.getElementById("deck-symbol-tools-modal");
+  if (modalEl) {
+    modalEl.addEventListener("pointerdown", e => {
+      if (e.target === modalEl) {
+        e.stopPropagation();
+        window.closeDeckSymbolToolsModal();
+      }
+    });
+  }
 })();
 </script>
 <!-- #endregion -->
-
 
 <!-- #region 17. [外掛] 出牌完整支付系統：Life上方開關、確認彈窗、預備區優先扣費、場上與魂Core高亮點擊支付、空間下方取消列 -->
 <style>
@@ -13923,20 +13490,45 @@ Object.assign(window, {
 <script>
 (function () {
   /* =========================================================================
-     PART 1: 左上角 BS v3.0 版本號齒輪控制
+     PART 1: 左上角 BS 版本號齒輪控制（語意化 major.minor：支援 3.7 -> 3.8 -> 3.9 -> 3.10 -> 3.11）
   ========================================================================= */
-  const VER_KEY = "bs_app_version_num";
-  let currentVersionNum = 3.0;
+  const BS_DEFAULT_VERSION = "3.10";
+  const VER_KEY = "bs_app_version_str";
+  const VER_BASE_KEY = "bs_app_version_base";
+  window.BS_APP_VERSION = BS_DEFAULT_VERSION;
+
+  function parseSemVer(str) {
+    const m = String(str || "").trim().match(/^(\d+)\.(\d+)$/);
+    if (!m) return { major: 3, minor: 7 };
+    return { major: Math.max(0, parseInt(m[1], 10)), minor: Math.max(0, parseInt(m[2], 10)) };
+  }
+
+  let currentVer = parseSemVer(BS_DEFAULT_VERSION);
   try {
-    const saved = parseFloat(localStorage.getItem(VER_KEY));
-    if (!isNaN(saved) && saved >= 0) currentVersionNum = saved;
+    const savedBase = localStorage.getItem(VER_BASE_KEY);
+    if (savedBase !== BS_DEFAULT_VERSION) {
+      // 檔案本身升級至新版本時，自動同步為檔案預設版本號
+      localStorage.setItem(VER_BASE_KEY, BS_DEFAULT_VERSION);
+      localStorage.setItem(VER_KEY, BS_DEFAULT_VERSION);
+    } else {
+      const saved = localStorage.getItem(VER_KEY);
+      if (saved && /^\d+\.\d+$/.test(saved)) currentVer = parseSemVer(saved);
+    }
   } catch (e) {}
 
+  function formatCurrentVer() {
+    return `${currentVer.major}.${currentVer.minor}`;
+  }
+
   function renderBsVersionLabel() {
-    const text = `BS v${currentVersionNum.toFixed(1)}`;
+    const v = formatCurrentVer();
+    window.BS_APP_VERSION = v;
+    const text = `BS v${v}`;
     const el = document.getElementById("bs-brand-title-text");
     if (el) el.textContent = text;
     document.title = text;
+    const badge = document.getElementById("changelog-current-ver");
+    if (badge) badge.textContent = `v${v}`;
   }
 
   window.toggleVersionGearMenu = function (e) {
@@ -13945,15 +13537,35 @@ Object.assign(window, {
     if (menu) menu.classList.toggle("hidden");
   };
 
-  window.bumpBsVersion = function (delta) {
-    currentVersionNum = Math.max(0, Math.round((currentVersionNum + delta) * 10) / 10);
-    try { localStorage.setItem(VER_KEY, currentVersionNum.toFixed(1)); } catch (e) {}
+  window.bumpBsVersion = function (dMajor, dMinor) {
+    if (typeof dMinor === "undefined") {
+      // 相容舊呼叫格式 (0.1 / -0.1 / 1)
+      if (dMajor === 1) { dMajor = 1; dMinor = 0; }
+      else if (dMajor === -1) { dMajor = -1; dMinor = 0; }
+      else if (dMajor > 0) { dMajor = 0; dMinor = 1; }
+      else { dMajor = 0; dMinor = -1; }
+    }
+    if (dMajor) {
+      currentVer.major = Math.max(0, currentVer.major + dMajor);
+      currentVer.minor = 0;
+    } else if (dMinor) {
+      if (currentVer.minor + dMinor < 0) {
+        if (currentVer.major > 0) { currentVer.major -= 1; currentVer.minor = 9; }
+        else currentVer.minor = 0;
+      } else {
+        currentVer.minor += dMinor;
+      }
+    }
+    try { localStorage.setItem(VER_KEY, formatCurrentVer()); } catch (e) {}
     renderBsVersionLabel();
   };
 
   window.resetBsVersion = function () {
-    currentVersionNum = 3.0;
-    try { localStorage.setItem(VER_KEY, "3.0"); } catch (e) {}
+    currentVer = parseSemVer(BS_DEFAULT_VERSION);
+    try {
+      localStorage.setItem(VER_BASE_KEY, BS_DEFAULT_VERSION);
+      localStorage.setItem(VER_KEY, BS_DEFAULT_VERSION);
+    } catch (e) {}
     renderBsVersionLabel();
   };
 
@@ -14646,6 +14258,323 @@ Object.assign(window, {
     baseHidePreviewForGodDeploy(...args);
     godDeployBtn.classList.add("hidden");
   };
+})();
+</script>
+<!-- #endregion -->
+
+
+<!-- #region 21. [功能] 版本更新日誌系統 (BS_CHANGELOG：3.7 起每版累積記錄) -->
+<style>
+  #changelog-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 12800;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px;
+  }
+  #changelog-modal.hidden {
+    display: none !important;
+  }
+  .changelog-panel {
+    width: min(760px, 100%);
+    max-height: min(88dvh, 840px);
+    background: #0d0c0b;
+    border: 1.5px solid #c8aa76;
+    border-radius: 4px;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.96);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    color: #e5dccb;
+  }
+  .changelog-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 14px 18px;
+    border-bottom: 1px solid rgba(186, 158, 108, 0.35);
+    background: linear-gradient(180deg, rgba(200, 170, 118, 0.14), rgba(13, 12, 11, 0.95));
+  }
+  .changelog-body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    touch-action: pan-y;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .changelog-entry {
+    border: 1px solid rgba(186, 158, 108, 0.35);
+    background: rgba(20, 18, 16, 0.88);
+    border-radius: 4px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .changelog-entry.is-latest {
+    border-color: rgba(224, 178, 91, 0.85);
+    box-shadow: 0 0 18px rgba(200, 170, 118, 0.15);
+  }
+  .changelog-entry-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid rgba(186, 158, 108, 0.22);
+    padding-bottom: 8px;
+  }
+  .changelog-ver-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    font-weight: 900;
+    color: #090807;
+    background: #c8aa76;
+    padding: 2px 10px;
+    border-radius: 2px;
+    letter-spacing: 0.05em;
+  }
+  .changelog-group-title {
+    font-size: 12.5px;
+    font-weight: 900;
+    color: #e0b25b;
+    margin-bottom: 4px;
+    letter-spacing: 0.04em;
+  }
+  .changelog-list {
+    margin: 0;
+    padding-left: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 12.5px;
+    line-height: 1.65;
+    color: #dcd6cc;
+    list-style-type: disc;
+  }
+  body.phone-mode #btn-changelog {
+    font-size: 12.5px !important;
+    padding: 4px 8px !important;
+    min-height: 30px !important;
+  }
+  body.phone-mode .changelog-panel {
+    max-height: 92dvh;
+  }
+  body.phone-mode .changelog-list {
+    font-size: 13.5px;
+  }
+</style>
+
+<div id="changelog-modal" class="hidden" role="dialog" aria-modal="true" aria-labelledby="changelog-modal-title">
+  <div class="changelog-panel">
+    <div class="changelog-header">
+      <div class="flex items-center gap-2.5 flex-wrap">
+        <h2 id="changelog-modal-title" class="text-base sm:text-lg font-black tracking-widest text-[#e0b25b]">📜 更新日誌 (CHANGELOG)</h2>
+        <span id="changelog-current-ver" class="text-xs font-black bg-emerald-950/80 border border-emerald-500/60 text-emerald-300 px-2 py-0.5 rounded-sm">v3.10</span>
+      </div>
+      <button type="button" class="border border-[#b09466]/55 bg-black/70 text-[#dcd6cc] hover:bg-[#c8aa76] hover:text-black px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="closeChangelogModal()">關閉 (✕)</button>
+    </div>
+    <div id="changelog-body" class="changelog-body custom-scrollbar"></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  /* =========================================================================
+     版本更新日誌資料（往後每次更新 3.8、3.9、3.10、3.11… 請於陣列最上方新增物件）
+  ========================================================================= */
+  window.BS_CHANGELOG = [
+    {
+      version: "3.10",
+      date: "2026-11-21",
+      title: "極速批次寫入引擎：移除／導入輕減標誌與單副卡組匯出全面提速",
+      sections: [
+        {
+          heading: "⚡ 批次寫入與快取效能大幅加速",
+          items: [
+            "重構雲端輕減／標誌寫入引擎（batchPatchSymbols）：改用 Firestore writeBatch 單次打包提交（每批最多 400 張），且僅傳輸輕減與標誌欄位、不再重複上傳卡圖，270 張卡由數分鐘縮短至約 1 秒內完成，同時省下 99% 雲端讀取額度。",
+            "移除與導入完成後改為原地更新本機快取與畫面，不再重新解碼全卡池圖片雜湊。",
+            "單副卡組純卡號清單匯出改為 Promise.all 並行計算卡圖雜湊，點擊即可瞬間完成匯出。"
+          ]
+        }
+      ]
+    },
+    {
+      version: "3.9",
+      date: "2026-11-21",
+      title: "精簡移除 AI 識圖與截圖匯出、新增卡池與單副卡組輕減／標誌一鍵清除修復",
+      sections: [
+        {
+          heading: "🧹 介面精簡與批次修復工具",
+          items: [
+            "移除未使用的 Gemini Vision AI 識圖按鈕、API Key 設定面板與大型截圖匯出功能，僅保留極輕量「📄 匯出純卡號清單」與「📥 導入輕減/標誌」，並大幅縮減檔案體積。",
+            "於「📚 卡池」新增「🧹 移除全部輕減/標誌」按鈕，可一鍵清空整座卡池的錯誤輕減與標誌資料以重新匯入。",
+            "於「🗂️ 卡組庫」新增「🧹 移除卡組輕減/標誌」管理視窗（並同步更新卡組「添加描述」工具列），可單獨選擇任一副卡組清除輕減／標誌，以及單獨匯出／導入該卡組的純卡號清單。"
+          ]
+        }
+      ]
+    },
+    {
+      version: "3.8",
+      date: "2026-11-21",
+      title: "極輕量純卡號清單匯出與輕減／標誌批次導入",
+      sections: [
+        {
+          heading: "📄 卡池純文字極輕量匯出／導入",
+          items: [
+            "於「📚 卡池」新增「📄 匯出純卡號清單」按鈕：僅匯出尚未填寫輕減與標誌卡片的卡號、卡名、種類、費用與屬性（完全不含圖片，檔案大小僅數 KB）。",
+            "搭配旁邊的「📥 導入輕減/標誌」按鈕，可將查表或 Python 腳本補齊後的結果檔一鍵批次寫入卡池並同步雲端。"
+          ]
+        }
+      ]
+    },
+    {
+      version: "3.7",
+      date: "2026-11-20",
+      title: "系統整合基準版與更新日誌上線",
+      sections: [
+        {
+          heading: "⚔️ 對戰桌面與多人連線同步",
+          items: [
+            "支援雙人即時連線房間（建立房間／在線房間列表／代碼加入／剪貼簿貼上加入）、觀戰公開視角與持久化玩家暱稱。",
+            "完整 Battle Spirits 戰場區域：Life、Reserve、Count、Deck、Trash、除外區、Burst、創界神區、手元區與空間 Core。",
+            "實體藍色 Core 與魂 Core 自由拖曳／點擊轉移，支援卡牌 [+] 自動從預備區移入魂 Core 與 [-] 最後移除魂 Core，並附帶飛行動畫與數值閃光提示。",
+            "內建回合數計數器、「結束回合」對手場地高亮提示、先攻抽籤動畫、Burst 煙花特效、YouTube BGM 循環播放與自訂全球同步卡背。"
+          ]
+        },
+        {
+          heading: "🃏 自動化規則與卡牌機制引擎",
+          items: [
+            "出牌完整支付系統：Life 上方獨立開關，出牌確認彈窗自動計算減輕後費用，預備區優先扣費並支援高亮場上卡牌與魂 Core 支付，以及取消全額退還。",
+            "減輕 (Reduction) 與標誌 (Symbol) 系統：即時統計場上全屬性標誌與雙色標誌，自動於手牌預覽顯示減輕後費用與左上角費用徽章。",
+            "魔法卡 (Magic) 系統：支援手牌「使用」按鈕與直接拖動上場施放，均播放屬性魔法陣特效並同步至對手畫面。",
+            "創界神 (Grandwalker) 系統：自動偵測配置時「神託」對象加 Core、支援【契約技／神技】消耗 Core 與【契約域／神域】自動計算 Count 加成。",
+            "進階機制全面支援：合體 (Brave) 多層疊放與 BP 加成、煌臨 (Advent) 堆疊與屬性爆炸特效、転醒 (A/B 雙面翻轉)、顕現 (Manifest)、契約牌檢索、幻境 (Mirage) 設置與公開卡牌視窗。"
+          ]
+        },
+        {
+          heading: "📚 共用卡池、卡組庫與 AI 輔助",
+          items: [
+            "全球同步共用卡池與卡組庫：支援 .ZIP 匯入、視覺感知雜湊 (dHash) 辨識、卡池篩選組牌器、張數自由編輯、卡牌翻譯側邊欄與 .JSON 完整備份／還原。",
+            "Gemini Vision AI 辨識工作流：支援單卡與卡組批次辨識減輕／標誌，亦提供微縮截圖匯出 (.json) 與批次導入識別結果。"
+          ]
+        },
+        {
+          heading: "⚡ 雲端額度優化與多裝置操作體驗",
+          items: [
+            "Firebase 讀取額度治本優化：卡池改為 IndexedDB 本機快取 + 單一版本號比對、卡組庫延遲載入、房間卡圖共用卡池圖與去重打包傳輸，大幅降低每日讀取消耗。",
+            "PC／iPad／手機三模式獨立適配：手機模式採 640px 超大戰場優先排版（可同時容納 15～20 張卡）、原生 1:1 底部手牌列、可收納頂部工具抽屜，以及創界神預覽一鍵「設置」按鈕。",
+            "全新左上角版本號系統（自 v3.7 起支援 3.8、3.9、3.10、3.11 語意化遞增）與內建更新日誌視窗。"
+          ]
+        }
+      ]
+    }
+  ];
+
+  function renderChangelogModal() {
+    const body = document.getElementById("changelog-body");
+    const badge = document.getElementById("changelog-current-ver");
+    if (badge && window.BS_APP_VERSION) badge.textContent = `v${window.BS_APP_VERSION}`;
+    if (!body) return;
+    body.innerHTML = "";
+
+    (window.BS_CHANGELOG || []).forEach((entry, idx) => {
+      const card = document.createElement("section");
+      card.className = "changelog-entry" + (idx === 0 ? " is-latest" : "");
+
+      const head = document.createElement("div");
+      head.className = "changelog-entry-head";
+      const left = document.createElement("div");
+      left.className = "flex items-center gap-2 flex-wrap";
+      const verSpan = document.createElement("span");
+      verSpan.className = "changelog-ver-pill";
+      verSpan.textContent = `v${entry.version}`;
+      const titleSpan = document.createElement("span");
+      titleSpan.className = "text-sm sm:text-base font-black text-[#f5efe6]";
+      titleSpan.textContent = entry.title || "";
+      left.append(verSpan, titleSpan);
+      if (idx === 0) {
+        const latestTag = document.createElement("span");
+        latestTag.className = "text-[10px] font-black bg-amber-950/90 border border-[#e0b25b] text-[#fde047] px-1.5 py-0.5 rounded-sm";
+        latestTag.textContent = "最新";
+        left.append(latestTag);
+      }
+
+      const dateSpan = document.createElement("span");
+      dateSpan.className = "text-xs font-bold text-[#a89f91]";
+      dateSpan.textContent = entry.date || "";
+
+      head.append(left, dateSpan);
+      card.append(head);
+
+      if (Array.isArray(entry.sections)) {
+        entry.sections.forEach(sec => {
+          const secWrap = document.createElement("div");
+          const h = document.createElement("div");
+          h.className = "changelog-group-title";
+          h.textContent = sec.heading || "";
+          const ul = document.createElement("ul");
+          ul.className = "changelog-list";
+          (sec.items || []).forEach(txt => {
+            const li = document.createElement("li");
+            li.textContent = txt;
+            ul.append(li);
+          });
+          secWrap.append(h, ul);
+          card.append(secWrap);
+        });
+      } else if (Array.isArray(entry.items)) {
+        const ul = document.createElement("ul");
+        ul.className = "changelog-list";
+        entry.items.forEach(txt => {
+          const li = document.createElement("li");
+          li.textContent = txt;
+          ul.append(li);
+        });
+        card.append(ul);
+      }
+
+      body.append(card);
+    });
+  }
+
+  window.openChangelogModal = function () {
+    const modal = document.getElementById("changelog-modal");
+    if (!modal) return;
+    if (typeof hideCardPreview === "function") hideCardPreview();
+    renderChangelogModal();
+    modal.classList.remove("hidden");
+  };
+
+  window.closeChangelogModal = function () {
+    document.getElementById("changelog-modal")?.classList.add("hidden");
+  };
+
+  const modalEl = document.getElementById("changelog-modal");
+  if (modalEl) {
+    modalEl.addEventListener("pointerdown", e => {
+      if (e.target === modalEl) {
+        e.stopPropagation();
+        closeChangelogModal();
+      }
+    });
+  }
+
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape") closeChangelogModal();
+  });
 })();
 </script>
 <!-- #endregion -->
