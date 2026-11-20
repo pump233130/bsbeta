@@ -2287,7 +2287,7 @@ body.mobile-mode #playmat-root .brave-god-attached .god-core-badge {
 </button>
 <!-- #region 頂部控制列與遊戲主戰場桌面 -->
 <header id="main-top-header" class="flex flex-wrap justify-between items-center bg-[#0a0a0a]/90 border border-[#b09466]/40 rounded-sm py-1.5 px-3 flex-none gap-x-2 gap-y-1.5 shadow-lg transition-all duration-200">
-<div class="flex items-center gap-2 flex-shrink-0">
+<div class="header-brand-row flex items-center gap-2 flex-shrink-0">
 <div class="relative text-sm sm:text-base font-black tracking-wider text-[#e5dccb] flex items-center gap-1.5 whitespace-nowrap">
 <span id="bs-brand-title-text">BS v3.0</span>
 <button id="btn-version-gear" type="button" class="text-xs bg-black/70 border border-[#b09466]/50 hover:bg-[#c8aa76] hover:text-black text-[#e0b25b] px-1.5 py-0.5 rounded-sm cursor-pointer transition-colors leading-none" onclick="toggleVersionGearMenu(event)" title="點擊調整版本號數字">⚙️</button>
@@ -2301,27 +2301,28 @@ body.mobile-mode #playmat-root .brave-god-attached .god-core-badge {
 <span id="room-status-badge" class="hidden text-[10px] bg-emerald-950/80 border border-emerald-500/50 text-emerald-300 px-2 py-0.5 rounded-sm font-bold cursor-pointer hover:bg-emerald-800/80 transition-colors whitespace-nowrap" onclick="copyRoomCode()" title="點擊複製房間代碼">
 </span> <span id="mp-status-msg" class="text-[10px] sm:text-xs text-[#c8bea8] whitespace-nowrap">
 </span>
+<button id="btn-phone-more-tools" type="button" class="phone-only-ui ml-auto text-xs bg-[#c8aa76]/20 border border-[#c8aa76]/70 text-[#e0b25b] px-2.5 py-1 rounded-sm font-black cursor-pointer whitespace-nowrap" onclick="togglePhoneHeaderDrawer()">☰ 更多工具</button>
 </div>
-<div class="flex gap-1.5 items-center flex-wrap justify-end flex-1">
-<div class="flex items-center gap-1 bg-black/70 px-2 py-0.5 sm:py-1 rounded-sm border border-[#b09466]/35 flex-shrink-0">
+<div id="header-controls-wrap" class="flex gap-1.5 items-center flex-wrap justify-end flex-1">
+<div class="phone-drawer-item flex items-center gap-1 bg-black/70 px-2 py-0.5 sm:py-1 rounded-sm border border-[#b09466]/35 flex-shrink-0">
 <span class="text-[10px] sm:text-[11px] text-[#e0b25b] font-bold whitespace-nowrap">👤</span>
 <input id="player-nickname-input" type="text" maxlength="16" placeholder="輸入暱稱" autocomplete="off" class="w-20 sm:w-24 bg-transparent text-[10px] sm:text-xs text-[#f5efe6] font-bold outline-none caret-[#facc15] placeholder:text-stone-500" oninput="if(!event.isComposing)setLocalPlayerName(this.value)" oncompositionend="setLocalPlayerName(this.value)" title="設定你的玩家名稱（自動記憶於此瀏覽器）">
 <button type="button" class="text-[10px] text-[#a89f91] hover:text-rose-400 px-1 leading-none cursor-pointer transition-colors" onclick="clearLocalPlayerName()" title="清除暱稱">✕</button>
 <button type="button" class="text-[10px] text-[#c8bea8] hover:text-[#e0b25b] px-0.5 leading-none cursor-pointer transition-colors" onclick="pasteLocalPlayerName()" title="貼上剪貼簿文字作為暱稱">📋</button>
 </div>
-<div class="flex items-center bg-black/70 p-0.5 rounded-sm border border-[#b09466]/35 flex-shrink-0">
+<div class="phone-drawer-item flex items-center bg-black/70 p-0.5 rounded-sm border border-[#b09466]/35 flex-shrink-0">
 <button id="btn-mode-pc" class="text-[10px] sm:text-[11px] px-2 py-0.5 sm:py-1 rounded-sm bg-[#c8aa76] text-black font-bold cursor-pointer transition-all whitespace-nowrap" onclick='setControlMode("PC")' title="電腦模式：完整桌面介面、滑鼠懸停預覽、單擊轉向、雙擊翻面">💻 電腦</button> <button id="btn-mode-ipad" class="text-[10px] sm:text-[11px] px-2 py-0.5 sm:py-1 rounded-sm bg-transparent text-[#a89f91] hover:text-white cursor-pointer transition-all whitespace-nowrap" onclick='setControlMode("IPAD")' title="iPad模式：保留完整桌面介面與全部獨立按鈕，支援觸控單擊放大與按住拖曳">iPad</button> <button id="btn-mode-phone" class="text-[10px] sm:text-[11px] px-2 py-0.5 sm:py-1 rounded-sm bg-transparent text-[#a89f91] hover:text-white cursor-pointer transition-all whitespace-nowrap" onclick='setControlMode("PHONE")' title="手機模式：專為手機螢幕放大的巨型按鈕介面，並將細碎按鈕自動收納為選單">📱 手機</button>
 </div>
-<div class="flex items-center gap-1 bg-black/70 px-2 py-0.5 sm:py-1 rounded-sm border border-[#b09466]/35 flex-shrink-0">
+<div class="phone-drawer-item flex items-center gap-1 bg-black/70 px-2 py-0.5 sm:py-1 rounded-sm border border-[#b09466]/35 flex-shrink-0">
 <button id="btn-bgm-toggle" class="text-[10px] sm:text-[11px] text-[#c8bea8] hover:text-white font-bold cursor-pointer transition-colors flex items-center gap-1 whitespace-nowrap" onclick="toggleBgmPlayback()" title="播放 / 關閉背景音樂">🎵 BGM OFF</button> <input id="bgm-volume-slider" type="range" min="0" max="100" value="40" class="w-12 sm:w-16 h-1 bg-stone-700 rounded-none appearance-none cursor-pointer accent-[#c8aa76]" oninput="changeBgmVolume(this.value)" title="調整背景音樂大小"> <span id="bgm-volume-label" class="text-[9px] sm:text-[10px] text-[#c8bea8] font-bold min-w-[24px] text-right">40%</span> <button id="btn-bgm-pip" class="text-[10px] text-[#c8bea8] hover:text-[#e0b25b] px-1 rounded-sm cursor-pointer transition-colors" onclick="toggleBgmMiniVideo()" title="顯示 / 隱藏 YouTube 迷你播放窗">📺</button>
 </div>
-<div class="flex items-center gap-1 bg-black/70 px-2 py-0.5 sm:py-1 rounded-sm border border-[#b09466]/35 flex-shrink-0">
+<div class="phone-drawer-item flex items-center gap-1 bg-black/70 px-2 py-0.5 sm:py-1 rounded-sm border border-[#b09466]/35 flex-shrink-0">
 <span class="text-[10px] sm:text-[11px] text-[#c8bea8] font-bold whitespace-nowrap" title="調整放大預覽卡片的顯示尺寸">🔍 預覽</span> <input id="preview-scale-slider" type="range" min="50" max="160" value="100" class="w-12 sm:w-16 h-1 bg-stone-700 rounded-none appearance-none cursor-pointer accent-[#c8aa76]" oninput="changePreviewCardScale(this.value)" title="拉動放大或縮細預覽卡片尺寸 (50% ~ 160%)"> <span id="preview-scale-label" class="text-[9px] sm:text-[10px] text-[#c8bea8] font-bold min-w-[28px] text-right">100%</span> <button type="button" class="text-[9px] sm:text-[10px] border border-[#b09466]/45 bg-white/5 hover:bg-[#c8aa76] hover:text-black text-[#e0b25b] px-1.5 py-0.5 rounded-sm font-bold cursor-pointer transition-colors leading-none whitespace-nowrap" onclick="changePreviewCardScale(100)" title="重設為預設 100% 預覽尺寸">預設</button>
 </div>
-<div class="flex items-center gap-1 flex-shrink-0">
-<input type="file" id="upload-cardback-input" accept="image/*" class="hidden" onchange="uploadCustomCardBack(event)"> <button id="btn-custom-cardback" class="text-[10px] sm:text-xs bg-black/70 border border-[#b09466]/45 px-2 py-0.5 sm:py-1 rounded-sm text-[#e0b25b] hover:bg-[#c8aa76] hover:text-black font-bold cursor-pointer transition-all whitespace-nowrap" onclick='document.getElementById("upload-cardback-input").click()' title="上傳你自己的 BS 卡背圖片">🖼️ 卡背</button> <button id="btn-top-lottery" class="text-[10px] sm:text-xs bg-black/70 border border-[#b09466]/45 px-2 py-0.5 sm:py-1 rounded-sm text-[#e0b25b] hover:bg-[#c8aa76] hover:text-black font-bold cursor-pointer transition-all whitespace-nowrap" onclick="startPlayerLottery()" title="隨機抽籤決定先攻">🎲 抽籤</button> <button id="btn-reset" class="text-[10px] sm:text-xs bg-rose-950/50 border border-rose-500/45 px-2.5 py-0.5 sm:py-1 rounded-sm text-rose-300 hover:bg-rose-700 hover:text-white font-bold cursor-pointer transition-all whitespace-nowrap" onclick="openResetModal()" title="重設場上所有卡片與 Core 至初始狀態 (保留牌組)">RESET</button> <button id="btn-sync" class="text-[10px] sm:text-xs bg-emerald-950/50 border border-emerald-500/45 px-2.5 py-0.5 sm:py-1 rounded-sm text-emerald-300 hover:bg-emerald-600 hover:text-black font-bold cursor-pointer transition-all whitespace-nowrap" onclick="openMultiplayerModal()">ONLINE SYNC</button> <button type="button" onclick="openCardDatabase()" class="text-[10px] sm:text-xs bg-black/70 border border-[#b09466]/45 px-2 py-1 text-[#e0b25b] font-bold">📚 卡池</button> <button id="btn-deck-vault" class="text-[10px] sm:text-xs bg-amber-950/50 border border-[#c8aa76]/60 px-2.5 py-0.5 sm:py-1 rounded-sm text-[#e0b25b] hover:bg-[#c8aa76] hover:text-black font-bold cursor-pointer transition-all whitespace-nowrap" onclick="openDeckVaultModal()" title="查看、編輯卡片張數或載入已儲存的牌組">🗂️ 卡組庫</button>
+<div class="header-main-actions flex items-center gap-1 flex-shrink-0">
+<input type="file" id="upload-cardback-input" accept="image/*" class="hidden" onchange="uploadCustomCardBack(event)"> <button id="btn-custom-cardback" class="phone-drawer-btn text-[10px] sm:text-xs bg-black/70 border border-[#b09466]/45 px-2 py-0.5 sm:py-1 rounded-sm text-[#e0b25b] hover:bg-[#c8aa76] hover:text-black font-bold cursor-pointer transition-all whitespace-nowrap" onclick='document.getElementById("upload-cardback-input").click()' title="上傳你自己的 BS 卡背圖片">🖼️ 卡背</button> <button id="btn-top-lottery" class="phone-drawer-btn text-[10px] sm:text-xs bg-black/70 border border-[#b09466]/45 px-2 py-0.5 sm:py-1 rounded-sm text-[#e0b25b] hover:bg-[#c8aa76] hover:text-black font-bold cursor-pointer transition-all whitespace-nowrap" onclick="startPlayerLottery()" title="隨機抽籤決定先攻">🎲 抽籤</button> <button id="btn-reset" class="phone-drawer-btn text-[10px] sm:text-xs bg-rose-950/50 border border-rose-500/45 px-2.5 py-0.5 sm:py-1 rounded-sm text-rose-300 hover:bg-rose-700 hover:text-white font-bold cursor-pointer transition-all whitespace-nowrap" onclick="openResetModal()" title="重設場上所有卡片與 Core 至初始狀態 (保留牌組)">RESET</button> <button id="btn-sync" class="text-[10px] sm:text-xs bg-emerald-950/50 border border-emerald-500/45 px-2.5 py-0.5 sm:py-1 rounded-sm text-emerald-300 hover:bg-emerald-600 hover:text-black font-bold cursor-pointer transition-all whitespace-nowrap" onclick="openMultiplayerModal()">ONLINE SYNC</button> <button type="button" onclick="openCardDatabase()" class="phone-drawer-btn text-[10px] sm:text-xs bg-black/70 border border-[#b09466]/45 px-2 py-1 text-[#e0b25b] font-bold">📚 卡池</button> <button id="btn-deck-vault" class="text-[10px] sm:text-xs bg-amber-950/50 border border-[#c8aa76]/60 px-2.5 py-0.5 sm:py-1 rounded-sm text-[#e0b25b] hover:bg-[#c8aa76] hover:text-black font-bold cursor-pointer transition-all whitespace-nowrap" onclick="openDeckVaultModal()" title="查看、編輯卡片張數或載入已儲存的牌組">🗂️ 卡組庫</button>
 </div>
-<div class="flex items-center gap-1 flex-shrink-0">
+<div class="header-seat-actions flex items-center gap-1 flex-shrink-0">
 <div class="flex items-center bg-black/70 p-0.5 rounded-sm border border-[#b09466]/35">
 <button id="btn-view-p1" class="text-[10px] sm:text-xs px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-sm text-[#a89f91] hover:text-white cursor-pointer transition-all whitespace-nowrap" onclick='setView("P1")'>Join P1</button> <button id="btn-view-p2" class="text-[10px] sm:text-xs px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-sm text-[#a89f91] hover:text-white cursor-pointer transition-all whitespace-nowrap" onclick='setView("P2")'>Join P2</button> <button id="btn-view-spec" class="text-[10px] sm:text-xs px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-sm bg-[#c8aa76] text-black font-bold cursor-pointer transition-all whitespace-nowrap" onclick='setView("SPECTATOR")'>觀戰</button>
 </div>
@@ -2747,17 +2748,35 @@ function createMainAreaHTML(e,t) {
 }
 ();
 let boardScale=1;
-const BASE_BOARD_WIDTH=960,PHONE_BOARD_WIDTH=620;
+const BASE_BOARD_WIDTH=960,PHONE_BOARD_WIDTH=640;
 function getActiveBaseBoardWidth() {
-  return void 0!==deviceMode&&"PHONE"===deviceMode?620:960
+  return void 0!==deviceMode&&"PHONE"===deviceMode?640:960
 }
 function updateHandOverlapLayout() {
   const e=getActiveBaseBoardWidth();
+  const isPhone="PHONE"===deviceMode;
   ["p1","p2"].forEach(t=> {
-    const o=document.getElementById(`hand-${t}`),a=document.getElementById(`section-hand-${t}`);if(!o||!a)return;const n=Array.from(o.querySelectorAll(".card")),r=n.length,s=a.classList.contains("sticky-bottom-hand"),l=s?Math.floor((window.innerWidth-12)/(boardScale||1)):e;if(s?(a.style.maxWidth=`${l}px`,a.style.width="max-content",a.style.minWidth="340px"):(a.style.maxWidth="100%",a.style.width="100%",a.style.minWidth="100%"),r<=1)return o.style.setProperty("--hand-card-gap","6px"),void n.forEach((e,t)=> {
+    const o=document.getElementById(`hand-${t}`),a=document.getElementById(`section-hand-${t}`);
+    if(!o||!a)return;
+    const n=Array.from(o.querySelectorAll(".card")),r=n.length,s=a.classList.contains("sticky-bottom-hand");
+    const phoneSticky=isPhone&&s;
+    const cardW=phoneSticky?74:100;
+    const l=phoneSticky?Math.max(260,window.innerWidth-10):(s?Math.floor((window.innerWidth-12)/(boardScale||1)):e);
+    if(phoneSticky) {
+      a.style.maxWidth=`${l}px`,a.style.width=`${l}px`,a.style.minWidth="0px";
+    } else if(s) {
+      a.style.maxWidth=`${l}px`,a.style.width="max-content",a.style.minWidth="340px";
+    } else {
+      a.style.maxWidth="100%",a.style.width="100%",a.style.minWidth="100%";
+    }
+    if(r<=1)return o.style.setProperty("--hand-card-gap","6px"),void n.forEach((e,t)=> {
       e.style.zIndex=String(10+t)
-    });const d=l-36;if(100*r+6*(r-1)<=d)o.style.setProperty("--hand-card-gap","6px");else {
-      const e=Math.max(-86,Math.floor((d-100*r)/(r-1)));o.style.setProperty("--hand-card-gap",`${e}px`)
+    });
+    const d=l-(phoneSticky?22:36);
+    if(cardW*r+6*(r-1)<=d)o.style.setProperty("--hand-card-gap","6px");
+    else {
+      const gap=Math.max(-(cardW-14),Math.floor((d-cardW*r)/(r-1)));
+      o.style.setProperty("--hand-card-gap",`${gap}px`)
     }
     n.forEach((e,t)=> {
       e.style.zIndex=String(10+t)
@@ -2766,9 +2785,18 @@ function updateHandOverlapLayout() {
 }
 function syncPinnedHandGeometry() {
   const e=document.getElementById("playmat-root");
-  [document.getElementById("section-hand-p1"),document.getElementById("section-hand-p2")].forEach(e=> {
-    e&&(e.classList.contains("sticky-bottom-hand")?e.style.transform=`translateX(-50%) scale(${boardScale})`:e.style.transform="")
-  }),updateHandOverlapLayout(),layoutCompactZones(),e&&(e.style.paddingBottom=isBottomHandPinned?`${Math.round(188*boardScale)+14}px`:"12px")
+  const isPhone="PHONE"===deviceMode;
+  [document.getElementById("section-hand-p1"),document.getElementById("section-hand-p2")].forEach(h=> {
+    if(!h)return;
+    if(h.classList.contains("sticky-bottom-hand")) {
+      h.style.transform=isPhone?"translateX(-50%)":`translateX(-50%) scale(${boardScale})`;
+    } else {
+      h.style.transform="";
+    }
+  }),updateHandOverlapLayout(),layoutCompactZones();
+  if(e) {
+    e.style.paddingBottom=isBottomHandPinned?(isPhone?"146px":`${Math.round(188*boardScale)+14}px`):"12px";
+  }
 }
 let lastResponsiveGeometry="";
 function responsiveGeometryKey(e,t) {
@@ -3499,7 +3527,7 @@ function getDisplayedCardCoreCount(e) {
   return e?(e.cores||0)+(e.zone&&e.zone.startsWith("field-")&&(gameState.soulCoreLocation?.p1===e.id||gameState.soulCoreLocation?.p2===e.id)?1:0):0
 }
 function getFieldUsableBounds(e) {
-  const t=document.getElementById(e),o=t&&t.clientWidth>0?t.clientWidth:600,a=t&&t.clientHeight>0?t.clientHeight:380,n=Math.max(8,o-108),r=Math.max(8,a-176);
+  const isPhone="PHONE"===deviceMode,t=document.getElementById(e),o=t&&t.clientWidth>0?t.clientWidth:600,a=t&&t.clientHeight>0?t.clientHeight:380,n=Math.max(6,o-(isPhone?80:108)),r=Math.max(6,a-(isPhone?134:176));
   return {
     minX:8,minY:8,maxX:n,maxY:r,spanX:Math.max(1,n-8),spanY:Math.max(1,r-8)
   }
@@ -3574,7 +3602,7 @@ function applyCardVisualState(e,t) {
   t.style.transform=a||n?`rotate(${r}deg)`:"",positionCardOverlays(e,t);
   const s=t.querySelector(".card-controls");
   if(s&&(a||n)) {
-    const e=(r%360+360)%360,t=90===e||270===e?70:90;
+    const e=(r%360+360)%360,isPhone="PHONE"===deviceMode,t=90===e||270===e?(isPhone?52:70):(isPhone?68:90);
     s.style.transform=`translate(-50%, -50%) rotate(${-r}deg) translateY(${t}px)`
   }
   const l=t.querySelector(".card-label"),d=e.imgBase64||cardImageCache[e.id]||"";
@@ -14113,6 +14141,461 @@ Object.assign(window, {
       }
     }
     return res;
+  };
+})();
+</script>
+<!-- #endregion -->
+
+
+<!-- #region 20. [外掛] 手機模式 (Phone Mode) 超大戰場空間優先與觸控最佳化 -->
+<style>
+  /* === 1. 手機模式頂部控制列：精簡大按鈕 + 可展開「更多工具」抽屜 === */
+  body.phone-mode #main-top-header {
+    padding: 5px 7px !important;
+    gap: 5px !important;
+  }
+  body.phone-mode #main-top-header .header-brand-row {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 8px;
+  }
+  body.phone-mode #bs-brand-title-text {
+    font-size: 15px !important;
+  }
+  body.phone-mode #btn-version-gear {
+    font-size: 14px !important;
+    padding: 3px 7px !important;
+  }
+  body.phone-mode #room-status-badge {
+    font-size: 12px !important;
+    padding: 3px 7px !important;
+  }
+  body.phone-mode #btn-phone-more-tools {
+    font-size: 12.5px !important;
+    padding: 4px 10px !important;
+    min-height: 32px !important;
+  }
+  body.phone-mode #header-controls-wrap {
+    width: 100%;
+    justify-content: space-between !important;
+    gap: 5px !important;
+  }
+  body.phone-mode #main-top-header:not(.phone-drawer-open) .phone-drawer-item,
+  body.phone-mode #main-top-header:not(.phone-drawer-open) .phone-drawer-btn {
+    display: none !important;
+  }
+  body.phone-mode #main-top-header.phone-drawer-open .phone-drawer-item {
+    display: flex !important;
+    width: 100%;
+    justify-content: space-between;
+    padding: 6px 10px !important;
+    min-height: 36px;
+  }
+  body.phone-mode #main-top-header.phone-drawer-open .phone-drawer-item input[type="text"] {
+    flex: 1;
+    width: auto !important;
+    font-size: 14px !important;
+  }
+  body.phone-mode #main-top-header.phone-drawer-open .phone-drawer-item input[type="range"] {
+    flex: 1;
+    height: 6px !important;
+  }
+  body.phone-mode #main-top-header.phone-drawer-open .phone-drawer-item button {
+    font-size: 13px !important;
+    padding: 4px 10px !important;
+    min-height: 30px;
+  }
+  body.phone-mode #main-top-header.phone-drawer-open .header-main-actions {
+    width: 100%;
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px !important;
+  }
+  body.phone-mode .header-main-actions button,
+  body.phone-mode .header-seat-actions button {
+    font-size: 12.5px !important;
+    padding: 5px 8px !important;
+    min-height: 34px !important;
+    font-weight: 900 !important;
+  }
+  body.phone-mode .header-seat-actions {
+    flex: 1;
+    justify-content: space-between !important;
+  }
+  body.phone-mode .header-seat-actions > div:first-child {
+    display: flex;
+    flex: 1;
+  }
+  body.phone-mode .header-seat-actions > div:first-child button {
+    flex: 1;
+    padding: 5px 4px !important;
+  }
+  body.phone-mode #top-header-toggle-btn {
+    width: 84px !important;
+    height: 28px !important;
+    font-size: 15px !important;
+  }
+
+  /* === 2. 超大戰場空間優先：窄側邊欄 (92px) + 寬大場地 (444px × 540px) === */
+  body.phone-mode .playmat-panel {
+    grid-template-columns: 92px 1fr 92px !important;
+    gap: 4px !important;
+    padding: 24px 3px 5px 3px !important;
+  }
+  body.phone-mode .field-zone {
+    min-height: 540px !important;
+  }
+  body.phone-mode .player-status-badge {
+    top: 3px !important;
+    left: 5px !important;
+    padding: 2px 7px !important;
+  }
+  body.phone-mode .player-status-badge .status-dot {
+    width: 8px !important;
+    height: 8px !important;
+  }
+  body.phone-mode .player-status-badge span:last-child {
+    font-size: 11px !important;
+  }
+  body.phone-mode .counter-box {
+    padding: 5px 4px !important;
+    gap: 3px !important;
+  }
+  body.phone-mode .counter-title {
+    font-size: 11px !important;
+    font-weight: 900 !important;
+    letter-spacing: 0.02em !important;
+    line-height: 1.15 !important;
+  }
+  body.phone-mode .counter-value {
+    font-size: 16px !important;
+    gap: 3px !important;
+    justify-content: center !important;
+    padding-left: 0 !important;
+  }
+  body.phone-mode .counter-btn {
+    width: 24px !important;
+    height: 24px !important;
+    font-size: 15px !important;
+    font-weight: 900 !important;
+    border-radius: 3px !important;
+  }
+  body.phone-mode .physical-core-gem {
+    width: 22px !important;
+    height: 22px !important;
+  }
+  body.phone-mode .core-gem-tray {
+    min-height: 24px !important;
+    padding: 2px !important;
+  }
+  body.phone-mode .soul-core-token {
+    width: 22px !important;
+    height: 22px !important;
+  }
+  body.phone-mode .soul-core-slot-empty {
+    width: 20px !important;
+    height: 20px !important;
+    font-size: 10px !important;
+  }
+  /* 修復 LIFE TAKE / RESERVE PAY 標題與按鈕重疊 */
+  body.phone-mode .highlight-action-btn {
+    position: static !important;
+    width: 100% !important;
+    font-size: 10.5px !important;
+    padding: 3px 4px !important;
+    border-radius: 3px !important;
+    margin-top: 1px !important;
+    text-align: center !important;
+  }
+  body.phone-mode .action-btn {
+    font-size: 11.5px !important;
+    padding: 6px 3px !important;
+    min-height: 30px !important;
+    border-radius: 3px !important;
+    font-weight: 900 !important;
+    line-height: 1.15 !important;
+  }
+  body.phone-mode .contract-deck-button {
+    font-size: 10.5px !important;
+    padding: 2px 5px !important;
+    min-width: 32px !important;
+  }
+  body.phone-mode .deck-cardback-visual {
+    width: 72px !important;
+    height: 100px !important;
+    margin: 2px auto !important;
+  }
+  body.phone-mode .deck-cardback-count {
+    font-size: 20px !important;
+    padding: 1px 7px !important;
+  }
+  body.phone-mode .play-pay-toggle-btn {
+    font-size: 10.5px !important;
+    padding: 5px 3px !important;
+    min-height: 28px !important;
+    font-weight: 900 !important;
+  }
+  body.phone-mode #trash-card-box-p1 > button.phone-only-ui,
+  body.phone-mode #trash-card-box-p2 > button.phone-only-ui {
+    font-size: 10.5px !important;
+    padding: 5px 3px !important;
+    line-height: 1.15 !important;
+  }
+
+  /* === 3. 場上卡牌尺寸最佳化 (74×104px)：可同時整齊展示 15～20 張卡 === */
+  body.phone-mode .field-zone > .card {
+    width: 74px !important;
+    height: 104px !important;
+  }
+  body.phone-mode .field-zone .card .card-controls {
+    padding: 2px 5px !important;
+    gap: 4px !important;
+    border-radius: 4px !important;
+  }
+  body.phone-mode .field-zone .card .card-core-pill {
+    padding: 1px 4px !important;
+    gap: 3px !important;
+  }
+  body.phone-mode .field-zone .card .card-core-dot {
+    width: 13px !important;
+    height: 13px !important;
+  }
+  body.phone-mode .field-zone .card .card-cores {
+    font-size: 13px !important;
+    min-width: 14px !important;
+  }
+  body.phone-mode .field-zone .card .card-soul-btn {
+    width: 20px !important;
+    height: 20px !important;
+    font-size: 11px !important;
+  }
+  body.phone-mode .card-level-badge {
+    font-size: 10px !important;
+    padding: 1px 4px !important;
+    font-weight: 900 !important;
+  }
+
+  /* 創界神與手元區保持緊湊貼底，不搶佔主場地空間 */
+  body.phone-mode .field-bottom-left-dock {
+    bottom: 4px !important;
+    left: 4px !important;
+    gap: 5px !important;
+    max-width: calc(100% - 8px) !important;
+  }
+  body.phone-mode .opponent-field-top .field-bottom-left-dock {
+    top: 4px !important;
+    right: 4px !important;
+    left: auto !important;
+    bottom: auto !important;
+  }
+  body.phone-mode .god-zone,
+  body.phone-mode .openhand-zone {
+    height: 82px !important;
+    padding: 4px !important;
+  }
+  body.phone-mode .god-zone .card,
+  body.phone-mode .openhand-zone .card {
+    width: 50px !important;
+    height: 70px !important;
+  }
+  body.phone-mode .god-core-badge {
+    font-size: 10px !important;
+    padding: 1px 3px !important;
+    font-weight: 900 !important;
+  }
+  body.phone-mode .compact-zone-button {
+    font-size: 10.5px !important;
+    min-height: 24px !important;
+    padding: 2px 6px !important;
+    font-weight: 900 !important;
+  }
+  body.phone-mode .god-zone-wrapper button[id^="btn-toggle-"],
+  body.phone-mode .openhand-zone-wrapper button[id^="btn-toggle-"] {
+    font-size: 10.5px !important;
+    padding: 2px 6px !important;
+    min-height: 24px !important;
+  }
+
+  /* === 4. 中央分隔線 HUD（回合 / 空間 Core / 結束回合 / 支付） === */
+  body.phone-mode .center-divider-hud {
+    padding: 5px 12px !important;
+    gap: 10px !important;
+    border-radius: 5px !important;
+  }
+  body.phone-mode #turn-counter-badge {
+    font-size: 13px !important;
+    padding: 3px 9px !important;
+  }
+  body.phone-mode .center-core-spawner {
+    width: 34px !important;
+    height: 34px !important;
+  }
+  body.phone-mode #center-divider-hud-box .text-\[10px\].text-\[\#a89f91\] {
+    display: none !important;
+  }
+  body.phone-mode #btn-end-turn-phase {
+    font-size: 13px !important;
+    padding: 5px 11px !important;
+    min-height: 32px !important;
+  }
+  body.phone-mode .magic-cancel-bar,
+  body.phone-mode .play-pay-bar {
+    padding: 5px 10px !important;
+    gap: 8px !important;
+  }
+  body.phone-mode .magic-cancel-bar span,
+  body.phone-mode .play-pay-bar span {
+    font-size: 13px !important;
+  }
+  body.phone-mode .magic-cancel-btn,
+  body.phone-mode .play-pay-cancel-btn {
+    font-size: 12.5px !important;
+    padding: 5px 10px !important;
+    min-height: 32px !important;
+  }
+
+  /* === 5. 手機模式底部固定手牌列：原生 1:1 清晰手牌且不遮擋戰場 === */
+  body.phone-mode .hand-panel.sticky-bottom-hand {
+    height: 138px !important;
+    padding: 5px 6px !important;
+    border-radius: 6px 6px 0 0 !important;
+    bottom: 0 !important;
+  }
+  body.phone-mode .hand-panel.sticky-bottom-hand > div:first-child {
+    margin-bottom: 3px !important;
+  }
+  body.phone-mode .hand-panel.sticky-bottom-hand [id^="title-hand-"] {
+    font-size: 11px !important;
+  }
+  body.phone-mode .hand-panel.sticky-bottom-hand [id^="btn-pin-hand-"],
+  body.phone-mode .hand-panel.sticky-bottom-hand [id^="btn-toggle-hand-"] {
+    font-size: 11px !important;
+    padding: 3px 8px !important;
+    min-height: 24px !important;
+    font-weight: 800 !important;
+  }
+  body.phone-mode .hand-panel.sticky-bottom-hand .hand-zone {
+    min-height: 108px !important;
+    padding: 40px 6px 4px 6px !important;
+    margin-top: -38px !important;
+  }
+  body.phone-mode .hand-panel.sticky-bottom-hand .hand-zone .card {
+    width: 74px !important;
+    height: 104px !important;
+  }
+
+  /* === 6. 卡牌放大預覽控制列與按鈕放大 === */
+  body.phone-mode #card-preview-core-bar {
+    padding: 8px 12px !important;
+    gap: 10px !important;
+  }
+  body.phone-mode #card-preview-core-bar button {
+    width: 48px !important;
+    height: 48px !important;
+    font-size: 24px !important;
+  }
+  body.phone-mode #card-preview-core-count {
+    font-size: 22px !important;
+    min-width: 28px !important;
+  }
+  body.phone-mode #preview-deploy,
+  body.phone-mode #card-preview-mobile-hint,
+  body.phone-mode #preview-turn-btn,
+  body.phone-mode #preview-release-brave,
+  body.phone-mode #preview-advent-release-btn,
+  body.phone-mode #preview-manifest-btn,
+  body.phone-mode #preview-magic-use-btn,
+  body.phone-mode .preview-god-skill-btn {
+    font-size: 15px !important;
+    font-weight: 900 !important;
+    padding: 10px 16px !important;
+    min-height: 42px !important;
+    border-radius: 5px !important;
+  }
+  body.phone-mode #preview-cost-calc {
+    font-size: 14px !important;
+    padding: 7px 12px !important;
+  }
+  body.phone-mode #preview-action-row {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px !important;
+  }
+
+  /* === 7. 所有彈出確認視窗、區域檢視與公開牌視窗觸控放大 === */
+  body.phone-mode #core-return-modal > div,
+  body.phone-mode #deck-choice-modal > div,
+  body.phone-mode #god-confirm-modal > div,
+  body.phone-mode #advent-confirm-modal > div,
+  body.phone-mode #reset-confirm-modal > div,
+  body.phone-mode #notice-modal > div,
+  body.phone-mode #play-pay-confirm-modal > div,
+  body.phone-mode #reveal-hand-confirm-modal > div,
+  body.phone-mode #oracle-hand-confirm-modal > div,
+  body.phone-mode #oracle-trigger-confirm-modal > div {
+    width: min(92vw, 380px) !important;
+    padding: 18px !important;
+    gap: 12px !important;
+  }
+  body.phone-mode #core-return-modal button,
+  body.phone-mode #deck-choice-modal button,
+  body.phone-mode #god-confirm-modal button,
+  body.phone-mode #advent-confirm-modal button,
+  body.phone-mode #reset-confirm-modal button,
+  body.phone-mode #notice-modal button,
+  body.phone-mode #play-pay-confirm-modal button,
+  body.phone-mode #reveal-hand-confirm-modal button,
+  body.phone-mode #oracle-hand-confirm-modal button,
+  body.phone-mode #oracle-trigger-confirm-modal button,
+  body.phone-mode #zone-action-menu-modal #zone-action-menu-body button {
+    font-size: 15px !important;
+    padding: 12px 14px !important;
+    min-height: 46px !important;
+  }
+  body.phone-mode #zone-view-modal {
+    padding: 8px !important;
+  }
+  body.phone-mode #zone-view-modal > div {
+    padding: 12px !important;
+    max-height: 92dvh !important;
+  }
+  body.phone-mode #zone-view-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 8px !important;
+  }
+  body.phone-mode #zone-view-list button {
+    font-size: 11.5px !important;
+    padding: 6px 3px !important;
+    min-height: 30px !important;
+  }
+  body.phone-mode .god-oracle-window {
+    max-width: 96vw !important;
+    padding: 10px !important;
+  }
+  body.phone-mode .god-oracle-card-item {
+    width: 80px !important;
+    height: 112px !important;
+  }
+  body.phone-mode .god-oracle-window .god-oracle-footer button {
+    font-size: 13px !important;
+    padding: 8px 10px !important;
+    min-height: 38px !important;
+  }
+</style>
+
+<script>
+(function () {
+  window.togglePhoneHeaderDrawer = function (force = null) {
+    const header = document.getElementById("main-top-header");
+    const btn = document.getElementById("btn-phone-more-tools");
+    if (!header) return;
+    const isOpen = typeof force === "boolean" ? force : !header.classList.contains("phone-drawer-open");
+    header.classList.toggle("phone-drawer-open", isOpen);
+    if (btn) btn.textContent = isOpen ? "✕ 收起工具" : "☰ 更多工具";
+    setTimeout(() => {
+      if (typeof updatePlaymatResponsiveScale === "function") updatePlaymatResponsiveScale();
+      if (typeof refreshAllFieldCardsPosition === "function") refreshAllFieldCardsPosition();
+    }, 60);
   };
 })();
 </script>
