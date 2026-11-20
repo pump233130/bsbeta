@@ -17,7 +17,7 @@
  10. 創界神 (Grandwalker) 技與域   -> 搜尋: function useGrandwalkerSkill
  11. 顕現 (Manifest) 系統與特效    -> 搜尋: function triggerManifestFromHand
 ========================================================================= -->
-<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><title>BS v3.10</title><script src="https://cdn.tailwindcss.com"></script><style>
+<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><title>BS v3.11</title><script src="https://cdn.tailwindcss.com"></script><style>
 /* #region 1. 基礎排版、卡背 SVG 與戰場區域樣式 */
 body,html {
   touch-action:manipulation;
@@ -2289,14 +2289,14 @@ body.mobile-mode #playmat-root .brave-god-attached .god-core-badge {
 <header id="main-top-header" class="flex flex-wrap justify-between items-center bg-[#0a0a0a]/90 border border-[#b09466]/40 rounded-sm py-1.5 px-3 flex-none gap-x-2 gap-y-1.5 shadow-lg transition-all duration-200">
 <div class="header-brand-row flex items-center gap-2 flex-shrink-0">
 <div class="relative text-sm sm:text-base font-black tracking-wider text-[#e5dccb] flex items-center gap-1.5 whitespace-nowrap">
-<span id="bs-brand-title-text" class="cursor-pointer hover:text-[#e0b25b] transition-colors" onclick="openChangelogModal()" title="點擊查看更新日誌">BS v3.10</span>
+<span id="bs-brand-title-text" class="cursor-pointer hover:text-[#e0b25b] transition-colors" onclick="openChangelogModal()" title="點擊查看更新日誌">BS v3.11</span>
 <button id="btn-changelog" type="button" class="text-[10px] sm:text-xs bg-black/70 border border-[#b09466]/50 hover:bg-[#c8aa76] hover:text-black text-[#e0b25b] px-1.5 py-0.5 rounded-sm cursor-pointer transition-colors leading-none font-bold" onclick="openChangelogModal()" title="查看版本更新日誌">📜 日誌</button>
 <button id="btn-version-gear" type="button" class="text-xs bg-black/70 border border-[#b09466]/50 hover:bg-[#c8aa76] hover:text-black text-[#e0b25b] px-1.5 py-0.5 rounded-sm cursor-pointer transition-colors leading-none" onclick="toggleVersionGearMenu(event)" title="點擊調整版本號數字">⚙️</button>
 <div id="bs-version-gear-menu" class="hidden absolute left-0 top-full mt-1.5 z-[12500] bg-[#0d0c0b]/95 border border-[#c8aa76] rounded-sm shadow-2xl p-2 flex items-center gap-1.5">
 <button type="button" class="text-[11px] font-black bg-[#c8aa76] text-black hover:bg-white px-2 py-1 rounded-sm cursor-pointer" onclick="bumpBsVersion(0, 1)" title="次版本 +1 (例：3.9 ➔ 3.10)">+0.1</button>
 <button type="button" class="text-[11px] font-black bg-sky-950/80 border border-sky-400/60 text-sky-200 hover:bg-sky-500 hover:text-black px-2 py-1 rounded-sm cursor-pointer" onclick="bumpBsVersion(1, 0)" title="主版本 +1">+1</button>
 <button type="button" class="text-[11px] font-bold bg-black/80 border border-[#b09466]/50 text-[#dcd6cc] hover:bg-[#c8aa76] hover:text-black px-2 py-1 rounded-sm cursor-pointer" onclick="bumpBsVersion(0, -1)" title="次版本 -1">-0.1</button>
-<button type="button" class="text-[10px] font-bold bg-rose-950/70 border border-rose-500/50 text-rose-200 hover:bg-rose-600 hover:text-white px-2 py-1 rounded-sm cursor-pointer" onclick="resetBsVersion()">3.10</button>
+<button type="button" class="text-[10px] font-bold bg-rose-950/70 border border-rose-500/50 text-rose-200 hover:bg-rose-600 hover:text-white px-2 py-1 rounded-sm cursor-pointer" onclick="resetBsVersion()">3.11</button>
 </div>
 </div>
 <span id="room-status-badge" class="hidden text-[10px] bg-emerald-950/80 border border-emerald-500/50 text-emerald-300 px-2 py-0.5 rounded-sm font-bold cursor-pointer hover:bg-emerald-800/80 transition-colors whitespace-nowrap" onclick="copyRoomCode()" title="點擊複製房間代碼">
@@ -4620,8 +4620,9 @@ function applyDeckCardsToPlayer(e,t,o=null,a="",n=[]) {
     }
     cardImageCache.custom_cardback=o,l.custom_cardback=o
   }
+  const deckGen=Date.now().toString(36).slice(-5);
   t.forEach((t,o)=> {
-    const a=`${e}_card_${o}`;cardImageCache[a]=t,l[a]=t,gameState.cards[a]= {
+    const a=`${e}_${deckGen}_card_${o}`;cardImageCache[a]=t,l[a]=t,gameState.cards[a]= {
       id:a,owner:e,zone:`deck-${e}`,x:0,y:0,imgBase64:t,catalogNumber:lookupCatalog(r.find(e=>e.imgBase64===t)|| {
         imgBase64:t
       })?.number||n.find(e=>e.imgBase64===t)?.catalogNumber||n.find(e=>e.imgBase64===t)?.name?.toUpperCase().match(/\b[A-Z]{1,5}\d{1,3}-[A-Z]?\d{2,4}\b(?:\([AB]\))?/)?.[0]||"",rotation:0,isFaceDown:!1,cores:0,zOrder:zOrderCounter++
@@ -4782,7 +4783,7 @@ async function importZip(e,t) {
         image:e
       })=>!isTurnBack(s.find(t=>t.imgBase64===e)|| {
       })).forEach((e,o)=> {
-        cardHighResCache[`${t}_card_${o}`]=URL.createObjectURL(e.blob)
+        const cid=gameState[`${t}Deck`]?.[o];if(cid)cardHighResCache[cid]=URL.createObjectURL(e.blob)
       })
     }
     catch(e) {
@@ -5437,7 +5438,7 @@ if(["p1","p2"].forEach(e=> {
     p1:null,p2:null
   }),"P1"===gameState.viewMode&&(gameState.seats.p1=localSeatId),"P2"===gameState.viewMode&&(gameState.seats.p2=localSeatId);const l=[],d=[],c=[];if(Array.isArray(e.cards)) {
     const t=new Set(e.cards.map(e=>e.id));Object.keys(gameState.cards).forEach(e=> {
-      t.has(e)||(document.getElementById(e)?.remove(),releaseCardImage(e,!0),delete gameState.cards[e])
+      t.has(e)||(document.getElementById(e)?.remove(),releaseCardImage(e,!1),delete gameState.cards[e])
     }),e.cards.forEach(e=> {
       const t=cardImageCache[e.id]||gameState.cards[e.id]?.imgBase64||(e.catalogNumber&&window.catalogByNumber?.get(e.catalogNumber)?.image)||"";(e.zOrder||0)>=zOrderCounter&&(zOrderCounter=(e.zOrder||0)+1);const o=void 0!==e.rotation?e.rotation:e.isTapped?90:0;if(gameState.cards[e.id]) {
         const a=gameState.cards[e.id],n=a.zone,r=a.cores||0,s=e.cores||0;if(s!==r&&l.push( {
@@ -6665,12 +6666,14 @@ window.initMultiplayer = async (e, a = !1) => {
       if (Object.keys(a).length) window.applyCardImages(a);
     });
 
-    const n = {};
+    const byOwner = { p1: {}, p2: {}, system: {} };
     Object.values(gameState.cards).forEach((card) => {
-      if (card.imgBase64) n[card.id] = card.imgBase64;
+      if (card.imgBase64) (byOwner[card.owner] || byOwner.system)[card.id] = card.imgBase64;
     });
-    if (cardImageCache.custom_cardback) n.custom_cardback = cardImageCache.custom_cardback;
-    if (Object.keys(n).length > 0) window.uploadPlayerCardImages("all", n);
+    if (cardImageCache.custom_cardback) byOwner.system.custom_cardback = cardImageCache.custom_cardback;
+    for (const [ow, map] of Object.entries(byOwner)) {
+      if (Object.keys(map).length > 0) window.uploadPlayerCardImages(ow, map);
+    }
     t.className = "text-xs text-green-400 mr-2";
     t.innerText = "SYNCED";
     return !0;
@@ -6785,7 +6788,28 @@ window.uploadPlayerCardImages = async (owner, images) => {
     }
     toUpload.push([id, base64]);
   }
-  if (!toUpload.length) return;
+  const safeOwner = String(owner || "all").replace(/[^a-zA-Z0-9_-]/g, "_");
+  // Clean up stale pack chunks for this owner if deck was swapped
+  const cleanupStalePacks = async (keepCount) => {
+    if (safeOwner !== "p1" && safeOwner !== "p2") return;
+    try {
+      const colRef = collection(db, "artifacts", appId, "public", "data", "rooms", room, "cardImages");
+      const snap = await getDocs(colRef);
+      const prefix = `pack_${safeOwner}_`;
+      const dels = [];
+      snap.forEach((d) => {
+        if (d.id.startsWith(prefix)) {
+          const idxNum = parseInt(d.id.slice(prefix.length), 10);
+          if (!isNaN(idxNum) && idxNum >= keepCount) dels.push(deleteDoc(d.ref));
+        }
+      });
+      if (dels.length) await Promise.all(dels);
+    } catch (e) {}
+  };
+  if (!toUpload.length) {
+    await cleanupStalePacks(0);
+    return;
+  }
 
   // Deduplicate identical base64 strings and pack into <= 600KB chunks
   const b64ToKey = new Map();
@@ -6817,7 +6841,6 @@ window.uploadPlayerCardImages = async (owner, images) => {
   pushChunk();
 
   try {
-    const safeOwner = String(owner || "all").replace(/[^a-zA-Z0-9_-]/g, "_");
     await Promise.all(chunks.map((chunk, idx) => {
       const docId = `pack_${safeOwner}_${idx}`;
       const qKey = room + "/" + docId;
@@ -6840,6 +6863,7 @@ window.uploadPlayerCardImages = async (owner, images) => {
         if (imageWriteQueues.get(qKey) === pending) imageWriteQueues.delete(qKey);
       });
     }));
+    await cleanupStalePacks(chunks.length);
   } catch (error) {
     console.error("Card image pack upload failed:", error);
   }
@@ -13492,7 +13516,7 @@ Object.assign(window, {
   /* =========================================================================
      PART 1: 左上角 BS 版本號齒輪控制（語意化 major.minor：支援 3.7 -> 3.8 -> 3.9 -> 3.10 -> 3.11）
   ========================================================================= */
-  const BS_DEFAULT_VERSION = "3.10";
+  const BS_DEFAULT_VERSION = "3.11";
   const VER_KEY = "bs_app_version_str";
   const VER_BASE_KEY = "bs_app_version_base";
   window.BS_APP_VERSION = BS_DEFAULT_VERSION;
@@ -14382,7 +14406,7 @@ Object.assign(window, {
     <div class="changelog-header">
       <div class="flex items-center gap-2.5 flex-wrap">
         <h2 id="changelog-modal-title" class="text-base sm:text-lg font-black tracking-widest text-[#e0b25b]">📜 更新日誌 (CHANGELOG)</h2>
-        <span id="changelog-current-ver" class="text-xs font-black bg-emerald-950/80 border border-emerald-500/60 text-emerald-300 px-2 py-0.5 rounded-sm">v3.10</span>
+        <span id="changelog-current-ver" class="text-xs font-black bg-emerald-950/80 border border-emerald-500/60 text-emerald-300 px-2 py-0.5 rounded-sm">v3.11</span>
       </div>
       <button type="button" class="border border-[#b09466]/55 bg-black/70 text-[#dcd6cc] hover:bg-[#c8aa76] hover:text-black px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="closeChangelogModal()">關閉 (✕)</button>
     </div>
@@ -14396,6 +14420,20 @@ Object.assign(window, {
      版本更新日誌資料（往後每次更新 3.8、3.9、3.10、3.11… 請於陣列最上方新增物件）
   ========================================================================= */
   window.BS_CHANGELOG = [
+    {
+      version: "3.11",
+      date: "2026-11-21",
+      title: "修復同房間切換卡組後雙方卡圖錯亂與重連殘留舊卡圖問題",
+      sections: [
+        {
+          heading: "🛠️ 多人連線卡圖同步修復",
+          items: [
+            "每次載入牌組時為卡牌分配獨立世代編號（如 p1_xxxxx_card_0），徹底避免同房間內載入第二副卡組時與舊卡組 ID 重疊導致雙方看到不同卡圖。",
+            "切換牌組或重連房間時，自動清理該玩家於雲端房間殘留的舊卡圖分包與本機快取，確保重新加入房間後雙方卡圖完全一致。"
+          ]
+        }
+      ]
+    },
     {
       version: "3.10",
       date: "2026-11-21",
