@@ -17,7 +17,7 @@
  10. 創界神 (Grandwalker) 技與域   -> 搜尋: function useGrandwalkerSkill
  11. 顕現 (Manifest) 系統與特效    -> 搜尋: function triggerManifestFromHand
 ========================================================================= -->
-<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><title>BS v4.6</title><script src="https://cdn.tailwindcss.com"></script><style>
+<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><title>BS v4.10</title><script src="https://cdn.tailwindcss.com"></script><style>
 /* #region 1. 基礎排版、卡背 SVG 與戰場區域樣式 */
 body,html{touch-action:manipulation;overflow-x:hidden!important;overscroll-behavior-x:none}.action-btn,.counter-box,.counter-title,.counter-value,.small-action-btn,body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}body{background-color:#0d0c0b;background-image:radial-gradient(ellipse at 50% 50%,rgba(46,40,34,.45) 0,rgba(10,9,8,.95) 100%),repeating-linear-gradient(135deg,rgba(255,255,255,.012) 0,rgba(255,255,255,.012) 2px,transparent 2px,transparent 8px);color:#dcd6cc;font-family:Cinzel,"Noto Serif TC",PMingLiU,Georgia,serif}.custom-scrollbar::-webkit-scrollbar{display:none}.custom-scrollbar{-ms-overflow-style:none;scrollbar-width:none}:root{--bs-cardback-svg:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 280'%3E%3Crect width='200' height='280' rx='13' fill='%23040404'/%3E%3Cg fill='none' stroke='%23dcdcdc' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4.5' y='4.5' width='191' height='271' rx='10' stroke-width='2.6'/%3E%3Crect x='11' y='11' width='178' height='258' rx='7' stroke-width='1.1' stroke-opacity='0.6'/%3E%3Cpath d='M5 42 C18 16,48 6,86 14 C122 22,152 6,195 26' stroke-width='3'/%3E%3Cpath d='M10 26 C32 6,76 22,118 10 C152 2,178 14,190 38' stroke-width='1.8'/%3E%3Cpath d='M5 238 C18 264,48 274,86 266 C122 258,152 274,195 254' stroke-width='3'/%3E%3Cpath d='M10 254 C32 274,76 258,118 270 C152 278,178 266,190 242' stroke-width='1.8'/%3E%3Cpath d='M14 5 C4 36,20 82,8 138 C-2 184,18 232,10 275' stroke-width='2.8'/%3E%3Cpath d='M6 28 C22 68,4 114,16 156 C24 192,6 226,18 262' stroke-width='1.5'/%3E%3Cpath d='M186 5 C196 36,180 82,192 138 C202 184,182 232,190 275' stroke-width='2.8'/%3E%3Cpath d='M194 28 C178 68,196 114,184 156 C176 192,194 226,182 262' stroke-width='1.5'/%3E%3Cpath d='M8 46 C26 42,34 24,22 14 C14 8,6 18,16 28' stroke-width='2.2'/%3E%3Cpath d='M192 46 C174 42,166 24,178 14 C186 8,194 18,184 28' stroke-width='2.2'/%3E%3Cpath d='M8 234 C26 238,34 256,22 266 C14 272,6 262,16 252' stroke-width='2.2'/%3E%3Cpath d='M192 234 C174 238,166 256,178 266 C186 272,194 262,184 252' stroke-width='2.2'/%3E%3C/g%3E%3Cg transform='translate(100,128)'%3E%3Cg stroke='%23d4d4d4' stroke-width='1.35' opacity='0.88'%3E%3Cline x1='0' y1='-96' x2='0' y2='96'/%3E%3Cline x1='-74' y1='-74' x2='74' y2='74'/%3E%3Cline x1='74' y1='-74' x2='-74' y2='74'/%3E%3Cline x1='-38' y1='-90' x2='38' y2='90'/%3E%3Cline x1='38' y1='-90' x2='-38' y2='90'/%3E%3Cline x1='-86' y1='-36' x2='86' y2='36'/%3E%3Cline x1='86' y1='-36' x2='-86' y2='36'/%3E%3Cline x1='-20' y1='-93' x2='20' y2='93' stroke-width='0.8'/%3E%3Cline x1='20' y1='-93' x2='-20' y2='93' stroke-width='0.8'/%3E%3Cline x1='-58' y1='-82' x2='58' y2='82' stroke-width='0.8'/%3E%3Cline x1='58' y1='-82' x2='-58' y2='82' stroke-width='0.8'/%3E%3C/g%3E%3Cpolygon points='0,-84 4,-26 0,-18 -4,-26' fill='%23dcdcdc'/%3E%3Cpolygon points='0,84 4,26 0,18 -4,26' fill='%23dcdcdc'/%3E%3Cpolygon points='-64,-64 -18,-22 -14,-14 -22,-18' fill='%23dcdcdc'/%3E%3Cpolygon points='64,-64 18,-22 14,-14 22,-18' fill='%23dcdcdc'/%3E%3Cpolygon points='-64,64 -18,22 -14,14 -22,18' fill='%23dcdcdc'/%3E%3Cpolygon points='64,64 18,22 14,14 22,18' fill='%23dcdcdc'/%3E%3Cpolygon points='-32,-78 -10,-26 -6,-20 -14,-24' fill='%23dcdcdc'/%3E%3Cpolygon points='32,-78 10,-26 6,-20 14,-24' fill='%23dcdcdc'/%3E%3Cpolygon points='-32,78 -10,26 -6,20 -14,24' fill='%23dcdcdc'/%3E%3Cpolygon points='32,78 10,26 6,20 14,24' fill='%23dcdcdc'/%3E%3Ccircle r='50' fill='none' stroke='%23dcdcdc' stroke-width='1.8' stroke-dasharray='7 4'/%3E%3Ccircle r='40' fill='%23050505' stroke='%23e5e5e5' stroke-width='2.2'/%3E%3Cpath d='M-46,-18 C-62,-32 -32,-58 -12,-42 C2,-58 36,-54 26,-32 C52,-38 62,-8 40,8 C58,26 32,52 12,38 C-4,56 -38,50 -28,28 C-54,32 -60,4 -46,-18 Z' fill='none' stroke='%23dcdcdc' stroke-width='2'/%3E%3Cellipse cx='-4' cy='0' rx='46' ry='33' fill='%23050505' stroke='%23ececec' stroke-width='3.8'/%3E%3Cellipse cx='-4' cy='0' rx='41' ry='28' fill='%23050505' stroke='%23888888' stroke-width='1.1'/%3E%3Ctext x='-7' y='17' text-anchor='middle' font-family='Georgia,Times New Roman,serif' font-size='50' font-weight='900' font-style='italic' fill='%23e8e8e8' stroke='%23050505' stroke-width='1.5' letter-spacing='-3'%3EBS%3C/text%3E%3C/g%3E%3Ctext x='100' y='244' text-anchor='middle' font-family='Georgia,Times New Roman,serif' font-size='23' font-weight='900' font-style='italic' fill='%23e2e2e2' letter-spacing='0.6'%3EBattle Spirits%3C/text%3E%3C/svg%3E")}.zone{min-height:100px;background-color:rgba(10,9,8,.18);border:1px solid rgba(186,158,108,.34);border-radius:3px;position:relative;transition:background-color .2s ease,border-color .2s ease,box-shadow .2s ease}.field-zone{background:0 0!important;border:none!important;border-radius:0!important;box-shadow:none!important}.card{width:100px;height:140px;background-color:#0e0e0e;border:1px solid rgba(196,168,118,.55);border-radius:3.5px;display:flex;justify-content:center;align-items:center;cursor:grab;position:absolute;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease,opacity .15s;box-shadow:0 6px 16px rgba(0,0,0,.85),0 1px 3px rgba(0,0,0,.7);background-size:cover;background-position:center;background-repeat:no-repeat;image-rendering:-webkit-optimize-contrast;transform-origin:center center;color:#a89f91;font-size:10px;font-weight:700;overflow:visible}body.mobile-mode .card{touch-action:none}.card:active{cursor:grabbing;box-shadow:0 14px 30px rgba(0,0,0,.95);z-index:1000!important}.card.has-soul-core{border:2px solid #f87171!important;box-shadow:0 0 12px 3px rgba(239,68,68,.95),0 0 24px 6px rgba(185,28,28,.65),inset 0 0 10px rgba(252,165,165,.55)!important}.card.face-down{background-image:var(--bs-cardback-svg)!important;background-size:100% 100%!important;background-position:center!important;background-color:#050505!important;border:1px solid rgba(220,220,220,.65)!important;box-shadow:0 6px 14px rgba(0,0,0,.85)}.card.face-down::after{content:none!important}.card-controls{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) translateY(90px);display:none;align-items:center;gap:5px;background:rgba(10,9,8,.76);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);padding:3px 7px;border-radius:4px;border:1px solid rgba(186,158,108,.55);box-shadow:0 4px 12px rgba(0,0,0,.8);z-index:60;white-space:nowrap;pointer-events:auto}.field-zone .card .card-controls{display:flex!important;opacity:1!important;visibility:visible!important}.field-bottom-left-dock{position:absolute;left:10px;bottom:10px;top:auto;display:flex;flex-direction:row;align-items:flex-end;gap:10px;max-width:calc(100% - 20px);z-index:25;pointer-events:none}.opponent-field-top .field-bottom-left-dock{bottom:auto;top:10px;left:auto;right:10px;flex-direction:row-reverse;align-items:flex-start}.opponent-main-area>.side-col-left{grid-column:3;grid-row:1;flex-direction:column-reverse}.opponent-main-area>.field-zone{grid-column:2;grid-row:1}.opponent-main-area>.side-col-right{grid-column:1;grid-row:1;flex-direction:column-reverse}.god-zone-wrapper,.openhand-zone-wrapper{pointer-events:auto;width:max-content;max-width:100%;flex-shrink:0;background:rgba(12,11,10,.28);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);border:1px solid rgba(186,158,108,.42);border-radius:3px;padding:5px 8px;display:inline-flex;flex-direction:column;box-shadow:0 4px 14px rgba(0,0,0,.45);transition:border-color .2s,background-color .2s,box-shadow .2s;box-sizing:border-box}.god-zone-wrapper.drag-over,.openhand-zone-wrapper.drag-over{background-color:rgba(176,148,102,.18)!important;border-color:rgba(235,205,145,.85)!important}.god-zone,.openhand-zone{display:inline-flex;flex-direction:row;flex-wrap:nowrap;align-items:center;gap:10px;width:max-content;min-width:112px;min-height:152px;padding:6px 8px;overflow:visible;background:rgba(10,9,8,.18);border:1px solid rgba(186,158,108,.25);border-radius:3px;position:relative;box-sizing:border-box}.openhand-zone{gap:0!important;padding:6px 10px!important}.openhand-zone .card+.card{margin-left:-52px!important}.god-zone.has-cards{padding-bottom:36px}.openhand-zone.has-cards{padding-bottom:6px}.god-zone .card,.openhand-zone .card{position:relative!important;left:auto!important;top:auto!important;flex-shrink:0;margin:0}.field-zone .god-zone .card .card-controls,.god-zone .card .card-controls{display:flex!important;opacity:1!important;visibility:visible!important;border-color:rgba(255,255,255,.18)}.field-zone .card .card-core-pill,.god-zone .card .card-core-pill{cursor:grab;user-select:none;-webkit-user-select:none;touch-action:none;border-radius:2px;transition:background-color .15s,transform .15s}.field-zone .card .card-core-pill:hover,.god-zone .card .card-core-pill:hover{background-color:rgba(56,189,248,.25);transform:scale(1.08)}.field-zone .card .card-core-pill:active,.god-zone .card .card-core-pill:active{cursor:grabbing}.god-zone .card .card-soul-btn{display:none!important}.field-zone .openhand-zone .card .card-controls,.openhand-zone .card .card-controls{display:none!important}.card-btn{background:rgba(24,22,19,.95);color:#e2dacd;border:1px solid rgba(176,148,102,.5);border-radius:2px;width:19px;height:19px;font-size:12px;font-weight:700;display:flex;justify-content:center;align-items:center;cursor:pointer;padding:0;line-height:1;flex-shrink:0;transition:background .15s,color .15s,border-color .15s}.card-btn:hover{background:#d4b886;color:#000;border-color:#fff}.card-btn.soul-active{width:20px;height:20px;clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0% 50%);background:linear-gradient(135deg,#fff 0,#cbd5e1 45%,#64748b 100%)!important;border:none!important;border-radius:0!important;color:transparent!important;font-size:0!important;position:relative;filter:drop-shadow(0 0 6px rgba(239,68,68,.95));box-shadow:none!important}.card-btn.soul-active::after{content:"";position:absolute;inset:3.5px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fecaca 0,#ef4444 45%,#7f1d1d 100%);box-shadow:inset 0 0 3px #fff;pointer-events:none}.card-core-pill{display:flex;align-items:center;gap:4px;padding:1px 5px;background:rgba(255,255,255,.03);border:1px solid rgba(56,189,248,.25)}.card-core-dot,.physical-core-gem{width:17px;height:17px;display:inline-block;position:relative;clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0% 50%);background:radial-gradient(circle at 35% 30%,#fff 0,#bae6fd 22%,#38bdf8 52%,#0284c7 82%,#0c4a6e 100%);box-shadow:inset 0 0 4px rgba(255,255,255,.9);filter:drop-shadow(0 0 4px rgba(56,189,248,.75));flex-shrink:0;transition:transform .12s ease,filter .12s ease}.card-core-dot::after,.physical-core-gem::after{content:"";position:absolute;inset:3px;clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0% 50%);background:linear-gradient(135deg,rgba(255,255,255,.85) 0,rgba(125,211,252,.25) 55%,rgba(2,132,199,.6) 100%);pointer-events:none}.card-core-dot{width:14px;height:14px}.physical-core-gem.interactive-core{cursor:pointer}.physical-core-gem.interactive-core:hover{transform:scale(1.22);filter:drop-shadow(0 0 8px rgba(125,211,252,1))}.core-gem-tray{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:5px;min-height:24px;padding:3px 4px;margin-top:2px}.card-cores{color:#f8fafc;font-size:13px;font-weight:900;min-width:14px;text-align:center;text-shadow:1px 1px 2px #000}.soul-core-token{width:19px;height:19px;clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0% 50%);font-size:0px;display:inline-flex;align-items:center;justify-content:center;cursor:grab;user-select:none;-webkit-user-select:none;touch-action:none;position:relative;transition:transform .15s,filter .15s;z-index:40;background:linear-gradient(135deg,#fff 0,#cbd5e1 45%,#64748b 100%);filter:drop-shadow(0 0 6px rgba(239,68,68,.9))}.soul-core-token::after{content:"";position:absolute;inset:3.5px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fecaca 0,#ef4444 45%,#7f1d1d 100%);box-shadow:inset 0 0 3px #fff}.soul-core-token:hover{transform:scale(1.22);filter:drop-shadow(0 0 10px rgba(248,113,113,1))}.soul-core-token:active{cursor:grabbing}.soul-core-slot-empty{width:17px;height:17px;clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0% 50%);background:rgba(255,255,255,.08);color:rgba(255,255,255,.35);font-size:8px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s}.soul-core-slot-empty:hover{background:rgba(239,68,68,.45);color:#fff;transform:scale(1.15)}.counter-box{border:1px solid rgba(186,158,108,.42);border-radius:3px;padding:5px 7px;text-align:center;background:rgba(12,11,10,.24);box-shadow:inset 0 0 10px rgba(0,0,0,.28);transition:border-color .2s,box-shadow .2s,background-color .2s;transform:translateZ(0);backface-visibility:hidden}.counter-title{font-size:11px;color:#d8ccb8;font-weight:700;letter-spacing:.1em;margin-bottom:2px;text-transform:uppercase;text-align:center;text-shadow:0 1px 3px rgba(0,0,0,.9);transform:translateZ(0)}.counter-value{font-size:15px;font-weight:900;color:#f5efe6;display:flex;align-items:center;justify-content:center;gap:8px;transform:translateZ(0)}.counter-btn{background:rgba(255,255,255,.05);color:#d6cbb9;border:1px solid rgba(176,148,102,.45);border-radius:1px;width:16px;height:16px;display:flex;justify-content:center;align-items:center;cursor:pointer;font-size:11px;line-height:1;transition:all .15s ease}.counter-btn:hover{background:#c8aa76;color:#090a0f;border-color:#fff}.action-btn{font-size:8.5px;border:1px solid rgba(176,148,102,.38);border-radius:1px;padding:3px 5px;background:rgba(16,15,14,.85);color:#d6cbb9;cursor:pointer;text-transform:uppercase;font-weight:700;letter-spacing:.06em;width:100%;margin-top:2px;transition:all .15s ease}.action-btn:hover{background:rgba(196,164,108,.9);color:#090a0f;border-color:#fff}.small-action-btn{font-size:7.5px;font-weight:700;border:1px solid rgba(176,148,102,.38);border-radius:1px;padding:1px 4px;background:rgba(12,12,12,.85);color:#bfb39e;cursor:pointer;position:absolute;top:3px;right:4px;transition:all .15s ease}.small-action-btn:hover{background:rgba(196,164,108,.85);border-color:#fff;color:#000}.highlight-action-btn{font-size:8px;font-weight:900;padding:1.5px 5px;border-radius:1px;cursor:pointer;position:absolute;top:3px;right:4px;letter-spacing:.5px;transition:all .18s ease;text-transform:uppercase}.btn-take-life{background:rgba(127,29,29,.65);border:1px solid rgba(248,113,113,.55);color:#fecaca}.btn-take-life:hover{background:#dc2626;color:#fff;border-color:#fff}.btn-pay-cost{background:rgba(12,74,110,.65);border:1px solid rgba(56,189,248,.55);color:#bae6fd}.btn-pay-cost:hover{background:#0284c7;color:#fff;border-color:#fff}.btn-refresh-state{background:rgba(6,78,59,.7);border:1px solid rgba(52,211,153,.55);color:#a7f3d0;border-radius:1px;transition:all .18s ease}.btn-refresh-state:hover{background:#10b981;color:#050608;border-color:#fff}
 /* #endregion */
@@ -37,14 +37,14 @@ body,html{touch-action:manipulation;overflow-x:hidden!important;overscroll-behav
 <header id="main-top-header" class="flex flex-wrap justify-between items-center bg-[#0a0a0a]/90 border border-[#b09466]/40 rounded-sm py-1.5 px-3 flex-none gap-x-2 gap-y-1.5 shadow-lg transition-all duration-200">
 <div class="header-brand-row flex items-center gap-2 flex-shrink-0">
 <div class="relative text-sm sm:text-base font-black tracking-wider text-[#e5dccb] flex items-center gap-1.5 whitespace-nowrap">
-<span id="bs-brand-title-text" class="cursor-pointer hover:text-[#e0b25b] transition-colors" onclick="openChangelogModal()" title="點擊查看更新日誌">BS v4.6</span>
+<span id="bs-brand-title-text" class="cursor-pointer hover:text-[#e0b25b] transition-colors" onclick="openChangelogModal()" title="點擊查看更新日誌">BS v4.10</span>
 <button id="btn-changelog" type="button" class="text-[10px] sm:text-xs bg-black/70 border border-[#b09466]/50 hover:bg-[#c8aa76] hover:text-black text-[#e0b25b] px-1.5 py-0.5 rounded-sm cursor-pointer transition-colors leading-none font-bold" onclick="openChangelogModal()" title="查看版本更新日誌">📜 日誌</button>
 <button id="btn-version-gear" type="button" class="text-xs bg-black/70 border border-[#b09466]/50 hover:bg-[#c8aa76] hover:text-black text-[#e0b25b] px-1.5 py-0.5 rounded-sm cursor-pointer transition-colors leading-none" onclick="toggleVersionGearMenu(event)" title="點擊調整版本號數字">⚙️</button>
 <div id="bs-version-gear-menu" class="hidden absolute left-0 top-full mt-1.5 z-[12500] bg-[#0d0c0b]/95 border border-[#c8aa76] rounded-sm shadow-2xl p-2 flex items-center gap-1.5">
 <button type="button" class="text-[11px] font-black bg-[#c8aa76] text-black hover:bg-white px-2 py-1 rounded-sm cursor-pointer" onclick="bumpBsVersion(0, 1)" title="次版本 +1 (例：3.9 ➔ 3.10)">+0.1</button>
 <button type="button" class="text-[11px] font-black bg-sky-950/80 border border-sky-400/60 text-sky-200 hover:bg-sky-500 hover:text-black px-2 py-1 rounded-sm cursor-pointer" onclick="bumpBsVersion(1, 0)" title="主版本 +1">+1</button>
 <button type="button" class="text-[11px] font-bold bg-black/80 border border-[#b09466]/50 text-[#dcd6cc] hover:bg-[#c8aa76] hover:text-black px-2 py-1 rounded-sm cursor-pointer" onclick="bumpBsVersion(0, -1)" title="次版本 -1">-0.1</button>
-<button type="button" class="text-[10px] font-bold bg-rose-950/70 border border-rose-500/50 text-rose-200 hover:bg-rose-600 hover:text-white px-2 py-1 rounded-sm cursor-pointer" onclick="resetBsVersion()">4.6</button>
+<button type="button" class="text-[10px] font-bold bg-rose-950/70 border border-rose-500/50 text-rose-200 hover:bg-rose-600 hover:text-white px-2 py-1 rounded-sm cursor-pointer" onclick="resetBsVersion()">4.10</button>
 </div>
 </div>
 <span id="room-status-badge" class="hidden text-[10px] bg-emerald-950/80 border border-emerald-500/50 text-emerald-300 px-2 py-0.5 rounded-sm font-bold cursor-pointer hover:bg-emerald-800/80 transition-colors whitespace-nowrap" onclick="copyRoomCode()" title="點擊複製房間代碼">
@@ -547,7 +547,7 @@ p1_life:5,p1_reserve:3,p1_count:0,p1_trash_core:0,p2_life:5,p2_reserve:3,p2_coun
 p1:"reserve",p2:"reserve"
 },zoneCollapsed: {
 god_p1:!1,god_p2:!1,openhand_p1:!1,openhand_p2:!1
-},lastShuffle:null,lastLottery:null,lastActionEffect:null,lotteryPendingWinner:null,lotteryUsed:!1,currentPhase:"START",activeTurnPlayer:"p1",isFirstTurn:!0,activeBattle:null,tempBuffs:[],oracleWindows:{p1:null,p2:null},revealWindows:{p1:null,p2:null},seats: {
+},lastShuffle:null,lastLottery:null,lastActionEffect:null,lastPhaseBanner:null,lotteryPendingWinner:null,lotteryUsed:!1,currentPhase:"START",activeTurnPlayer:"p1",isFirstTurn:!0,activeBattle:null,tempBuffs:[],oracleWindows:{p1:null,p2:null},revealWindows:{p1:null,p2:null},seats: {
 p1:null,p2:null
 },seatNames: {
 p1:"",p2:""
@@ -762,7 +762,7 @@ else if(t.startsWith("deck-")) {
 const e=t.includes("p2")?"p2":"p1",o=document.getElementById(`deck-box-${e}`);
 o&&triggerElementColorFlash(o,"white")
 }
-else if(t.startsWith("field-")||t.startsWith("zone-god-")||t.startsWith("zone-openhand-")||t.startsWith("zone-burst-")) {
+else if(t.startsWith("field-")||t.startsWith("zone-god-")||t.startsWith("zone-openhand-")) {
 const t=document.getElementById(e);
 t&&triggerElementColorFlash(t,"green")
 }
@@ -1107,7 +1107,7 @@ document.getElementById("reset-confirm-modal")?.classList.add("hidden")
 function confirmResetGame() {
 closeResetModal(),hideCardPreview(),closeZoneModal(),closeDeckChoiceModal(),closeGodConfirmModal(),document.getElementById("core-return-modal")?.classList.add("hidden"),lotteryStepTimer&&(clearTimeout(lotteryStepTimer),lotteryStepTimer=null),isLotteryRunning=!1,gameState.lotteryPendingWinner=null,applyLotteryPendingUI(),gameState.p1_life=5,gameState.p1_reserve=3,gameState.p1_count=0,gameState.p1_trash_core=0,gameState.p2_life=5,gameState.p2_reserve=3,gameState.p2_count=0,gameState.p2_trash_core=0,gameState.soulCoreLocation= {
 p1:"reserve",p2:"reserve"
-},gameState.lotteryUsed=!1;gameState.currentPhase="START";gameState.activeTurnPlayer="p1";gameState.isFirstTurn=!0;gameState.activeBattle=null;gameState.tempBuffs=[];gameState.oracleWindows={p1:null,p2:null};gameState.revealWindows={p1:null,p2:null};window.syncOracleWindowsFromState&&window.syncOracleWindowsFromState();window.syncRevealWindowsFromState&&window.syncRevealWindowsFromState();
+},gameState.lotteryUsed=!1;gameState.currentPhase="START";gameState.activeTurnPlayer="p1";gameState.isFirstTurn=!0;gameState.activeBattle=null;gameState.tempBuffs=[];gameState.oracleWindows={p1:null,p2:null};gameState.revealWindows={p1:null,p2:null};gameState.lastPhaseBanner=null;window.__lastSeenPhaseBannerId="";window.syncOracleWindowsFromState&&window.syncOracleWindowsFromState();window.syncRevealWindowsFromState&&window.syncRevealWindowsFromState();
 const e=[],t=[];
 Object.values(gameState.cards).forEach(o=> {
 restoreTurnFront(o),delete o.braveHostId,delete o.braveOrder,delete o.adventHostId,delete o.adventOrder,document.getElementById(o.id)?.remove(),o.zone=`deck-${o.owner}`,o.x=0,o.y=0,o.rotation=0,o.battleState="",o.isFaceDown=!1,o.cores=0,o.zOrder=zOrderCounter++,"p1"===o.owner?e.push(o.id):"p2"===o.owner&&t.push(o.id)
@@ -1649,7 +1649,7 @@ lastSeenActionEffectTime=o,"P1"===e||"P2"===e?(showSeatAnnouncement(e,"join",myN
 type:"playerJoinedSeat",seat:e,playerName:myName,timestamp:o
 }):"P1"!==t&&"P2"!==t||(showSeatAnnouncement(t,"leave",leftName),gameState.lastActionEffect= {
 type:"playerLeftSeat",seat:t,playerName:leftName,timestamp:o
-}),window.syncPlayerSeat&&window.syncPlayerSeat(e,t),updateAllUI(),updateRoomState()
+}),updateAllUI(),updateRoomState()
 }
 function toggleHand(e) {
 const t=document.getElementById(`hand-${e}`),o=document.getElementById(`section-hand-${e}`);
@@ -2737,7 +2737,14 @@ o.isFaceDown=!o.isFaceDown;
 const a=document.getElementById(e);
 playCardFlip3DAnimation(e,()=> {
 a&&applyCardVisualState(o,a)
-}),!t&&o.isFaceDown&&hideCardPreview(),updateRoomState()
+}),!t&&o.isFaceDown&&hideCardPreview();
+if(o.zone.startsWith("zone-burst-")&&o.isFaceDown) {
+const ts=Math.max(Date.now(),(gameState.lastActionEffect?.timestamp||0)+1);
+gameState.lastActionEffect={type:"mirageSet",cardId:e,theme:"red",loops:2,timestamp:ts};
+lastSeenActionEffectTime=ts;
+setTimeout(()=>window.playMirageOrbitEffect&&window.playMirageOrbitEffect(e,"red",2),340);
+}
+updateRoomState()
 }
 function createCardElement(e) {
 const t=document.createElement("div");
@@ -3171,7 +3178,7 @@ return {
 turnFaces:gameState.turnFaces|| {
 },p1_life:gameState.p1_life,p1_reserve:gameState.p1_reserve,p1_count:gameState.p1_count,p1_trash_core:gameState.p1_trash_core,p2_life:gameState.p2_life,p2_reserve:gameState.p2_reserve,p2_count:gameState.p2_count,p2_trash_core:gameState.p2_trash_core,p1Deck:gameState.p1Deck,p2Deck:gameState.p2Deck,soulCoreLocation:gameState.soulCoreLocation,zoneCollapsed:gameState.zoneCollapsed|| {
 god_p1:!1,god_p2:!1,openhand_p1:!1,openhand_p2:!1
-},lastShuffle:gameState.lastShuffle,lastLottery:gameState.lastLottery,lastActionEffect:gameState.lastActionEffect,lotteryPendingWinner:gameState.lotteryPendingWinner||null,lotteryUsed:!!gameState.lotteryUsed,currentPhase:gameState.currentPhase||"START",activeTurnPlayer:gameState.activeTurnPlayer||"p1",isFirstTurn:!!gameState.isFirstTurn,activeBattle:gameState.activeBattle||null,tempBuffs:Array.isArray(gameState.tempBuffs)?gameState.tempBuffs:[],oracleWindows:gameState.oracleWindows||{p1:null,p2:null},revealWindows:gameState.revealWindows||{p1:null,p2:null},seats:gameState.seats|| {
+},lastShuffle:gameState.lastShuffle,lastLottery:gameState.lastLottery,lastActionEffect:gameState.lastActionEffect,lastPhaseBanner:gameState.lastPhaseBanner||null,lotteryPendingWinner:gameState.lotteryPendingWinner||null,lotteryUsed:!!gameState.lotteryUsed,currentPhase:gameState.currentPhase||"START",activeTurnPlayer:gameState.activeTurnPlayer||"p1",isFirstTurn:!!gameState.isFirstTurn,activeBattle:gameState.activeBattle||null,tempBuffs:Array.isArray(gameState.tempBuffs)?gameState.tempBuffs:[],oracleWindows:gameState.oracleWindows||{p1:null,p2:null},revealWindows:gameState.revealWindows||{p1:null,p2:null},seats:gameState.seats|| {
 p1:null,p2:null
 },seatNames:gameState.seatNames|| {
 p1:"",p2:""
@@ -3239,7 +3246,7 @@ if(!e)return;e.turnFaces||(gameState.turnFaces= {
 void 0!==e[t]&&e[t]!==gameState[t]&&triggerCounterKeyFlash(t,e[t]-gameState[t])
 }),void 0!==e.p1_life&&t>0&&0===e.p1_life&&triggerZeroLifeSequence("p1"),void 0!==e.p2_life&&o>0&&0===e.p2_life&&triggerZeroLifeSequence("p2");let a=null;e.lastShuffle&&e.lastShuffle.timestamp>lastSeenShuffleTime&&(lastSeenShuffleTime=e.lastShuffle.timestamp,gameState.lastShuffle=e.lastShuffle,a=e.lastShuffle.player);let n=null;e.lastLottery&&e.lastLottery.timestamp>lastSeenLotteryTime&&(lastSeenLotteryTime=e.lastLottery.timestamp,gameState.lastLottery=e.lastLottery,n=e.lastLottery.winner);let r=null;e.lastActionEffect&&e.lastActionEffect.timestamp>lastSeenActionEffectTime&&(lastSeenActionEffectTime=e.lastActionEffect.timestamp,gameState.lastActionEffect=e.lastActionEffect,r=e.lastActionEffect);const s= {
 p1:gameState.soulCoreLocation?.p1,p2:gameState.soulCoreLocation?.p2
-};["p1_life","p1_reserve","p1_count","p1_trash_core","p2_life","p2_reserve","p2_count","p2_trash_core","turnFaces","soulCoreLocation","zoneCollapsed","lotteryUsed","lotteryPendingWinner","currentPhase","activeTurnPlayer","isFirstTurn","activeBattle","tempBuffs","oracleWindows","revealWindows","seats","seatNames"].forEach(t=> {
+};["p1_life","p1_reserve","p1_count","p1_trash_core","p2_life","p2_reserve","p2_count","p2_trash_core","turnFaces","soulCoreLocation","zoneCollapsed","lotteryUsed","lotteryPendingWinner","lastPhaseBanner","currentPhase","activeTurnPlayer","isFirstTurn","activeBattle","tempBuffs","oracleWindows","revealWindows","seats","seatNames"].forEach(t=> {
 void 0!==e[t]&&(gameState[t]=e[t])
 }),Array.isArray(e.p1Deck)&&(gameState.p1Deck=e.p1Deck),Array.isArray(e.p2Deck)&&(gameState.p2Deck=e.p2Deck),gameState.seats||(gameState.seats= {
 p1:null,p2:null
@@ -3828,7 +3835,7 @@ document.getElementById("translation-content").textContent="連結失敗："+e.m
 </script>
 <!-- #endregion -->
 
-<!-- #region 2. [雲端] Firebase Firestore 連線、房間同步與省額度快取最佳化 -->
+<!-- #region 2. [雲端] Firebase Firestore 連線、房間同步與極致省額度快取最佳化 -->
 <script type="module">
 import {
 initializeApp,
@@ -3846,8 +3853,12 @@ onSnapshot,
 collection,
 writeBatch,
 runTransaction,
+query,
+where,
+arrayUnion,
 } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 const roomImageCache = new Map(), imageWriteQueues = new Map();
+let uploadedPackCounts = { p1: 0, p2: 0, system: 0 };
 let catalogRead = null, cleanupRead = null, lastCleanup = 0;
 let roomStateQueue = Promise.resolve(), knownRoomState = null;
 let presenceWrittenAt = 0;
@@ -3894,6 +3905,73 @@ tx.onabort = () => reject(tx.error);
 });
 } finally { idb.close(); }
 } catch (e) {}
+}
+async function readLocalDeckFromIDB(deckId) {
+if (!deckId || !window.indexedDB) return null;
+try {
+const idb = await new Promise((resolve, reject) => {
+const req = window.indexedDB.open("BSPrototypeDeckVaultDB");
+req.onupgradeneeded = (ev) => {
+const d = ev.target.result;
+if (!d.objectStoreNames.contains("savedDecks")) d.createObjectStore("savedDecks", { keyPath: "id" });
+};
+req.onsuccess = (ev) => resolve(ev.target.result);
+req.onerror = (ev) => reject(ev.target.error);
+});
+try {
+return await new Promise((resolve, reject) => {
+const req = idb.transaction("savedDecks", "readonly").objectStore("savedDecks").get(deckId);
+req.onsuccess = () => resolve(req.result || null);
+req.onerror = () => reject(req.error);
+});
+} finally { idb.close(); }
+} catch (e) { return null; }
+}
+async function writeLocalDeckToIDB(deckObj) {
+if (!deckObj?.id || !window.indexedDB) return;
+try {
+const idb = await new Promise((resolve, reject) => {
+const req = window.indexedDB.open("BSPrototypeDeckVaultDB");
+req.onupgradeneeded = (ev) => {
+const d = ev.target.result;
+if (!d.objectStoreNames.contains("savedDecks")) d.createObjectStore("savedDecks", { keyPath: "id" });
+};
+req.onsuccess = (ev) => resolve(ev.target.result);
+req.onerror = (ev) => reject(ev.target.error);
+});
+try {
+await new Promise((resolve, reject) => {
+const tx = idb.transaction("savedDecks", "readwrite");
+tx.objectStore("savedDecks").put(deckObj);
+tx.oncomplete = resolve;
+tx.onerror = () => reject(tx.error);
+tx.onabort = () => reject(tx.error);
+});
+} finally { idb.close(); }
+} catch (e) {}
+}
+async function hydrateCompactDeckEntries(compactEntries) {
+if (!Array.isArray(compactEntries) || !compactEntries.length) return [];
+if (!window.catalogByNumber || window.catalogByNumber.size === 0) {
+try { await ensureCatalogData(false); } catch (e) {}
+}
+const result = [];
+for (let i = 0; i < compactEntries.length; i++) {
+const item = compactEntries[i];
+if (!item) continue;
+const cNum = String(item.catalogNumber || "").trim().toUpperCase();
+const img = item.imgBase64 || (cNum && window.catalogByNumber?.get(cNum)?.image) || "";
+if (!img) continue;
+result.push({
+idx: item.idx != null ? item.idx : i,
+imgBase64: img,
+count: Number(item.count) || 1,
+name: item.name || (cNum && window.catalogByNumber?.get(cNum)?.name) || `Card #${i + 1}`,
+catalogNumber: cNum,
+});
+}
+result.sort((x, y) => (x.idx || 0) - (y.idx || 0));
+return result;
 }
 const appId = "bsbeta-52f46",
 firebaseConfig = {
@@ -3975,22 +4053,50 @@ return catalogMemoryCache;
 if (catalogRead) return catalogRead;
 catalogRead = (async () => {
 let cloudMetaTs = 0;
+let cloudDeleted = [];
 try {
 const metaSnap = await getDoc(globalCatalogMetaDocRef);
-if (metaSnap.exists()) cloudMetaTs = Number(metaSnap.data()?.updatedAt || 0);
+if (metaSnap.exists()) {
+const md = metaSnap.data() || {};
+cloudMetaTs = Number(md.updatedAt || 0);
+if (Array.isArray(md.deleted)) cloudDeleted = md.deleted;
+}
 } catch (e) {}
 if (!force) {
 const local = await readLocalCatalogCache();
-if (
-local &&
-Array.isArray(local.entries) &&
-local.entries.length > 0 &&
-cloudMetaTs > 0 &&
-local.updatedAt === cloudMetaTs
-) {
+if (local && Array.isArray(local.entries) && local.entries.length > 0 && cloudMetaTs > 0) {
+if (local.updatedAt === cloudMetaTs) {
 catalogMemoryCache = local.entries;
 catalogCachedUpdatedAt = local.updatedAt;
 return catalogMemoryCache;
+}
+if (local.updatedAt > 0 && local.updatedAt < cloudMetaTs) {
+try {
+const deltaSnap = await getDocs(query(globalCardsColRef, where("updatedAt", ">", local.updatedAt)));
+const byNum = new Map(local.entries.map(c => [c.number, c]));
+for (const d of cloudDeleted) {
+if (d && d.number && Number(d.ts || 0) > local.updatedAt) {
+byNum.delete(String(d.number).trim().toUpperCase());
+}
+}
+deltaSnap.docs.forEach((d) => {
+try {
+const t = d.data();
+const norm = normalizeCatalogCard({ ...t, number: d.id });
+byNum.set(norm.number, { ...norm, revision: t.revision });
+} catch (err) {
+console.warn("跳過格式不正確的增量卡片", d.id);
+}
+});
+const merged = [...byNum.values()].sort((x, y) => x.number.localeCompare(y.number));
+catalogMemoryCache = merged;
+catalogCachedUpdatedAt = cloudMetaTs;
+await writeLocalCatalogCache(cloudMetaTs, merged);
+return merged;
+} catch (deltaErr) {
+console.warn("Delta catalog sync fallback to full read:", deltaErr);
+}
+}
 }
 }
 const fresh = await this.readFresh();
@@ -4041,7 +4147,9 @@ throw new Error("卡片已被其他玩家修改，請重新載入後再編輯");
 c.set(o, { ...e, revision: newRev, updatedAt: now });
 if (t !== e.number) c.delete(s);
 });
-setDoc(globalCatalogMetaDocRef, { updatedAt: now }, { merge: true }).catch(() => {});
+const metaPatch = { updatedAt: now };
+if (t !== e.number) metaPatch.deleted = arrayUnion({ number: t, ts: now });
+setDoc(globalCatalogMetaDocRef, metaPatch, { merge: true }).catch(() => {});
 if (Array.isArray(catalogMemoryCache)) {
 catalogMemoryCache = catalogMemoryCache.filter(c => c.number !== t && c.number !== e.number);
 catalogMemoryCache.push({ ...e, revision: newRev });
@@ -4060,7 +4168,8 @@ throw Error("卡片已變更，請重新整理後再刪除");
 });
 e.forEach((c) => a.delete(doc(globalCardsColRef, c.number)));
 });
-setDoc(globalCatalogMetaDocRef, { updatedAt: now }, { merge: true }).catch(() => {});
+const delItems = e.map(c => ({ number: c.number, ts: now }));
+setDoc(globalCatalogMetaDocRef, { updatedAt: now, deleted: arrayUnion(...delItems) }, { merge: true }).catch(() => {});
 if (Array.isArray(catalogMemoryCache)) {
 const removed = new Set(e.map(c => c.number));
 catalogMemoryCache = catalogMemoryCache.filter(c => !removed.has(c.number));
@@ -4123,7 +4232,7 @@ try { localStorage.setItem("bs_custom_cardback_base64", a.base64); } catch (err)
 }).catch((e) => console.warn("Global cardback read warning:", e));
 window.refreshGlobalDecksFromCloud = async (force = false) => {
 if (!db) return;
-if (!force && globalDecksFetchedAt > 0 && Date.now() - globalDecksFetchedAt < 300000) return;
+if (!force && globalDecksFetchedAt > 0 && Date.now() - globalDecksFetchedAt < 600000) return;
 if (globalDecksRead) return globalDecksRead;
 globalDecksRead = (async () => {
 try {
@@ -4165,8 +4274,44 @@ window.saveGlobalDeckToCloud = async (e) => {
 if (db && e && e.id)
 try {
 const a = doc(db, "artifacts", appId, "public", "data", "globalDecks", e.id),
-t = Array.isArray(e.entries) ? e.entries : [],
-o = collection(a, "entries"),
+t = Array.isArray(e.entries) ? e.entries : [];
+const compactEntries = t.map((item, idx) => {
+const cNum = String(item.catalogNumber || "").trim().toUpperCase();
+const cat = cNum && window.catalogByNumber?.get(cNum);
+const canRefCatalog = !!(cat && cat.image && cat.image === item.imgBase64);
+return canRefCatalog
+? { idx, catalogNumber: cNum, count: Number(item.count) || 1, name: item.name || cat.name || `Card #${idx + 1}` }
+: { idx, imgBase64: item.imgBase64, count: Number(item.count) || 1, name: item.name || `Card #${idx + 1}`, catalogNumber: cNum };
+});
+const compactDoc = {
+id: e.id,
+name: e.name,
+cardCount: e.cardCount,
+uniqueCount: t.length,
+coverImage: e.coverImage || "",
+cardBack: e.cardBack || null,
+updatedAt: e.updatedAt,
+storageMode: "compact",
+compactEntries,
+};
+const estimatedSize = JSON.stringify(compactDoc).length;
+if (estimatedSize < 750000) {
+await setDoc(a, compactDoc);
+const prevCached = window.globalCloudDecksCache[e.id];
+if (prevCached && prevCached.storageMode !== "compact") {
+try {
+const oldSub = await getDocs(collection(a, "entries"));
+if (!oldSub.empty) {
+const delBatch = writeBatch(db);
+oldSub.docs.forEach(d => delBatch.delete(d.ref));
+await delBatch.commit();
+}
+} catch (cleanErr) {}
+}
+window.globalCloudDecksCache[e.id] = { ...compactDoc, entries: t };
+return;
+}
+const o = collection(a, "entries"),
 existing = (await getDocs(o)).docs,
 existingById = new Map(existing.map(row => [row.id, row.data()])),
 s = existing.filter((d) => !t.some((_, idx) => d.id === `entry_${idx}`));
@@ -4193,9 +4338,11 @@ uniqueCount: t.length,
 coverImage: e.coverImage || "",
 cardBack: e.cardBack || null,
 updatedAt: e.updatedAt,
+storageMode: "subcollection",
+compactEntries: [],
 });
 await c.commit();
-window.globalCloudDecksCache[e.id] = { ...e, entries: t };
+window.globalCloudDecksCache[e.id] = { ...e, storageMode: "subcollection", entries: t };
 } catch (err) {
 throw (
 console.warn("Upload global deck to cloud failed:", err),
@@ -4205,9 +4352,30 @@ new Error("共享儲存失敗：" + (err.message || err.code))
 };
 window.fetchGlobalDeckEntriesFromCloud = async (e) => {
 if (!db || !e) return null;
-if (window.globalCloudDecksCache[e]?.entries?.length)
-return window.globalCloudDecksCache[e];
-const a = window.globalCloudDecksCache[e];
+const cached = window.globalCloudDecksCache[e];
+if (cached?.entries?.length) return cached;
+const local = await readLocalDeckFromIDB(e);
+if (
+local &&
+Array.isArray(local.entries) &&
+local.entries.length > 0 &&
+(!cached || (local.updatedAt || 0) >= (cached.updatedAt || 0))
+) {
+const hydratedLocal = { ...(cached || {}), ...local };
+if (window.globalCloudDecksCache[e]) window.globalCloudDecksCache[e] = hydratedLocal;
+return hydratedLocal;
+}
+if (cached && Array.isArray(cached.compactEntries) && cached.compactEntries.length > 0) {
+const hydrated = await hydrateCompactDeckEntries(cached.compactEntries);
+if (hydrated.length > 0) {
+const fullDeck = { ...cached, entries: hydrated };
+if (window.globalCloudDecksCache[e] && window.globalCloudDecksCache[e].updatedAt === cached.updatedAt) {
+window.globalCloudDecksCache[e].entries = hydrated;
+}
+writeLocalDeckToIDB(fullDeck).catch(() => {});
+return fullDeck;
+}
+}
 try {
 const t = collection(db, "artifacts", appId, "public", "data", "globalDecks", e, "entries"),
 o = await getDocs(t),
@@ -4217,11 +4385,12 @@ const data = d.data();
 if (data && data.imgBase64) s.push(data);
 });
 s.sort((x, y) => (x.idx || 0) - (y.idx || 0));
-if (window.globalCloudDecksCache[e] && window.globalCloudDecksCache[e].updatedAt === a?.updatedAt) {
+const fullDeck = { ...(cached || {}), id: e, entries: s };
+if (window.globalCloudDecksCache[e] && window.globalCloudDecksCache[e].updatedAt === cached?.updatedAt) {
 window.globalCloudDecksCache[e].entries = s;
-return window.globalCloudDecksCache[e];
 }
-return { ...a, id: e, entries: s };
+if (s.length > 0) writeLocalDeckToIDB(fullDeck).catch(() => {});
+return fullDeck;
 } catch (err) {
 throw (console.warn("Fetch global deck entries failed:", err), err);
 }
@@ -4229,9 +4398,12 @@ throw (console.warn("Fetch global deck entries failed:", err), err);
 window.deleteGlobalDeckFromCloud = async (e) => {
 if (db && e)
 try {
+const cached = window.globalCloudDecksCache[e];
+if (!cached || cached.storageMode !== "compact") {
 const a = collection(db, "artifacts", appId, "public", "data", "globalDecks", e, "entries"),
 t = await getDocs(a);
 for (const d of t.docs) await deleteDoc(d.ref);
+}
 await deleteDoc(doc(db, "artifacts", appId, "public", "data", "globalDecks", e));
 delete window.globalCloudDecksCache[e];
 } catch (err) {
@@ -4251,7 +4423,7 @@ console.warn("Clear global decks failed:", err);
 window.cleanupInactiveRooms = async (e = !1) => {
 if (!db) return 0;
 if (cleanupRead) return cleanupRead;
-if (!e && Date.now() - lastCleanup < 180000) return 0;
+if (!e && Date.now() - lastCleanup < 300000) return 0;
 cleanupRead = window.cleanupRoomScan(e);
 try { const count = await cleanupRead; lastCleanup = Date.now(); return count; }
 finally { cleanupRead = null; }
@@ -4268,7 +4440,7 @@ const data = d.data() || {};
 const lastActive = data.lastActive || data.timestamp || 0;
 const age = now - lastActive;
 const activeClients = data.activeClients || {};
-const onlineClients = Object.keys(activeClients).filter(k => now - activeClients[k] < 9e4);
+const onlineClients = Object.keys(activeClients).filter(k => now - activeClients[k] < 24e4);
 let seats = data.seats || {};
 let seatNames = {};
 if (data.stateJson) {
@@ -4282,7 +4454,7 @@ const p1Occupied = !!seats.p1;
 const p2Occupied = !!seats.p2;
 const hasSeat = p1Occupied || p2Occupied;
 const isCurrent = code === window.currentRoomCode;
-if (!isCurrent && (age > 6e5 || (!hasSeat && onlineClients.length === 0 && age > 12e4))) continue;
+if (!isCurrent && (age > 6e5 || (!hasSeat && onlineClients.length === 0 && age > 24e4))) continue;
 rooms.push({
 code,
 p1Occupied,
@@ -4304,7 +4476,7 @@ const t = collection(db, "artifacts", appId, "public", "data", "rooms"),
 o = await getDocs(t),
 s = Date.now(),
 c = 6e5,
-n = 12e4;
+n = 24e4;
 for (const d of o.docs) {
 const code = d.id;
 if (code === window.currentRoomCode) continue;
@@ -4313,7 +4485,7 @@ last = l.lastActive || l.timestamp || 0,
 r = s - last;
 let i = !1;
 const w = l.activeClients || {},
-b = Object.keys(w).filter((k) => s - w[k] < 9e4);
+b = Object.keys(w).filter((k) => s - w[k] < 24e4);
 if (l.stateJson)
 try {
 const parsed = JSON.parse(l.stateJson);
@@ -4321,7 +4493,7 @@ if (parsed.seats && (parsed.seats.p1 || parsed.seats.p2)) i = !0;
 } catch (err) {}
 const m = r > c,
 u = !i && 0 === b.length && r > n;
-if ((m || u || (e && (!i || r > 9e4))) && (await deleteRoomAndSubcollections(code))) a++;
+if ((m || u || (e && (!i || r > 18e4))) && (await deleteRoomAndSubcollections(code))) a++;
 }
 } catch (err) {
 console.warn("Cleanup scan error:", err);
@@ -4340,8 +4512,10 @@ if (a) await window.cleanupInactiveRooms(!1);
 window.currentRoomCode = e;
 roomImageCache.clear();
 imageWriteQueues.clear();
+uploadedPackCounts = { p1: 0, p2: 0, system: 0 };
 knownRoomState = null;
 presenceWrittenAt = 0;
+lastFlushedEffectSig = "";
 const o = doc(db, "artifacts", appId, "public", "data", "rooms", e);
 if (a) await window.sendGameState(buildStatePayload());
 else {
@@ -4353,18 +4527,15 @@ const parsed = JSON.parse(data.stateJson);
 if (data.seats) parsed.seats = { ...(parsed.seats || {}), ...data.seats };
 window.applyGameState(parsed);
 }
-await setDoc(
-o,
-{ lastActive: Date.now(), [`activeClients.${clientId}`]: Date.now() },
-{ merge: !0 },
-);
-if ("P1" === gameState.viewMode || "P2" === gameState.viewMode) {
-await window.syncPlayerSeat(gameState.viewMode, null);
-}
+const joinPayload = { lastActive: Date.now(), [`activeClients.${clientId}`]: Date.now() };
+if ("P1" === gameState.viewMode) joinPayload["seats.p1"] = localSeatId;
+if ("P2" === gameState.viewMode) joinPayload["seats.p2"] = localSeatId;
+await setDoc(o, joinPayload, { merge: !0 });
+presenceWrittenAt = Date.now();
 }
 }
 heartbeatTimer = setInterval(async () => {
-if (Date.now() - presenceWrittenAt < 45000) return;
+if (Date.now() - presenceWrittenAt < 170000) return;
 if (window.currentRoomCode)
 try {
 const rDoc = doc(db, "artifacts", appId, "public", "data", "rooms", window.currentRoomCode);
@@ -4375,7 +4546,7 @@ rDoc,
 );
 presenceWrittenAt = Date.now();
 } catch (err) {}
-}, 5e4);
+}, 180000);
 let s = null;
 unsubscribeRoom = onSnapshot(
 o,
@@ -4413,6 +4584,11 @@ const a = {};
 snap.docChanges().forEach((chg) => {
 const d = chg.doc;
 if ("removed" === chg.type) { roomImageCache.delete(d.id); return; }
+const packM = d.id.match(/^pack_(p1|p2|system)_(\d+)$/);
+if (packM) {
+const pOw = packM[1], pIdx = parseInt(packM[2], 10) + 1;
+if (pIdx > (uploadedPackCounts[pOw] || 0)) uploadedPackCounts[pOw] = pIdx;
+}
 const data = d.data();
 if (!data) return;
 if (data.packed && data.uniqueImages && data.cardMap) {
@@ -4448,20 +4624,27 @@ t.innerText = "Connection failed: " + (err.code || err.message);
 return !1;
 }
 };
-let stateDebounceTimer = null, pendingStatePayload = null, pendingEffectSig = "";
+let stateDebounceTimer = null, pendingStatePayload = null, pendingEffectSig = "", lastFlushedEffectSig = "";
+const URGENT_EFFECT_TYPES = new Set(["phaseBanner", "endTurnBanner", "battleClash", "battleLifeHit", "mirageSet", "adventExplosion", "burstFireworks", "playerJoinedSeat", "playerLeftSeat", "cardFlash"]);
 function flushQueuedRoomState() {
 if (!pendingStatePayload) return Promise.resolve();
-const { room, stateJson, view } = pendingStatePayload;
+const { room, stateJson, view, effectSig } = pendingStatePayload;
 pendingStatePayload = null;
-pendingEffectSig = "";
+lastFlushedEffectSig = effectSig || lastFlushedEffectSig;
+pendingEffectSig = lastFlushedEffectSig;
 const write = roomStateQueue.then(async () => {
 if (room === window.currentRoomCode && stateJson === knownRoomState) return;
 const payload = {
 stateJson, lastUpdatedBy: clientId, timestamp: Date.now(),
 lastActive: Date.now(), [`activeClients.${clientId}`]: Date.now()
 };
+if (gameState.seats) {
+payload["seats.p1"] = gameState.seats.p1 || null;
+payload["seats.p2"] = gameState.seats.p2 || null;
+} else {
 if (view === "P1") payload["seats.p1"] = localSeatId;
 if (view === "P2") payload["seats.p2"] = localSeatId;
+}
 await setDoc(doc(db, "artifacts", appId, "public", "data", "rooms", room), payload, { merge: true });
 if (room === window.currentRoomCode) {
 knownRoomState = stateJson;
@@ -4480,14 +4663,17 @@ if (!db || !window.currentRoomCode) return Promise.resolve();
 const room = window.currentRoomCode;
 const stateJson = JSON.stringify(state);
 const view = gameState.viewMode;
-const effectSig = `${state.lastActionEffect?.timestamp || 0}|${state.lastShuffle?.timestamp || 0}|${state.lastLottery?.timestamp || 0}`;
+const effType = state.lastActionEffect?.type || "";
+const isUrgent = URGENT_EFFECT_TYPES.has(effType) || Boolean(state.lastPhaseBanner?.id);
+const effectSig = `${isUrgent ? (state.lastActionEffect?.timestamp || 0) : 0}|${state.lastShuffle?.timestamp || 0}|${state.lastLottery?.timestamp || 0}|${state.lastPhaseBanner?.id || ""}`;
 if (stateDebounceTimer && effectSig !== pendingEffectSig) {
 clearTimeout(stateDebounceTimer);
 stateDebounceTimer = null;
 flushQueuedRoomState();
 }
-pendingStatePayload = { room, stateJson, view };
-if (effectSig !== pendingEffectSig && (state.lastActionEffect?.timestamp || state.lastShuffle?.timestamp || state.lastLottery?.timestamp)) {
+pendingStatePayload = { room, stateJson, view, effectSig };
+const hasNewUrgent = effectSig !== lastFlushedEffectSig && effectSig !== "0|0|0|";
+if (hasNewUrgent) {
 pendingEffectSig = effectSig;
 if (stateDebounceTimer) { clearTimeout(stateDebounceTimer); stateDebounceTimer = null; }
 return flushQueuedRoomState();
@@ -4497,7 +4683,7 @@ if (stateDebounceTimer) clearTimeout(stateDebounceTimer);
 stateDebounceTimer = setTimeout(() => {
 stateDebounceTimer = null;
 flushQueuedRoomState();
-}, 160);
+}, 280);
 return roomStateQueue;
 };
 window.syncPlayerSeat = async (e, a) => {
@@ -4520,7 +4706,7 @@ if (gameState.seats.p1 === localSeatId) gameState.seats.p1 = null;
 if (gameState.seats.p2 === localSeatId) gameState.seats.p2 = null;
 }
 if (gameState.seats?.p1 || gameState.seats?.p2) {
-pendingStatePayload = { room: e, stateJson: JSON.stringify(buildStatePayload()), view: gameState.viewMode };
+pendingStatePayload = { room: e, stateJson: JSON.stringify(buildStatePayload()), view: gameState.viewMode, effectSig: lastFlushedEffectSig };
 flushQueuedRoomState();
 } else {
 deleteRoomAndSubcollections(e);
@@ -4546,18 +4732,18 @@ toUpload.push([id, base64]);
 const safeOwner = String(owner || "all").replace(/[^a-zA-Z0-9_-]/g, "_");
 const cleanupStalePacks = async (keepCount) => {
 if (safeOwner !== "p1" && safeOwner !== "p2") return;
-try {
-const colRef = collection(db, "artifacts", appId, "public", "data", "rooms", room, "cardImages");
-const snap = await getDocs(colRef);
-const prefix = `pack_${safeOwner}_`;
-const dels = [];
-snap.forEach((d) => {
-if (d.id.startsWith(prefix)) {
-const idxNum = parseInt(d.id.slice(prefix.length), 10);
-if (!isNaN(idxNum) && idxNum >= keepCount) dels.push(deleteDoc(d.ref));
+const prevCount = uploadedPackCounts[safeOwner] || 0;
+if (prevCount <= keepCount) {
+uploadedPackCounts[safeOwner] = keepCount;
+return;
 }
-});
+try {
+const dels = [];
+for (let idx = keepCount; idx < prevCount; idx++) {
+dels.push(deleteDoc(doc(db, "artifacts", appId, "public", "data", "rooms", room, "cardImages", `pack_${safeOwner}_${idx}`)));
+}
 if (dels.length) await Promise.all(dels);
+uploadedPackCounts[safeOwner] = keepCount;
 } catch (e) {}
 };
 if (!toUpload.length) {
@@ -6024,10 +6210,7 @@ yourTurnTimers[targetPlayer] = null;
 }
 window.endTurnPhase = function () {
 gameState.turnCount = (parseInt(gameState.turnCount, 10) || 1) + 1;
-let targetPlayer = "p2";
-if (gameState.viewMode === "P1") targetPlayer = "p2";
-else if (gameState.viewMode === "P2") targetPlayer = "p1";
-else targetPlayer = gameState.turnCount % 2 === 0 ? "p2" : "p1";
+const targetPlayer = gameState.activeTurnPlayer || (gameState.turnCount % 2 === 0 ? "p2" : "p1");
 const timestamp = Math.max(Date.now(), (gameState.lastActionEffect?.timestamp || 0) + 1);
 gameState.lastActionEffect = {
 type: "endTurnBanner",
@@ -6968,8 +7151,9 @@ items.push(`<span class="${cls}"${dataAttr(s.key) || ` title="${s.label} × ${n}
 }
 for (const [k, n] of Object.entries(counts)) {
 if (k.includes("和") && n > 0) {
-const [k1, k2] = k.split("和");
-items.push(`<span class="${cls}"${dataAttr(k) || ` title="${k} × ${n}（單一雙色標誌）"`}>${createBsGemHexHTML(k1)}<span class="bs-gem-and-sep">和</span>${createBsGemHexHTML(k2)}<span>${n}</span></span>`);
+const parts = k.split("和").filter(Boolean);
+const gemsPart = parts.map(p => createBsGemHexHTML(p)).join('<span class="bs-gem-and-sep">和</span>');
+items.push(`<span class="${cls}"${dataAttr(k) || ` title="${k} × ${n}（單一複合標誌）"`}>${gemsPart}<span>${n}</span></span>`);
 }
 }
 if (!items.length && showEmptyText) {
@@ -7191,40 +7375,215 @@ frag.appendChild(document.createTextNode(line + (idx < lines.length - 1 ? "\n" :
 });
 contentEl.replaceChildren(frag);
 };
-function getCardSymbolAliasColors(card, data) {
-const eff = String(data?.effect || "").normalize("NFKC");
-if (!eff || !/(?:標誌|シンボル)[^。\n]{0,14}?(?:也?當作|としても扱う|視為)/.test(eff)) return [];
-let curLv = 1;
-if (data?.levels?.length) {
+function parseColorsFromClause(clause) {
+const found = new Set();
+const txt = String(clause || "");
+if (/全色|6色|六色/.test(txt)) {
+SIX_COLORS.forEach(c => found.add(c));
+} else {
+if (/[赤紅红]/.test(txt)) found.add("紅");
+if (/紫/.test(txt)) found.add("紫");
+if (/[綠緑绿]/.test(txt)) found.add("綠");
+if (/白/.test(txt)) found.add("白");
+if (/[黃黄]/.test(txt)) found.add("黃");
+if (/[藍青蓝]/.test(txt)) found.add("藍");
+}
+if (/神|創界神/.test(txt)) found.add("神");
+if (/究|究極/.test(txt)) found.add("究");
+return [...found];
+}
+
+function getCardCurrentLvForSym(card, data) {
+if (!data?.levels?.length) return 1;
 const cnt = Number(gameState[`${card.owner}_count`] || 0);
 const cores = typeof getDisplayedCardCoreCount === "function" ? getDisplayedCardCoreCount(card) : (card.cores || 0);
 const lvObj = data.levels.filter(l => (l.count != null ? cnt >= l.count : cores >= l.core)).sort((a, b) => b.level - a.level)[0];
-curLv = lvObj ? lvObj.level : 0;
+return lvObj ? lvObj.level : 0;
 }
-const found = new Set();
+
+function getCardSymbolAliasRules(card, data) {
+const eff = String(data?.effect || "").normalize("NFKC");
+if (!eff) return [];
+const curLv = getCardCurrentLvForSym(card, data);
+const rules = [];
 let activeMinLv = 0;
+let inMirageBlock = false;
+const selfSubjRx = /(?:這張卡|此卡|這個Spirit|這張Spirit|這個Nexus|這張Nexus|這個Brave|這張Brave|這個Ultimate|這張Ultimate|このカード|このスピリット|このネクサス|このブレイヴ|このアルティメット)/i;
 for (const rawLine of eff.split(/\r?\n/)) {
 const ln = rawLine.trim();
 if (!ln) continue;
-const lvM = ln.match(/^(?:\[[^\]]*?)?Lv\s*(\d+)/i);
-if (lvM) activeMinLv = parseInt(lvM[1], 10) || 0;
-const m = ln.match(/(?:標誌|シンボル)[^。\n]{0,14}?(?:也?當作|としても扱う|視為)([^。\n]+)/i);
-if (!m) continue;
-if (activeMinLv && curLv < activeMinLv) continue;
-const clause = m[1];
-if (/全色|6色|六色/.test(clause)) {
-SIX_COLORS.forEach(c => found.add(c));
+if (/^【(?:幻境|ミラージュ)/.test(ln)) {
+inMirageBlock = true;
+activeMinLv = 0;
 continue;
 }
-if (/[赤紅红]/.test(clause)) found.add("紅");
-if (/紫/.test(clause)) found.add("紫");
-if (/[綠緑绿]/.test(clause)) found.add("綠");
-if (/白/.test(clause)) found.add("白");
-if (/[黃黄]/.test(clause)) found.add("黃");
-if (/[藍青蓝]/.test(clause)) found.add("藍");
+const lvM = ln.match(/^(?:(?:【[^】]*】|《[^》]*》)\s*)*(?:\[[^\]]*?)?Lv\s*(\d+)/i);
+if (lvM) {
+activeMinLv = parseInt(lvM[1], 10) || 0;
+inMirageBlock = false;
+}
+if (inMirageBlock) continue;
+if (/減輕|軽減/.test(ln)) continue;
+if (!selfSubjRx.test(ln)) continue;
+const m = ln.match(/(?:(創界神|创界神|神|究極|究极|究|[赤紅红紫綠緑绿白黃黄藍青蓝])(?:的)?)?(?:標誌|シンボル)[^。\n]{0,14}?(?:也?當作|としても扱う|視為)([^。\n]+)/i);
+if (!m) continue;
+if (activeMinLv && curLv < activeMinLv) continue;
+const targetKey = m[1] ? resolveSingleKey(m[1]) : null;
+const colors = parseColorsFromClause(m[2]);
+if (colors.length > 0) rules.push({ targetKey, colors });
+}
+return rules;
+}
+
+function getCardOwnReductionAliases(data) {
+const eff = String(data?.effect || "").normalize("NFKC");
+if (!eff) return [];
+const found = new Set();
+const selfRedRx = /(?:這張卡(?:牌)?|此卡|這個Spirit|這張Spirit|這個Nexus|這張Nexus|這個Brave|這張Brave|這個Ultimate|這張Ultimate|このカード|このスピリット|このネクサス|このブレイヴ|このアルティメット)[^。\n]{0,10}?(?:的)?(?:減輕標誌|軽減シンボル)[^。\n]{0,12}?(?:也?當作|としても扱う|視為)([^。\n]+)/gi;
+for (const m of eff.matchAll(selfRedRx)) {
+parseColorsFromClause(m[1]).forEach(c => found.add(c));
 }
 return [...found];
 }
+
+function cardHasFamilyNorm(data, fam) {
+if (!data || !fam) return false;
+const norm = s => String(s || "").normalize("NFKC").replace(/竜/g, "龍").replace(/獣/g, "獸").replace(/剣/g, "劍").replace(/霊/g, "靈").replace(/属/g, "屬");
+const extra = typeof window.extractExtraFamiliesFromEffect === "function" ? window.extractExtraFamiliesFromEffect(data.effect || "") : [];
+const allFam = norm([data.family || "", ...extra].join("・"));
+return allFam.includes(norm(fam));
+}
+
+function cardAttributeColorsSet(data) {
+const attr = String(data?.attribute || "").normalize("NFKC");
+const set = new Set();
+if (/[赤紅红]/.test(attr)) set.add("紅");
+if (/紫/.test(attr)) set.add("紫");
+if (/[綠緑绿]/.test(attr)) set.add("綠");
+if (/白/.test(attr)) set.add("白");
+if (/[黃黄]/.test(attr)) set.add("黃");
+if (/[藍青蓝]/.test(attr)) set.add("藍");
+return set;
+}
+
+function getPlayerAuraReductionAliases(owner, targetData) {
+if (!owner || !targetData) return [];
+const found = new Set();
+const targetAttrCount = cardAttributeColorsSet(targetData).size;
+for (const c of Object.values(gameState.cards)) {
+if (c.owner !== owner || c.isFaceDown || c.adventHostId) continue;
+const z = c.zone || "";
+const isBurstMirage = z === `zone-burst-${owner}`;
+if (!isBurstMirage && z !== `field-${owner}` && z !== `zone-god-${owner}`) continue;
+const cat = lookupCatalog(c);
+if (!cat?.effect) continue;
+const eff = String(cat.effect).normalize("NFKC");
+if (!/(?:減輕標誌|軽減シンボル)/.test(eff)) continue;
+const curLv = getCardCurrentLvForSym(c, cat);
+let activeMinLv = 0;
+let inMirageBlock = false;
+for (const rawLine of eff.split(/\r?\n/)) {
+const ln = rawLine.trim();
+if (!ln) continue;
+if (/【(?:幻境|ミラージュ)/.test(ln)) { inMirageBlock = true; activeMinLv = 0; }
+const lvM = ln.match(/(?:^|【(?:契約域|神域|界放)[^】]*】\s*)Lv\s*(\d+)/i);
+if (lvM) { activeMinLv = parseInt(lvM[1], 10) || 0; inMirageBlock = false; }
+if (isBurstMirage && !inMirageBlock) continue;
+if (!isBurstMirage && inMirageBlock) continue;
+if (!isBurstMirage && activeMinLv && curLv < activeMinLv) continue;
+if (/(?:這張卡(?:牌)?|此卡|このカード)[^。\n]{0,8}?(?:的)?(?:減輕標誌|軽減シンボル)/.test(ln)) continue;
+const m = ln.match(/(?:減輕標誌|軽減シンボル)[^。\n]{0,12}?(?:也?當作|としても扱う|視為)([^。\n]+)/i);
+if (!m) continue;
+if (/6色以外|六色以外/.test(ln) && targetAttrCount >= 6) continue;
+const famMatches = [...ln.matchAll(/[「『]([^」』]+)[」』]/g)].map(x => x[1].trim()).filter(Boolean);
+if (famMatches.length > 0 && !famMatches.some(f => cardHasFamilyNorm(targetData, f))) continue;
+parseColorsFromClause(m[1]).forEach(col => found.add(col));
+}
+}
+return [...found];
+}
+
+function playerMatchesHandCondition(owner, condText) {
+const txt = String(condText || "").normalize("NFKC");
+if (!txt) return true;
+const cntM = txt.match(/(?:Count|カウント)\s*(\d+)\s*(?:或以上|以上)/i);
+if (cntM) {
+const curCnt = Number(gameState[`${owner}_count`] || 0);
+if (curCnt < (parseInt(cntM[1], 10) || 0)) return false;
+}
+const fams = [...txt.matchAll(/[「『]([^」』]+)[」』]/g)].map(x => x[1].trim()).filter(Boolean);
+const wantSpirit = /spirit|スピリット|戰魂/i.test(txt);
+const wantNexus = /nexus|ネクサス|創界神/i.test(txt);
+const wantMirage = /幻境|ミラージュ/i.test(txt);
+const wantBrave = /brave|ブレイヴ|合體/i.test(txt);
+const wantUltimate = /ultimate|アルティメット|究極/i.test(txt);
+const hasTypeFilter = wantSpirit || wantNexus || wantMirage || wantBrave || wantUltimate;
+if (fams.length > 0 || hasTypeFilter) {
+let matched = false;
+for (const c of Object.values(gameState.cards)) {
+if (c.owner !== owner || c.isFaceDown || c.adventHostId) continue;
+const z = c.zone || "";
+const isField = z === `field-${owner}`;
+const isGod = z === `zone-god-${owner}`;
+const isBurst = z === `zone-burst-${owner}`;
+if (!isField && !isGod && !isBurst) continue;
+const cat = lookupCatalog(c);
+if (!cat) continue;
+const typeStr = String(cat.type || "").toLowerCase();
+const isMirageCard = isBurst && (cat.mirageCost != null || /【(?:幻境|ミラージュ)/.test(String(cat.effect || "")));
+if (isBurst && !isMirageCard) continue;
+if (hasTypeFilter) {
+const okType =
+(wantMirage && isMirageCard) ||
+(wantNexus && (isGod || typeStr.includes("nexus") || typeStr.includes("ネクサス") || typeStr.includes("創界神") || typeStr.includes("契約神"))) ||
+(wantSpirit && isField && (typeStr.includes("spirit") || typeStr.includes("スピリット"))) ||
+(wantBrave && isField && (typeStr.includes("brave") || typeStr.includes("ブレイヴ"))) ||
+(wantUltimate && isField && (typeStr.includes("ultimate") || typeStr.includes("アルティメット")));
+if (!okType) continue;
+}
+if (fams.length > 0 && !fams.some(f => cardHasFamilyNorm(cat, f))) continue;
+matched = true;
+break;
+}
+if (!matched) return false;
+}
+return true;
+}
+
+function evaluateHandDynamicCost(owner, data, baseCost) {
+let effectiveCost = baseCost;
+const notes = [];
+if (!data?.effect) return { baseCost: effectiveCost, notes };
+const eff = String(data.effect).normalize("NFKC");
+const setCostRx = /(?:手牌中|手札にある)[^。]{0,95}?(?:(?:變成|變為|改為|當作|視為)\s*(?:Cost|費用|コスト)\s*(\d+)|(?:Cost|費用|コスト)\s*(?:變成|變為|改為|を)?\s*(\d+)(?:\s*にする)?)/gi;
+for (const m of eff.matchAll(setCostRx)) {
+const fullSentence = m[0] || "";
+const targetVal = parseInt(m[1] || m[2], 10);
+if (isNaN(targetVal)) continue;
+const condM = fullSentence.match(/(?:假若|如果|若|當|只要|自分の)([^，,。]+)/);
+const condStr = condM ? condM[1] : fullSentence;
+if (!owner || playerMatchesHandCondition(owner, condStr)) {
+if (targetVal < effectiveCost) {
+effectiveCost = targetVal;
+notes.push(`手牌條件改費 ➔ Cost ${targetVal}`);
+}
+}
+}
+const minusCostRx = /(?:手牌中|手札にある)[^。]{0,80}?(?:Cost|費用|コスト)\s*[-－]\s*(\d+)/gi;
+for (const m of eff.matchAll(minusCostRx)) {
+const fullSentence = m[0] || "";
+const delta = parseInt(m[1], 10) || 0;
+if (delta <= 0) continue;
+const condM = fullSentence.match(/(?:假若|如果|若|當|只要|自分の)([^，,。]+)/);
+const condStr = condM ? condM[1] : "";
+if (!condStr || !owner || playerMatchesHandCondition(owner, condStr)) {
+effectiveCost = Math.max(0, effectiveCost - delta);
+notes.push(`手牌效果 Cost -${delta}`);
+}
+}
+return { baseCost: effectiveCost, notes };
+}
+
 function getPlayerFieldSymbols(player) {
 const totals = {};
 for (const card of Object.values(gameState.cards)) {
@@ -7235,14 +7594,32 @@ if (!z.startsWith("field-") && !z.startsWith("zone-god-")) continue;
 const data = lookupCatalog(card);
 if (!data?.symbol) continue;
 const map = parseBsSymbolMap(data.symbol);
-const aliasColors = getCardSymbolAliasColors(card, data);
+const aliasRules = getCardSymbolAliasRules(card, data);
 for (const [k, v] of Object.entries(map)) {
 if (v <= 0) continue;
-if (aliasColors.length > 0 && k !== "全" && k !== "神" && k !== "究") {
-const baseColors = k.includes("和") ? k.split("和") : [k];
-const merged = [...new Set([...baseColors, ...aliasColors])].filter(c => SIX_COLORS.includes(c));
-merged.sort((a, b) => (BS_SYMBOL_ORDER.get(a) ?? 99) - (BS_SYMBOL_ORDER.get(b) ?? 99));
-const outKey = merged.length >= 6 ? "全" : (merged.length > 1 ? merged.join("和") : (merged[0] || k));
+const baseParts = k.includes("和") ? k.split("和") : [k];
+const matchedColors = [];
+for (const rule of aliasRules) {
+if (!rule.targetKey || baseParts.includes(rule.targetKey)) {
+matchedColors.push(...rule.colors);
+}
+}
+if (matchedColors.length > 0 && k !== "究") {
+const mergedSet = new Set([...baseParts, ...matchedColors]);
+const hasGod = mergedSet.has("神");
+const hasUlt = mergedSet.has("究");
+const hasAll = mergedSet.has("全") || SIX_COLORS.every(c => mergedSet.has(c));
+const outParts = [];
+if (hasAll) {
+outParts.push("全");
+} else {
+for (const c of SIX_COLORS) {
+if (mergedSet.has(c)) outParts.push(c);
+}
+}
+if (hasUlt) outParts.push("究");
+if (hasGod) outParts.push("神");
+const outKey = outParts.length ? outParts.join("和") : k;
 totals[outKey] = (totals[outKey] || 0) + v;
 } else {
 totals[k] = (totals[k] || 0) + v;
@@ -7257,6 +7634,7 @@ if (v > 0) totals[k] = (totals[k] || 0) + v;
 }
 return totals;
 }
+
 function ensureFieldSymbolBars() {
 ["p1", "p2"].forEach(p => {
 const fieldEl = document.getElementById(`field-${p}`);
@@ -7279,78 +7657,91 @@ bar.classList.remove("has-symbols");
 }
 });
 }
-function calculateReducedCost(costNum, reductionStr, fieldSymbols) {
-const req = parseBsSymbolMap(reductionStr);
-const singlePool = {};
-const dualList = [];
-for (const [k, v] of Object.entries(fieldSymbols || {})) {
-if (v <= 0) continue;
-if (k.includes("和")) {
-const pair = k.split("和");
-for (let i = 0; i < v; i++) dualList.push(pair);
+
+function expandSymbolCapabilities(key) {
+const caps = new Set();
+const parts = String(key || "").includes("和") ? String(key).split("和") : [String(key || "")];
+for (const p of parts) {
+if (!p) continue;
+if (p === "全") {
+SIX_COLORS.forEach(c => caps.add(c));
+caps.add("全");
 } else {
-singlePool[k] = (singlePool[k] || 0) + v;
+caps.add(p);
 }
 }
-const remReq = {};
-let discount = 0;
-for (const key of [...SIX_COLORS, "究", "神"]) {
-const need = req[key] || 0;
-if (need <= 0) continue;
-const used = Math.min(need, singlePool[key] || 0);
-singlePool[key] = (singlePool[key] || 0) - used;
-discount += used;
-const left = need - used;
-if (left > 0) remReq[key] = left;
+return caps;
 }
-if ((req["全"] || 0) > 0) remReq["全"] = req["全"];
-for (const opts of dualList) {
-const specificCandidates = opts.filter(c => (remReq[c] || 0) > 0);
-if (specificCandidates.length > 0) {
-specificCandidates.sort((a, b) => (remReq[b] || 0) - (remReq[a] || 0));
-const pick = specificCandidates[0];
-remReq[pick] -= 1;
-discount += 1;
-continue;
+
+function calculateReducedCost(costNum, reductionStr, fieldSymbols, extraOpts = null) {
+let effBaseCost = costNum;
+let extraNotes = [];
+const reductionAliasSet = new Set();
+if (extraOpts && extraOpts.data) {
+const owner = extraOpts.owner || extraOpts.card?.owner || null;
+if (!extraOpts.skipHandDynamic) {
+const dyn = evaluateHandDynamicCost(owner, extraOpts.data, costNum);
+effBaseCost = dyn.baseCost;
+extraNotes = dyn.notes;
 }
-if (opts.includes("全")) {
-const sixTarget = SIX_COLORS.find(c => (remReq[c] || 0) > 0);
-if (sixTarget) {
-remReq[sixTarget] -= 1;
-discount += 1;
-continue;
+getCardOwnReductionAliases(extraOpts.data).forEach(c => reductionAliasSet.add(c));
+if (owner) {
+getPlayerAuraReductionAliases(owner, extraOpts.data).forEach(c => reductionAliasSet.add(c));
 }
 }
-if ((remReq["全"] || 0) > 0 && opts.some(c => SIX_COLORS.includes(c) || c === "全")) {
-remReq["全"] -= 1;
-discount += 1;
+const reqMap = parseBsSymbolMap(reductionStr);
+const reqSlots = [];
+for (const [k, v] of Object.entries(reqMap)) {
+const cnt = Math.max(0, parseInt(v, 10) || 0);
+if (!cnt) continue;
+const accept = expandSymbolCapabilities(k);
+reductionAliasSet.forEach(c => accept.add(c));
+if (SIX_COLORS.every(c => accept.has(c))) accept.add("全");
+for (let i = 0; i < cnt; i++) reqSlots.push(accept);
+}
+const supplyUnits = [];
+for (const [k, v] of Object.entries(fieldSymbols || {})) {
+const cnt = Math.max(0, parseInt(v, 10) || 0);
+if (!cnt) continue;
+const caps = expandSymbolCapabilities(k);
+for (let i = 0; i < cnt; i++) supplyUnits.push(caps);
+}
+let symDiscount = 0;
+if (reqSlots.length > 0 && supplyUnits.length > 0) {
+const adj = reqSlots.map(accept => {
+const edges = [];
+for (let j = 0; j < supplyUnits.length; j++) {
+const caps = supplyUnits[j];
+let ok = false;
+for (const a of accept) {
+if (caps.has(a)) { ok = true; break; }
+}
+if (ok) edges.push(j);
+}
+return edges;
+});
+const matchRight = new Array(supplyUnits.length).fill(-1);
+const dfs = (u, visited) => {
+for (const v of adj[u]) {
+if (visited[v]) continue;
+visited[v] = true;
+if (matchRight[v] === -1 || dfs(matchRight[v], visited)) {
+matchRight[v] = u;
+return true;
 }
 }
-for (const key of SIX_COLORS) {
-const left = remReq[key] || 0;
-if (left > 0 && (singlePool["全"] || 0) > 0) {
-const wildUsed = Math.min(left, singlePool["全"]);
-singlePool["全"] -= wildUsed;
-remReq[key] -= wildUsed;
-discount += wildUsed;
+return false;
+};
+for (let u = 0; u < reqSlots.length; u++) {
+const visited = new Array(supplyUnits.length).fill(false);
+if (dfs(u, visited)) symDiscount++;
 }
 }
-let needWild = remReq["全"] || 0;
-if (needWild > 0) {
-for (const key of [...SIX_COLORS, "全"]) {
-if (needWild <= 0) break;
-const avail = singlePool[key] || 0;
-if (avail > 0) {
-const take = Math.min(needWild, avail);
-singlePool[key] -= take;
-needWild -= take;
-discount += take;
+const actual = Math.max(0, effBaseCost - symDiscount);
+const totalDiscount = Math.max(0, costNum - actual);
+return { cost: costNum, effectiveCost: effBaseCost, discount: totalDiscount, symDiscount, actual, notes: extraNotes };
 }
-}
-}
-const actual = Math.max(0, costNum - discount);
-return { cost: costNum, discount, actual };
-}
+
 function updatePreviewCostCalc(cardId) {
 const bar = document.getElementById("preview-cost-calc");
 if (bar) {
@@ -7600,7 +7991,7 @@ const baseCost = Number(data?.cost ?? 0);
 const safeCost = Number.isFinite(baseCost) ? Math.max(0, baseCost) : 0;
 const fieldSyms = typeof window.getPlayerFieldSymbols === "function" ? window.getPlayerFieldSymbols(owner) : {};
 const { actual } = typeof window.calculateReducedCost === "function"
-? window.calculateReducedCost(safeCost, data?.reduction || "", fieldSyms)
+? window.calculateReducedCost(safeCost, data?.reduction || "", fieldSyms, { card, data, owner })
 : { actual: safeCost };
 hideCardPreview();
 if (actual <= 0) {
@@ -7675,7 +8066,7 @@ const baseCost = Number(data?.cost ?? 0);
 const safeCost = Number.isFinite(baseCost) ? Math.max(0, baseCost) : 0;
 const fieldSyms = typeof window.getPlayerFieldSymbols === "function" ? window.getPlayerFieldSymbols(owner) : {};
 const { actual } = typeof window.calculateReducedCost === "function"
-? window.calculateReducedCost(safeCost, data?.reduction || "", fieldSyms)
+? window.calculateReducedCost(safeCost, data?.reduction || "", fieldSyms, { card, data, owner })
 : { actual: safeCost };
 const reserveNormal = parseInt(gameState[`${owner}_reserve`], 10) || 0;
 const soulInReserve = gameState.soulCoreLocation?.[owner] === "reserve";
@@ -8351,7 +8742,7 @@ if (isNaN(baseCost)) {
 if (badge) badge.remove();
 continue;
 }
-const calc = window.calculateReducedCost(baseCost, data.reduction || "", symbolsByOwner[card.owner] || {});
+const calc = window.calculateReducedCost(baseCost, data.reduction || "", symbolsByOwner[card.owner] || {}, { card, data, owner: card.owner });
 if (!badge) {
 badge = document.createElement("span");
 badge.className = "card-reduced-cost-badge";
@@ -9059,7 +9450,7 @@ const fieldSymbols = typeof window.getPlayerFieldSymbols === "function"
 ? window.getPlayerFieldSymbols(card.owner)
 : {};
 const calc = typeof window.calculateReducedCost === "function"
-? window.calculateReducedCost(baseCost, data.reduction || "", fieldSymbols)
+? window.calculateReducedCost(baseCost, data.reduction || "", fieldSymbols, { card, data, owner: card.owner })
 : { cost: baseCost, discount: 0, actual: baseCost };
 const totalAvail = getTotalAvailableCoresForPlay(card.owner);
 pendingPlayConfirm = { cardId, targetZone, options, calc };
@@ -9200,7 +9591,7 @@ const fieldSymbols = typeof window.getPlayerFieldSymbols === "function"
 ? window.getPlayerFieldSymbols(owner)
 : {};
 const calc = typeof window.calculateReducedCost === "function"
-? window.calculateReducedCost(baseCost, cfg.reductionStr || "", fieldSymbols)
+? window.calculateReducedCost(baseCost, cfg.reductionStr || "", fieldSymbols, { card, data: lookupCatalog(card), owner, skipHandDynamic: !!cfg.forceFaceUp })
 : { cost: baseCost, discount: 0, actual: baseCost };
 const totalAvail = getTotalAvailableCoresForPlay(owner);
 pendingPlayConfirm = { cardId, targetZone, options, calc, customCfg: cfg };
@@ -9819,11 +10210,24 @@ infoDiv.style.cssText = "margin-bottom:8px;padding:6px 8px;border:1px solid rgba
 infoDiv.textContent = `✨ 幻境：Cost ${mCost}${data.mirageReduction ? `（輕減：${data.mirageReduction}）` : ""}`;
 contentEl.prepend(infoDiv);
 };
-window.playMirageOrbitEffect = function (cardId) {
+window.playMirageOrbitEffect = function (cardId, theme = "gold", loops = 2) {
 const el = document.getElementById(cardId);
 if (!el) return;
 const rect = el.getBoundingClientRect();
 if (!rect.width || !rect.height) return;
+const isRed = theme === "red";
+const strokeMain = isRed ? "#ef4444" : "#fde047";
+const glowA = isRed ? "#dc2626" : "#facc15";
+const glowB = isRed ? "#fca5a5" : "#fef08a";
+const orbBg = isRed
+? "radial-gradient(circle, #ffffff 0%, #fca5a5 40%, #dc2626 78%, transparent 100%)"
+: "radial-gradient(circle, #ffffff 0%, #fef08a 42%, #eab308 78%, transparent 100%)";
+const orbShadow = isRed
+? "0 0 16px 6px rgba(239,68,68,0.96), 0 0 28px 10px rgba(248,113,113,0.62)"
+: "0 0 16px 6px rgba(250,204,21,0.95), 0 0 28px 10px rgba(254,240,138,0.6)";
+const cardGlow = isRed
+? "0 0 24px 6px rgba(239,68,68,0.9), inset 0 0 14px rgba(252,165,165,0.45)"
+: "0 0 24px 6px rgba(250,204,21,0.9), inset 0 0 14px rgba(254,240,138,0.5)";
 const pad = 8;
 const w = rect.width + pad * 2;
 const h = rect.height + pad * 2;
@@ -9846,11 +10250,11 @@ const perim = 2 * (rw + rh);
 const trail = document.createElementNS(svgNS, "path");
 trail.setAttribute("d", d);
 trail.setAttribute("fill", "none");
-trail.setAttribute("stroke", "#fde047");
+trail.setAttribute("stroke", strokeMain);
 trail.setAttribute("stroke-width", "4.5");
 trail.setAttribute("stroke-linecap", "round");
 trail.setAttribute("stroke-linejoin", "round");
-trail.style.filter = "drop-shadow(0 0 8px #facc15) drop-shadow(0 0 16px #fef08a)";
+trail.style.filter = `drop-shadow(0 0 8px ${glowA}) drop-shadow(0 0 16px ${glowB})`;
 const tailLen = Math.round(perim * 0.28);
 trail.setAttribute("stroke-dasharray", `${tailLen} ${Math.ceil(perim)}`);
 trail.setAttribute("stroke-dashoffset", String(tailLen));
@@ -9873,25 +10277,28 @@ position: "fixed",
 width: "14px",
 height: "14px",
 borderRadius: "50%",
-background: "radial-gradient(circle, #ffffff 0%, #fef08a 42%, #eab308 78%, transparent 100%)",
-boxShadow: "0 0 16px 6px rgba(250,204,21,0.95), 0 0 28px 10px rgba(254,240,138,0.6)",
+background: orbBg,
+boxShadow: orbShadow,
 pointerEvents: "none",
 zIndex: "16946",
 transform: "translate(-50%, -50%)"
 });
 document.body.appendChild(orb);
+const totalLaps = Math.max(1, Number(loops) || 2);
+const totalDist = perim * totalLaps;
 const startT = performance.now();
-const dur = 760;
+const dur = 580 * totalLaps;
 const step = (now) => {
 const t = Math.min(1, (now - startT) / dur);
 const eased = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
-const dist = eased * perim;
-trail.setAttribute("stroke-dashoffset", String(tailLen - dist));
-coreLine.setAttribute("stroke-dashoffset", String(coreLen - dist));
-const pt = trail.getPointAtLength(dist % perim);
+const dist = eased * totalDist;
+const modDist = dist % perim;
+trail.setAttribute("stroke-dashoffset", String(tailLen - modDist));
+coreLine.setAttribute("stroke-dashoffset", String(coreLen - modDist));
+const pt = trail.getPointAtLength(modDist);
 orb.style.left = `${rect.left - pad + pt.x}px`;
 orb.style.top = `${rect.top - pad + pt.y}px`;
-const fade = t > 0.82 ? Math.max(0, (1 - t) / 0.18) : (t < 0.08 ? t / 0.08 : 1);
+const fade = t > 0.86 ? Math.max(0, (1 - t) / 0.14) : (t < 0.06 ? t / 0.06 : 1);
 svg.style.opacity = String(fade);
 orb.style.opacity = String(fade);
 if (t < 1) {
@@ -9903,10 +10310,10 @@ orb.remove();
 };
 requestAnimationFrame(step);
 el.animate([
-{ boxShadow: "0 0 0 0 rgba(250,204,21,0)", filter: "brightness(1)" },
-{ boxShadow: "0 0 24px 6px rgba(250,204,21,0.9), inset 0 0 14px rgba(254,240,138,0.5)", filter: "brightness(1.3)", offset: 0.45 },
-{ boxShadow: "0 0 0 0 rgba(250,204,21,0)", filter: "brightness(1)" }
-], { duration: 800, easing: "ease-out" });
+{ boxShadow: "0 0 0 0 rgba(0,0,0,0)", filter: "brightness(1)" },
+{ boxShadow: cardGlow, filter: "brightness(1.28)", offset: 0.45 },
+{ boxShadow: "0 0 0 0 rgba(0,0,0,0)", filter: "brightness(1)" }
+], { duration: dur + 60, easing: "ease-out" });
 };
 const baseMoveForMirage = moveCardToZone;
 moveCardToZone = function (id, zone, options = {}) {
@@ -9949,14 +10356,22 @@ return;
 }
 const prevRevealOwner = prevZone === "reveal-p1" ? "p1" : (prevZone === "reveal-p2" ? "p2" : null);
 const res = baseMoveForMirage(id, zone, options);
-if (!isSyncing && card && zone.startsWith("zone-burst-") && prevZone !== zone && !card.isFaceDown) {
+if (!isSyncing && card && zone.startsWith("zone-burst-") && prevZone !== zone) {
+if (card.isFaceDown) {
+const ts = Math.max(Date.now(), (gameState.lastActionEffect?.timestamp || 0) + 1);
+gameState.lastActionEffect = { type: "mirageSet", cardId: id, theme: "red", loops: 2, timestamp: ts };
+lastSeenActionEffectTime = ts;
+updateRoomState();
+setTimeout(() => window.playMirageOrbitEffect && window.playMirageOrbitEffect(id, "red", 2), 290);
+} else {
 const mData = lookupCatalog(card);
 if (mData && (mData.mirageCost != null || parseMirageFromEffect(mData.effect))) {
 const ts = Math.max(Date.now(), (gameState.lastActionEffect?.timestamp || 0) + 1);
-gameState.lastActionEffect = { type: "mirageSet", cardId: id, timestamp: ts };
+gameState.lastActionEffect = { type: "mirageSet", cardId: id, theme: "gold", loops: 2, timestamp: ts };
 lastSeenActionEffectTime = ts;
 updateRoomState();
-setTimeout(() => window.playMirageOrbitEffect && window.playMirageOrbitEffect(id), 290);
+setTimeout(() => window.playMirageOrbitEffect && window.playMirageOrbitEffect(id, "gold", 2), 290);
+}
 }
 }
 if (prevRevealOwner && revealWindows[prevRevealOwner]) {
@@ -9997,7 +10412,7 @@ ensureMirageFormUI();
 /* =========================================================================
 PART 1: 左上角 BS 版本號齒輪控制（語意化 major.minor：支援 3.7 -> 3.8 -> 3.9 -> 3.10 -> 3.11）
 ========================================================================= */
-const BS_DEFAULT_VERSION = "4.6";
+const BS_DEFAULT_VERSION = "4.10";
 const VER_KEY = "bs_app_version_str";
 const VER_BASE_KEY = "bs_app_version_base";
 window.BS_APP_VERSION = BS_DEFAULT_VERSION;
@@ -10298,7 +10713,7 @@ godDeployBtn.classList.add("hidden");
     <div class="changelog-header">
       <div class="flex items-center gap-2.5 flex-wrap">
         <h2 id="changelog-modal-title" class="text-base sm:text-lg font-black tracking-widest text-[#e0b25b]">📜 更新日誌 (CHANGELOG)</h2>
-        <span id="changelog-current-ver" class="text-xs font-black bg-emerald-950/80 border border-emerald-500/60 text-emerald-300 px-2 py-0.5 rounded-sm">v4.6</span>
+        <span id="changelog-current-ver" class="text-xs font-black bg-emerald-950/80 border border-emerald-500/60 text-emerald-300 px-2 py-0.5 rounded-sm">v4.10</span>
       </div>
       <button type="button" class="border border-[#b09466]/55 bg-black/70 text-[#dcd6cc] hover:bg-[#c8aa76] hover:text-black px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="closeChangelogModal()">關閉 (✕)</button>
     </div>
@@ -10312,6 +10727,106 @@ godDeployBtn.classList.add("hidden");
 版本更新日誌資料（往後每次更新 3.8、3.9、3.10、3.11… 請於陣列最上方新增物件）
 ========================================================================= */
 window.BS_CHANGELOG = [
+{
+version: "4.10",
+date: "2026-11-22",
+title: "v4.10 Firebase 省額度大優化（讀取與寫入量驟降 90% 以上）",
+sections: [
+{
+heading: "🚀 卡池增量同步 (Delta Sync)",
+items: [
+"改用 updatedAt 增量查詢與刪除日誌：當卡池新增、修改或刪除卡片時，其他玩家重開網頁只會抓取變動的那幾張卡片，不再每次整庫重讀數百張。"
+]
+},
+{
+heading: "🗂️ 卡組庫本機優先快取 & 單檔極簡儲存",
+items: [
+"載入／編輯／查看卡組時優先比對 IndexedDB 本機快取，版本一致時 0 雲端讀取；舊版子集合卡組讀取一次後也會自動快取至本機。",
+"新儲存的卡組若卡片已在共用卡池中，只記錄卡號與張數並整副合併為 1 份主文件（同時保留封面圖供列表顯示），大幅減少讀寫次數。"
+]
+},
+{
+heading: "⚡ 修復狀態節流 Bug、降低心跳與移除圖片掃描",
+items: [
+"修復 sendGameState() 每次寫入後清空特效簽章導致防抖失效的 Bug，一般操作合併於 280ms 視窗送出，重要戰鬥／階段橫幅仍維持即時同步。",
+"合併加入／切換座位時的雙重寫入，並將房間在線心跳調整為 3 分鐘一次（操作期間自動順延、0 額外寫入）。",
+"移除 uploadPlayerCardImages() 每次載入牌組時的 cardImages 全子集合掃描，改由本地追蹤封包數精準清理。"
+]
+}
+]
+},
+{
+version: "4.9",
+date: "2026-11-22",
+title: "v4.9 修復創界神【神域】Lv2 效果於 Lv1 誤觸發 & 指定標誌精準改色",
+sections: [
+{
+heading: "🔧 修復【神域】Lv2 / 【契約域】Lv2 於 Lv1 誤觸發",
+items: [
+"修正 Lv 門檻解析正則表達式，正確辨識「【神域】Lv2」、「【契約域】Lv2」、「【界放】Lv2」等帶有效果標籤前綴的等級標頭，防止創界神（如 PX20-01 永遠のキズナ 馬神 弾）在 Lv1 (0~2 Core) 時誤觸發 Lv2 效果。"
+]
+},
+{
+heading: "💎 精準指定標誌改色（不誤改同卡其他標誌）",
+items: [
+"當效果指定特定標誌改色（如「這張Nexus的神標誌也當作紅/紫/綠/白/黃/藍色」）時，僅將該指定標誌（神）合併為「全和神」，同卡原有的「紅 1」標誌維持不變。"
+]
+}
+]
+},
+{
+version: "4.8",
+date: "2026-11-22",
+title: "v4.8 緊急修復標誌減輕失效、橫幅獨立同步通道（全員必看）與一人一回合嚴格輪流",
+sections: [
+{
+heading: "🔧 緊急修復標誌與減輕計算失效",
+items: [
+"修復 v4.7 中 Region 13 正則表達式換行跳脫異常導致標誌統計與手牌減輕計算未載入的問題，所有基礎標誌、減輕、創界神光環與手牌條件變費現已全面恢復運作。"
+]
+},
+{
+heading: "📢 橫幅獨立廣播通道（全員同步必看）",
+items: [
+"將階段橫幅與結束回合橫幅改為獨立同步欄位 (lastPhaseBanner + 唯一 ID)，不再被自動加 Core、抽牌或回復特效覆蓋，亦不受雙方時鐘偏差影響，徹底解決運行數回合後橫幅消失的問題。"
+]
+},
+{
+heading: "🔄 一人一回合嚴格輪流",
+items: [
+"結束回合改為嚴格依目前回合玩家 (activeTurnPlayer) 在 P1 與 P2 之間一人一回合輪流切換，不再受目前視角 (P1/P2/觀戰) 影響而卡在同一人回合。"
+]
+}
+]
+},
+{
+version: "4.7",
+date: "2026-11-22",
+title: "v4.7 修復標誌／減輕標誌改色混淆、創界神減輕光環、手牌條件變費偵測與幻境／Burst 雙圈流光",
+sections: [
+{
+heading: "💎 標誌計算修復 & 減輕標誌改色／創界神光環獨立解析",
+items: [
+"嚴格區分「場上標誌改色」與「減輕標誌改色」，徹底修復 BS47-005 ドラグ・タウラス 與 創界神ダン 等卡牌因「減輕標誌也當作…」被誤判為場上全色標誌的問題。",
+"支援創界神自身標誌改色合併為單一複合標誌（如 神和全），不重複灌水標誌總數。",
+"新增偵測自身與創界神【契約域／神域】賦予的減輕標誌改色（如 光導の契約神ダン 使星龍／光導手牌減輕標誌可視為神），並以精準二分圖配對計算最低實付費用。"
+]
+},
+{
+heading: "🃏 手牌條件改費／條件減費偵測",
+items: [
+"新增偵測手牌條件變費（如 BS67-055 審判獣ジョーズオン 場上有審判 Spirit/Nexus/幻境時改為 Cost 4）與手牌條件 Cost -N，即時連動手牌左上角費用徽章與召喚支付彈窗。"
+]
+},
+{
+heading: "✨ 幻境 & 反轉 Burst 雙圈流光特效（移除綠框閃光）",
+items: [
+"移除卡片設置於 Burst 區時的綠色閃光特效。",
+"設置幻境卡改為黃色流光沿卡牌四周完整繞行兩圈；反轉蓋放（背面設置）Burst 卡改為紅色流光繞行兩圈，雙方連線同步可見。"
+]
+}
+]
+},
 {
 version: "4.6",
 date: "2026-11-22",
@@ -11095,7 +11610,7 @@ let activePhaseReq = null;
 let activeMinLv = 0;
 let activeNeedBrave = false;
 for (const ln of lines) {
-const lvHeaderM = ln.match(/^(?:\[[^\]]*?)?Lv\s*(\d+)/i);
+const lvHeaderM = ln.match(/^(?:(?:【[^】]*】|《[^》]*》)\s*)*(?:\[[^\]]*?)?Lv\s*(\d+)/i);
 if (lvHeaderM) {
 activeMinLv = parseInt(lvHeaderM[1], 10) || 0;
 }
@@ -11381,13 +11896,14 @@ ensurePhaseBarMounted();
 };
 let phaseBannerWrapEl = null;
 let phaseBannerCloseTimer = null;
+window.__lastSeenPhaseBannerId = "";
 function playPhaseBannerCutIn(phaseKey, ownerLabel = "", broadcast = false) {
 const meta = PHASE_BANNER_META[phaseKey];
 if (!meta) return;
 if (broadcast) {
-const ts = Math.max(Date.now(), (gameState.lastActionEffect?.timestamp || 0) + 1);
-gameState.lastActionEffect = { type: "phaseBanner", phaseKey, ownerLabel, timestamp: ts };
-lastSeenActionEffectTime = ts;
+const bid = "pb_" + Date.now() + "_" + Math.random().toString(36).slice(2, 7);
+gameState.lastPhaseBanner = { id: bid, phaseKey, ownerLabel, timestamp: Date.now() };
+window.__lastSeenPhaseBannerId = bid;
 }
 if (phaseBannerCloseTimer) {
 clearTimeout(phaseBannerCloseTimer);
@@ -11475,7 +11991,7 @@ let activeMinLv = 0;
 let matchingBlock = null;
 for (let i = 0; i < lines.length; i++) {
 const ln = lines[i];
-const lvM = ln.match(/^(?:\[[^\]]*?)?Lv\s*(\d+)/i);
+const lvM = ln.match(/^(?:(?:【[^】]*】|《[^》]*》)\s*)*(?:\[[^\]]*?)?Lv\s*(\d+)/i);
 if (lvM) activeMinLv = parseInt(lvM[1], 10) || 0;
 if (rx.test(ln)) {
 if (activeMinLv && curLv < activeMinLv) {
@@ -11716,22 +12232,20 @@ window.endTurnPhase = function (...args) {
 autoTurnRunId++;
 const prevPhase = gameState.currentPhase || "START";
 const endingOwner = gameState.activeTurnPlayer || "p1";
+const nextOwner = endingOwner === "p1" ? "p2" : "p1";
 gameState.currentPhase = "START";
 gameState.isFirstTurn = false;
-if (gameState.viewMode === "P1") gameState.activeTurnPlayer = "p2";
-else if (gameState.viewMode === "P2") gameState.activeTurnPlayer = "p1";
-else gameState.activeTurnPlayer = (gameState.activeTurnPlayer === "p1") ? "p2" : "p1";
-const nextOwner = gameState.activeTurnPlayer;
+gameState.activeTurnPlayer = nextOwner;
 gameState.activeBattle = null;
 for (const c of Object.values(gameState.cards)) {
 if (c.battleState) c.battleState = "";
 }
 pruneExpiredTempBuffs("END_TURN", prevPhase);
+playPhaseBannerCutIn("TURN_END", `${endingOwner.toUpperCase()} 回合結束`, true);
 const res = origEndTurn.apply(this, args);
-playPhaseBannerCutIn("TURN_END", `${endingOwner.toUpperCase()} 回合結束`, false);
 ensurePhaseBarMounted();
 if (autoTurnEnabled) {
-setTimeout(() => runAutoTurnSequence(nextOwner), 950);
+setTimeout(() => runAutoTurnSequence(nextOwner), 1300);
 }
 return res;
 };
@@ -13239,17 +13753,19 @@ const origApplyStateForV41 = window.applyGameState;
 window.applyGameState = function (state) {
 const prevTs = gameState.lastActionEffect?.timestamp;
 origApplyStateForV41(state);
+const pb = state?.lastPhaseBanner;
+if (pb && pb.id && pb.id !== window.__lastSeenPhaseBannerId) {
+window.__lastSeenPhaseBannerId = pb.id;
+if (typeof window.playPhaseBannerCutIn === "function") {
+window.playPhaseBannerCutIn(pb.phaseKey, pb.ownerLabel || "", false);
+}
+}
 const eff = state?.lastActionEffect;
 if (eff && eff.timestamp && eff.timestamp !== prevTs) {
-if (eff.type === "phaseBanner" && typeof window.playPhaseBannerCutIn === "function") {
-window.playPhaseBannerCutIn(eff.phaseKey, eff.ownerLabel || "", false);
-} else if (eff.type === "endTurnBanner" && typeof window.playPhaseBannerCutIn === "function") {
-const prevP = eff.targetPlayer === "p1" ? "P2" : "P1";
-window.playPhaseBannerCutIn("TURN_END", `${prevP} 回合結束`, false);
-} else if (eff.type === "battleClash" && eff.attackerId && eff.blockerId) {
+if (eff.type === "battleClash" && eff.attackerId && eff.blockerId) {
 playBattleClashAnimation(eff.attackerId, eff.blockerId, eff.outcome || "NO_DESTROY");
 } else if (eff.type === "mirageSet" && eff.cardId) {
-setTimeout(() => window.playMirageOrbitEffect && window.playMirageOrbitEffect(eff.cardId), 290);
+setTimeout(() => window.playMirageOrbitEffect && window.playMirageOrbitEffect(eff.cardId, eff.theme || "gold", eff.loops || 2), 290);
 } else if (eff.type === "battleLifeHit" && eff.attackerId && eff.defOwner) {
 if (eff.isLethal) {
 playLethalFinisherAnimation(eff.attackerId, () => playBattleLifeHitAnimation(eff.attackerId, eff.defOwner));
