@@ -17,7 +17,7 @@
  10. 創界神 (Grandwalker) 技與域   -> 搜尋: function useGrandwalkerSkill
  11. 顕現 (Manifest) 系統與特效    -> 搜尋: function triggerManifestFromHand
 ========================================================================= -->
-<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><title>BS v5.5</title><script src="https://cdn.tailwindcss.com"></script><style>
+<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><title>BS v6.0</title><script src="https://cdn.tailwindcss.com"></script><style>
 /* #region 1. 基礎排版、卡背 SVG 與戰場區域樣式 */
 body,html{touch-action:manipulation;overflow-x:hidden!important;overscroll-behavior-x:none}.action-btn,.counter-box,.counter-title,.counter-value,.small-action-btn,body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}body{background-color:#0d0c0b;background-image:radial-gradient(ellipse at 50% 50%,rgba(46,40,34,.45) 0,rgba(10,9,8,.95) 100%),repeating-linear-gradient(135deg,rgba(255,255,255,.012) 0,rgba(255,255,255,.012) 2px,transparent 2px,transparent 8px);color:#dcd6cc;font-family:Cinzel,"Noto Serif TC",PMingLiU,Georgia,serif}.custom-scrollbar::-webkit-scrollbar{display:none}.custom-scrollbar{-ms-overflow-style:none;scrollbar-width:none}:root{--bs-cardback-svg:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 280'%3E%3Crect width='200' height='280' rx='13' fill='%23040404'/%3E%3Cg fill='none' stroke='%23dcdcdc' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4.5' y='4.5' width='191' height='271' rx='10' stroke-width='2.6'/%3E%3Crect x='11' y='11' width='178' height='258' rx='7' stroke-width='1.1' stroke-opacity='0.6'/%3E%3Cpath d='M5 42 C18 16,48 6,86 14 C122 22,152 6,195 26' stroke-width='3'/%3E%3Cpath d='M10 26 C32 6,76 22,118 10 C152 2,178 14,190 38' stroke-width='1.8'/%3E%3Cpath d='M5 238 C18 264,48 274,86 266 C122 258,152 274,195 254' stroke-width='3'/%3E%3Cpath d='M10 254 C32 274,76 258,118 270 C152 278,178 266,190 242' stroke-width='1.8'/%3E%3Cpath d='M14 5 C4 36,20 82,8 138 C-2 184,18 232,10 275' stroke-width='2.8'/%3E%3Cpath d='M6 28 C22 68,4 114,16 156 C24 192,6 226,18 262' stroke-width='1.5'/%3E%3Cpath d='M186 5 C196 36,180 82,192 138 C202 184,182 232,190 275' stroke-width='2.8'/%3E%3Cpath d='M194 28 C178 68,196 114,184 156 C176 192,194 226,182 262' stroke-width='1.5'/%3E%3Cpath d='M8 46 C26 42,34 24,22 14 C14 8,6 18,16 28' stroke-width='2.2'/%3E%3Cpath d='M192 46 C174 42,166 24,178 14 C186 8,194 18,184 28' stroke-width='2.2'/%3E%3Cpath d='M8 234 C26 238,34 256,22 266 C14 272,6 262,16 252' stroke-width='2.2'/%3E%3Cpath d='M192 234 C174 238,166 256,178 266 C186 272,194 262,184 252' stroke-width='2.2'/%3E%3C/g%3E%3Cg transform='translate(100,128)'%3E%3Cg stroke='%23d4d4d4' stroke-width='1.35' opacity='0.88'%3E%3Cline x1='0' y1='-96' x2='0' y2='96'/%3E%3Cline x1='-74' y1='-74' x2='74' y2='74'/%3E%3Cline x1='74' y1='-74' x2='-74' y2='74'/%3E%3Cline x1='-38' y1='-90' x2='38' y2='90'/%3E%3Cline x1='38' y1='-90' x2='-38' y2='90'/%3E%3Cline x1='-86' y1='-36' x2='86' y2='36'/%3E%3Cline x1='86' y1='-36' x2='-86' y2='36'/%3E%3Cline x1='-20' y1='-93' x2='20' y2='93' stroke-width='0.8'/%3E%3Cline x1='20' y1='-93' x2='-20' y2='93' stroke-width='0.8'/%3E%3Cline x1='-58' y1='-82' x2='58' y2='82' stroke-width='0.8'/%3E%3Cline x1='58' y1='-82' x2='-58' y2='82' stroke-width='0.8'/%3E%3C/g%3E%3Cpolygon points='0,-84 4,-26 0,-18 -4,-26' fill='%23dcdcdc'/%3E%3Cpolygon points='0,84 4,26 0,18 -4,26' fill='%23dcdcdc'/%3E%3Cpolygon points='-64,-64 -18,-22 -14,-14 -22,-18' fill='%23dcdcdc'/%3E%3Cpolygon points='64,-64 18,-22 14,-14 22,-18' fill='%23dcdcdc'/%3E%3Cpolygon points='-64,64 -18,22 -14,14 -22,18' fill='%23dcdcdc'/%3E%3Cpolygon points='64,64 18,22 14,14 22,18' fill='%23dcdcdc'/%3E%3Cpolygon points='-32,-78 -10,-26 -6,-20 -14,-24' fill='%23dcdcdc'/%3E%3Cpolygon points='32,-78 10,-26 6,-20 14,-24' fill='%23dcdcdc'/%3E%3Cpolygon points='-32,78 -10,26 -6,20 -14,24' fill='%23dcdcdc'/%3E%3Cpolygon points='32,78 10,26 6,20 14,24' fill='%23dcdcdc'/%3E%3Ccircle r='50' fill='none' stroke='%23dcdcdc' stroke-width='1.8' stroke-dasharray='7 4'/%3E%3Ccircle r='40' fill='%23050505' stroke='%23e5e5e5' stroke-width='2.2'/%3E%3Cpath d='M-46,-18 C-62,-32 -32,-58 -12,-42 C2,-58 36,-54 26,-32 C52,-38 62,-8 40,8 C58,26 32,52 12,38 C-4,56 -38,50 -28,28 C-54,32 -60,4 -46,-18 Z' fill='none' stroke='%23dcdcdc' stroke-width='2'/%3E%3Cellipse cx='-4' cy='0' rx='46' ry='33' fill='%23050505' stroke='%23ececec' stroke-width='3.8'/%3E%3Cellipse cx='-4' cy='0' rx='41' ry='28' fill='%23050505' stroke='%23888888' stroke-width='1.1'/%3E%3Ctext x='-7' y='17' text-anchor='middle' font-family='Georgia,Times New Roman,serif' font-size='50' font-weight='900' font-style='italic' fill='%23e8e8e8' stroke='%23050505' stroke-width='1.5' letter-spacing='-3'%3EBS%3C/text%3E%3C/g%3E%3Ctext x='100' y='244' text-anchor='middle' font-family='Georgia,Times New Roman,serif' font-size='23' font-weight='900' font-style='italic' fill='%23e2e2e2' letter-spacing='0.6'%3EBattle Spirits%3C/text%3E%3C/svg%3E")}.zone{min-height:100px;background-color:rgba(10,9,8,.18);border:1px solid rgba(186,158,108,.34);border-radius:3px;position:relative;transition:background-color .2s ease,border-color .2s ease,box-shadow .2s ease}.field-zone{background:0 0!important;border:none!important;border-radius:0!important;box-shadow:none!important}.card{width:100px;height:140px;background-color:#0e0e0e;border:1px solid rgba(196,168,118,.55);border-radius:3.5px;display:flex;justify-content:center;align-items:center;cursor:grab;position:absolute;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease,opacity .15s;box-shadow:0 6px 16px rgba(0,0,0,.85),0 1px 3px rgba(0,0,0,.7);background-size:cover;background-position:center;background-repeat:no-repeat;image-rendering:-webkit-optimize-contrast;transform-origin:center center;color:#a89f91;font-size:10px;font-weight:700;overflow:visible}body.mobile-mode .card{touch-action:none}.card:active{cursor:grabbing;box-shadow:0 14px 30px rgba(0,0,0,.95);z-index:1000!important}.card.has-soul-core{border:2px solid #f87171!important;box-shadow:0 0 12px 3px rgba(239,68,68,.95),0 0 24px 6px rgba(185,28,28,.65),inset 0 0 10px rgba(252,165,165,.55)!important}.card.face-down{background-image:var(--bs-cardback-svg)!important;background-size:100% 100%!important;background-position:center!important;background-color:#050505!important;border:1px solid rgba(220,220,220,.65)!important;box-shadow:0 6px 14px rgba(0,0,0,.85)}.card.face-down::after{content:none!important}.card-controls{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) translateY(90px);display:none;align-items:center;gap:5px;background:rgba(10,9,8,.76);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);padding:3px 7px;border-radius:4px;border:1px solid rgba(186,158,108,.55);box-shadow:0 4px 12px rgba(0,0,0,.8);z-index:60;white-space:nowrap;pointer-events:auto}.field-zone .card .card-controls{display:flex!important;opacity:1!important;visibility:visible!important}.field-bottom-left-dock{position:absolute;left:10px;bottom:10px;top:auto;display:flex;flex-direction:row;align-items:flex-end;gap:10px;max-width:calc(100% - 20px);z-index:25;pointer-events:none}.opponent-field-top .field-bottom-left-dock{bottom:auto;top:10px;left:auto;right:10px;flex-direction:row-reverse;align-items:flex-start}.opponent-main-area>.side-col-left{grid-column:3;grid-row:1;flex-direction:column-reverse}.opponent-main-area>.field-zone{grid-column:2;grid-row:1}.opponent-main-area>.side-col-right{grid-column:1;grid-row:1;flex-direction:column-reverse}.god-zone-wrapper,.openhand-zone-wrapper{pointer-events:auto;width:max-content;max-width:100%;flex-shrink:0;background:rgba(12,11,10,.28);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);border:1px solid rgba(186,158,108,.42);border-radius:3px;padding:5px 8px;display:inline-flex;flex-direction:column;box-shadow:0 4px 14px rgba(0,0,0,.45);transition:border-color .2s,background-color .2s,box-shadow .2s;box-sizing:border-box}.god-zone-wrapper.drag-over,.openhand-zone-wrapper.drag-over{background-color:rgba(176,148,102,.18)!important;border-color:rgba(235,205,145,.85)!important}.god-zone,.openhand-zone{display:inline-flex;flex-direction:row;flex-wrap:nowrap;align-items:center;gap:10px;width:max-content;min-width:112px;min-height:152px;padding:6px 8px;overflow:visible;background:rgba(10,9,8,.18);border:1px solid rgba(186,158,108,.25);border-radius:3px;position:relative;box-sizing:border-box}.openhand-zone{gap:0!important;padding:6px 10px!important}.openhand-zone .card+.card{margin-left:-52px!important}.god-zone.has-cards{padding-bottom:36px}.openhand-zone.has-cards{padding-bottom:6px}.god-zone .card,.openhand-zone .card{position:relative!important;left:auto!important;top:auto!important;flex-shrink:0;margin:0}.field-zone .god-zone .card .card-controls,.god-zone .card .card-controls{display:flex!important;opacity:1!important;visibility:visible!important;border-color:rgba(255,255,255,.18)}.field-zone .card .card-core-pill,.god-zone .card .card-core-pill{cursor:grab;user-select:none;-webkit-user-select:none;touch-action:none;border-radius:2px;transition:background-color .15s,transform .15s}.field-zone .card .card-core-pill:hover,.god-zone .card .card-core-pill:hover{background-color:rgba(56,189,248,.25);transform:scale(1.08)}.field-zone .card .card-core-pill:active,.god-zone .card .card-core-pill:active{cursor:grabbing}.god-zone .card .card-soul-btn{display:none!important}.field-zone .openhand-zone .card .card-controls,.openhand-zone .card .card-controls{display:none!important}.card-btn{background:rgba(24,22,19,.95);color:#e2dacd;border:1px solid rgba(176,148,102,.5);border-radius:2px;width:19px;height:19px;font-size:12px;font-weight:700;display:flex;justify-content:center;align-items:center;cursor:pointer;padding:0;line-height:1;flex-shrink:0;transition:background .15s,color .15s,border-color .15s}.card-btn:hover{background:#d4b886;color:#000;border-color:#fff}.card-btn.soul-active{width:20px;height:20px;clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0% 50%);background:linear-gradient(135deg,#fff 0,#cbd5e1 45%,#64748b 100%)!important;border:none!important;border-radius:0!important;color:transparent!important;font-size:0!important;position:relative;filter:drop-shadow(0 0 6px rgba(239,68,68,.95));box-shadow:none!important}.card-btn.soul-active::after{content:"";position:absolute;inset:3.5px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fecaca 0,#ef4444 45%,#7f1d1d 100%);box-shadow:inset 0 0 3px #fff;pointer-events:none}.card-core-pill{display:flex;align-items:center;gap:4px;padding:1px 5px;background:rgba(255,255,255,.03);border:1px solid rgba(56,189,248,.25)}.card-core-dot,.physical-core-gem{width:17px;height:17px;display:inline-block;position:relative;clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0% 50%);background:radial-gradient(circle at 35% 30%,#fff 0,#bae6fd 22%,#38bdf8 52%,#0284c7 82%,#0c4a6e 100%);box-shadow:inset 0 0 4px rgba(255,255,255,.9);filter:drop-shadow(0 0 4px rgba(56,189,248,.75));flex-shrink:0;transition:transform .12s ease,filter .12s ease}.card-core-dot::after,.physical-core-gem::after{content:"";position:absolute;inset:3px;clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0% 50%);background:linear-gradient(135deg,rgba(255,255,255,.85) 0,rgba(125,211,252,.25) 55%,rgba(2,132,199,.6) 100%);pointer-events:none}.card-core-dot{width:14px;height:14px}.physical-core-gem.interactive-core{cursor:pointer}.physical-core-gem.interactive-core:hover{transform:scale(1.22);filter:drop-shadow(0 0 8px rgba(125,211,252,1))}.core-gem-tray{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:5px;min-height:24px;padding:3px 4px;margin-top:2px}.card-cores{color:#f8fafc;font-size:13px;font-weight:900;min-width:14px;text-align:center;text-shadow:1px 1px 2px #000}.soul-core-token{width:19px;height:19px;clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0% 50%);font-size:0px;display:inline-flex;align-items:center;justify-content:center;cursor:grab;user-select:none;-webkit-user-select:none;touch-action:none;position:relative;transition:transform .15s,filter .15s;z-index:40;background:linear-gradient(135deg,#fff 0,#cbd5e1 45%,#64748b 100%);filter:drop-shadow(0 0 6px rgba(239,68,68,.9))}.soul-core-token::after{content:"";position:absolute;inset:3.5px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fecaca 0,#ef4444 45%,#7f1d1d 100%);box-shadow:inset 0 0 3px #fff}.soul-core-token:hover{transform:scale(1.22);filter:drop-shadow(0 0 10px rgba(248,113,113,1))}.soul-core-token:active{cursor:grabbing}.soul-core-slot-empty{width:17px;height:17px;clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0% 50%);background:rgba(255,255,255,.08);color:rgba(255,255,255,.35);font-size:8px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s}.soul-core-slot-empty:hover{background:rgba(239,68,68,.45);color:#fff;transform:scale(1.15)}.counter-box{border:1px solid rgba(186,158,108,.42);border-radius:3px;padding:5px 7px;text-align:center;background:rgba(12,11,10,.24);box-shadow:inset 0 0 10px rgba(0,0,0,.28);transition:border-color .2s,box-shadow .2s,background-color .2s;transform:translateZ(0);backface-visibility:hidden}.counter-title{font-size:11px;color:#d8ccb8;font-weight:700;letter-spacing:.1em;margin-bottom:2px;text-transform:uppercase;text-align:center;text-shadow:0 1px 3px rgba(0,0,0,.9);transform:translateZ(0)}.counter-value{font-size:15px;font-weight:900;color:#f5efe6;display:flex;align-items:center;justify-content:center;gap:8px;transform:translateZ(0)}.counter-btn{background:rgba(255,255,255,.05);color:#d6cbb9;border:1px solid rgba(176,148,102,.45);border-radius:1px;width:16px;height:16px;display:flex;justify-content:center;align-items:center;cursor:pointer;font-size:11px;line-height:1;transition:all .15s ease}.counter-btn:hover{background:#c8aa76;color:#090a0f;border-color:#fff}.action-btn{font-size:8.5px;border:1px solid rgba(176,148,102,.38);border-radius:1px;padding:3px 5px;background:rgba(16,15,14,.85);color:#d6cbb9;cursor:pointer;text-transform:uppercase;font-weight:700;letter-spacing:.06em;width:100%;margin-top:2px;transition:all .15s ease}.action-btn:hover{background:rgba(196,164,108,.9);color:#090a0f;border-color:#fff}.small-action-btn{font-size:7.5px;font-weight:700;border:1px solid rgba(176,148,102,.38);border-radius:1px;padding:1px 4px;background:rgba(12,12,12,.85);color:#bfb39e;cursor:pointer;position:absolute;top:3px;right:4px;transition:all .15s ease}.small-action-btn:hover{background:rgba(196,164,108,.85);border-color:#fff;color:#000}.highlight-action-btn{font-size:8px;font-weight:900;padding:1.5px 5px;border-radius:1px;cursor:pointer;position:absolute;top:3px;right:4px;letter-spacing:.5px;transition:all .18s ease;text-transform:uppercase}.btn-take-life{background:rgba(127,29,29,.65);border:1px solid rgba(248,113,113,.55);color:#fecaca}.btn-take-life:hover{background:#dc2626;color:#fff;border-color:#fff}.btn-pay-cost{background:rgba(12,74,110,.65);border:1px solid rgba(56,189,248,.55);color:#bae6fd}.btn-pay-cost:hover{background:#0284c7;color:#fff;border-color:#fff}.btn-refresh-state{background:rgba(6,78,59,.7);border:1px solid rgba(52,211,153,.55);color:#a7f3d0;border-radius:1px;transition:all .18s ease}.btn-refresh-state:hover{background:#10b981;color:#050608;border-color:#fff}
 /* #endregion */
@@ -37,14 +37,14 @@ body,html{touch-action:manipulation;overflow-x:hidden!important;overscroll-behav
 <header id="main-top-header" class="flex flex-wrap justify-between items-center bg-[#0a0a0a]/90 border border-[#b09466]/40 rounded-sm py-1.5 px-3 flex-none gap-x-2 gap-y-1.5 shadow-lg transition-all duration-200">
 <div class="header-brand-row flex items-center gap-2 flex-shrink-0">
 <div class="relative text-sm sm:text-base font-black tracking-wider text-[#e5dccb] flex items-center gap-1.5 whitespace-nowrap">
-<span id="bs-brand-title-text" class="cursor-pointer hover:text-[#e0b25b] transition-colors" onclick="openChangelogModal()" title="點擊查看更新日誌">BS v5.5</span>
+<span id="bs-brand-title-text" class="cursor-pointer hover:text-[#e0b25b] transition-colors" onclick="openChangelogModal()" title="點擊查看更新日誌">BS v6.0</span>
 <button id="btn-changelog" type="button" class="text-[10px] sm:text-xs bg-black/70 border border-[#b09466]/50 hover:bg-[#c8aa76] hover:text-black text-[#e0b25b] px-1.5 py-0.5 rounded-sm cursor-pointer transition-colors leading-none font-bold" onclick="openChangelogModal()" title="查看版本更新日誌">📜 日誌</button>
 <button id="btn-version-gear" type="button" class="text-xs bg-black/70 border border-[#b09466]/50 hover:bg-[#c8aa76] hover:text-black text-[#e0b25b] px-1.5 py-0.5 rounded-sm cursor-pointer transition-colors leading-none" onclick="toggleVersionGearMenu(event)" title="點擊調整版本號數字">⚙️</button>
 <div id="bs-version-gear-menu" class="hidden absolute left-0 top-full mt-1.5 z-[12500] bg-[#0d0c0b]/95 border border-[#c8aa76] rounded-sm shadow-2xl p-2 flex items-center gap-1.5">
 <button type="button" class="text-[11px] font-black bg-[#c8aa76] text-black hover:bg-white px-2 py-1 rounded-sm cursor-pointer" onclick="bumpBsVersion(0, 1)" title="次版本 +1 (例：3.9 ➔ 3.10)">+0.1</button>
 <button type="button" class="text-[11px] font-black bg-sky-950/80 border border-sky-400/60 text-sky-200 hover:bg-sky-500 hover:text-black px-2 py-1 rounded-sm cursor-pointer" onclick="bumpBsVersion(1, 0)" title="主版本 +1">+1</button>
 <button type="button" class="text-[11px] font-bold bg-black/80 border border-[#b09466]/50 text-[#dcd6cc] hover:bg-[#c8aa76] hover:text-black px-2 py-1 rounded-sm cursor-pointer" onclick="bumpBsVersion(0, -1)" title="次版本 -1">-0.1</button>
-<button type="button" class="text-[10px] font-bold bg-rose-950/70 border border-rose-500/50 text-rose-200 hover:bg-rose-600 hover:text-white px-2 py-1 rounded-sm cursor-pointer" onclick="resetBsVersion()">5.5</button>
+<button type="button" class="text-[10px] font-bold bg-rose-950/70 border border-rose-500/50 text-rose-200 hover:bg-rose-600 hover:text-white px-2 py-1 rounded-sm cursor-pointer" onclick="resetBsVersion()">6.0</button>
 </div>
 </div>
 <span id="room-status-badge" class="hidden text-[10px] bg-emerald-950/80 border border-emerald-500/50 text-emerald-300 px-2 py-0.5 rounded-sm font-bold cursor-pointer hover:bg-emerald-800/80 transition-colors whitespace-nowrap" onclick="copyRoomCode()" title="點擊複製房間代碼">
@@ -557,7 +557,7 @@ p1_life:5,p1_reserve:3,p1_count:0,p1_trash_core:0,p2_life:5,p2_reserve:3,p2_coun
 p1:"reserve",p2:"reserve"
 },zoneCollapsed: {
 god_p1:!1,god_p2:!1,openhand_p1:!1,openhand_p2:!1
-},lastShuffle:null,lastLottery:null,lastActionEffect:null,lastPhaseBanner:null,lotteryPendingWinner:null,lotteryUsed:!1,currentPhase:"START",activeTurnPlayer:"p1",isFirstTurn:!0,activeBattle:null,tempBuffs:[],usedEffectsTurn:{},oracleWindows:{p1:null,p2:null},revealWindows:{p1:null,p2:null},pendingHandPick:null,bs5LiveHud:null,seats: {
+},lastShuffle:null,lastLottery:null,lastActionEffect:null,lastPhaseBanner:null,lotteryPendingWinner:null,lotteryUsed:!1,currentPhase:"START",activeTurnPlayer:"p1",isFirstTurn:!0,activeBattle:null,tempBuffs:[],usedEffectsTurn:{},oracleWindows:{p1:null,p2:null},revealWindows:{p1:null,p2:null},pendingHandPick:null,bs5LiveHud:null,bs5Modifiers:[],seats: {
 p1:null,p2:null
 },seatNames: {
 p1:"",p2:""
@@ -1117,7 +1117,7 @@ document.getElementById("reset-confirm-modal")?.classList.add("hidden")
 function confirmResetGame() {
 closeResetModal(),hideCardPreview(),closeZoneModal(),closeDeckChoiceModal(),closeGodConfirmModal(),document.getElementById("core-return-modal")?.classList.add("hidden"),lotteryStepTimer&&(clearTimeout(lotteryStepTimer),lotteryStepTimer=null),isLotteryRunning=!1,gameState.lotteryPendingWinner=null,applyLotteryPendingUI(),gameState.p1_life=5,gameState.p1_reserve=3,gameState.p1_count=0,gameState.p1_trash_core=0,gameState.p2_life=5,gameState.p2_reserve=3,gameState.p2_count=0,gameState.p2_trash_core=0,gameState.soulCoreLocation= {
 p1:"reserve",p2:"reserve"
-},gameState.lotteryUsed=!1;gameState.currentPhase="START";gameState.activeTurnPlayer="p1";gameState.isFirstTurn=!0;gameState.activeBattle=null;gameState.tempBuffs=[];gameState.usedEffectsTurn={};gameState.oracleWindows={p1:null,p2:null};gameState.revealWindows={p1:null,p2:null};gameState.pendingHandPick=null;gameState.bs5LiveHud=null;gameState.lastPhaseBanner=null;window.__lastSeenPhaseBannerId="";window.syncOracleWindowsFromState&&window.syncOracleWindowsFromState();window.syncRevealWindowsFromState&&window.syncRevealWindowsFromState();
+},gameState.lotteryUsed=!1;gameState.currentPhase="START";gameState.activeTurnPlayer="p1";gameState.isFirstTurn=!0;gameState.activeBattle=null;gameState.tempBuffs=[];gameState.usedEffectsTurn={};gameState.oracleWindows={p1:null,p2:null};gameState.revealWindows={p1:null,p2:null};gameState.pendingHandPick=null;gameState.bs5LiveHud=null;gameState.bs5Modifiers=[];gameState.lastPhaseBanner=null;window.__lastSeenPhaseBannerId="";window.syncOracleWindowsFromState&&window.syncOracleWindowsFromState();window.syncRevealWindowsFromState&&window.syncRevealWindowsFromState();
 const e=[],t=[];
 Object.values(gameState.cards).forEach(o=> {
 restoreTurnFront(o),delete o.braveHostId,delete o.braveOrder,delete o.adventHostId,delete o.adventOrder,document.getElementById(o.id)?.remove(),o.zone=`deck-${o.owner}`,o.x=0,o.y=0,o.rotation=0,o.battleState="",o.isFaceDown=!1,o.isSoulState=!1,o.cores=0,o.zOrder=zOrderCounter++,"p1"===o.owner?e.push(o.id):"p2"===o.owner&&t.push(o.id)
@@ -3188,7 +3188,7 @@ return {
 turnFaces:gameState.turnFaces|| {
 },p1_life:gameState.p1_life,p1_reserve:gameState.p1_reserve,p1_count:gameState.p1_count,p1_trash_core:gameState.p1_trash_core,p2_life:gameState.p2_life,p2_reserve:gameState.p2_reserve,p2_count:gameState.p2_count,p2_trash_core:gameState.p2_trash_core,p1Deck:gameState.p1Deck,p2Deck:gameState.p2Deck,soulCoreLocation:gameState.soulCoreLocation,zoneCollapsed:gameState.zoneCollapsed|| {
 god_p1:!1,god_p2:!1,openhand_p1:!1,openhand_p2:!1
-},lastShuffle:gameState.lastShuffle,lastLottery:gameState.lastLottery,lastActionEffect:gameState.lastActionEffect,lastPhaseBanner:gameState.lastPhaseBanner||null,lotteryPendingWinner:gameState.lotteryPendingWinner||null,lotteryUsed:!!gameState.lotteryUsed,currentPhase:gameState.currentPhase||"START",activeTurnPlayer:gameState.activeTurnPlayer||"p1",isFirstTurn:!!gameState.isFirstTurn,activeBattle:gameState.activeBattle||null,tempBuffs:Array.isArray(gameState.tempBuffs)?gameState.tempBuffs:[],usedEffectsTurn:gameState.usedEffectsTurn||{},oracleWindows:gameState.oracleWindows||{p1:null,p2:null},revealWindows:gameState.revealWindows||{p1:null,p2:null},pendingHandPick:gameState.pendingHandPick||null,bs5LiveHud:gameState.bs5LiveHud||null,seats:gameState.seats|| {
+},lastShuffle:gameState.lastShuffle,lastLottery:gameState.lastLottery,lastActionEffect:gameState.lastActionEffect,lastPhaseBanner:gameState.lastPhaseBanner||null,lotteryPendingWinner:gameState.lotteryPendingWinner||null,lotteryUsed:!!gameState.lotteryUsed,currentPhase:gameState.currentPhase||"START",activeTurnPlayer:gameState.activeTurnPlayer||"p1",isFirstTurn:!!gameState.isFirstTurn,activeBattle:gameState.activeBattle||null,tempBuffs:Array.isArray(gameState.tempBuffs)?gameState.tempBuffs:[],usedEffectsTurn:gameState.usedEffectsTurn||{},oracleWindows:gameState.oracleWindows||{p1:null,p2:null},revealWindows:gameState.revealWindows||{p1:null,p2:null},pendingHandPick:gameState.pendingHandPick||null,bs5LiveHud:gameState.bs5LiveHud||null,bs5Modifiers:Array.isArray(gameState.bs5Modifiers)?gameState.bs5Modifiers:[],seats:gameState.seats|| {
 p1:null,p2:null
 },seatNames:gameState.seatNames|| {
 p1:"",p2:""
@@ -3256,7 +3256,7 @@ if(!e)return;e.turnFaces||(gameState.turnFaces= {
 void 0!==e[t]&&e[t]!==gameState[t]&&triggerCounterKeyFlash(t,e[t]-gameState[t])
 }),void 0!==e.p1_life&&t>0&&0===e.p1_life&&triggerZeroLifeSequence("p1"),void 0!==e.p2_life&&o>0&&0===e.p2_life&&triggerZeroLifeSequence("p2");let a=null;e.lastShuffle&&e.lastShuffle.timestamp>lastSeenShuffleTime&&(lastSeenShuffleTime=e.lastShuffle.timestamp,gameState.lastShuffle=e.lastShuffle,a=e.lastShuffle.player);let n=null;e.lastLottery&&e.lastLottery.timestamp>lastSeenLotteryTime&&(lastSeenLotteryTime=e.lastLottery.timestamp,gameState.lastLottery=e.lastLottery,n=e.lastLottery.winner);let r=null;e.lastActionEffect&&e.lastActionEffect.timestamp>lastSeenActionEffectTime&&(lastSeenActionEffectTime=e.lastActionEffect.timestamp,gameState.lastActionEffect=e.lastActionEffect,r=e.lastActionEffect);const s= {
 p1:gameState.soulCoreLocation?.p1,p2:gameState.soulCoreLocation?.p2
-};["p1_life","p1_reserve","p1_count","p1_trash_core","p2_life","p2_reserve","p2_count","p2_trash_core","turnFaces","soulCoreLocation","zoneCollapsed","lotteryUsed","lotteryPendingWinner","lastPhaseBanner","currentPhase","activeTurnPlayer","isFirstTurn","activeBattle","tempBuffs","usedEffectsTurn","oracleWindows","revealWindows","pendingHandPick","bs5LiveHud","seats","seatNames"].forEach(t=> {
+};["p1_life","p1_reserve","p1_count","p1_trash_core","p2_life","p2_reserve","p2_count","p2_trash_core","turnFaces","soulCoreLocation","zoneCollapsed","lotteryUsed","lotteryPendingWinner","lastPhaseBanner","currentPhase","activeTurnPlayer","isFirstTurn","activeBattle","tempBuffs","usedEffectsTurn","oracleWindows","revealWindows","pendingHandPick","bs5LiveHud","bs5Modifiers","seats","seatNames"].forEach(t=> {
 void 0!==e[t]&&(gameState[t]=e[t])
 }),Array.isArray(e.p1Deck)&&(gameState.p1Deck=e.p1Deck),Array.isArray(e.p2Deck)&&(gameState.p2Deck=e.p2Deck),gameState.seats||(gameState.seats= {
 p1:null,p2:null
@@ -8475,6 +8475,7 @@ moveCardToZone(card.id, `field-${card.owner}`, { rx: 0.5, ry: 0.45, fromMagicBtn
 window.__bsBypassPlayPayment = false;
 }
 window.triggerMagicCastEffect(card.id);
+if (typeof window.onBs6MagicCastResolved === "function") setTimeout(() => window.onBs6MagicCastResolved(card.id), 320);
 }
 window.cancelMagicPayment = function () {
 if (!magicPaymentState) return;
@@ -11042,7 +11043,7 @@ ensureMirageFormUI();
 /* =========================================================================
 PART 1: 左上角 BS 版本號齒輪控制（語意化 major.minor：支援 3.7 -> 3.8 -> 3.9 -> 3.10 -> 3.11）
 ========================================================================= */
-const BS_DEFAULT_VERSION = "5.5";
+const BS_DEFAULT_VERSION = "6.0";
 const VER_KEY = "bs_app_version_str";
 const VER_BASE_KEY = "bs_app_version_base";
 window.BS_APP_VERSION = BS_DEFAULT_VERSION;
@@ -11265,7 +11266,7 @@ const enteringBoard = (zone.startsWith("field-") || zone.startsWith("zone-god-")
 !prevZone.startsWith("field-") && !prevZone.startsWith("zone-god-");
 if (enteringBoard) {
 const owner = zone.endsWith("p2") ? "p2" : "p1";
-if (card.owner === owner) {
+if (card.owner === owner && !window.BSGameBus) {
 checkGrandwalkerDomainCountTriggers(owner, card);
 }
 }
@@ -11347,7 +11348,7 @@ godDeployBtn.classList.add("hidden");
     <div class="changelog-header">
       <div class="flex items-center gap-2.5 flex-wrap">
         <h2 id="changelog-modal-title" class="text-base sm:text-lg font-black tracking-widest text-[#e0b25b]">📜 更新日誌 (CHANGELOG)</h2>
-        <span id="changelog-current-ver" class="text-xs font-black bg-emerald-950/80 border border-emerald-500/60 text-emerald-300 px-2 py-0.5 rounded-sm">v5.5</span>
+        <span id="changelog-current-ver" class="text-xs font-black bg-emerald-950/80 border border-emerald-500/60 text-emerald-300 px-2 py-0.5 rounded-sm">v6.0</span>
       </div>
       <button type="button" class="border border-[#b09466]/55 bg-black/70 text-[#dcd6cc] hover:bg-[#c8aa76] hover:text-black px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="closeChangelogModal()">關閉 (✕)</button>
     </div>
@@ -11361,6 +11362,17 @@ godDeployBtn.classList.add("hidden");
 版本更新日誌資料（往後每次更新 3.8、3.9、3.10、3.11… 請於陣列最上方新增物件）
 ========================================================================= */
 window.BS_CHANGELOG = [
+{
+  version: "6.0",
+  date: "2026-11-24",
+  title: "v6.0 全自動規則引擎大重構：5 大底層硬傷根治、Magic/Flash/結束階段全解鎖、連線同步 Modifier ＋ 內建零手動 AI 自動編譯器",
+  highlights: [
+    "【根治 5 大底層引擎硬傷】停用 #region 19 重複契約域加計數鉤子；修正 BSComputedState 只掃描場上/創界神表側卡並實作 whileAttacking（攻擊期間條件，不再 24 小時誤鎖爆裂與結束階段）；將臨時 bs5Modifiers 納入房間連線即時同步。",
+    "【解鎖 Magic 卡、22+ 張非創界神 Flash 與結束階段】施放 Magic 卡自動觸發〈主要〉/〈Flash〉AST 並於結算後送入廢棄區；場上具 Flash 效果卡牌於攻擊階段自動顯示「⚡Flash」按鈕；推進至結束階段自動發射 PHASE_OWN_END_START。",
+    "【強化 AST VM 精準結算】補齊 MOVE_CORES 留 Core（BS44-088）、純魂Core回收（BS40-067）、自選數量 upTo、MOVE_CARDS 付費強化 costUpgrade（BS69-031），且 optional 效果一律顯示確認不再跳過吞牌。",
+    "【修復離線編譯器 ＋ 內建 Gemini AI 自動編譯】修正離線編譯器「黄泉誤判黃色 / 放手元誤搜手元 / 剩餘卡牌誤返對手 / 故事文字誤判破壞」4 大 Bug；新增可選 Gemini API Key（存於本機），未來新增任意新卡存檔即自動由 AI 編譯並通過嚴格驗證，徹底零手動輸入。"
+  ]
+},
 {
   version: "5.5",
   date: "2026-11-24",
@@ -16108,7 +16120,7 @@ renderPendingHandPickModal();
 body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
 </style>
 
-<div id="bs5-standby-hud" class="hidden" role="dialog" aria-label="BS v5.5 規則引擎待機佇列">
+<div id="bs5-standby-hud" class="hidden" role="dialog" aria-label="BS v6.0 規則引擎待機佇列">
   <div id="bs5-shell" class="bs5-shell"></div>
   <div id="bs5-tray" class="bs5-tray hidden"></div>
   <div id="bs5-actions" class="bs5-actions"></div>
@@ -16123,7 +16135,7 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
 (function () {
   "use strict";
 
-  const AST_SCHEMA_VERSION = 20;
+  const AST_SCHEMA_VERSION = 21;
   const ALLOWED_OPS = new Set([
     "MOVE_CARDS", "MOVE_CORES", "SET_CARD_STATE", "MODIFY_COUNTER",
     "ATTACH_CARD", "ADD_MODIFIER", "ACTIVATE_BURST", "INVOKE_CARD_EFFECT",
@@ -16153,7 +16165,7 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
     return card.owner || "p1";
   }
   function parseColorsFromText(str) {
-    const s = norm(str);
+    const s = norm(str).replace(/黄泉|黃泉|青蛙|赤刃|白銀/g, "");
     const out = new Set();
     if (/6色|六色|全色/.test(s)) return ["紅", "紫", "綠", "白", "黃", "藍"];
     for (const [k, v] of Object.entries(COLOR_MAP)) {
@@ -16248,7 +16260,7 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
     const zones = [];
     if (/廢棄區/.test(clause)) zones.push("trash");
     if (/手牌/.test(clause)) zones.push("hand");
-    if (/手元區?/.test(clause)) zones.push("openhand");
+    if (/手元區?(?:中|的|有)/.test(clause) && !/放置(?:在|到)手元|返回手元/.test(clause)) zones.push("openhand");
     if (/爆裂/.test(clause) && /設置中|捨棄對手|返回卡組/.test(clause)) zones.push("burst");
     if (/魂狀態/.test(clause)) zones.push("soul_state");
     if (/創界神/.test(clause)) zones.push("god");
@@ -16465,6 +16477,7 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
     if (enemyCoreM) {
       const dest = enemyCoreM[2] === "廢棄區" ? "trash_core" : (enemyCoreM[2] === "空間" ? "space" : "reserve");
       const q = parseTargetQueryFromClause(s, "opponent");
+      q.zones = ["field"];
       return { op: "MOVE_CORES", from: { query: q, allTargets: /全部|所有/.test(s) }, to: { owner: "opponent", zone: dest }, amount: Number(enemyCoreM[1]), saveAs: "removedCores", optional, text: s };
     }
     const coreGainM = s.match(/從空間(?:各)?(?:將|取)\s*(\d+)\s*個Core(?:.*?)放置(?:在|到|移至)(.+)/);
@@ -16519,6 +16532,7 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
       const q = parseTargetQueryFromClause(s, /自己/.test(s) ? "self" : "opponent");
       return { op: "MOVE_CARDS", query: q, to: { owner: "card_owner", zone: "exclude" }, saveAs: "excluded", optional, text: s };
     }
+    if (/^(?:剩餘|其餘|剩下)(?:的)?卡牌?(?:須|全部)?(?:以隨意順序)?(?:返回|移至|放置|捨棄|破棄)/.test(s)) return null;
     if (/返回手牌|返回卡組(?:最)?下方|返回卡組底|放置(?:在|到)手元區/.test(s)) {
       const destZone = /手元區/.test(s) ? "openhand" : (/卡組/.test(s) ? "deck_bottom" : "hand");
       const q = parseTargetQueryFromClause(s, /自己廢棄區|自己手牌/.test(s) ? "self" : "opponent");
@@ -16955,7 +16969,10 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
   // =========================================================================
   // LAYER 3: 常時計算層 (BSComputedState) ＋ 權限守衛 ＋ 0-BP 狀態檢查
   // =========================================================================
-  const bs5Modifiers = []; // { id, scope: "turn"|"battle", owner, targetCardId?, modifier, sourceName }
+  function getBs5Modifiers() {
+    if (!Array.isArray(gameState.bs5Modifiers)) gameState.bs5Modifiers = [];
+    return gameState.bs5Modifiers;
+  }
   const origGetCardLvBp = window.getCardEffectiveLvAndBp;
   const origGetTotalSymbols = window.getCardTotalSymbolCount;
   let inComputedRecursion = false;
@@ -16986,6 +17003,18 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
         if (ef.requireBrave && !(typeof braveChildren === "function" && braveChildren(c).length > 0)) continue;
         if (ef.condition?.minCount != null && cnt < ef.condition.minCount) continue;
         if (ef.condition?.hasCardName && !Object.values(gameState.cards).some(x => x.owner === c.owner && (x.zone?.startsWith("field-") || x.zone?.startsWith("zone-god-") || x.isSoulState) && norm(lookupCatalog(x)?.name).includes(ef.condition.hasCardName))) continue;
+        if (ef.whileAttacking) {
+          const ab = gameState.activeBattle;
+          const atk = ab?.attackerId ? gameState.cards[ab.attackerId] : null;
+          if (!atk || atk.owner !== c.owner) continue;
+          const wa = ef.whileAttacking;
+          if (wa.selfOnly && atk.id !== c.id) continue;
+          const atkCat = lookupCatalog(atk) || {};
+          const atkFams = getCardFamilies(atkCat);
+          const atkCost = getCardBaseCost(atkCat);
+          if (wa.families?.length && !wa.families.some(f => atkFams.includes(f))) continue;
+          if (wa.minCost != null && atkCost < Number(wa.minCost)) continue;
+        }
         out.push({ card: c, cat, ef });
       }
     }
@@ -17061,7 +17090,7 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
         }
       }
 
-      for (const m of bs5Modifiers) {
+      for (const m of getBs5Modifiers()) {
         if (m.targetCardId && m.targetCardId !== card.id) continue;
         if (!m.targetCardId && m.owner && m.owner !== ownerSide) continue;
         const mod = m.modifier || {};
@@ -17102,7 +17131,7 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
     getHandCostDelta(player, targetData) {
       let delta = 0;
       const notes = [];
-      for (const m of bs5Modifiers) {
+      for (const m of getBs5Modifiers()) {
         const mod = m.modifier || {};
         if (mod.enemyHandCostDelta && m.owner && m.owner !== player) {
           delta += Number(mod.enemyHandCostDelta);
@@ -17117,12 +17146,14 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
     },
 
     getPlayerRestriction(player, prop) {
-      for (const c of Object.values(gameState.cards)) {
-        if (c.owner !== player) continue;
-        const eff = this.getEffectiveCard(c);
-        if (eff[prop]) return eff[prop];
+      for (const { card: src, ef } of getActiveContinuousEffects()) {
+        const mod = ef.modifier || {};
+        if (!mod[prop]) continue;
+        const sameSide = sideOfCard(src) === player;
+        const selfBeneficial = prop === "maxLifeLossPerAttack" || prop === "noDeckMill" || prop === "ignoreWhiteProtection" || prop === "doubleBlockRequired" || prop === "destroyBpBonus";
+        if (selfBeneficial ? sameSide : !sameSide) return mod[prop];
       }
-      const m = bs5Modifiers.find(x => (!x.owner || x.owner === player) && x.modifier && x.modifier[prop]);
+      const m = getBs5Modifiers().find(x => (!x.owner || x.owner === player) && x.modifier && x.modifier[prop]);
       return m ? m.modifier[prop] : false;
     },
 
@@ -17466,8 +17497,11 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
       if (!cards.length) return resolve([]);
       const maxN = Math.max(0, opts.max || 1);
       if (maxN === 0 && !opts.all) return resolve([]);
-      if (opts.all || (cards.length <= maxN && !opts.upTo && !opts.sumLimit && !opts.optional && !opts.exactRequired)) {
-        return resolve(cards.slice(0, opts.all ? cards.length : maxN));
+      if (opts.all && !opts.optional) {
+        return resolve(cards.slice());
+      }
+      if (cards.length <= maxN && !opts.upTo && !opts.sumLimit && !opts.optional && !opts.exactRequired && cards.length === 1 && opts.autoSingle) {
+        return resolve(cards.slice(0, 1));
       }
       const hud = document.getElementById("bs5-standby-hud");
       const shell = document.getElementById("bs5-shell");
@@ -18116,6 +18150,19 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
         const candidates = evalQuery(node.query, ctx);
         let maxN = resolveDynamicCount(node.query, ctx);
         let destZoneKey = node.to?.zone || "trash";
+        if (node.costUpgrade && Number(node.costUpgrade.payCost) > 0 && candidates.length > maxN) {
+          const payAmt = Number(node.costUpgrade.payCost);
+          const availRes = Number(gameState[`${own}_reserve`]) || 0;
+          if (availRes >= payAmt) {
+            const wantUp = await askOptionalNodeConfirm(ctx.sourceCard, `是否額外支付 ${payAmt} Cost，將此效果目標上限強化為 ${node.costUpgrade.maxTargets} 張？`, `💎 支付 ${payAmt} Cost 強化`, `維持原本 ${maxN} 張`);
+            if (wantUp) {
+              gameState[`${own}_reserve`] = availRes - payAmt;
+              gameState[`${own}_trash_core`] = (Number(gameState[`${own}_trash_core`]) || 0) + payAmt;
+              updateAllUI(); updateRoomState();
+              maxN = Number(node.costUpgrade.maxTargets || maxN);
+            }
+          }
+        }
         if (node.countUpgrade && ownCnt >= Number(node.countUpgrade.minCount || 999)) {
           if (node.countUpgrade.toZone) destZoneKey = node.countUpgrade.toZone.replace(/^enemy_|^self_/, "");
         }
@@ -18268,9 +18315,21 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
         }
         if (from.zone === "trash_core") {
           const ow = from.owner === "opponent" ? oppOf(own) : own;
+          if (from.soulOnly) {
+            if (gameState.soulCoreLocation?.[ow] !== "trash") return { ok: false };
+            setSoulCoreLocation(ow, to.zone === "reserve" ? "reserve" : (dstCards[0]?.id || "reserve"));
+            return { ok: true, amount: 1 };
+          }
           const avail = Number(gameState[`${ow}_trash_core`]) || 0;
           const moveN = node.all ? avail : Math.min(avail, amt);
-          if (moveN <= 0 || !dstCards.length) return { ok: false };
+          if (moveN <= 0) return { ok: false };
+          if (to.zone === "reserve") {
+            gameState[`${ow}_trash_core`] = avail - moveN;
+            gameState[`${ow}_reserve`] = (Number(gameState[`${ow}_reserve`]) || 0) + moveN;
+            updateAllUI(); updateRoomState();
+            return { ok: true, amount: moveN };
+          }
+          if (!dstCards.length) return { ok: false };
           gameState[`${ow}_trash_core`] = avail - moveN;
           dstCards[0].cores = (dstCards[0].cores || 0) + moveN;
           updateAllUI(); updateRoomState();
@@ -18278,9 +18337,11 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
         }
         if (srcCards.length) {
           let movedTotal = 0;
+          const leaveMin = Number(from.leaveCores || 0);
           for (const sc of srcCards) {
             const avail = Number(sc.cores) || 0;
-            const take = Math.min(avail, amt);
+            const maxTake = leaveMin > 0 ? Math.max(0, avail - leaveMin) : avail;
+            const take = Math.min(maxTake, amt);
             if (take <= 0) continue;
             sc.cores = avail - take;
             movedTotal += take;
@@ -18384,9 +18445,9 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
           ? await promptCardPicker(evalQuery(node.targetQuery, ctx), { title: node.text || "選擇效果施加對象", max: resolveDynamicCount(node.targetQuery, ctx), all: Boolean(node.targetQuery.all), optional: node.optional })
           : [];
         if (targets.length) {
-          targets.forEach(t => bs5Modifiers.push({ id: "m_" + Date.now() + Math.random(), scope: node.scope || "turn", owner: t.owner, targetCardId: t.id, modifier: modCopy, sourceName: lookupCatalog(ctx.sourceCard)?.name || "" }));
+          targets.forEach(t => getBs5Modifiers().push({ id: "m_" + Date.now() + Math.random(), scope: node.scope || "turn", owner: t.owner, targetCardId: t.id, modifier: modCopy, sourceName: lookupCatalog(ctx.sourceCard)?.name || "" }));
         } else {
-          bs5Modifiers.push({ id: "m_" + Date.now() + Math.random(), scope: node.scope || "turn", owner: oppOf(ctx.owner), targetCardId: null, modifier: modCopy, sourceName: lookupCatalog(ctx.sourceCard)?.name || "" });
+          getBs5Modifiers().push({ id: "m_" + Date.now() + Math.random(), scope: node.scope || "turn", owner: oppOf(ctx.owner), targetCardId: null, modifier: modCopy, sourceName: lookupCatalog(ctx.sourceCard)?.name || "" });
         }
         ctx.lastZeroBpRemoved = BSComputedState.checkZeroBpStateBasedAction();
         updateAllUI(); updateRoomState();
@@ -18434,7 +18495,7 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
           return { ok: true };
         }
         if (node.action === "end_attack_step_after_battle") {
-          bs5Modifiers.push({ id: "m_endatk_" + Date.now(), scope: "battle", owner: ctx.owner, modifier: { endAttackStepAfterBattle: true }, sourceName: lookupCatalog(ctx.sourceCard)?.name || "" });
+          getBs5Modifiers().push({ id: "m_endatk_" + Date.now(), scope: "battle", owner: ctx.owner, modifier: { endAttackStepAfterBattle: true }, sourceName: lookupCatalog(ctx.sourceCard)?.name || "" });
           return { ok: true };
         }
         if (node.action === "skip_next_opponent_turn") {
@@ -18519,7 +18580,7 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
       if (isSyncing) return;
       const actorId = payload.cardId || payload.sourceCardId || null;
       const actorCard = actorId ? gameState.cards[actorId] : null;
-      const isSelfOnly = ["AFTER_SUMMON", "AFTER_DEPLOY", "AFTER_ADVENT", "AFTER_MANIFEST", "AFTER_ATTACK_DECLARE", "AFTER_BLOCK_DECLARE", "AFTER_TURN_FLIP", "AFTER_CARD_DESTROYED", "ON_BURST", "FLASH_WINDOW", "MAIN_STEP_ACTIVATE"].includes(eventName);
+      const isSelfOnly = ["AFTER_SUMMON", "AFTER_DEPLOY", "AFTER_ADVENT", "AFTER_MANIFEST", "AFTER_ATTACK_DECLARE", "AFTER_BLOCK_DECLARE", "AFTER_TURN_FLIP", "AFTER_CARD_DESTROYED", "ON_BURST", "FLASH_WINDOW", "MAIN_WINDOW", "MAIN_STEP_ACTIVATE"].includes(eventName);
       if (isSelfOnly && !actorCard) return;
 
       const activeTurnSide = gameState.activeTurnPlayer || "p1";
@@ -18544,6 +18605,7 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
           if (isEnemyEvent && actorOwner && c.owner === actorOwner) continue;
           if (eventName === "PHASE_OWN_ATTACK_START" && c.owner !== activeTurnSide) continue;
           if (eventName === "PHASE_ENEMY_ATTACK_START" && c.owner === activeTurnSide) continue;
+          if (eventName === "PHASE_OWN_END_START" && c.owner !== activeTurnSide) continue;
           candidates.push({ card: c, hostCard: c, fromBrave: false, fromAdventSource: false });
           if (typeof braveChildren === "function") {
             braveChildren(c).forEach(b => candidates.push({ card: b, hostCard: c, fromBrave: true, fromAdventSource: false }));
@@ -18647,7 +18709,7 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
               resolve(idx);
             };
             const renderQueue = () => {
-              shell.innerHTML = `<div class="bs5-head"><span>⚡ BS v5.5 待機效果佇列（點擊優先發動）</span><span>待處理 ${standbyQueue.length} 項</span></div>`;
+              shell.innerHTML = `<div class="bs5-head"><span>⚡ BS v6.0 待機效果佇列（點擊優先發動）</span><span>待處理 ${standbyQueue.length} 項</span></div>`;
               standbyQueue.forEach((item, i) => {
                 const row = document.createElement("div");
                 row.className = "bs5-row";
@@ -18828,11 +18890,11 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
 
   // Hook Battle End + Life Cap (BS76-040) + Replacement (PB46-RV005 / BS75-CP06)
   function handleBattleEndCleanup(attackerId) {
-    const endAfter = bs5Modifiers.some(m => m.scope === "battle" && m.modifier?.endAttackStepAfterBattle);
-    const toDestroyIds = bs5Modifiers.filter(m => m.scope === "battle" && m.modifier?.destroyAtBattleEnd && m.targetCardId).map(m => m.targetCardId);
+    const endAfter = getBs5Modifiers().some(m => m.scope === "battle" && m.modifier?.endAttackStepAfterBattle);
+    const toDestroyIds = getBs5Modifiers().filter(m => m.scope === "battle" && m.modifier?.destroyAtBattleEnd && m.targetCardId).map(m => m.targetCardId);
     BSGameBus.emitAfter("AFTER_BATTLE_END", { cardId: attackerId });
-    for (let i = bs5Modifiers.length - 1; i >= 0; i--) {
-      if (bs5Modifiers[i].scope === "battle") bs5Modifiers.splice(i, 1);
+    for (let i = getBs5Modifiers().length - 1; i >= 0; i--) {
+      if (getBs5Modifiers()[i].scope === "battle") getBs5Modifiers().splice(i, 1);
     }
     toDestroyIds.forEach(cid => {
       const c = gameState.cards[cid];
@@ -18889,7 +18951,7 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
   if (typeof origSetPhase === "function") {
     window.setGamePhase = function (phaseKey) {
       if (phaseKey === "START") {
-        bs5Modifiers.splice(0, bs5Modifiers.length);
+        getBs5Modifiers().splice(0, getBs5Modifiers().length);
         gameState.usedEffectsTurn = {};
       }
       const res = origSetPhase(phaseKey);
@@ -18899,6 +18961,8 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
           { event: "PHASE_ENEMY_ATTACK_START", payload: { owner: gameState.activeTurnPlayer } },
           { event: "PHASE_ANY_ATTACK_START", payload: { owner: gameState.activeTurnPlayer } }
         ]);
+      } else if (phaseKey === "END" && !isSyncing) {
+        BSGameBus.emitAfter("PHASE_OWN_END_START", { owner: gameState.activeTurnPlayer });
       }
       return res;
     };
@@ -18910,7 +18974,7 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
         showNotice("🚫 受到場上效果限制：目前不可結束回合！");
         return;
       }
-      bs5Modifiers.splice(0, bs5Modifiers.length);
+      getBs5Modifiers().splice(0, getBs5Modifiers().length);
       gameState.usedEffectsTurn = {};
       const res = origEndTurn(...args);
       if (gameState.__bs5SkipNextTurnFor && gameState.activeTurnPlayer === gameState.__bs5SkipNextTurnFor) {
@@ -19200,6 +19264,255 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
       return origUseMagicTaxV5(cardId);
     };
   }
+
+  // =========================================================================
+  // v6.0 Magic Cast Resolver + Non-Grandwalker Field ⚡Flash Activation Button
+  // =========================================================================
+  window.onBs6MagicCastResolved = function (cardId) {
+    const card = gameState.cards[cardId];
+    if (!card || isSyncing) return;
+    const effs = BSRuleCompiler.getEffectsForCard(card).filter(e => e.kind === "TRIGGERED");
+    const isMain = (gameState.currentPhase || "") === "MAIN" && (gameState.activeTurnPlayer || "p1") === card.owner;
+    const batch = [];
+    if (isMain && effs.some(e => e.events?.includes("MAIN_WINDOW"))) {
+      batch.push({ event: "MAIN_WINDOW", payload: { cardId: card.id, owner: card.owner } });
+    }
+    if (effs.some(e => e.events?.includes("FLASH_WINDOW"))) {
+      batch.push({ event: "FLASH_WINDOW", payload: { cardId: card.id, owner: card.owner } });
+    }
+    if (batch.length) {
+      BSGameBus.emitBatch(batch);
+    }
+    const checkTrash = () => {
+      if (isResolvingStandby || standbyQueue.length > 0) {
+        setTimeout(checkTrash, 350);
+        return;
+      }
+      const cur = gameState.cards[cardId];
+      if (cur && cur.zone === `field-${cur.owner}`) {
+        moveCardToZone(cur.id, `zone-trash-${cur.owner}`);
+      }
+    };
+    setTimeout(checkTrash, 550);
+  };
+
+  window.getCardFieldFlashEffects = function (card) {
+    if (!card || card.isFaceDown || card.isSoulState) return [];
+    if (!card.zone?.startsWith("field-")) return [];
+    if ((gameState.currentPhase || "") !== "ATTACK") return [];
+    const activeSide = gameState.activeTurnPlayer || "p1";
+    return BSRuleCompiler.getEffectsForCard(card).filter(e => {
+      if (e.kind !== "TRIGGERED" || !Array.isArray(e.events) || !e.events.includes("FLASH_WINDOW")) return false;
+      if (e.phaseOwner === "self" && card.owner !== activeSide) return false;
+      if (e.phaseOwner === "opponent" && card.owner === activeSide) return false;
+      return true;
+    });
+  };
+
+  window.activateCardFieldFlashEffect = function (cardId) {
+    const card = gameState.cards[cardId];
+    if (!card || card.isFaceDown || card.isSoulState) return;
+    const effs = window.getCardFieldFlashEffects(card);
+    if (!effs.length) return;
+    const curLv = BSComputedState.getEffectiveCard(card).lv;
+    if (!effs.some(ef => !(ef.minLv > 0 && curLv < ef.minLv))) {
+      const needLv = Math.min(...effs.map(e => Number(e.minLv || 1)));
+      showNotice(`此 Flash 效果需要 Lv${needLv} 或以上（目前 Lv${curLv}）！`);
+      return;
+    }
+    BSGameBus.emitAfter("FLASH_WINDOW", { cardId: card.id, owner: card.owner });
+  };
+
+  function updateFieldFlashButton(el, card) {
+    if (!el || !card) return;
+    const show = Boolean(card.zone?.startsWith("field-") && !card.isFaceDown && !card.isSoulState && !card.braveHostId && !card.adventHostId && window.getCardFieldFlashEffects(card).length > 0);
+    let btn = el.querySelector(":scope > .mini-flash-act-btn");
+    if (show) {
+      if (!btn) {
+        btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "mini-translate-btn mini-flash-act-btn";
+        btn.style.cssText = "border-color:#38bdf8!important;color:#bae6fd!important;background:#0c4a6eee!important;font-weight:900!important;transform:translate(-50%,-50%) rotate(var(--card-ui-rotation,0deg)) translate(32px,calc(-1 * var(--card-ui-edge,70px) - 14px))";
+        btn.textContent = "⚡Flash";
+        btn.draggable = false;
+        ["pointerdown", "mousedown", "dblclick", "dragstart"].forEach(ev => btn.addEventListener(ev, e => e.stopPropagation()));
+        btn.onclick = e => {
+          e.preventDefault(); e.stopPropagation();
+          window.activateCardFieldFlashEffect(card.id);
+        };
+        el.append(btn);
+      }
+    } else {
+      btn?.remove();
+    }
+  }
+
+  const origAttachMiniV6 = attachMiniTranslation;
+  attachMiniTranslation = function (el, img, cardId) {
+    origAttachMiniV6(el, img, cardId);
+    if (el && cardId && gameState.cards[cardId]) updateFieldFlashButton(el, gameState.cards[cardId]);
+  };
+  const origUpdateAllV6 = updateAllUI;
+  updateAllUI = function () {
+    origUpdateAllV6();
+    Object.values(gameState.cards).forEach(c => {
+      if (c.zone?.startsWith("field-")) {
+        const el = document.getElementById(c.id);
+        if (el && el.classList.contains("mini-translation-source")) updateFieldFlashButton(el, c);
+      }
+    });
+  };
+
+  // =========================================================================
+  // v6.0 Built-in Zero-Manual Gemini AI Auto-Compiler (for all future cards!)
+  // =========================================================================
+  const GEMINI_KEY_STORAGE = "bs_gemini_api_key";
+  const BS6_AST_PROMPT_SPEC = [
+    "You are a strict Battle Spirits TCG rule compiler. Convert the card effect text into a JSON array of BS v21 AST effect objects.",
+    "OUTPUT ONLY A VALID JSON ARRAY (no markdown fences, no commentary).",
+    "1. Ignore flavor text, 神託/真神託, 復活, keyword definitions (煌臨/顯現/幻境), 減輕標誌當作滿足, 標誌也當作, and hand cost changes.",
+    "2. Each item: {schema:21, kind:'TRIGGERED'|'CONTINUOUS'|'REPLACEMENT'|'INTERRUPT', header:string, minLv:number}.",
+    "3. TRIGGERED events: AFTER_SUMMON, AFTER_DEPLOY, AFTER_ADVENT, AFTER_MANIFEST, AFTER_TURN_FLIP, AFTER_ATTACK_DECLARE, AFTER_BLOCK_DECLARE, AFTER_CARD_DESTROYED, AFTER_ENEMY_DESTROYED, AFTER_OWN_NEXUS_DESTROYED, AFTER_ALLY_SUMMON, AFTER_ALLY_DEPLOY, AFTER_ALLY_ADVENT, AFTER_ALLY_ATTACK, AFTER_ALLY_BLOCK, AFTER_CARD_EXHAUSTED, AFTER_LIFE_REDUCED, AFTER_BATTLE_END, PHASE_OWN_ATTACK_START, PHASE_ENEMY_ATTACK_START, PHASE_ANY_ATTACK_START, PHASE_OWN_END_START, MAIN_STEP_ACTIVATE, MAIN_WINDOW, FLASH_WINDOW, ON_BURST.",
+    "4. Control nodes: SEQ({nodes}), PAY_THEN({optional,cost,then}), IF({cond,then,else}), CHOOSE({options}), REPEAT({timesExpr,body}).",
+    "5. Atomic ops (NEVER invent ops, NEVER output ruleFlag): MOVE_CARDS, MOVE_CORES, SET_CARD_STATE, MODIFY_COUNTER, ATTACH_CARD, ADD_MODIFIER, ACTIVATE_BURST, INVOKE_CARD_EFFECT, CONTROL_FLOW_PHASE.",
+    "6. Causal clauses (只要/那個時候/如此做時/且破壞時) MUST use PAY_THEN or IF({cond:{prevSucceeded:true}}).",
+    "7. Attack-period continuous locks MUST include whileAttacking:{families:[...],minCost:...} or {selfOnly:true}.",
+    "8. NEVER output nested arrays anywhere (Firestore forbids nested arrays)."
+  ].join("\n");
+
+  async function compileCardWithGeminiAI(cardData) {
+    const apiKey = (localStorage.getItem(GEMINI_KEY_STORAGE) || "").trim();
+    if (!apiKey) return null;
+    const model = localStorage.getItem("bs_gemini_model") || "gemini-2.5-flash";
+    const userPrompt = `Card: ${cardData.number || ""} ${cardData.name || ""} (${cardData.type || ""}, Cost ${cardData.cost ?? ""}, Attr ${cardData.attribute || ""}, Family ${cardData.family || ""})\nEffect Text:\n${cardData.effect || ""}`;
+    const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [{ role: "user", parts: [{ text: BS6_AST_PROMPT_SPEC + "\n\n" + userPrompt }] }],
+        generationConfig: { temperature: 0.1, responseMimeType: "application/json" }
+      })
+    });
+    if (!resp.ok) throw new Error(`Gemini API HTTP ${resp.status}`);
+    const data = await resp.json();
+    const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
+    const cleaned = rawText.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "").trim();
+    const parsed = JSON.parse(cleaned);
+    if (!Array.isArray(parsed)) throw new Error("AI 回傳非陣列格式");
+    const check = BSRuleCompiler.validate(parsed);
+    if (!check.ok) throw new Error("AI AST 驗證未通過：" + check.errors.slice(0, 3).join("; "));
+    return parsed;
+  }
+
+  const origSaveCatalogV6 = saveCatalogCard;
+  saveCatalogCard = async function (event) {
+    const effInput = document.getElementById("catalog-effect");
+    const jsonInput = document.getElementById("catalog-structured-effects");
+    const hasKey = Boolean((localStorage.getItem(GEMINI_KEY_STORAGE) || "").trim());
+    if (hasKey && effInput && jsonInput && effInput.value.trim()) {
+      try {
+        catalogStatus("🤖 正在透過 Gemini AI 語義編譯此卡效果…");
+        const aiAst = await compileCardWithGeminiAI({
+          number: document.getElementById("catalog-number")?.value || "",
+          name: document.getElementById("catalog-name")?.value || "",
+          type: document.getElementById("catalog-type")?.value || "",
+          cost: document.getElementById("catalog-cost")?.value || "",
+          attribute: document.getElementById("catalog-attribute")?.value || "",
+          family: document.getElementById("catalog-family")?.value || "",
+          effect: effInput.value
+        });
+        if (Array.isArray(aiAst) && aiAst.length) {
+          jsonInput.value = JSON.stringify(aiAst);
+          catalogStatus(`🤖 AI 編譯成功（${aiAst.length} 條 v21 AST），正在儲存…`);
+        }
+      } catch (aiErr) {
+        console.warn("Gemini AI compile fallback to offline:", aiErr);
+        catalogStatus("⚠️ AI 編譯失敗，改用離線編譯器：" + aiErr.message);
+      }
+    }
+    return origSaveCatalogV6(event);
+  };
+
+  window.aiCompileMissingCatalogCards = async function () {
+    const apiKey = (localStorage.getItem(GEMINI_KEY_STORAGE) || "").trim();
+    if (!apiKey) {
+      return showNotice("請先在上方「🤖 AI 自動編譯」欄位貼上你的免費 Gemini API Key（僅存於本機瀏覽器），儲存後新增任何新卡都會自動編譯！");
+    }
+    await ensureCatalogData(false);
+    const missing = catalogEntries.filter(c => c?.effect && (!Array.isArray(c.structuredEffects) || !c.structuredEffects.some(e => Number(e?.schema || 0) >= 21)));
+    if (!missing.length) return showNotice("🎉 卡池全部卡片均已是最新 v21 AST，無須補編！");
+    if (!confirm(`偵測到 ${missing.length} 張尚未擁有 v21 AST 的新卡，要立即使用 Gemini AI 逐張語義編譯並同步雲端嗎？\n（已擁有的 v21 卡資料不會被覆蓋）`)) return;
+    const items = [];
+    let fail = 0;
+    for (let i = 0; i < missing.length; i++) {
+      const c = missing[i];
+      catalogStatus(`🤖 AI 語義編譯中 (${i + 1}/${missing.length})：${c.number} ${c.name}…`);
+      try {
+        const ast = await compileCardWithGeminiAI(c);
+        if (ast && ast.length) items.push({ number: c.number, structuredEffects: ast });
+      } catch (e) {
+        fail++;
+        console.warn("AI compile failed for", c.number, e);
+      }
+    }
+    if (!items.length) return showNotice(`AI 編譯未產出可寫入項目（失敗 ${fail} 張），請檢查 API Key 或網路連線。`);
+    const cloud = await catalogCloud();
+    const res = await cloud.batchPatchStructuredEffects(items, (done, total) => {
+      catalogStatus(`🤖 正在寫入 AI 編譯結果 (${done}/${total})…`);
+    }, { version: AST_SCHEMA_VERSION });
+    if (res?.updatedMap) {
+      for (const c of catalogEntries) {
+        const p = res.updatedMap.get(c.number);
+        if (p) { c.structuredEffects = p.structuredEffects; c.revision = p.revision; delete c.__bs5CompiledCache; }
+      }
+    }
+    await indexCatalogImages();
+    if (typeof window.updateCatalogEffectsVersionUI === "function") window.updateCatalogEffectsVersionUI();
+    showNotice(`🤖 AI 補編完成！成功編譯並同步 ${res.count} 張新卡至 v21 AST（失敗 ${fail} 張）。`);
+  };
+
+  const dbPanel = document.querySelector("#card-db-modal .card-db-panel");
+  const dbStatus = document.getElementById("card-db-status");
+  if (dbPanel && dbStatus && !document.getElementById("bs6-ai-compiler-bar")) {
+    const aiBar = document.createElement("div");
+    aiBar.id = "bs6-ai-compiler-bar";
+    aiBar.style.cssText = "display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:6px 10px;margin:6px 0;background:rgba(12,24,38,0.65);border:1px solid rgba(56,189,248,0.45);border-radius:3px;font-size:12px";
+    const savedKey = (localStorage.getItem(GEMINI_KEY_STORAGE) || "").trim();
+    aiBar.innerHTML = `<span style="color:#7dd3fc;font-weight:900;white-space:nowrap">🤖 AI 自動編譯 (新增卡片零手動)：</span>`
+      + `<input id="bs6-gemini-key-input" type="password" placeholder="貼上 Gemini API Key（僅存於本機）" value="${savedKey ? "••••••••" : ""}" style="flex:1 1 180px;max-width:260px;padding:4px 8px;font-size:11.5px">`
+      + `<button type="button" id="bs6-save-gemini-key" style="border-color:#38bdf8;color:#bae6fd;background:rgba(12,74,110,0.65);font-weight:900">💾 儲存 Key</button>`
+      + `<button type="button" id="bs6-ai-compile-missing" style="border-color:#a78bfa;color:#ddd6fe;background:rgba(76,29,149,0.65);font-weight:900">✨ AI 補編新卡</button>`
+      + `<span id="bs6-ai-key-badge" style="font-size:11px;color:${savedKey ? "#6ee7b7" : "#9ca3af"}">${savedKey ? "✓ 已啟用：存新卡自動 AI 編譯" : "未設定（使用離線編譯）"}</span>`;
+    dbStatus.before(aiBar);
+    document.getElementById("bs6-save-gemini-key").onclick = () => {
+      const inp = document.getElementById("bs6-gemini-key-input");
+      const val = (inp?.value || "").trim();
+      if (!val || val === "••••••••") {
+        localStorage.removeItem(GEMINI_KEY_STORAGE);
+        if (inp) inp.value = "";
+        document.getElementById("bs6-ai-key-badge").textContent = "已清除 Key（改用離線編譯）";
+        document.getElementById("bs6-ai-key-badge").style.color = "#9ca3af";
+      } else {
+        localStorage.setItem(GEMINI_KEY_STORAGE, val);
+        if (inp) inp.value = "••••••••";
+        document.getElementById("bs6-ai-key-badge").textContent = "✓ 已啟用：存新卡自動 AI 編譯";
+        document.getElementById("bs6-ai-key-badge").style.color = "#6ee7b7";
+        showNotice("已將 Gemini API Key 儲存於本機瀏覽器！之後新增或編輯卡片儲存時將自動由 AI 編譯為嚴格驗證的 v21 AST。");
+      }
+    };
+    document.getElementById("bs6-ai-compile-missing").onclick = () => window.aiCompileMissingCatalogCards();
+  }
+
+  // Protect verified v21 AST against accidental offline mass-overwrite!
+  const origOfflineBatch = window.autoCompileEntireCatalogToAst;
+  window.autoCompileEntireCatalogToAst = async function () {
+    await ensureCatalogData(false);
+    const uncompiled = catalogEntries.filter(c => c?.effect && (!Array.isArray(c.structuredEffects) || !c.structuredEffects.some(e => Number(e?.schema || 0) >= 21)));
+    if (!uncompiled.length) {
+      return showNotice("🛡️ 保護機制生效：目前卡池全部卡片均已具備精修版 v21 AST，無須使用離線編譯覆寫！若要新增卡片，請直接貼上文字儲存（或設定上方 Gemini API Key 自動 AI 編譯）。");
+    }
+    return origOfflineBatch();
+  };
 
   window.promptBs5CardPicker = promptCardPicker;
   Object.assign(window, { BSRuleCompiler, BSComputedState, BSGameBus, executeAstNode });
