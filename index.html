@@ -17,7 +17,7 @@
  10. 創界神 (Grandwalker) 技與域   -> 搜尋: function useGrandwalkerSkill
  11. 顕現 (Manifest) 系統與特效    -> 搜尋: function triggerManifestFromHand
 ========================================================================= -->
-<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><title>BS v5.4</title><script src="https://cdn.tailwindcss.com"></script><style>
+<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><title>BS v5.5</title><script src="https://cdn.tailwindcss.com"></script><style>
 /* #region 1. 基礎排版、卡背 SVG 與戰場區域樣式 */
 body,html{touch-action:manipulation;overflow-x:hidden!important;overscroll-behavior-x:none}.action-btn,.counter-box,.counter-title,.counter-value,.small-action-btn,body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}body{background-color:#0d0c0b;background-image:radial-gradient(ellipse at 50% 50%,rgba(46,40,34,.45) 0,rgba(10,9,8,.95) 100%),repeating-linear-gradient(135deg,rgba(255,255,255,.012) 0,rgba(255,255,255,.012) 2px,transparent 2px,transparent 8px);color:#dcd6cc;font-family:Cinzel,"Noto Serif TC",PMingLiU,Georgia,serif}.custom-scrollbar::-webkit-scrollbar{display:none}.custom-scrollbar{-ms-overflow-style:none;scrollbar-width:none}:root{--bs-cardback-svg:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 280'%3E%3Crect width='200' height='280' rx='13' fill='%23040404'/%3E%3Cg fill='none' stroke='%23dcdcdc' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4.5' y='4.5' width='191' height='271' rx='10' stroke-width='2.6'/%3E%3Crect x='11' y='11' width='178' height='258' rx='7' stroke-width='1.1' stroke-opacity='0.6'/%3E%3Cpath d='M5 42 C18 16,48 6,86 14 C122 22,152 6,195 26' stroke-width='3'/%3E%3Cpath d='M10 26 C32 6,76 22,118 10 C152 2,178 14,190 38' stroke-width='1.8'/%3E%3Cpath d='M5 238 C18 264,48 274,86 266 C122 258,152 274,195 254' stroke-width='3'/%3E%3Cpath d='M10 254 C32 274,76 258,118 270 C152 278,178 266,190 242' stroke-width='1.8'/%3E%3Cpath d='M14 5 C4 36,20 82,8 138 C-2 184,18 232,10 275' stroke-width='2.8'/%3E%3Cpath d='M6 28 C22 68,4 114,16 156 C24 192,6 226,18 262' stroke-width='1.5'/%3E%3Cpath d='M186 5 C196 36,180 82,192 138 C202 184,182 232,190 275' stroke-width='2.8'/%3E%3Cpath d='M194 28 C178 68,196 114,184 156 C176 192,194 226,182 262' stroke-width='1.5'/%3E%3Cpath d='M8 46 C26 42,34 24,22 14 C14 8,6 18,16 28' stroke-width='2.2'/%3E%3Cpath d='M192 46 C174 42,166 24,178 14 C186 8,194 18,184 28' stroke-width='2.2'/%3E%3Cpath d='M8 234 C26 238,34 256,22 266 C14 272,6 262,16 252' stroke-width='2.2'/%3E%3Cpath d='M192 234 C174 238,166 256,178 266 C186 272,194 262,184 252' stroke-width='2.2'/%3E%3C/g%3E%3Cg transform='translate(100,128)'%3E%3Cg stroke='%23d4d4d4' stroke-width='1.35' opacity='0.88'%3E%3Cline x1='0' y1='-96' x2='0' y2='96'/%3E%3Cline x1='-74' y1='-74' x2='74' y2='74'/%3E%3Cline x1='74' y1='-74' x2='-74' y2='74'/%3E%3Cline x1='-38' y1='-90' x2='38' y2='90'/%3E%3Cline x1='38' y1='-90' x2='-38' y2='90'/%3E%3Cline x1='-86' y1='-36' x2='86' y2='36'/%3E%3Cline x1='86' y1='-36' x2='-86' y2='36'/%3E%3Cline x1='-20' y1='-93' x2='20' y2='93' stroke-width='0.8'/%3E%3Cline x1='20' y1='-93' x2='-20' y2='93' stroke-width='0.8'/%3E%3Cline x1='-58' y1='-82' x2='58' y2='82' stroke-width='0.8'/%3E%3Cline x1='58' y1='-82' x2='-58' y2='82' stroke-width='0.8'/%3E%3C/g%3E%3Cpolygon points='0,-84 4,-26 0,-18 -4,-26' fill='%23dcdcdc'/%3E%3Cpolygon points='0,84 4,26 0,18 -4,26' fill='%23dcdcdc'/%3E%3Cpolygon points='-64,-64 -18,-22 -14,-14 -22,-18' fill='%23dcdcdc'/%3E%3Cpolygon points='64,-64 18,-22 14,-14 22,-18' fill='%23dcdcdc'/%3E%3Cpolygon points='-64,64 -18,22 -14,14 -22,18' fill='%23dcdcdc'/%3E%3Cpolygon points='64,64 18,22 14,14 22,18' fill='%23dcdcdc'/%3E%3Cpolygon points='-32,-78 -10,-26 -6,-20 -14,-24' fill='%23dcdcdc'/%3E%3Cpolygon points='32,-78 10,-26 6,-20 14,-24' fill='%23dcdcdc'/%3E%3Cpolygon points='-32,78 -10,26 -6,20 -14,24' fill='%23dcdcdc'/%3E%3Cpolygon points='32,78 10,26 6,20 14,24' fill='%23dcdcdc'/%3E%3Ccircle r='50' fill='none' stroke='%23dcdcdc' stroke-width='1.8' stroke-dasharray='7 4'/%3E%3Ccircle r='40' fill='%23050505' stroke='%23e5e5e5' stroke-width='2.2'/%3E%3Cpath d='M-46,-18 C-62,-32 -32,-58 -12,-42 C2,-58 36,-54 26,-32 C52,-38 62,-8 40,8 C58,26 32,52 12,38 C-4,56 -38,50 -28,28 C-54,32 -60,4 -46,-18 Z' fill='none' stroke='%23dcdcdc' stroke-width='2'/%3E%3Cellipse cx='-4' cy='0' rx='46' ry='33' fill='%23050505' stroke='%23ececec' stroke-width='3.8'/%3E%3Cellipse cx='-4' cy='0' rx='41' ry='28' fill='%23050505' stroke='%23888888' stroke-width='1.1'/%3E%3Ctext x='-7' y='17' text-anchor='middle' font-family='Georgia,Times New Roman,serif' font-size='50' font-weight='900' font-style='italic' fill='%23e8e8e8' stroke='%23050505' stroke-width='1.5' letter-spacing='-3'%3EBS%3C/text%3E%3C/g%3E%3Ctext x='100' y='244' text-anchor='middle' font-family='Georgia,Times New Roman,serif' font-size='23' font-weight='900' font-style='italic' fill='%23e2e2e2' letter-spacing='0.6'%3EBattle Spirits%3C/text%3E%3C/svg%3E")}.zone{min-height:100px;background-color:rgba(10,9,8,.18);border:1px solid rgba(186,158,108,.34);border-radius:3px;position:relative;transition:background-color .2s ease,border-color .2s ease,box-shadow .2s ease}.field-zone{background:0 0!important;border:none!important;border-radius:0!important;box-shadow:none!important}.card{width:100px;height:140px;background-color:#0e0e0e;border:1px solid rgba(196,168,118,.55);border-radius:3.5px;display:flex;justify-content:center;align-items:center;cursor:grab;position:absolute;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease,opacity .15s;box-shadow:0 6px 16px rgba(0,0,0,.85),0 1px 3px rgba(0,0,0,.7);background-size:cover;background-position:center;background-repeat:no-repeat;image-rendering:-webkit-optimize-contrast;transform-origin:center center;color:#a89f91;font-size:10px;font-weight:700;overflow:visible}body.mobile-mode .card{touch-action:none}.card:active{cursor:grabbing;box-shadow:0 14px 30px rgba(0,0,0,.95);z-index:1000!important}.card.has-soul-core{border:2px solid #f87171!important;box-shadow:0 0 12px 3px rgba(239,68,68,.95),0 0 24px 6px rgba(185,28,28,.65),inset 0 0 10px rgba(252,165,165,.55)!important}.card.face-down{background-image:var(--bs-cardback-svg)!important;background-size:100% 100%!important;background-position:center!important;background-color:#050505!important;border:1px solid rgba(220,220,220,.65)!important;box-shadow:0 6px 14px rgba(0,0,0,.85)}.card.face-down::after{content:none!important}.card-controls{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) translateY(90px);display:none;align-items:center;gap:5px;background:rgba(10,9,8,.76);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);padding:3px 7px;border-radius:4px;border:1px solid rgba(186,158,108,.55);box-shadow:0 4px 12px rgba(0,0,0,.8);z-index:60;white-space:nowrap;pointer-events:auto}.field-zone .card .card-controls{display:flex!important;opacity:1!important;visibility:visible!important}.field-bottom-left-dock{position:absolute;left:10px;bottom:10px;top:auto;display:flex;flex-direction:row;align-items:flex-end;gap:10px;max-width:calc(100% - 20px);z-index:25;pointer-events:none}.opponent-field-top .field-bottom-left-dock{bottom:auto;top:10px;left:auto;right:10px;flex-direction:row-reverse;align-items:flex-start}.opponent-main-area>.side-col-left{grid-column:3;grid-row:1;flex-direction:column-reverse}.opponent-main-area>.field-zone{grid-column:2;grid-row:1}.opponent-main-area>.side-col-right{grid-column:1;grid-row:1;flex-direction:column-reverse}.god-zone-wrapper,.openhand-zone-wrapper{pointer-events:auto;width:max-content;max-width:100%;flex-shrink:0;background:rgba(12,11,10,.28);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);border:1px solid rgba(186,158,108,.42);border-radius:3px;padding:5px 8px;display:inline-flex;flex-direction:column;box-shadow:0 4px 14px rgba(0,0,0,.45);transition:border-color .2s,background-color .2s,box-shadow .2s;box-sizing:border-box}.god-zone-wrapper.drag-over,.openhand-zone-wrapper.drag-over{background-color:rgba(176,148,102,.18)!important;border-color:rgba(235,205,145,.85)!important}.god-zone,.openhand-zone{display:inline-flex;flex-direction:row;flex-wrap:nowrap;align-items:center;gap:10px;width:max-content;min-width:112px;min-height:152px;padding:6px 8px;overflow:visible;background:rgba(10,9,8,.18);border:1px solid rgba(186,158,108,.25);border-radius:3px;position:relative;box-sizing:border-box}.openhand-zone{gap:0!important;padding:6px 10px!important}.openhand-zone .card+.card{margin-left:-52px!important}.god-zone.has-cards{padding-bottom:36px}.openhand-zone.has-cards{padding-bottom:6px}.god-zone .card,.openhand-zone .card{position:relative!important;left:auto!important;top:auto!important;flex-shrink:0;margin:0}.field-zone .god-zone .card .card-controls,.god-zone .card .card-controls{display:flex!important;opacity:1!important;visibility:visible!important;border-color:rgba(255,255,255,.18)}.field-zone .card .card-core-pill,.god-zone .card .card-core-pill{cursor:grab;user-select:none;-webkit-user-select:none;touch-action:none;border-radius:2px;transition:background-color .15s,transform .15s}.field-zone .card .card-core-pill:hover,.god-zone .card .card-core-pill:hover{background-color:rgba(56,189,248,.25);transform:scale(1.08)}.field-zone .card .card-core-pill:active,.god-zone .card .card-core-pill:active{cursor:grabbing}.god-zone .card .card-soul-btn{display:none!important}.field-zone .openhand-zone .card .card-controls,.openhand-zone .card .card-controls{display:none!important}.card-btn{background:rgba(24,22,19,.95);color:#e2dacd;border:1px solid rgba(176,148,102,.5);border-radius:2px;width:19px;height:19px;font-size:12px;font-weight:700;display:flex;justify-content:center;align-items:center;cursor:pointer;padding:0;line-height:1;flex-shrink:0;transition:background .15s,color .15s,border-color .15s}.card-btn:hover{background:#d4b886;color:#000;border-color:#fff}.card-btn.soul-active{width:20px;height:20px;clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0% 50%);background:linear-gradient(135deg,#fff 0,#cbd5e1 45%,#64748b 100%)!important;border:none!important;border-radius:0!important;color:transparent!important;font-size:0!important;position:relative;filter:drop-shadow(0 0 6px rgba(239,68,68,.95));box-shadow:none!important}.card-btn.soul-active::after{content:"";position:absolute;inset:3.5px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fecaca 0,#ef4444 45%,#7f1d1d 100%);box-shadow:inset 0 0 3px #fff;pointer-events:none}.card-core-pill{display:flex;align-items:center;gap:4px;padding:1px 5px;background:rgba(255,255,255,.03);border:1px solid rgba(56,189,248,.25)}.card-core-dot,.physical-core-gem{width:17px;height:17px;display:inline-block;position:relative;clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0% 50%);background:radial-gradient(circle at 35% 30%,#fff 0,#bae6fd 22%,#38bdf8 52%,#0284c7 82%,#0c4a6e 100%);box-shadow:inset 0 0 4px rgba(255,255,255,.9);filter:drop-shadow(0 0 4px rgba(56,189,248,.75));flex-shrink:0;transition:transform .12s ease,filter .12s ease}.card-core-dot::after,.physical-core-gem::after{content:"";position:absolute;inset:3px;clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0% 50%);background:linear-gradient(135deg,rgba(255,255,255,.85) 0,rgba(125,211,252,.25) 55%,rgba(2,132,199,.6) 100%);pointer-events:none}.card-core-dot{width:14px;height:14px}.physical-core-gem.interactive-core{cursor:pointer}.physical-core-gem.interactive-core:hover{transform:scale(1.22);filter:drop-shadow(0 0 8px rgba(125,211,252,1))}.core-gem-tray{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:5px;min-height:24px;padding:3px 4px;margin-top:2px}.card-cores{color:#f8fafc;font-size:13px;font-weight:900;min-width:14px;text-align:center;text-shadow:1px 1px 2px #000}.soul-core-token{width:19px;height:19px;clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0% 50%);font-size:0px;display:inline-flex;align-items:center;justify-content:center;cursor:grab;user-select:none;-webkit-user-select:none;touch-action:none;position:relative;transition:transform .15s,filter .15s;z-index:40;background:linear-gradient(135deg,#fff 0,#cbd5e1 45%,#64748b 100%);filter:drop-shadow(0 0 6px rgba(239,68,68,.9))}.soul-core-token::after{content:"";position:absolute;inset:3.5px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fecaca 0,#ef4444 45%,#7f1d1d 100%);box-shadow:inset 0 0 3px #fff}.soul-core-token:hover{transform:scale(1.22);filter:drop-shadow(0 0 10px rgba(248,113,113,1))}.soul-core-token:active{cursor:grabbing}.soul-core-slot-empty{width:17px;height:17px;clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0% 50%);background:rgba(255,255,255,.08);color:rgba(255,255,255,.35);font-size:8px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s}.soul-core-slot-empty:hover{background:rgba(239,68,68,.45);color:#fff;transform:scale(1.15)}.counter-box{border:1px solid rgba(186,158,108,.42);border-radius:3px;padding:5px 7px;text-align:center;background:rgba(12,11,10,.24);box-shadow:inset 0 0 10px rgba(0,0,0,.28);transition:border-color .2s,box-shadow .2s,background-color .2s;transform:translateZ(0);backface-visibility:hidden}.counter-title{font-size:11px;color:#d8ccb8;font-weight:700;letter-spacing:.1em;margin-bottom:2px;text-transform:uppercase;text-align:center;text-shadow:0 1px 3px rgba(0,0,0,.9);transform:translateZ(0)}.counter-value{font-size:15px;font-weight:900;color:#f5efe6;display:flex;align-items:center;justify-content:center;gap:8px;transform:translateZ(0)}.counter-btn{background:rgba(255,255,255,.05);color:#d6cbb9;border:1px solid rgba(176,148,102,.45);border-radius:1px;width:16px;height:16px;display:flex;justify-content:center;align-items:center;cursor:pointer;font-size:11px;line-height:1;transition:all .15s ease}.counter-btn:hover{background:#c8aa76;color:#090a0f;border-color:#fff}.action-btn{font-size:8.5px;border:1px solid rgba(176,148,102,.38);border-radius:1px;padding:3px 5px;background:rgba(16,15,14,.85);color:#d6cbb9;cursor:pointer;text-transform:uppercase;font-weight:700;letter-spacing:.06em;width:100%;margin-top:2px;transition:all .15s ease}.action-btn:hover{background:rgba(196,164,108,.9);color:#090a0f;border-color:#fff}.small-action-btn{font-size:7.5px;font-weight:700;border:1px solid rgba(176,148,102,.38);border-radius:1px;padding:1px 4px;background:rgba(12,12,12,.85);color:#bfb39e;cursor:pointer;position:absolute;top:3px;right:4px;transition:all .15s ease}.small-action-btn:hover{background:rgba(196,164,108,.85);border-color:#fff;color:#000}.highlight-action-btn{font-size:8px;font-weight:900;padding:1.5px 5px;border-radius:1px;cursor:pointer;position:absolute;top:3px;right:4px;letter-spacing:.5px;transition:all .18s ease;text-transform:uppercase}.btn-take-life{background:rgba(127,29,29,.65);border:1px solid rgba(248,113,113,.55);color:#fecaca}.btn-take-life:hover{background:#dc2626;color:#fff;border-color:#fff}.btn-pay-cost{background:rgba(12,74,110,.65);border:1px solid rgba(56,189,248,.55);color:#bae6fd}.btn-pay-cost:hover{background:#0284c7;color:#fff;border-color:#fff}.btn-refresh-state{background:rgba(6,78,59,.7);border:1px solid rgba(52,211,153,.55);color:#a7f3d0;border-radius:1px;transition:all .18s ease}.btn-refresh-state:hover{background:#10b981;color:#050608;border-color:#fff}
 /* #endregion */
@@ -37,14 +37,14 @@ body,html{touch-action:manipulation;overflow-x:hidden!important;overscroll-behav
 <header id="main-top-header" class="flex flex-wrap justify-between items-center bg-[#0a0a0a]/90 border border-[#b09466]/40 rounded-sm py-1.5 px-3 flex-none gap-x-2 gap-y-1.5 shadow-lg transition-all duration-200">
 <div class="header-brand-row flex items-center gap-2 flex-shrink-0">
 <div class="relative text-sm sm:text-base font-black tracking-wider text-[#e5dccb] flex items-center gap-1.5 whitespace-nowrap">
-<span id="bs-brand-title-text" class="cursor-pointer hover:text-[#e0b25b] transition-colors" onclick="openChangelogModal()" title="點擊查看更新日誌">BS v5.4</span>
+<span id="bs-brand-title-text" class="cursor-pointer hover:text-[#e0b25b] transition-colors" onclick="openChangelogModal()" title="點擊查看更新日誌">BS v5.5</span>
 <button id="btn-changelog" type="button" class="text-[10px] sm:text-xs bg-black/70 border border-[#b09466]/50 hover:bg-[#c8aa76] hover:text-black text-[#e0b25b] px-1.5 py-0.5 rounded-sm cursor-pointer transition-colors leading-none font-bold" onclick="openChangelogModal()" title="查看版本更新日誌">📜 日誌</button>
 <button id="btn-version-gear" type="button" class="text-xs bg-black/70 border border-[#b09466]/50 hover:bg-[#c8aa76] hover:text-black text-[#e0b25b] px-1.5 py-0.5 rounded-sm cursor-pointer transition-colors leading-none" onclick="toggleVersionGearMenu(event)" title="點擊調整版本號數字">⚙️</button>
 <div id="bs-version-gear-menu" class="hidden absolute left-0 top-full mt-1.5 z-[12500] bg-[#0d0c0b]/95 border border-[#c8aa76] rounded-sm shadow-2xl p-2 flex items-center gap-1.5">
 <button type="button" class="text-[11px] font-black bg-[#c8aa76] text-black hover:bg-white px-2 py-1 rounded-sm cursor-pointer" onclick="bumpBsVersion(0, 1)" title="次版本 +1 (例：3.9 ➔ 3.10)">+0.1</button>
 <button type="button" class="text-[11px] font-black bg-sky-950/80 border border-sky-400/60 text-sky-200 hover:bg-sky-500 hover:text-black px-2 py-1 rounded-sm cursor-pointer" onclick="bumpBsVersion(1, 0)" title="主版本 +1">+1</button>
 <button type="button" class="text-[11px] font-bold bg-black/80 border border-[#b09466]/50 text-[#dcd6cc] hover:bg-[#c8aa76] hover:text-black px-2 py-1 rounded-sm cursor-pointer" onclick="bumpBsVersion(0, -1)" title="次版本 -1">-0.1</button>
-<button type="button" class="text-[10px] font-bold bg-rose-950/70 border border-rose-500/50 text-rose-200 hover:bg-rose-600 hover:text-white px-2 py-1 rounded-sm cursor-pointer" onclick="resetBsVersion()">5.4</button>
+<button type="button" class="text-[10px] font-bold bg-rose-950/70 border border-rose-500/50 text-rose-200 hover:bg-rose-600 hover:text-white px-2 py-1 rounded-sm cursor-pointer" onclick="resetBsVersion()">5.5</button>
 </div>
 </div>
 <span id="room-status-badge" class="hidden text-[10px] bg-emerald-950/80 border border-emerald-500/50 text-emerald-300 px-2 py-0.5 rounded-sm font-bold cursor-pointer hover:bg-emerald-800/80 transition-colors whitespace-nowrap" onclick="copyRoomCode()" title="點擊複製房間代碼">
@@ -557,7 +557,7 @@ p1_life:5,p1_reserve:3,p1_count:0,p1_trash_core:0,p2_life:5,p2_reserve:3,p2_coun
 p1:"reserve",p2:"reserve"
 },zoneCollapsed: {
 god_p1:!1,god_p2:!1,openhand_p1:!1,openhand_p2:!1
-},lastShuffle:null,lastLottery:null,lastActionEffect:null,lastPhaseBanner:null,lotteryPendingWinner:null,lotteryUsed:!1,currentPhase:"START",activeTurnPlayer:"p1",isFirstTurn:!0,activeBattle:null,tempBuffs:[],usedEffectsTurn:{},oracleWindows:{p1:null,p2:null},revealWindows:{p1:null,p2:null},pendingHandPick:null,seats: {
+},lastShuffle:null,lastLottery:null,lastActionEffect:null,lastPhaseBanner:null,lotteryPendingWinner:null,lotteryUsed:!1,currentPhase:"START",activeTurnPlayer:"p1",isFirstTurn:!0,activeBattle:null,tempBuffs:[],usedEffectsTurn:{},oracleWindows:{p1:null,p2:null},revealWindows:{p1:null,p2:null},pendingHandPick:null,bs5LiveHud:null,seats: {
 p1:null,p2:null
 },seatNames: {
 p1:"",p2:""
@@ -1117,7 +1117,7 @@ document.getElementById("reset-confirm-modal")?.classList.add("hidden")
 function confirmResetGame() {
 closeResetModal(),hideCardPreview(),closeZoneModal(),closeDeckChoiceModal(),closeGodConfirmModal(),document.getElementById("core-return-modal")?.classList.add("hidden"),lotteryStepTimer&&(clearTimeout(lotteryStepTimer),lotteryStepTimer=null),isLotteryRunning=!1,gameState.lotteryPendingWinner=null,applyLotteryPendingUI(),gameState.p1_life=5,gameState.p1_reserve=3,gameState.p1_count=0,gameState.p1_trash_core=0,gameState.p2_life=5,gameState.p2_reserve=3,gameState.p2_count=0,gameState.p2_trash_core=0,gameState.soulCoreLocation= {
 p1:"reserve",p2:"reserve"
-},gameState.lotteryUsed=!1;gameState.currentPhase="START";gameState.activeTurnPlayer="p1";gameState.isFirstTurn=!0;gameState.activeBattle=null;gameState.tempBuffs=[];gameState.usedEffectsTurn={};gameState.oracleWindows={p1:null,p2:null};gameState.revealWindows={p1:null,p2:null};gameState.pendingHandPick=null;gameState.lastPhaseBanner=null;window.__lastSeenPhaseBannerId="";window.syncOracleWindowsFromState&&window.syncOracleWindowsFromState();window.syncRevealWindowsFromState&&window.syncRevealWindowsFromState();
+},gameState.lotteryUsed=!1;gameState.currentPhase="START";gameState.activeTurnPlayer="p1";gameState.isFirstTurn=!0;gameState.activeBattle=null;gameState.tempBuffs=[];gameState.usedEffectsTurn={};gameState.oracleWindows={p1:null,p2:null};gameState.revealWindows={p1:null,p2:null};gameState.pendingHandPick=null;gameState.bs5LiveHud=null;gameState.lastPhaseBanner=null;window.__lastSeenPhaseBannerId="";window.syncOracleWindowsFromState&&window.syncOracleWindowsFromState();window.syncRevealWindowsFromState&&window.syncRevealWindowsFromState();
 const e=[],t=[];
 Object.values(gameState.cards).forEach(o=> {
 restoreTurnFront(o),delete o.braveHostId,delete o.braveOrder,delete o.adventHostId,delete o.adventOrder,document.getElementById(o.id)?.remove(),o.zone=`deck-${o.owner}`,o.x=0,o.y=0,o.rotation=0,o.battleState="",o.isFaceDown=!1,o.isSoulState=!1,o.cores=0,o.zOrder=zOrderCounter++,"p1"===o.owner?e.push(o.id):"p2"===o.owner&&t.push(o.id)
@@ -3188,7 +3188,7 @@ return {
 turnFaces:gameState.turnFaces|| {
 },p1_life:gameState.p1_life,p1_reserve:gameState.p1_reserve,p1_count:gameState.p1_count,p1_trash_core:gameState.p1_trash_core,p2_life:gameState.p2_life,p2_reserve:gameState.p2_reserve,p2_count:gameState.p2_count,p2_trash_core:gameState.p2_trash_core,p1Deck:gameState.p1Deck,p2Deck:gameState.p2Deck,soulCoreLocation:gameState.soulCoreLocation,zoneCollapsed:gameState.zoneCollapsed|| {
 god_p1:!1,god_p2:!1,openhand_p1:!1,openhand_p2:!1
-},lastShuffle:gameState.lastShuffle,lastLottery:gameState.lastLottery,lastActionEffect:gameState.lastActionEffect,lastPhaseBanner:gameState.lastPhaseBanner||null,lotteryPendingWinner:gameState.lotteryPendingWinner||null,lotteryUsed:!!gameState.lotteryUsed,currentPhase:gameState.currentPhase||"START",activeTurnPlayer:gameState.activeTurnPlayer||"p1",isFirstTurn:!!gameState.isFirstTurn,activeBattle:gameState.activeBattle||null,tempBuffs:Array.isArray(gameState.tempBuffs)?gameState.tempBuffs:[],usedEffectsTurn:gameState.usedEffectsTurn||{},oracleWindows:gameState.oracleWindows||{p1:null,p2:null},revealWindows:gameState.revealWindows||{p1:null,p2:null},pendingHandPick:gameState.pendingHandPick||null,seats:gameState.seats|| {
+},lastShuffle:gameState.lastShuffle,lastLottery:gameState.lastLottery,lastActionEffect:gameState.lastActionEffect,lastPhaseBanner:gameState.lastPhaseBanner||null,lotteryPendingWinner:gameState.lotteryPendingWinner||null,lotteryUsed:!!gameState.lotteryUsed,currentPhase:gameState.currentPhase||"START",activeTurnPlayer:gameState.activeTurnPlayer||"p1",isFirstTurn:!!gameState.isFirstTurn,activeBattle:gameState.activeBattle||null,tempBuffs:Array.isArray(gameState.tempBuffs)?gameState.tempBuffs:[],usedEffectsTurn:gameState.usedEffectsTurn||{},oracleWindows:gameState.oracleWindows||{p1:null,p2:null},revealWindows:gameState.revealWindows||{p1:null,p2:null},pendingHandPick:gameState.pendingHandPick||null,bs5LiveHud:gameState.bs5LiveHud||null,seats:gameState.seats|| {
 p1:null,p2:null
 },seatNames:gameState.seatNames|| {
 p1:"",p2:""
@@ -3256,7 +3256,7 @@ if(!e)return;e.turnFaces||(gameState.turnFaces= {
 void 0!==e[t]&&e[t]!==gameState[t]&&triggerCounterKeyFlash(t,e[t]-gameState[t])
 }),void 0!==e.p1_life&&t>0&&0===e.p1_life&&triggerZeroLifeSequence("p1"),void 0!==e.p2_life&&o>0&&0===e.p2_life&&triggerZeroLifeSequence("p2");let a=null;e.lastShuffle&&e.lastShuffle.timestamp>lastSeenShuffleTime&&(lastSeenShuffleTime=e.lastShuffle.timestamp,gameState.lastShuffle=e.lastShuffle,a=e.lastShuffle.player);let n=null;e.lastLottery&&e.lastLottery.timestamp>lastSeenLotteryTime&&(lastSeenLotteryTime=e.lastLottery.timestamp,gameState.lastLottery=e.lastLottery,n=e.lastLottery.winner);let r=null;e.lastActionEffect&&e.lastActionEffect.timestamp>lastSeenActionEffectTime&&(lastSeenActionEffectTime=e.lastActionEffect.timestamp,gameState.lastActionEffect=e.lastActionEffect,r=e.lastActionEffect);const s= {
 p1:gameState.soulCoreLocation?.p1,p2:gameState.soulCoreLocation?.p2
-};["p1_life","p1_reserve","p1_count","p1_trash_core","p2_life","p2_reserve","p2_count","p2_trash_core","turnFaces","soulCoreLocation","zoneCollapsed","lotteryUsed","lotteryPendingWinner","lastPhaseBanner","currentPhase","activeTurnPlayer","isFirstTurn","activeBattle","tempBuffs","usedEffectsTurn","oracleWindows","revealWindows","pendingHandPick","seats","seatNames"].forEach(t=> {
+};["p1_life","p1_reserve","p1_count","p1_trash_core","p2_life","p2_reserve","p2_count","p2_trash_core","turnFaces","soulCoreLocation","zoneCollapsed","lotteryUsed","lotteryPendingWinner","lastPhaseBanner","currentPhase","activeTurnPlayer","isFirstTurn","activeBattle","tempBuffs","usedEffectsTurn","oracleWindows","revealWindows","pendingHandPick","bs5LiveHud","seats","seatNames"].forEach(t=> {
 void 0!==e[t]&&(gameState[t]=e[t])
 }),Array.isArray(e.p1Deck)&&(gameState.p1Deck=e.p1Deck),Array.isArray(e.p2Deck)&&(gameState.p2Deck=e.p2Deck),gameState.seats||(gameState.seats= {
 p1:null,p2:null
@@ -4089,7 +4089,9 @@ source: "cloud"
 if (!force) {
 const local = await readLocalCatalogCache();
 if (local && Array.isArray(local.entries) && local.entries.length > 0 && cloudMetaTs > 0) {
-if (local.updatedAt === cloudMetaTs) {
+const expectedEffVer = Number(window.catalogMetaInfo?.effectsVersion || 0);
+const localStructuredCount = local.entries.filter(c => Array.isArray(c?.structuredEffects) && c.structuredEffects.length > 0).length;
+if (local.updatedAt === cloudMetaTs && !(expectedEffVer > 0 && localStructuredCount === 0)) {
 if (!window.catalogMetaInfo?.effectsVersion && local.effectsVersion) {
 window.catalogMetaInfo = { effectsVersion: Number(local.effectsVersion), effectsUpdatedAt: Number(local.effectsUpdatedAt || 0), source: "cache" };
 }
@@ -4116,10 +4118,13 @@ console.warn("跳過格式不正確的增量卡片", d.id);
 }
 });
 const merged = [...byNum.values()].sort((x, y) => x.number.localeCompare(y.number));
+const mergedStructuredCount = merged.filter(c => Array.isArray(c?.structuredEffects) && c.structuredEffects.length > 0).length;
+if (!(expectedEffVer > 0 && mergedStructuredCount === 0)) {
 catalogMemoryCache = merged;
 catalogCachedUpdatedAt = cloudMetaTs;
 await writeLocalCatalogCache(cloudMetaTs, merged);
 return merged;
+}
 } catch (deltaErr) {
 console.warn("Delta catalog sync fallback to full read:", deltaErr);
 }
@@ -4303,10 +4308,11 @@ const patch = updatedMap.get(c.number);
 if (patch) {
 c.structuredEffects = patch.structuredEffects;
 c.revision = patch.revision;
+delete c.__bs5CompiledCache;
 }
 }
 catalogCachedUpdatedAt = now;
-writeLocalCatalogCache(now, catalogMemoryCache).catch(() => {});
+await writeLocalCatalogCache(now, catalogMemoryCache);
 }
 return { count: updatedMap.size, updatedMap };
 },
@@ -4782,15 +4788,16 @@ const room = window.currentRoomCode;
 const stateJson = JSON.stringify(state);
 const view = gameState.viewMode;
 const effType = state.lastActionEffect?.type || "";
-const isUrgent = URGENT_EFFECT_TYPES.has(effType) || Boolean(state.lastPhaseBanner?.id);
-const effectSig = `${isUrgent ? (state.lastActionEffect?.timestamp || 0) : 0}|${state.lastShuffle?.timestamp || 0}|${state.lastLottery?.timestamp || 0}|${state.lastPhaseBanner?.id || ""}`;
+const isUrgent = URGENT_EFFECT_TYPES.has(effType) || Boolean(state.lastPhaseBanner?.id) || (state.bs5LiveHud !== undefined);
+const hudSig = state.bs5LiveHud ? `${state.bs5LiveHud.ts || 1}:${state.bs5LiveHud.title || ""}` : "none";
+const effectSig = `${isUrgent ? (state.lastActionEffect?.timestamp || 0) : 0}|${state.lastShuffle?.timestamp || 0}|${state.lastLottery?.timestamp || 0}|${state.lastPhaseBanner?.id || ""}|${hudSig}`;
 if (stateDebounceTimer && effectSig !== pendingEffectSig) {
 clearTimeout(stateDebounceTimer);
 stateDebounceTimer = null;
 flushQueuedRoomState();
 }
 pendingStatePayload = { room, stateJson, view, effectSig };
-const hasNewUrgent = effectSig !== lastFlushedEffectSig && effectSig !== "0|0|0|";
+const hasNewUrgent = effectSig !== lastFlushedEffectSig && effectSig !== "0|0|0||none";
 if (hasNewUrgent) {
 pendingEffectSig = effectSig;
 if (stateDebounceTimer) { clearTimeout(stateDebounceTimer); stateDebounceTimer = null; }
@@ -6571,7 +6578,8 @@ positionCardOverlays(card, el);
 levelBadge.classList.remove("has-god-domain");
 levelBadge.querySelectorAll(".god-domain-inline").forEach(n => n.remove());
 }
-if (skills.length) {
+const mainStepEffs = typeof window.getCardMainStepEffects === "function" ? window.getCardMainStepEffects(card) : [];
+if (skills.length || mainStepEffs.length) {
 el.classList.add("has-god-skills");
 if (!skillWrap) {
 skillWrap = document.createElement("div");
@@ -6583,6 +6591,22 @@ el.append(skillWrap);
 }
 skillWrap.replaceChildren();
 const curCores = card.cores || 0;
+if (mainStepEffs.length) {
+const inOwnMain = (gameState.currentPhase || "") === "MAIN" && (gameState.activeTurnPlayer || "p1") === card.owner;
+const mBtn = document.createElement("button");
+mBtn.type = "button";
+mBtn.className = "mini-god-skill-btn" + (inOwnMain ? "" : " insufficient");
+mBtn.style.borderColor = inOwnMain ? "#34d399" : "";
+mBtn.style.color = inOwnMain ? "#a7f3d0" : "";
+mBtn.textContent = "契約域";
+mBtn.title = inOwnMain ? "點擊發動主要步驟【契約域】效果" : "需在自己的主要步驟才可發動【契約域】";
+mBtn.onclick = e => {
+e.preventDefault();
+e.stopPropagation();
+if (typeof window.activateCardMainStepEffect === "function") window.activateCardMainStepEffect(card.id);
+};
+skillWrap.append(mBtn);
+}
 skills.forEach(skill => {
 const btn = document.createElement("button");
 btn.type = "button";
@@ -6620,7 +6644,24 @@ if (controlMode === "PC" || !activePreviewCardId) return;
 const card = gameState.cards[activePreviewCardId];
 if (!card || !card.zone?.startsWith("zone-god-") || card.isFaceDown || !isGrandwalkerCard(card)) return;
 const { skills } = parseGrandwalkerAbilities(lookupCatalog(card)?.effect || "");
+const mainStepEffs = typeof window.getCardMainStepEffects === "function" ? window.getCardMainStepEffects(card) : [];
 const curCores = card.cores || 0;
+if (mainStepEffs.length) {
+const inOwnMain = (gameState.currentPhase || "") === "MAIN" && (gameState.activeTurnPlayer || "p1") === card.owner;
+const mBtn = document.createElement("button");
+mBtn.type = "button";
+mBtn.className = "preview-god-skill-btn" + (inOwnMain ? "" : " insufficient");
+mBtn.textContent = "✨ 契約域";
+mBtn.onpointerdown = e => e.stopPropagation();
+mBtn.onclick = e => {
+e.preventDefault();
+e.stopPropagation();
+hideCardPreview();
+if (typeof window.activateCardMainStepEffect === "function") window.activateCardMainStepEffect(card.id);
+};
+if (hintBtn) hintBtn.before(mBtn);
+else row.prepend(mBtn);
+}
 skills.forEach(skill => {
 const btn = document.createElement("button");
 btn.type = "button";
@@ -6793,21 +6834,23 @@ updateTurnCounterUI();
 let pendingManifestSelection = null;
 function parseManifestCondition(card) {
 if (!card) return null;
-const effect = String(lookupCatalog(card)?.effect || "").normalize("NFKC");
+const data = lookupCatalog(card);
+const effect = String(data?.effect || "").normalize("NFKC");
 if (!effect) return null;
-let m = effect.match(/flash\s*《\s*[顕顯]現\s*[：:]\s*([^》]+)》/i);
+let m = effect.match(/[〈<]?flash[〉>]?\s*《\s*(?:大地)?[顕顯]現\s*[：:]\s*([^》]+)》/i);
 if (!m) {
 if (/flash/i.test(effect) && /[顕顯]現/.test(effect)) {
-m = effect.match(/[顕顯]現\s*[：:]\s*([^\n》』]+)/);
+m = effect.match(/(?:大地)?[顕顯]現\s*[：:]\s*([^\n》』]+)/);
 }
 }
 if (!m) return null;
 const cond = m[1];
 const targets = [...cond.matchAll(/「([^」]+)」/g)].map(x => x[1].trim()).filter(Boolean);
 const isFamily = /系統|系统/.test(cond);
-const cm = cond.match(/(?:計數值|計數|カウント|count)\s*(?:在\s*)?(\d+)\s*(?:點|点)?\s*(?:或以上|以上|\+)/i);
+const cm = cond.match(/(?:計數值|計數|カウント|count|(?<![A-Za-z])C)\s*(?:在\s*)?(\d+)\s*(?:點|点)?\s*(?:或以上|以上|\+)?/i);
 const requiredCount = cm ? Number(cm[1]) : 0;
-return { targets, isFamily, requiredCount, raw: cond.trim() };
+const isNexusManifest = /大地[顕顯]現/.test(effect) || /nexus|ネクサス/i.test(String(data?.type || ""));
+return { targets, isFamily, requiredCount, isNexusManifest, raw: cond.trim() };
 }
 function isManifestCardInHand(card) {
 if (!card || card.isFaceDown || !card.zone || !card.zone.startsWith("hand-")) return false;
@@ -6844,13 +6887,14 @@ const fieldNormalCores = Object.values(gameState.cards)
 .filter(c => c.owner === owner && c.zone === `field-${owner}`)
 .reduce((sum, c) => sum + (c.cores || 0), 0);
 const remainingFieldOrReserveCores = reserveNormalCores + fieldNormalCores;
-const cond3Met = remainingFieldOrReserveCores >= 1;
+const cond3Met = parsed.isNexusManifest ? true : (remainingFieldOrReserveCores >= 1);
 return {
 valid: true,
 canExecute: cond1Met && cond2Met && cond3Met,
 cond1Met,
 cond2Met,
 cond3Met,
+isNexusManifest: parsed.isNexusManifest,
 remainingFieldOrReserveCores,
 countMet,
 curCount,
@@ -7073,7 +7117,7 @@ window.__bsBypassPlayPayment = true;
 window.__bsManifestingCardId = card.id;
 try {
 moveCardToZone(card.id, `field-${owner}`);
-if ((card.cores || 0) === 0 && (parseInt(gameState[`${owner}_reserve`], 10) || 0) > 0) {
+if (!check.isNexusManifest && (card.cores || 0) === 0 && (parseInt(gameState[`${owner}_reserve`], 10) || 0) > 0) {
 gameState[`${owner}_reserve`] -= 1;
 card.cores = 1;
 triggerCounterKeyFlash(`${owner}_reserve`, -1);
@@ -10998,7 +11042,7 @@ ensureMirageFormUI();
 /* =========================================================================
 PART 1: 左上角 BS 版本號齒輪控制（語意化 major.minor：支援 3.7 -> 3.8 -> 3.9 -> 3.10 -> 3.11）
 ========================================================================= */
-const BS_DEFAULT_VERSION = "5.4";
+const BS_DEFAULT_VERSION = "5.5";
 const VER_KEY = "bs_app_version_str";
 const VER_BASE_KEY = "bs_app_version_base";
 window.BS_APP_VERSION = BS_DEFAULT_VERSION;
@@ -11303,7 +11347,7 @@ godDeployBtn.classList.add("hidden");
     <div class="changelog-header">
       <div class="flex items-center gap-2.5 flex-wrap">
         <h2 id="changelog-modal-title" class="text-base sm:text-lg font-black tracking-widest text-[#e0b25b]">📜 更新日誌 (CHANGELOG)</h2>
-        <span id="changelog-current-ver" class="text-xs font-black bg-emerald-950/80 border border-emerald-500/60 text-emerald-300 px-2 py-0.5 rounded-sm">v5.4</span>
+        <span id="changelog-current-ver" class="text-xs font-black bg-emerald-950/80 border border-emerald-500/60 text-emerald-300 px-2 py-0.5 rounded-sm">v5.5</span>
       </div>
       <button type="button" class="border border-[#b09466]/55 bg-black/70 text-[#dcd6cc] hover:bg-[#c8aa76] hover:text-black px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="closeChangelogModal()">關閉 (✕)</button>
     </div>
@@ -11317,6 +11361,19 @@ godDeployBtn.classList.add("hidden");
 版本更新日誌資料（往後每次更新 3.8、3.9、3.10、3.11… 請於陣列最上方新增物件）
 ========================================================================= */
 window.BS_CHANGELOG = [
+{
+  version: "5.5",
+  date: "2026-11-24",
+  title: "v5.5 0/328 快取自癒、地卡顯現免 Core、主要步驟契約域/發動按鈕、去除常駐與神託誤彈、對手唯讀同步效果視窗與編譯前備份",
+  highlights: [
+    "【修復 0/328 效果庫快取脫鉤】當雲端效果庫版本 > 0 但本機快取結構化卡片數為 0 時自動觸發重拉自癒；導入結構化效果 JSON 後立即同步寫入記憶體並清除舊即時編譯快取。",
+    "【地卡《大地顯現》完整支援（修復 PX26-19）】解析 C6 以上與大地顯現格式，地卡顯現免除場上／預備區剩餘 Core 維持門檻、落地不誤扣預備區 Core，並同步批次觸發顯現時＋配置時＋蓋亞契約域。",
+    "【主要步驟主動起動系統（修復 BS70-CP01、PX26-19）】新增 MAIN_STEP_ACTIVATE 事件，己方主要階段於創界神顯示「✨ 契約域」按鈕、於場上地卡／戰魂顯示「⚡ 發動」按鈕。",
+    "【徹底清除常駐減輕與真・神託誤彈】升級 BSRuleCompiler 剝除背景故事文字、過濾神託／復活／減輕滿足／標誌改色／手牌改費與純 ruleFlag 廢節點；修復火山配置時被計數 6+ 強化句誤鎖與目標對象誤選己方問題。",
+    "【雙方即時唯讀同步效果介面】發動待機佇列、公開牌組檢索、選目標或返牌排序時，對手與觀戰者畫面同步顯示不可點擊的「👁️ 對手操作中」檢視視窗。",
+    "【新增編譯前效果文字備份】於「🤖 一鍵自動編譯全卡池 (v20 AST)」旁新增「💾 導出編譯前文字備份」按鈕，隨時保留純文字備份與還原點。"
+  ]
+},
 {
   version: "5.4",
   date: "2026-11-23",
@@ -15459,7 +15516,17 @@ if (fm) importedVer = Number(fm[1]) || null;
 const res = await cloud.batchPatchStructuredEffects(matched, (done, total) => {
 if (source === "catalog") catalogStatus(`正在寫入結構化效果 (${done}/${total})…`);
 }, importedVer ? { version: importedVer } : null);
-await ensureCatalogData(false);
+if (res?.updatedMap) {
+for (const c of catalogEntries) {
+const p = res.updatedMap.get(c.number);
+if (p) {
+c.structuredEffects = p.structuredEffects;
+c.revision = p.revision;
+delete c.__bs5CompiledCache;
+}
+}
+}
+await indexCatalogImages();
 if (typeof window.updateCatalogEffectsVersionUI === "function") window.updateCatalogEffectsVersionUI();
 if (source === "catalog") {
 renderCardDatabase();
@@ -15561,7 +15628,18 @@ if (card && !isSyncing && actualZoneAfterMove === String(zone || "") && !card.is
 if (actualZoneAfterMove.startsWith("field-") && !prevZoneBeforeSummon.startsWith("field-")) {
 const isNex = typeof window.isNexusCard === "function" && window.isNexusCard(card);
 if (window.__bsManifestingCardId === id) {
-setTimeout(() => window.triggerCardEffects(id, "ON_MANIFEST", { fromZone: fromZoneKey }), 580);
+setTimeout(() => {
+if (isNex && window.BSGameBus && typeof window.BSGameBus.emitBatch === "function") {
+window.BSGameBus.emitBatch([
+{ event: "AFTER_MANIFEST", payload: { cardId: id, owner: card.owner, fromZone: fromZoneKey } },
+{ event: "AFTER_DEPLOY", payload: { cardId: id, owner: card.owner, fromZone: fromZoneKey } },
+{ event: "AFTER_ALLY_DEPLOY", payload: { cardId: id, owner: card.owner } },
+{ event: "AFTER_ALLY_PLAY_OR_TURN", payload: { cardId: id, owner: card.owner } }
+]);
+} else {
+window.triggerCardEffects(id, "ON_MANIFEST", { fromZone: fromZoneKey });
+}
+}, 580);
 } else if (isNex) {
 setTimeout(() => window.triggerCardEffects(id, "ON_DEPLOY", { fromZone: fromZoneKey }), 240);
 } else {
@@ -16015,19 +16093,37 @@ renderPendingHandPickModal();
 .bs5-order-arrows button{font-size:10px;font-weight:900;padding:1px 7px;background:#0a0908;color:#e0b25b;border:1px solid rgba(186,158,108,.55);border-radius:2px;cursor:pointer}
 .bs5-order-arrows button:hover:not(:disabled){background:#c8aa76;color:#090807}
 .bs5-order-arrows button:disabled{opacity:.3;cursor:default}
+#bs5-opponent-mirror-hud{position:fixed;top:clamp(54px,9vh,112px);left:0;right:0;z-index:12280;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none;user-select:none}
+#bs5-opponent-mirror-hud.hidden{display:none!important}
+.bs5-mirror-shell{width:min(760px,94vw);background:linear-gradient(90deg,rgba(8,12,20,.14) 0%,rgba(10,16,28,.86) 10%,rgba(10,16,28,.86) 90%,rgba(8,12,20,.14) 100%);backdrop-filter:blur(7px);border-top:1.5px solid rgba(56,189,248,.72);border-bottom:1.5px solid rgba(56,189,248,.72);box-shadow:0 12px 34px rgba(0,0,0,.78);border-radius:2px;overflow:hidden;pointer-events:none}
+.bs5-mirror-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:6px 16px;background:rgba(12,74,110,.36);border-bottom:1px solid rgba(56,189,248,.35);font-size:11.5px;font-weight:900;color:#7dd3fc;letter-spacing:.05em}
+.bs5-mirror-tray{max-width:min(760px,94vw);display:flex;flex-wrap:wrap;justify-content:center;gap:8px;padding:8px 12px;background:rgba(10,15,24,.78);border-top:1px solid rgba(56,189,248,.45);border-bottom:1px solid rgba(56,189,248,.45);border-radius:2px;pointer-events:none}
+.bs5-mirror-tray.hidden,.bs5-mirror-tray:empty{display:none!important}
+.mini-main-act-btn{border-color:#34d399!important;color:#a7f3d0!important;background:#064e3bee!important;font-weight:900!important}
+.mini-translation-source.has-main-act:not(.has-turn) > .mini-translate-btn:not(.mini-main-act-btn){transform:translate(-50%,-50%) rotate(var(--card-ui-rotation,0deg)) translate(-28px,calc(-1 * var(--card-ui-edge,70px) - 14px))}
+.mini-translation-source.has-main-act:not(.has-turn) > .mini-main-act-btn{transform:translate(-50%,-50%) rotate(var(--card-ui-rotation,0deg)) translate(28px,calc(-1 * var(--card-ui-edge,70px) - 14px))}
+.mini-translation-source.has-main-act.has-turn > .mini-translate-btn:not(.mini-turn-btn):not(.mini-main-act-btn){transform:translate(-50%,-50%) rotate(var(--card-ui-rotation,0deg)) translate(-54px,calc(-1 * var(--card-ui-edge,70px) - 14px))}
+.mini-translation-source.has-main-act.has-turn > .mini-main-act-btn{transform:translate(-50%,-50%) rotate(var(--card-ui-rotation,0deg)) translate(54px,calc(-1 * var(--card-ui-edge,70px) - 14px))}
+#preview-main-act-btn{border:1px solid #34d399;background:#064e3bed;color:#a7f3d0;padding:7px 16px;margin-top:7px;border-radius:3px;cursor:pointer;font-weight:900;pointer-events:auto}
+body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
 </style>
 
-<div id="bs5-standby-hud" class="hidden" role="dialog" aria-label="BS v5.4 規則引擎待機佇列">
+<div id="bs5-standby-hud" class="hidden" role="dialog" aria-label="BS v5.5 規則引擎待機佇列">
   <div id="bs5-shell" class="bs5-shell"></div>
   <div id="bs5-tray" class="bs5-tray hidden"></div>
   <div id="bs5-actions" class="bs5-actions"></div>
+</div>
+
+<div id="bs5-opponent-mirror-hud" class="hidden" aria-live="polite">
+  <div id="bs5-mirror-shell" class="bs5-mirror-shell"></div>
+  <div id="bs5-mirror-tray" class="bs5-mirror-tray hidden"></div>
 </div>
 
 <script>
 (function () {
   "use strict";
 
-  const AST_SCHEMA_VERSION = 19;
+  const AST_SCHEMA_VERSION = 20;
   const ALLOWED_OPS = new Set([
     "MOVE_CARDS", "MOVE_CORES", "SET_CARD_STATE", "MODIFY_COUNTER",
     "ATTACH_CARD", "ADD_MODIFIER", "ACTIVATE_BURST", "INVOKE_CARD_EFFECT",
@@ -16127,11 +16223,27 @@ renderPendingHandPickModal();
     return Object.keys(cond).length ? cond : null;
   }
 
+  function isolateActionClause(sent) {
+    const s = norm(sent);
+    const parts = s.split(/[,，]/);
+    if (parts.length <= 1) return s;
+    const kept = [];
+    for (let i = 0; i < parts.length; i++) {
+      const p = parts[i].trim();
+      const isPrefixCond = i < parts.length - 1 && /(?:存在時|在場時|每有|計數值[^，,]*?時|期間|召喚時|配置時|破壞時|攻擊時|防禦時|回合1回|一個回合1次|每回合1次|然後|之後|如此做時|若如此做|那個時候)$/.test(p);
+      if (isPrefixCond) continue;
+      kept.push(p);
+    }
+    return kept.length ? kept.join("，") : s;
+  }
+
   function parseTargetQueryFromClause(clause, defaultOwner = "opponent") {
+    const targetTxt = isolateActionClause(clause);
     const q = { owner: defaultOwner, zones: ["field"] };
-    if (/自己或(?:者)?對手/.test(clause)) q.owner = "any";
-    else if (/對手/.test(clause)) q.owner = "opponent";
-    else if (/自己/.test(clause)) q.owner = "self";
+    if (/自己或(?:者)?對手/.test(targetTxt)) q.owner = "any";
+    else if (/對手/.test(targetTxt)) q.owner = "opponent";
+    else if (/自己/.test(targetTxt)) q.owner = "self";
+    clause = targetTxt;
 
     const zones = [];
     if (/廢棄區/.test(clause)) zones.push("trash");
@@ -16388,7 +16500,9 @@ renderPendingHandPickModal();
     }
 
     if (/破壞/.test(s) && !/被對手破壞|破壞時|被破壞時|以這個效果每破壞/.test(s.slice(0, 14))) {
-      const q = parseTargetQueryFromClause(s, /自己(?:隨意|1張|或者對手)/.test(s) ? (/對手/.test(s) ? "any" : "self") : "opponent");
+      const actS = isolateActionClause(s);
+      const defOwn = /自己或(?:者)?對手/.test(actS) ? "any" : (/對手/.test(actS) ? "opponent" : (/自己/.test(actS) ? "self" : "opponent"));
+      const q = parseTargetQueryFromClause(actS, defOwn);
       if (/與這張Spirit相同BP|BP在這個Spirit或以下/.test(s)) q.maxBPExpr = "selfBP()";
       if (/與被破棄了的卡持有相同系統/.test(s)) q.sameFamilyAs = "$ctx.milled[0]";
       return { op: "MOVE_CARDS", query: q, to: { owner: "card_owner", zone: "trash", reason: "destroy" }, saveAs: "destroyed", optional, text: s };
@@ -16502,8 +16616,37 @@ renderPendingHandPickModal();
           continue;
         }
       }
+      // Attach trailing countUpgrade modifier sentence directly onto previous AST node!
+      const cuCntM = sent.match(/(?:計數值|Count|カウント)(?:在)?\s*(\d+)\s*點?(?:或以上|以上)/i);
+      if (cuCntM && nodes.length > 0 && /進行公開的張數|變更為|返回卡組最下方|數量(?:須)?\+/.test(sent)) {
+        const minC = Number(cuCntM[1]);
+        const prevNode = nodes[nodes.length - 1];
+        const targetNode = prevNode?.then || prevNode;
+        if (targetNode && typeof targetNode === "object") {
+          const revAddM = sent.match(/進行公開的張數(?:可以|須)?\s*\+\s*(\d+)/);
+          const pickChgM = sent.match(/變更為「?(?:最多)?\s*(\d+)\s*張」?/);
+          const tgtAddM = sent.match(/數量(?:須|可以)?\s*\+\s*(\d+)/);
+          if (revAddM) {
+            targetNode.countUpgrade = { ...(targetNode.countUpgrade || {}), minCount: minC, revealAdd: Number(revAddM[1]), label: `Count ${minC}+ 生效：公開張數 +${revAddM[1]} 張` };
+            continue;
+          }
+          if (pickChgM) {
+            targetNode.countUpgrade = { ...(targetNode.countUpgrade || {}), minCount: minC, maxPick: Number(pickChgM[1]), label: `Count ${minC}+ 生效：選取上限變更為 ${pickChgM[1]} 張` };
+            continue;
+          }
+          if (/不是返回手牌.*返回卡組最下方/.test(sent)) {
+            targetNode.countUpgrade = { ...(targetNode.countUpgrade || {}), minCount: minC, toZone: "enemy_deck_bottom", label: `Count ${minC}+ 生效：改為返回卡組最下方` };
+            continue;
+          }
+          if (tgtAddM && targetNode.query) {
+            targetNode.query.countUpgrade = { ...(targetNode.query.countUpgrade || {}), minCount: minC, targetAdd: Number(tgtAddM[1]), label: `Count ${minC}+ 生效：目標數 +${tgtAddM[1]}` };
+            continue;
+          }
+        }
+      }
       const n = compileSingleSentenceToAst(sent, cardData);
       if (!n) continue;
+      if (n.op === "ADD_MODIFIER" && n.modifier?.ruleFlag && nodes.length > 0) continue;
       const cond = extractConditionObj(sent);
       if (cond) nodes.push({ type: "IF", cond, then: n, text: sent });
       else nodes.push(n);
@@ -16515,14 +16658,25 @@ renderPendingHandPickModal();
   const BSRuleCompiler = {
     compileCard(cardData) {
       if (!cardData) return [];
-      const raw = norm(cardData.effect || "");
+      const raw0 = norm(cardData.effect || "");
+      if (!raw0) return [];
+      // Strip flavor text lines before compiling
+      const kwRe = /(?:Spirit|Ultimate|Nexus|Brave|Magic|Core|BP|Lv\d|Cost|Count|Flash|Burst|Mirage|OC|界放|手牌|手元|卡組|牌組|廢棄|除外|破壞|回復|疲勞|重疲勞|防禦|攻擊|召喚|煌臨|顕現|顯現|爆裂|幻境|転醒|轉醒|合體|合体|生命|空間|預備|計數|標誌|減輕|系統|屬性|效果|回合|步驟|階段|創界神|契約|魂狀態|神託|抽\d|放置|移至|公開|選擇|無視|無效|返回|不可使用)/i;
+      const cleanLines = [];
+      for (const ln of raw0.split("\n").map(l => l.trim()).filter(Boolean)) {
+        if (/^[（(]?\s*翻譯由/.test(ln)) break;
+        if (/^[-－—]\s*[《「『]/.test(ln) && !kwRe.test(ln)) break;
+        if (!kwRe.test(ln) && /[。」』!?！？]\s*[）)]?$/.test(ln) && !/^(?:Lv\s*\d+|【|《|『|〔)/i.test(ln)) continue;
+        cleanLines.push(ln);
+      }
+      const raw = cleanLines.join("\n");
       if (!raw) return [];
       const { masked, restore } = maskQuotedSegments(raw);
       const lines = masked.split("\n").map(l => l.trim()).filter(Boolean);
 
       const blocks = [];
       let cur = null;
-      const HEADER_RE = /^(?:【[^】]+】|《[^》]+》|\[?Lv\s*\d+[^\s]*\]?|Flash|フラッシュ|Main|メイン)/i;
+      const HEADER_RE = /^(?:【[^】]+】|《[^》]+》|\[?Lv\s*\d+[^\s]*\]?|契約域\s*Lv\s*\d+|神域\s*Lv\s*\d+|契約技\s*[：:]|神技\s*[：:]|[〈<]?Flash[〉>]?|フラッシュ|Main|メイン)/i;
       for (const ln of lines) {
         if (/^[（(]?翻譯由/.test(ln)) break;
         if (HEADER_RE.test(ln) && !/^〔/.test(ln)) {
@@ -16548,6 +16702,14 @@ renderPendingHandPickModal();
         const oncePerTurn = /一個回合1次[:：]同名|每回合1次[:：]同名/.test(full) ? "name"
           : (/一個回合1次|每回合1次|回合1回/.test(full) ? "card" : null);
         const body = blk.lines.slice(1).join("\n") || full.replace(/^[^』】》]+(?:』|】|》)\s*/, "");
+
+        // Skip blocks already handled by dedicated engines (Oracle, Revive, Manifest/Advent/Mirage keyword defs, reduction satisfaction, symbol aliases, hand cost overrides)
+        if (/《(?:真・)?神託》|召喚\/配置對象的自己Spirit\/Nexus時|自己的對象Spirit\/Nexus召喚\/配置時/.test(full)) continue;
+        if (/^(?:【?復活】?|復活主要)/.test(hdr) || /魂狀態的這張卡牌.*可以配置/.test(full)) continue;
+        if (/^(?:[〈<]?Flash[〉>]?\s*)?(?:《)?(?:大地)?[顕顯]現[：:]|^《(?:契約|超|裏)?煌臨|^【幻境[：:]/.test(hdr)) continue;
+        if (/(?:減輕標誌|軽減シンボル)[^\n]{0,45}?(?:當作滿足|満たされた|視為(?:已)?滿足)/.test(full)) continue;
+        if (/這張(?:Nexus|Spirit)的標誌也當作/.test(full)) continue;
+        if (/手牌中的這張卡牌[^\n。]*?(?:變成|變為|改為)\s*Cost/.test(full)) continue;
 
         if (/對手(?:使用|使用了)Magic卡.*效果發揮前/.test(full)) {
           compiled.push({
@@ -16632,7 +16794,8 @@ renderPendingHandPickModal();
         if (/『[^』]*(?:攻擊)[^』]*時』/.test(hdr) && !/階段開始/.test(hdr)) events.push("AFTER_ATTACK_DECLARE");
         if (/『[^』]*(?:防禦|阻擋)[^』]*時』/.test(hdr)) events.push("AFTER_BLOCK_DECLARE");
         if (/『[^』]*(?:破壞)[^』]*時』/.test(hdr)) events.push("AFTER_CARD_DESTROYED");
-        if (/Flash|フラッシュ|【(?:神技|契約技)/i.test(hdr)) events.push("FLASH_WINDOW");
+        if (/『[^』]*主要(?:步驟|階段)[^』]*』/.test(hdr)) events.push("MAIN_STEP_ACTIVATE");
+        if (/Flash|フラッシュ|(?:【|^)(?:神技|契約技)/i.test(hdr)) events.push("FLASH_WINDOW");
         if (!events.length && /自己[^。\n]*?(?:Spirit|Ultimate|Brave)[^。\n]*?(?:召喚|煌臨)[^。\n]*?時/.test(full)) {
           if (/召喚/.test(full)) events.push("AFTER_ALLY_SUMMON");
           if (/煌臨/.test(full)) events.push("AFTER_ALLY_ADVENT");
@@ -16677,6 +16840,19 @@ renderPendingHandPickModal();
           ? ["nexus", "god"]
           : ((events.includes("AFTER_ALLY_SUMMON") || events.includes("AFTER_ALLY_ADVENT")) && /Spirit/.test(body) ? ["spirit"] : undefined);
 
+        // Skip non-actionable pure ruleFlag stubs
+        const hasRealAction = (n) => {
+          if (!n || typeof n !== "object") return false;
+          if (n.op) return !(n.op === "ADD_MODIFIER" && n.modifier?.ruleFlag);
+          if (n.type === "SEQ") return (n.nodes || []).some(hasRealAction);
+          if (n.type === "IF") return hasRealAction(n.then) || hasRealAction(n.else);
+          if (n.type === "PAY_THEN") return hasRealAction(n.cost) || hasRealAction(n.then);
+          if (n.type === "CHOOSE") return (n.options || []).some(hasRealAction);
+          if (n.type === "REPEAT") return hasRealAction(n.body);
+          return false;
+        };
+        if (!hasRealAction(scriptAst)) continue;
+
         compiled.push({
           schema: AST_SCHEMA_VERSION, kind: "TRIGGERED",
           events: [...new Set(events)],
@@ -16686,7 +16862,7 @@ renderPendingHandPickModal();
           ...(allyFilterFamily ? { allyFilterFamily } : {}),
           ...(allyFilterType ? { allyFilterType } : {}),
           ...(allyExcludeSelf ? { allyExcludeSelf } : {}),
-          condition: extractConditionObj(hdr + "\n" + body),
+          condition: extractConditionObj(hdr),
           script: scriptAst
         });
       }
@@ -17200,6 +17376,91 @@ renderPendingHandPickModal();
     return list;
   }
 
+  function getLocalSeatOwner() {
+    if (gameState.viewMode === "P1") return "p1";
+    if (gameState.viewMode === "P2") return "p2";
+    return null;
+  }
+
+  function publishBs5LiveHud(payload) {
+    if (isSyncing) return;
+    const actorOwner = payload.actorOwner || getLocalSeatOwner() || gameState.activeTurnPlayer || "p1";
+    const actorName = (gameState.seatNames?.[actorOwner] || "").trim() || actorOwner.toUpperCase();
+    gameState.bs5LiveHud = {
+      actorOwner,
+      actorName,
+      kind: payload.kind || "standby",
+      title: String(payload.title || "效果處理中"),
+      subtitle: String(payload.subtitle || ""),
+      rows: Array.isArray(payload.rows) ? payload.rows.slice(0, 12) : [],
+      cards: Array.isArray(payload.cards) ? payload.cards.slice(0, 16) : [],
+      ts: Date.now()
+    };
+    updateRoomState();
+  }
+
+  function clearBs5LiveHud() {
+    if (!gameState.bs5LiveHud) return;
+    gameState.bs5LiveHud = null;
+    if (!isSyncing) updateRoomState();
+  }
+
+  function renderBs5OpponentMirrorHud() {
+    const wrap = document.getElementById("bs5-opponent-mirror-hud");
+    const shell = document.getElementById("bs5-mirror-shell");
+    const tray = document.getElementById("bs5-mirror-tray");
+    if (!wrap || !shell || !tray) return;
+    const info = gameState.bs5LiveHud;
+    const localOwner = getLocalSeatOwner();
+    const localHudOpen = !document.getElementById("bs5-standby-hud")?.classList.contains("hidden");
+    if (!info || localHudOpen || (localOwner && info.actorOwner === localOwner)) {
+      wrap.classList.add("hidden");
+      shell.innerHTML = "";
+      tray.innerHTML = "";
+      tray.classList.add("hidden");
+      return;
+    }
+    shell.innerHTML = `<div class="bs5-mirror-head"><span>👁️ ${escapeHtmlSimple(info.actorName)} 操作中（僅供檢視，不可點擊） · ${escapeHtmlSimple(info.title)}</span><span>${escapeHtmlSimple(info.subtitle || "")}</span></div>`;
+    (info.rows || []).forEach(r => {
+      const row = document.createElement("div");
+      row.className = "bs5-row";
+      row.style.cursor = "default";
+      row.innerHTML = (r.tag ? `<div class="bs5-tag">${escapeHtmlSimple(r.tag)}</div>` : "")
+        + `<div class="bs5-desc">${escapeHtmlSimple(r.desc || "")}</div>`;
+      shell.appendChild(row);
+    });
+    tray.innerHTML = "";
+    const cardList = Array.isArray(info.cards) ? info.cards : [];
+    if (cardList.length) {
+      tray.classList.remove("hidden");
+      cardList.forEach(item => {
+        const cObj = gameState.cards[item.id];
+        const cat = (item.catalogNumber && window.catalogByNumber?.get(item.catalogNumber)) || (cObj ? lookupCatalog(cObj) : null);
+        const img = item.faceDown ? "" : (cObj?.imgBase64 || cardImageCache[item.id] || cat?.image || "");
+        const tile = document.createElement("div");
+        tile.className = "oa-tray-card" + (item.ineligible ? " is-ineligible" : (item.picked ? " oa-board-picked" : ""));
+        tile.style.cursor = "default";
+        if (item.faceDown) tile.classList.add("face-down");
+        else if (img) tile.style.backgroundImage = `url("${img}")`;
+        if (item.chip) {
+          const ch = document.createElement("div");
+          ch.className = "bs5-card-chip";
+          ch.textContent = item.chip;
+          tile.appendChild(ch);
+        }
+        if (item.picked) {
+          const b = document.createElement("div");
+          b.className = "oa-pick-check-badge"; b.textContent = "✓";
+          tile.appendChild(b);
+        }
+        tray.appendChild(tile);
+      });
+    } else {
+      tray.classList.add("hidden");
+    }
+    wrap.classList.remove("hidden");
+  }
+
   function promptCardPicker(cards, opts) {
     return new Promise(resolve => {
       if (!cards.length) return resolve([]);
@@ -17244,6 +17505,7 @@ renderPendingHandPickModal();
         tray.innerHTML = "";
         tray.classList.add("hidden");
         hud.classList.add("hidden");
+        clearBs5LiveHud();
         resolve(resultCards);
       };
 
@@ -17300,6 +17562,15 @@ renderPendingHandPickModal();
         skipBtn.onclick = () => finish([]);
         act.append(okBtn, skipBtn);
         hud.classList.remove("hidden");
+        publishBs5LiveHud({
+          kind: "pick",
+          title: opts.title || "選擇目標卡牌",
+          subtitle: `已選 ${picked.size}${opts.sumLimit ? `（${sumField.toUpperCase()} ${curSum}/${opts.sumLimit.max}）` : ` / ${maxN}`}`,
+          rows: useBoardDirect ? [{ tag: "", desc: "正在戰場上選擇目標卡牌…" }] : [],
+          cards: useBoardDirect ? [] : cards.map(c => ({
+            id: c.id, catalogNumber: c.catalogNumber || "", picked: picked.has(c.id), faceDown: Boolean(opts.blindPick)
+          }))
+        });
       };
 
       if (useBoardDirect) {
@@ -17410,12 +17681,13 @@ renderPendingHandPickModal();
       act.innerHTML = "";
       const yes = document.createElement("button");
       yes.className = "bs5-btn emerald"; yes.textContent = yesLabel;
-      yes.onclick = () => { hud.classList.add("hidden"); resolve(true); };
+      yes.onclick = () => { hud.classList.add("hidden"); clearBs5LiveHud(); resolve(true); };
       const no = document.createElement("button");
       no.className = "bs5-btn"; no.textContent = noLabel;
-      no.onclick = () => { hud.classList.add("hidden"); resolve(false); };
+      no.onclick = () => { hud.classList.add("hidden"); clearBs5LiveHud(); resolve(false); };
       act.append(yes, no);
       hud.classList.remove("hidden");
+      publishBs5LiveHud({ actorOwner: card?.owner, kind: "confirm", title: "✨ 效果確認", subtitle: cat?.name || "", rows: [{ tag: cat?.name || "", desc: titleText || "是否發動此效果？" }] });
     });
   }
 
@@ -17442,6 +17714,7 @@ renderPendingHandPickModal();
         tray.innerHTML = "";
         tray.classList.add("hidden");
         hud.classList.add("hidden");
+        clearBs5LiveHud();
         resolve(arr);
       };
 
@@ -17526,6 +17799,24 @@ renderPendingHandPickModal();
           act.appendChild(skipBtn);
         }
         hud.classList.remove("hidden");
+        publishBs5LiveHud({
+          kind: "reveal",
+          title: `${opts.title || "公開卡組上方卡牌"}（共公開 ${revealed.length} 張）`,
+          subtitle: slotSummary,
+          rows: totalEligible === 0 ? [{ tag: "", desc: "公開結果中沒有符合條件的對象卡牌" }] : [],
+          cards: revealed.map(c => {
+            const matchingSlots = slots.map((sl, idx) => ({ sl, idx })).filter(({ sl }) => sl.eligibleIds.has(c.id));
+            const isElig = matchingSlots.length > 0;
+            const isPicked = pickedSlotByCard.has(c.id);
+            return {
+              id: c.id,
+              catalogNumber: c.catalogNumber || "",
+              ineligible: !isElig,
+              picked: isPicked,
+              chip: isElig ? (isPicked ? `✓ ${slots[pickedSlotByCard.get(c.id)]?.shortTag || "已選"}` : (matchingSlots[0].sl.shortTag || "可選")) : "非對象"
+            };
+          })
+        });
       };
 
       render();
@@ -17603,10 +17894,17 @@ renderPendingHandPickModal();
           tray.innerHTML = "";
           tray.classList.add("hidden");
           hud.classList.add("hidden");
+          clearBs5LiveHud();
           resolve(order);
         };
         act.appendChild(okBtn);
         hud.classList.remove("hidden");
+        publishBs5LiveHud({
+          kind: "reorder",
+          title: `調整返回卡組順序（${isTop ? "牌組最上方" : "牌組最下方"}）`,
+          subtitle: `共 ${order.length} 張`,
+          cards: order.map((c, idx) => ({ id: c.id, catalogNumber: c.catalogNumber || "", chip: `#${idx + 1}` }))
+        });
       };
 
       render();
@@ -18221,7 +18519,7 @@ renderPendingHandPickModal();
       if (isSyncing) return;
       const actorId = payload.cardId || payload.sourceCardId || null;
       const actorCard = actorId ? gameState.cards[actorId] : null;
-      const isSelfOnly = ["AFTER_SUMMON", "AFTER_DEPLOY", "AFTER_ADVENT", "AFTER_MANIFEST", "AFTER_ATTACK_DECLARE", "AFTER_BLOCK_DECLARE", "AFTER_TURN_FLIP", "AFTER_CARD_DESTROYED", "ON_BURST", "FLASH_WINDOW"].includes(eventName);
+      const isSelfOnly = ["AFTER_SUMMON", "AFTER_DEPLOY", "AFTER_ADVENT", "AFTER_MANIFEST", "AFTER_ATTACK_DECLARE", "AFTER_BLOCK_DECLARE", "AFTER_TURN_FLIP", "AFTER_CARD_DESTROYED", "ON_BURST", "FLASH_WINDOW", "MAIN_STEP_ACTIVATE"].includes(eventName);
       if (isSelfOnly && !actorCard) return;
 
       const activeTurnSide = gameState.activeTurnPlayer || "p1";
@@ -18293,6 +18591,8 @@ renderPendingHandPickModal();
           if (tKey && (Number(gameState.usedEffectsTurn[tKey]) || 0) >= maxU) continue;
           if (ef.script?.oncePerGame && usedGameEffects.has(`${host.owner}|${cat.name}|${ef.header}`)) continue;
 
+          const isRuleFlagOnly = (n) => !n || (n.op === "ADD_MODIFIER" && Boolean(n.modifier?.ruleFlag)) || (n.type === "SEQ" && (!n.nodes?.length || n.nodes.every(isRuleFlagOnly)));
+          if (isRuleFlagOnly(ef.script)) continue;
           const dup = standbyQueue.some(q => q.cardId === host.id && q.ef === ef);
           if (!dup) {
             standbyQueue.push({
@@ -18343,10 +18643,11 @@ renderPendingHandPickModal();
             const done = (idx) => {
               activeStandbyRerender = null;
               hud.classList.add("hidden");
+              clearBs5LiveHud();
               resolve(idx);
             };
             const renderQueue = () => {
-              shell.innerHTML = `<div class="bs5-head"><span>⚡ BS v5.4 待機效果佇列（點擊優先發動）</span><span>待處理 ${standbyQueue.length} 項</span></div>`;
+              shell.innerHTML = `<div class="bs5-head"><span>⚡ BS v5.5 待機效果佇列（點擊優先發動）</span><span>待處理 ${standbyQueue.length} 項</span></div>`;
               standbyQueue.forEach((item, i) => {
                 const row = document.createElement("div");
                 row.className = "bs5-row";
@@ -18360,6 +18661,13 @@ renderPendingHandPickModal();
               skipAll.onclick = () => done(-1);
               act.appendChild(skipAll);
               hud.classList.remove("hidden");
+              publishBs5LiveHud({
+                actorOwner: gameState.cards[standbyQueue[0]?.cardId]?.owner,
+                kind: "standby",
+                title: "待機效果佇列",
+                subtitle: `待處理 ${standbyQueue.length} 項`,
+                rows: standbyQueue.map(it => ({ tag: `${it.cardName} · ${it.ef.header}`, desc: it.ef.script?.text || "" }))
+              });
             };
             activeStandbyRerender = renderQueue;
             renderQueue();
@@ -18635,8 +18943,48 @@ renderPendingHandPickModal();
     return origSaveCatalog(event);
   };
 
-  // One-click auto-compile entire card pool to v17 AST and sync to cloud
+  // Export lightweight pre-compile text & existing AST backup (.json, no images!)
+  window.exportPreCompileCatalogBackup = async function () {
+    await ensureCatalogData(false);
+    const list = (catalogEntries || []).map(c => ({
+      number: c.number,
+      name: c.name || "",
+      type: c.type || "",
+      effect: c.effect || "",
+      structuredEffects: Array.isArray(c.structuredEffects) ? c.structuredEffects : []
+    }));
+    if (!list.length) return showNotice("目前卡池沒有可匯出的資料。");
+    const info = typeof window.detectCatalogEffectsVersion === "function" ? window.detectCatalogEffectsVersion() : {};
+    const payload = {
+      app: "BS_STRUCTURED_EFFECTS_IMPORT",
+      backupType: "pre_compile_backup",
+      version: info.version || AST_SCHEMA_VERSION,
+      exportedAt: new Date().toISOString(),
+      count: list.length,
+      cards: list
+    };
+    const dateTag = new Date().toISOString().slice(0, 10);
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `BS_編譯前效果文字備份_${dateTag}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+    showNotice(`已匯出「BS_編譯前效果文字備份_${dateTag}.json」（共 ${list.length} 張卡片之原始效果文字與現有結構化效果，不含圖片）。若之後想反悔還原，直接點「⚡ 導入結構化效果」選回此檔案即可！`);
+  };
+
+  // One-click auto-compile entire card pool to v20 AST and sync to cloud
   window.autoCompileEntireCatalogToAst = async function () {
+    const ok = confirm(
+      `確定要使用內建規則編譯器重新編譯全卡池並覆寫雲端結構化效果嗎？\n\n` +
+      `💡 提醒：\n` +
+      `1. 若你已經匯入「BS_AST_v20.json」，通常【不需要】再按一鍵自動編譯（手動精修的 JSON 精準度更高）。\n` +
+      `2. 建議先按旁邊的「💾 導出編譯前文字備份」保存還原檔後再執行。`
+    );
+    if (!ok) return;
     await ensureCatalogData(false);
     const items = [];
     let failCount = 0;
@@ -18652,7 +19000,17 @@ renderPendingHandPickModal();
     const res = await cloud.batchPatchStructuredEffects(items, (done, total) => {
       catalogStatus(`🤖 自動寫入 v${AST_SCHEMA_VERSION} AST 中 (${done}/${total})…`);
     }, { version: AST_SCHEMA_VERSION });
-    await ensureCatalogData(false);
+    if (res?.updatedMap) {
+      for (const c of catalogEntries) {
+        const p = res.updatedMap.get(c.number);
+        if (p) {
+          c.structuredEffects = p.structuredEffects;
+          c.revision = p.revision;
+          delete c.__bs5CompiledCache;
+        }
+      }
+    }
+    await indexCatalogImages();
     if (typeof window.updateCatalogEffectsVersionUI === "function") window.updateCatalogEffectsVersionUI();
     showNotice(`🤖 全卡池自動編譯完成！已升級 ${res.count} 張卡片至 v${AST_SCHEMA_VERSION} AST（零 MANUAL，驗證失敗 ${failCount} 張）。`);
   };
@@ -18663,11 +19021,129 @@ renderPendingHandPickModal();
     btn.id = "btn-bs5-autocompile";
     btn.type = "button";
     btn.style.cssText = "border-color:rgba(52,211,153,0.85);color:#a7f3d0;background:rgba(6,78,59,0.72);font-weight:900";
-    btn.textContent = "🤖 一鍵自動編譯全卡池 (v19 AST)";
-    btn.title = "將卡池內所有效果文字自動編譯為嚴格驗證的 v19 AST（零 MANUAL，免手動填寫）並同步雲端";
+    btn.textContent = `🤖 一鍵自動編譯全卡池 (v${AST_SCHEMA_VERSION} AST)`;
+    btn.title = `將卡池內所有效果文字自動編譯為嚴格驗證的 v${AST_SCHEMA_VERSION} AST 並同步雲端（若已匯入 BS_AST_v20.json 則無須重複點擊）`;
     btn.onclick = () => window.autoCompileEntireCatalogToAst();
     actionsBar.appendChild(btn);
   }
+  if (actionsBar && !document.getElementById("btn-bs5-backup-effects")) {
+    const bBtn = document.createElement("button");
+    bBtn.id = "btn-bs5-backup-effects";
+    bBtn.type = "button";
+    bBtn.style.cssText = "border-color:rgba(251,191,36,0.85);color:#fde68a;background:rgba(120,53,15,0.68);font-weight:900";
+    bBtn.textContent = "💾 導出編譯前文字備份";
+    bBtn.title = "匯出所有卡片目前的原始效果文字與現有結構化效果（極輕量純文字 .json，不含圖片），方便隨時反悔還原";
+    bBtn.onclick = () => window.exportPreCompileCatalogBackup();
+    actionsBar.appendChild(bBtn);
+  }
+
+  // Main Step Active Trigger helpers + Field card ⚡ 發動 button (e.g. BS70-CP01 契約域, PX26-19 Lv2 主要步驟)
+  window.getCardMainStepEffects = function (card) {
+    if (!card || card.isFaceDown || card.isSoulState) return [];
+    const effs = BSRuleCompiler.getEffectsForCard(card).filter(e =>
+      e.kind === "TRIGGERED" && Array.isArray(e.events) && e.events.includes("MAIN_STEP_ACTIVATE")
+    );
+    return effs;
+  };
+
+  window.activateCardMainStepEffect = function (cardId) {
+    const card = gameState.cards[cardId];
+    if (!card || card.isFaceDown || card.isSoulState) return;
+    if ((gameState.currentPhase || "") !== "MAIN" || (gameState.activeTurnPlayer || "p1") !== card.owner) {
+      showNotice("⏳ 此效果只能在自己的【主要階段】發動！");
+      return;
+    }
+    const effs = window.getCardMainStepEffects(card);
+    if (!effs.length) return;
+    const curLv = BSComputedState.getEffectiveCard(card).lv;
+    const eligible = effs.filter(ef => !(ef.minLv > 0 && curLv < ef.minLv));
+    if (!eligible.length) {
+      const needLv = Math.min(...effs.map(e => Number(e.minLv || 1)));
+      showNotice(`此主要步驟效果需要 Lv${needLv} 或以上（目前 Lv${curLv}）！`);
+      return;
+    }
+    BSGameBus.emitAfter("MAIN_STEP_ACTIVATE", { cardId: card.id, owner: card.owner });
+  };
+
+  function updateFieldMainActButton(el, card) {
+    if (!el || !card) return;
+    const isFieldCard = Boolean(card.zone?.startsWith("field-") && !card.isFaceDown && !card.isSoulState && !card.braveHostId && !card.adventHostId);
+    const inOwnMain = (gameState.currentPhase || "") === "MAIN" && (gameState.activeTurnPlayer || "p1") === card.owner;
+    const mainEffs = isFieldCard ? window.getCardMainStepEffects(card) : [];
+    const show = Boolean(isFieldCard && inOwnMain && mainEffs.length > 0);
+    el.classList.toggle("has-main-act", show);
+    let btn = el.querySelector(":scope > .mini-main-act-btn");
+    if (show) {
+      if (!btn) {
+        btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "mini-translate-btn mini-main-act-btn";
+        btn.textContent = "⚡發動";
+        btn.draggable = false;
+        ["pointerdown", "mousedown", "dblclick", "dragstart"].forEach(ev => btn.addEventListener(ev, e => e.stopPropagation()));
+        btn.onclick = e => {
+          e.preventDefault(); e.stopPropagation();
+          window.activateCardMainStepEffect(card.id);
+        };
+        el.append(btn);
+      }
+      const curLv = BSComputedState.getEffectiveCard(card).lv;
+      const lvOk = mainEffs.some(ef => !(ef.minLv > 0 && curLv < ef.minLv));
+      btn.style.opacity = lvOk ? "1" : "0.5";
+      btn.title = lvOk ? "點擊發動此卡的【主要步驟】效果" : "等級不足，無法發動主要步驟效果";
+    } else {
+      btn?.remove();
+    }
+  }
+
+  const previewMainActBtn = document.createElement("button");
+  previewMainActBtn.id = "preview-main-act-btn";
+  previewMainActBtn.type = "button";
+  previewMainActBtn.textContent = "⚡ 發動效果";
+  previewMainActBtn.className = "hidden pointer-events-auto";
+  previewMainActBtn.onpointerdown = e => e.stopPropagation();
+  previewMainActBtn.onclick = e => {
+    e.preventDefault(); e.stopPropagation();
+    const cid = activePreviewCardId;
+    hideCardPreview();
+    if (cid) window.activateCardMainStepEffect(cid);
+  };
+  document.getElementById("preview-action-row")?.append(previewMainActBtn);
+
+  const origAttachMiniV5 = attachMiniTranslation;
+  attachMiniTranslation = function (el, img, cardId) {
+    origAttachMiniV5(el, img, cardId);
+    if (el && cardId && gameState.cards[cardId]) updateFieldMainActButton(el, gameState.cards[cardId]);
+  };
+  const origSyncTurnV5 = syncTurnPreview;
+  syncTurnPreview = function () {
+    origSyncTurnV5();
+    const c = activePreviewCardId ? gameState.cards[activePreviewCardId] : null;
+    const inOwnMain = c && (gameState.currentPhase || "") === "MAIN" && (gameState.activeTurnPlayer || "p1") === c.owner;
+    const show = Boolean(c && c.zone?.startsWith("field-") && !c.isFaceDown && !c.isSoulState && inOwnMain && controlMode !== "PC" && window.getCardMainStepEffects(c).length > 0);
+    previewMainActBtn.classList.toggle("hidden", !show);
+  };
+  const origHidePrevV5 = hideCardPreview;
+  hideCardPreview = function (...args) {
+    origHidePrevV5(...args);
+    previewMainActBtn.classList.add("hidden");
+  };
+  const origUpdateAllV5 = updateAllUI;
+  updateAllUI = function () {
+    origUpdateAllV5();
+    Object.values(gameState.cards).forEach(c => {
+      if (c.zone?.startsWith("field-")) {
+        const el = document.getElementById(c.id);
+        if (el && el.classList.contains("mini-translation-source")) updateFieldMainActButton(el, c);
+      }
+    });
+    renderBs5OpponentMirrorHud();
+  };
+  const origApplyStateV5 = window.applyGameState;
+  window.applyGameState = function (state) {
+    origApplyStateV5(state);
+    renderBs5OpponentMirrorHud();
+  };
 
   // Wire remaining AST v19 Modifier enforcements (count lock, life lock, double block, low-cost attack tax, reserve/life use tax)
   const origUpdateCounterV5 = window.updateCounter;
