@@ -17,7 +17,7 @@
  10. 創界神 (Grandwalker) 技與域   -> 搜尋: function useGrandwalkerSkill
  11. 顕現 (Manifest) 系統與特效    -> 搜尋: function triggerManifestFromHand
 ========================================================================= -->
-<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><title>BS v6.0</title><script src="https://cdn.tailwindcss.com"></script><style>
+<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><title>BS v6.4</title><script src="https://cdn.tailwindcss.com"></script><style>
 /* #region 1. 基礎排版、卡背 SVG 與戰場區域樣式 */
 body,html{touch-action:manipulation;overflow-x:hidden!important;overscroll-behavior-x:none}.action-btn,.counter-box,.counter-title,.counter-value,.small-action-btn,body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}body{background-color:#0d0c0b;background-image:radial-gradient(ellipse at 50% 50%,rgba(46,40,34,.45) 0,rgba(10,9,8,.95) 100%),repeating-linear-gradient(135deg,rgba(255,255,255,.012) 0,rgba(255,255,255,.012) 2px,transparent 2px,transparent 8px);color:#dcd6cc;font-family:Cinzel,"Noto Serif TC",PMingLiU,Georgia,serif}.custom-scrollbar::-webkit-scrollbar{display:none}.custom-scrollbar{-ms-overflow-style:none;scrollbar-width:none}:root{--bs-cardback-svg:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 280'%3E%3Crect width='200' height='280' rx='13' fill='%23040404'/%3E%3Cg fill='none' stroke='%23dcdcdc' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4.5' y='4.5' width='191' height='271' rx='10' stroke-width='2.6'/%3E%3Crect x='11' y='11' width='178' height='258' rx='7' stroke-width='1.1' stroke-opacity='0.6'/%3E%3Cpath d='M5 42 C18 16,48 6,86 14 C122 22,152 6,195 26' stroke-width='3'/%3E%3Cpath d='M10 26 C32 6,76 22,118 10 C152 2,178 14,190 38' stroke-width='1.8'/%3E%3Cpath d='M5 238 C18 264,48 274,86 266 C122 258,152 274,195 254' stroke-width='3'/%3E%3Cpath d='M10 254 C32 274,76 258,118 270 C152 278,178 266,190 242' stroke-width='1.8'/%3E%3Cpath d='M14 5 C4 36,20 82,8 138 C-2 184,18 232,10 275' stroke-width='2.8'/%3E%3Cpath d='M6 28 C22 68,4 114,16 156 C24 192,6 226,18 262' stroke-width='1.5'/%3E%3Cpath d='M186 5 C196 36,180 82,192 138 C202 184,182 232,190 275' stroke-width='2.8'/%3E%3Cpath d='M194 28 C178 68,196 114,184 156 C176 192,194 226,182 262' stroke-width='1.5'/%3E%3Cpath d='M8 46 C26 42,34 24,22 14 C14 8,6 18,16 28' stroke-width='2.2'/%3E%3Cpath d='M192 46 C174 42,166 24,178 14 C186 8,194 18,184 28' stroke-width='2.2'/%3E%3Cpath d='M8 234 C26 238,34 256,22 266 C14 272,6 262,16 252' stroke-width='2.2'/%3E%3Cpath d='M192 234 C174 238,166 256,178 266 C186 272,194 262,184 252' stroke-width='2.2'/%3E%3C/g%3E%3Cg transform='translate(100,128)'%3E%3Cg stroke='%23d4d4d4' stroke-width='1.35' opacity='0.88'%3E%3Cline x1='0' y1='-96' x2='0' y2='96'/%3E%3Cline x1='-74' y1='-74' x2='74' y2='74'/%3E%3Cline x1='74' y1='-74' x2='-74' y2='74'/%3E%3Cline x1='-38' y1='-90' x2='38' y2='90'/%3E%3Cline x1='38' y1='-90' x2='-38' y2='90'/%3E%3Cline x1='-86' y1='-36' x2='86' y2='36'/%3E%3Cline x1='86' y1='-36' x2='-86' y2='36'/%3E%3Cline x1='-20' y1='-93' x2='20' y2='93' stroke-width='0.8'/%3E%3Cline x1='20' y1='-93' x2='-20' y2='93' stroke-width='0.8'/%3E%3Cline x1='-58' y1='-82' x2='58' y2='82' stroke-width='0.8'/%3E%3Cline x1='58' y1='-82' x2='-58' y2='82' stroke-width='0.8'/%3E%3C/g%3E%3Cpolygon points='0,-84 4,-26 0,-18 -4,-26' fill='%23dcdcdc'/%3E%3Cpolygon points='0,84 4,26 0,18 -4,26' fill='%23dcdcdc'/%3E%3Cpolygon points='-64,-64 -18,-22 -14,-14 -22,-18' fill='%23dcdcdc'/%3E%3Cpolygon points='64,-64 18,-22 14,-14 22,-18' fill='%23dcdcdc'/%3E%3Cpolygon points='-64,64 -18,22 -14,14 -22,18' fill='%23dcdcdc'/%3E%3Cpolygon points='64,64 18,22 14,14 22,18' fill='%23dcdcdc'/%3E%3Cpolygon points='-32,-78 -10,-26 -6,-20 -14,-24' fill='%23dcdcdc'/%3E%3Cpolygon points='32,-78 10,-26 6,-20 14,-24' fill='%23dcdcdc'/%3E%3Cpolygon points='-32,78 -10,26 -6,20 -14,24' fill='%23dcdcdc'/%3E%3Cpolygon points='32,78 10,26 6,20 14,24' fill='%23dcdcdc'/%3E%3Ccircle r='50' fill='none' stroke='%23dcdcdc' stroke-width='1.8' stroke-dasharray='7 4'/%3E%3Ccircle r='40' fill='%23050505' stroke='%23e5e5e5' stroke-width='2.2'/%3E%3Cpath d='M-46,-18 C-62,-32 -32,-58 -12,-42 C2,-58 36,-54 26,-32 C52,-38 62,-8 40,8 C58,26 32,52 12,38 C-4,56 -38,50 -28,28 C-54,32 -60,4 -46,-18 Z' fill='none' stroke='%23dcdcdc' stroke-width='2'/%3E%3Cellipse cx='-4' cy='0' rx='46' ry='33' fill='%23050505' stroke='%23ececec' stroke-width='3.8'/%3E%3Cellipse cx='-4' cy='0' rx='41' ry='28' fill='%23050505' stroke='%23888888' stroke-width='1.1'/%3E%3Ctext x='-7' y='17' text-anchor='middle' font-family='Georgia,Times New Roman,serif' font-size='50' font-weight='900' font-style='italic' fill='%23e8e8e8' stroke='%23050505' stroke-width='1.5' letter-spacing='-3'%3EBS%3C/text%3E%3C/g%3E%3Ctext x='100' y='244' text-anchor='middle' font-family='Georgia,Times New Roman,serif' font-size='23' font-weight='900' font-style='italic' fill='%23e2e2e2' letter-spacing='0.6'%3EBattle Spirits%3C/text%3E%3C/svg%3E")}.zone{min-height:100px;background-color:rgba(10,9,8,.18);border:1px solid rgba(186,158,108,.34);border-radius:3px;position:relative;transition:background-color .2s ease,border-color .2s ease,box-shadow .2s ease}.field-zone{background:0 0!important;border:none!important;border-radius:0!important;box-shadow:none!important}.card{width:100px;height:140px;background-color:#0e0e0e;border:1px solid rgba(196,168,118,.55);border-radius:3.5px;display:flex;justify-content:center;align-items:center;cursor:grab;position:absolute;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease,opacity .15s;box-shadow:0 6px 16px rgba(0,0,0,.85),0 1px 3px rgba(0,0,0,.7);background-size:cover;background-position:center;background-repeat:no-repeat;image-rendering:-webkit-optimize-contrast;transform-origin:center center;color:#a89f91;font-size:10px;font-weight:700;overflow:visible}body.mobile-mode .card{touch-action:none}.card:active{cursor:grabbing;box-shadow:0 14px 30px rgba(0,0,0,.95);z-index:1000!important}.card.has-soul-core{border:2px solid #f87171!important;box-shadow:0 0 12px 3px rgba(239,68,68,.95),0 0 24px 6px rgba(185,28,28,.65),inset 0 0 10px rgba(252,165,165,.55)!important}.card.face-down{background-image:var(--bs-cardback-svg)!important;background-size:100% 100%!important;background-position:center!important;background-color:#050505!important;border:1px solid rgba(220,220,220,.65)!important;box-shadow:0 6px 14px rgba(0,0,0,.85)}.card.face-down::after{content:none!important}.card-controls{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) translateY(90px);display:none;align-items:center;gap:5px;background:rgba(10,9,8,.76);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);padding:3px 7px;border-radius:4px;border:1px solid rgba(186,158,108,.55);box-shadow:0 4px 12px rgba(0,0,0,.8);z-index:60;white-space:nowrap;pointer-events:auto}.field-zone .card .card-controls{display:flex!important;opacity:1!important;visibility:visible!important}.field-bottom-left-dock{position:absolute;left:10px;bottom:10px;top:auto;display:flex;flex-direction:row;align-items:flex-end;gap:10px;max-width:calc(100% - 20px);z-index:25;pointer-events:none}.opponent-field-top .field-bottom-left-dock{bottom:auto;top:10px;left:auto;right:10px;flex-direction:row-reverse;align-items:flex-start}.opponent-main-area>.side-col-left{grid-column:3;grid-row:1;flex-direction:column-reverse}.opponent-main-area>.field-zone{grid-column:2;grid-row:1}.opponent-main-area>.side-col-right{grid-column:1;grid-row:1;flex-direction:column-reverse}.god-zone-wrapper,.openhand-zone-wrapper{pointer-events:auto;width:max-content;max-width:100%;flex-shrink:0;background:rgba(12,11,10,.28);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);border:1px solid rgba(186,158,108,.42);border-radius:3px;padding:5px 8px;display:inline-flex;flex-direction:column;box-shadow:0 4px 14px rgba(0,0,0,.45);transition:border-color .2s,background-color .2s,box-shadow .2s;box-sizing:border-box}.god-zone-wrapper.drag-over,.openhand-zone-wrapper.drag-over{background-color:rgba(176,148,102,.18)!important;border-color:rgba(235,205,145,.85)!important}.god-zone,.openhand-zone{display:inline-flex;flex-direction:row;flex-wrap:nowrap;align-items:center;gap:10px;width:max-content;min-width:112px;min-height:152px;padding:6px 8px;overflow:visible;background:rgba(10,9,8,.18);border:1px solid rgba(186,158,108,.25);border-radius:3px;position:relative;box-sizing:border-box}.openhand-zone{gap:0!important;padding:6px 10px!important}.openhand-zone .card+.card{margin-left:-52px!important}.god-zone.has-cards{padding-bottom:36px}.openhand-zone.has-cards{padding-bottom:6px}.god-zone .card,.openhand-zone .card{position:relative!important;left:auto!important;top:auto!important;flex-shrink:0;margin:0}.field-zone .god-zone .card .card-controls,.god-zone .card .card-controls{display:flex!important;opacity:1!important;visibility:visible!important;border-color:rgba(255,255,255,.18)}.field-zone .card .card-core-pill,.god-zone .card .card-core-pill{cursor:grab;user-select:none;-webkit-user-select:none;touch-action:none;border-radius:2px;transition:background-color .15s,transform .15s}.field-zone .card .card-core-pill:hover,.god-zone .card .card-core-pill:hover{background-color:rgba(56,189,248,.25);transform:scale(1.08)}.field-zone .card .card-core-pill:active,.god-zone .card .card-core-pill:active{cursor:grabbing}.god-zone .card .card-soul-btn{display:none!important}.field-zone .openhand-zone .card .card-controls,.openhand-zone .card .card-controls{display:none!important}.card-btn{background:rgba(24,22,19,.95);color:#e2dacd;border:1px solid rgba(176,148,102,.5);border-radius:2px;width:19px;height:19px;font-size:12px;font-weight:700;display:flex;justify-content:center;align-items:center;cursor:pointer;padding:0;line-height:1;flex-shrink:0;transition:background .15s,color .15s,border-color .15s}.card-btn:hover{background:#d4b886;color:#000;border-color:#fff}.card-btn.soul-active{width:20px;height:20px;clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0% 50%);background:linear-gradient(135deg,#fff 0,#cbd5e1 45%,#64748b 100%)!important;border:none!important;border-radius:0!important;color:transparent!important;font-size:0!important;position:relative;filter:drop-shadow(0 0 6px rgba(239,68,68,.95));box-shadow:none!important}.card-btn.soul-active::after{content:"";position:absolute;inset:3.5px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fecaca 0,#ef4444 45%,#7f1d1d 100%);box-shadow:inset 0 0 3px #fff;pointer-events:none}.card-core-pill{display:flex;align-items:center;gap:4px;padding:1px 5px;background:rgba(255,255,255,.03);border:1px solid rgba(56,189,248,.25)}.card-core-dot,.physical-core-gem{width:17px;height:17px;display:inline-block;position:relative;clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0% 50%);background:radial-gradient(circle at 35% 30%,#fff 0,#bae6fd 22%,#38bdf8 52%,#0284c7 82%,#0c4a6e 100%);box-shadow:inset 0 0 4px rgba(255,255,255,.9);filter:drop-shadow(0 0 4px rgba(56,189,248,.75));flex-shrink:0;transition:transform .12s ease,filter .12s ease}.card-core-dot::after,.physical-core-gem::after{content:"";position:absolute;inset:3px;clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0% 50%);background:linear-gradient(135deg,rgba(255,255,255,.85) 0,rgba(125,211,252,.25) 55%,rgba(2,132,199,.6) 100%);pointer-events:none}.card-core-dot{width:14px;height:14px}.physical-core-gem.interactive-core{cursor:pointer}.physical-core-gem.interactive-core:hover{transform:scale(1.22);filter:drop-shadow(0 0 8px rgba(125,211,252,1))}.core-gem-tray{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:5px;min-height:24px;padding:3px 4px;margin-top:2px}.card-cores{color:#f8fafc;font-size:13px;font-weight:900;min-width:14px;text-align:center;text-shadow:1px 1px 2px #000}.soul-core-token{width:19px;height:19px;clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0% 50%);font-size:0px;display:inline-flex;align-items:center;justify-content:center;cursor:grab;user-select:none;-webkit-user-select:none;touch-action:none;position:relative;transition:transform .15s,filter .15s;z-index:40;background:linear-gradient(135deg,#fff 0,#cbd5e1 45%,#64748b 100%);filter:drop-shadow(0 0 6px rgba(239,68,68,.9))}.soul-core-token::after{content:"";position:absolute;inset:3.5px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fecaca 0,#ef4444 45%,#7f1d1d 100%);box-shadow:inset 0 0 3px #fff}.soul-core-token:hover{transform:scale(1.22);filter:drop-shadow(0 0 10px rgba(248,113,113,1))}.soul-core-token:active{cursor:grabbing}.soul-core-slot-empty{width:17px;height:17px;clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0% 50%);background:rgba(255,255,255,.08);color:rgba(255,255,255,.35);font-size:8px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s}.soul-core-slot-empty:hover{background:rgba(239,68,68,.45);color:#fff;transform:scale(1.15)}.counter-box{border:1px solid rgba(186,158,108,.42);border-radius:3px;padding:5px 7px;text-align:center;background:rgba(12,11,10,.24);box-shadow:inset 0 0 10px rgba(0,0,0,.28);transition:border-color .2s,box-shadow .2s,background-color .2s;transform:translateZ(0);backface-visibility:hidden}.counter-title{font-size:11px;color:#d8ccb8;font-weight:700;letter-spacing:.1em;margin-bottom:2px;text-transform:uppercase;text-align:center;text-shadow:0 1px 3px rgba(0,0,0,.9);transform:translateZ(0)}.counter-value{font-size:15px;font-weight:900;color:#f5efe6;display:flex;align-items:center;justify-content:center;gap:8px;transform:translateZ(0)}.counter-btn{background:rgba(255,255,255,.05);color:#d6cbb9;border:1px solid rgba(176,148,102,.45);border-radius:1px;width:16px;height:16px;display:flex;justify-content:center;align-items:center;cursor:pointer;font-size:11px;line-height:1;transition:all .15s ease}.counter-btn:hover{background:#c8aa76;color:#090a0f;border-color:#fff}.action-btn{font-size:8.5px;border:1px solid rgba(176,148,102,.38);border-radius:1px;padding:3px 5px;background:rgba(16,15,14,.85);color:#d6cbb9;cursor:pointer;text-transform:uppercase;font-weight:700;letter-spacing:.06em;width:100%;margin-top:2px;transition:all .15s ease}.action-btn:hover{background:rgba(196,164,108,.9);color:#090a0f;border-color:#fff}.small-action-btn{font-size:7.5px;font-weight:700;border:1px solid rgba(176,148,102,.38);border-radius:1px;padding:1px 4px;background:rgba(12,12,12,.85);color:#bfb39e;cursor:pointer;position:absolute;top:3px;right:4px;transition:all .15s ease}.small-action-btn:hover{background:rgba(196,164,108,.85);border-color:#fff;color:#000}.highlight-action-btn{font-size:8px;font-weight:900;padding:1.5px 5px;border-radius:1px;cursor:pointer;position:absolute;top:3px;right:4px;letter-spacing:.5px;transition:all .18s ease;text-transform:uppercase}.btn-take-life{background:rgba(127,29,29,.65);border:1px solid rgba(248,113,113,.55);color:#fecaca}.btn-take-life:hover{background:#dc2626;color:#fff;border-color:#fff}.btn-pay-cost{background:rgba(12,74,110,.65);border:1px solid rgba(56,189,248,.55);color:#bae6fd}.btn-pay-cost:hover{background:#0284c7;color:#fff;border-color:#fff}.btn-refresh-state{background:rgba(6,78,59,.7);border:1px solid rgba(52,211,153,.55);color:#a7f3d0;border-radius:1px;transition:all .18s ease}.btn-refresh-state:hover{background:#10b981;color:#050608;border-color:#fff}
 /* #endregion */
@@ -37,14 +37,14 @@ body,html{touch-action:manipulation;overflow-x:hidden!important;overscroll-behav
 <header id="main-top-header" class="flex flex-wrap justify-between items-center bg-[#0a0a0a]/90 border border-[#b09466]/40 rounded-sm py-1.5 px-3 flex-none gap-x-2 gap-y-1.5 shadow-lg transition-all duration-200">
 <div class="header-brand-row flex items-center gap-2 flex-shrink-0">
 <div class="relative text-sm sm:text-base font-black tracking-wider text-[#e5dccb] flex items-center gap-1.5 whitespace-nowrap">
-<span id="bs-brand-title-text" class="cursor-pointer hover:text-[#e0b25b] transition-colors" onclick="openChangelogModal()" title="點擊查看更新日誌">BS v6.0</span>
+<span id="bs-brand-title-text" class="cursor-pointer hover:text-[#e0b25b] transition-colors" onclick="openChangelogModal()" title="點擊查看更新日誌">BS v6.4</span>
 <button id="btn-changelog" type="button" class="text-[10px] sm:text-xs bg-black/70 border border-[#b09466]/50 hover:bg-[#c8aa76] hover:text-black text-[#e0b25b] px-1.5 py-0.5 rounded-sm cursor-pointer transition-colors leading-none font-bold" onclick="openChangelogModal()" title="查看版本更新日誌">📜 日誌</button>
 <button id="btn-version-gear" type="button" class="text-xs bg-black/70 border border-[#b09466]/50 hover:bg-[#c8aa76] hover:text-black text-[#e0b25b] px-1.5 py-0.5 rounded-sm cursor-pointer transition-colors leading-none" onclick="toggleVersionGearMenu(event)" title="點擊調整版本號數字">⚙️</button>
 <div id="bs-version-gear-menu" class="hidden absolute left-0 top-full mt-1.5 z-[12500] bg-[#0d0c0b]/95 border border-[#c8aa76] rounded-sm shadow-2xl p-2 flex items-center gap-1.5">
 <button type="button" class="text-[11px] font-black bg-[#c8aa76] text-black hover:bg-white px-2 py-1 rounded-sm cursor-pointer" onclick="bumpBsVersion(0, 1)" title="次版本 +1 (例：3.9 ➔ 3.10)">+0.1</button>
 <button type="button" class="text-[11px] font-black bg-sky-950/80 border border-sky-400/60 text-sky-200 hover:bg-sky-500 hover:text-black px-2 py-1 rounded-sm cursor-pointer" onclick="bumpBsVersion(1, 0)" title="主版本 +1">+1</button>
 <button type="button" class="text-[11px] font-bold bg-black/80 border border-[#b09466]/50 text-[#dcd6cc] hover:bg-[#c8aa76] hover:text-black px-2 py-1 rounded-sm cursor-pointer" onclick="bumpBsVersion(0, -1)" title="次版本 -1">-0.1</button>
-<button type="button" class="text-[10px] font-bold bg-rose-950/70 border border-rose-500/50 text-rose-200 hover:bg-rose-600 hover:text-white px-2 py-1 rounded-sm cursor-pointer" onclick="resetBsVersion()">6.0</button>
+<button type="button" class="text-[10px] font-bold bg-rose-950/70 border border-rose-500/50 text-rose-200 hover:bg-rose-600 hover:text-white px-2 py-1 rounded-sm cursor-pointer" onclick="resetBsVersion()">6.4</button>
 </div>
 </div>
 <span id="room-status-badge" class="hidden text-[10px] bg-emerald-950/80 border border-emerald-500/50 text-emerald-300 px-2 py-0.5 rounded-sm font-bold cursor-pointer hover:bg-emerald-800/80 transition-colors whitespace-nowrap" onclick="copyRoomCode()" title="點擊複製房間代碼">
@@ -432,7 +432,7 @@ body,html{touch-action:manipulation;overflow-x:hidden!important;overscroll-behav
 <span id="deck-vault-count-badge" class="bg-black/80 border border-[#b09466]/45 text-[#e0b25b] px-2 py-0.5 rounded-sm text-xs font-bold">0 副卡組</span>
 </div>
 <div class="flex items-center gap-2">
-<button class="border border-[#c8aa76] bg-[#c8aa76]/25 text-[#fef08a] hover:bg-[#c8aa76] hover:text-black px-3 py-1 rounded-sm text-xs font-black cursor-pointer transition-colors" onclick="openPoolDeckBuilder(true)" title="直接從卡池挑選卡片建立一副全新卡組">＋ 建立卡組</button> <input type="file" id="vault-import-zip-input" accept=".zip" class="hidden" onchange="importZipToVaultOnly(event)"> <button class="border border-emerald-500/55 bg-emerald-950/50 text-emerald-300 hover:bg-emerald-500 hover:text-black px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick='document.getElementById("vault-import-zip-input").click()'>＋ 新增匯入 .ZIP 卡組</button> <button class="border border-[#b09466]/55 bg-black/70 text-[#e0b25b] hover:bg-[#c8aa76] hover:text-black px-2.5 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="window.refreshGlobalDecksFromCloud&&window.refreshGlobalDecksFromCloud(true).then(()=>renderDeckVaultList())" title="從雲端重新同步最新卡組列表">🔄 同步</button> <input type="file" id="vault-restore-backup-input" accept=".json,application/json" class="hidden" onchange="restoreFullBackupFromFile(event)"> <button id="btn-export-full-backup" class="border border-sky-500/55 bg-sky-950/50 text-sky-300 hover:bg-sky-500 hover:text-black px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="exportFullBackupToFile()" title="將所有卡組、卡池資料與自訂卡背打包下載成 .json 備份檔">📥 匯出全部備份</button> <button id="btn-restore-full-backup" class="border border-amber-500/55 bg-amber-950/50 text-amber-300 hover:bg-amber-400 hover:text-black px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick='document.getElementById("vault-restore-backup-input").click()' title="從之前下載的 .json 備份檔還原卡組與卡池">📤 還原備份</button> <button class="border border-amber-400/65 bg-amber-950/60 text-amber-200 hover:bg-amber-400 hover:text-black px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="openDeckSymbolToolsModal()" title="單獨選擇某一副卡組移除所有輕減/標誌，或單獨匯出/導入該卡組純卡號清單">🧹 移除卡組輕減/標誌</button> <button class="border border-rose-500/55 bg-rose-950/50 text-rose-300 hover:bg-rose-600 hover:text-white px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="clearAllDecksFromVault()" title="刪除並清空所有已儲存的匯入卡組資料庫">🗑️ 清空整個資料庫</button> <button class="border border-[#b09466]/45 bg-black/70 text-[#dcd6cc] hover:bg-[#c8aa76] hover:text-black px-3.5 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="closeDeckVaultModal()">CLOSE (✕)</button>
+<button class="border border-[#c8aa76] bg-[#c8aa76]/25 text-[#fef08a] hover:bg-[#c8aa76] hover:text-black px-3 py-1 rounded-sm text-xs font-black cursor-pointer transition-colors" onclick="openPoolDeckBuilder(true)" title="直接從卡池挑選卡片建立一副全新卡組">＋ 建立卡組</button> <button id="btn-sync-verification-deck" class="border border-emerald-400/75 bg-emerald-950/65 text-emerald-200 hover:bg-emerald-400 hover:text-black px-3 py-1 rounded-sm text-xs font-black cursor-pointer transition-colors" onclick="syncVerificationTestDeck({silent:false,forceNotify:true}).then(()=>renderDeckVaultList())" title="自動掃描卡池並將最新實測卡片追加至「🧪 實測驗證專用測試牌組」（絕不刪除既有舊卡）">🧪 補齊實測牌組</button> <input type="file" id="vault-import-zip-input" accept=".zip" class="hidden" onchange="importZipToVaultOnly(event)"> <button class="border border-emerald-500/55 bg-emerald-950/50 text-emerald-300 hover:bg-emerald-500 hover:text-black px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick='document.getElementById("vault-import-zip-input").click()'>＋ 新增匯入 .ZIP 卡組</button> <button class="border border-[#b09466]/55 bg-black/70 text-[#e0b25b] hover:bg-[#c8aa76] hover:text-black px-2.5 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="window.refreshGlobalDecksFromCloud&&window.refreshGlobalDecksFromCloud(true).then(()=>renderDeckVaultList())" title="從雲端重新同步最新卡組列表">🔄 同步</button> <input type="file" id="vault-restore-backup-input" accept=".json,application/json" class="hidden" onchange="restoreFullBackupFromFile(event)"> <button id="btn-export-full-backup" class="border border-sky-500/55 bg-sky-950/50 text-sky-300 hover:bg-sky-500 hover:text-black px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="exportFullBackupToFile()" title="將所有卡組、卡池資料與自訂卡背打包下載成 .json 備份檔">📥 匯出全部備份</button> <button id="btn-restore-full-backup" class="border border-amber-500/55 bg-amber-950/50 text-amber-300 hover:bg-amber-400 hover:text-black px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick='document.getElementById("vault-restore-backup-input").click()' title="從之前下載的 .json 備份檔還原卡組與卡池">📤 還原備份</button> <button class="border border-amber-400/65 bg-amber-950/60 text-amber-200 hover:bg-amber-400 hover:text-black px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="openDeckSymbolToolsModal()" title="單獨選擇某一副卡組移除所有輕減/標誌，或單獨匯出/導入該卡組純卡號清單">🧹 移除卡組輕減/標誌</button> <button class="border border-rose-500/55 bg-rose-950/50 text-rose-300 hover:bg-rose-600 hover:text-white px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="clearAllDecksFromVault()" title="刪除並清空所有已儲存的匯入卡組資料庫">🗑️ 清空整個資料庫</button> <button class="border border-[#b09466]/45 bg-black/70 text-[#dcd6cc] hover:bg-[#c8aa76] hover:text-black px-3.5 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="closeDeckVaultModal()">CLOSE (✕)</button>
 </div>
 </div>
 <div id="deck-vault-list" class="flex-1 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5 p-1 custom-scrollbar">
@@ -557,7 +557,7 @@ p1_life:5,p1_reserve:3,p1_count:0,p1_trash_core:0,p2_life:5,p2_reserve:3,p2_coun
 p1:"reserve",p2:"reserve"
 },zoneCollapsed: {
 god_p1:!1,god_p2:!1,openhand_p1:!1,openhand_p2:!1
-},lastShuffle:null,lastLottery:null,lastActionEffect:null,lastPhaseBanner:null,lotteryPendingWinner:null,lotteryUsed:!1,currentPhase:"START",activeTurnPlayer:"p1",isFirstTurn:!0,activeBattle:null,tempBuffs:[],usedEffectsTurn:{},oracleWindows:{p1:null,p2:null},revealWindows:{p1:null,p2:null},pendingHandPick:null,bs5LiveHud:null,bs5Modifiers:[],seats: {
+},lastShuffle:null,lastLottery:null,lastActionEffect:null,lastPhaseBanner:null,lotteryPendingWinner:null,lotteryUsed:!1,currentPhase:"START",activeTurnPlayer:"p1",isFirstTurn:!0,activeBattle:null,tempBuffs:[],usedEffectsTurn:{},usedEffectsGame:{},oracleWindows:{p1:null,p2:null},revealWindows:{p1:null,p2:null},pendingHandPick:null,bs5LiveHud:null,bs5Modifiers:[],seats: {
 p1:null,p2:null
 },seatNames: {
 p1:"",p2:""
@@ -1117,7 +1117,7 @@ document.getElementById("reset-confirm-modal")?.classList.add("hidden")
 function confirmResetGame() {
 closeResetModal(),hideCardPreview(),closeZoneModal(),closeDeckChoiceModal(),closeGodConfirmModal(),document.getElementById("core-return-modal")?.classList.add("hidden"),lotteryStepTimer&&(clearTimeout(lotteryStepTimer),lotteryStepTimer=null),isLotteryRunning=!1,gameState.lotteryPendingWinner=null,applyLotteryPendingUI(),gameState.p1_life=5,gameState.p1_reserve=3,gameState.p1_count=0,gameState.p1_trash_core=0,gameState.p2_life=5,gameState.p2_reserve=3,gameState.p2_count=0,gameState.p2_trash_core=0,gameState.soulCoreLocation= {
 p1:"reserve",p2:"reserve"
-},gameState.lotteryUsed=!1;gameState.currentPhase="START";gameState.activeTurnPlayer="p1";gameState.isFirstTurn=!0;gameState.activeBattle=null;gameState.tempBuffs=[];gameState.usedEffectsTurn={};gameState.oracleWindows={p1:null,p2:null};gameState.revealWindows={p1:null,p2:null};gameState.pendingHandPick=null;gameState.bs5LiveHud=null;gameState.bs5Modifiers=[];gameState.lastPhaseBanner=null;window.__lastSeenPhaseBannerId="";window.syncOracleWindowsFromState&&window.syncOracleWindowsFromState();window.syncRevealWindowsFromState&&window.syncRevealWindowsFromState();
+},gameState.lotteryUsed=!1;gameState.currentPhase="START";gameState.activeTurnPlayer="p1";gameState.isFirstTurn=!0;gameState.activeBattle=null;gameState.tempBuffs=[];gameState.usedEffectsTurn={};gameState.usedEffectsGame={};gameState.oracleWindows={p1:null,p2:null};gameState.revealWindows={p1:null,p2:null};gameState.pendingHandPick=null;gameState.bs5LiveHud=null;gameState.bs5Modifiers=[];gameState.lastPhaseBanner=null;window.__lastSeenPhaseBannerId="";window.syncOracleWindowsFromState&&window.syncOracleWindowsFromState();window.syncRevealWindowsFromState&&window.syncRevealWindowsFromState();
 const e=[],t=[];
 Object.values(gameState.cards).forEach(o=> {
 restoreTurnFront(o),delete o.braveHostId,delete o.braveOrder,delete o.adventHostId,delete o.adventOrder,document.getElementById(o.id)?.remove(),o.zone=`deck-${o.owner}`,o.x=0,o.y=0,o.rotation=0,o.battleState="",o.isFaceDown=!1,o.isSoulState=!1,o.cores=0,o.zOrder=zOrderCounter++,"p1"===o.owner?e.push(o.id):"p2"===o.owner&&t.push(o.id)
@@ -2282,7 +2282,7 @@ let s=[];
 s=Array.isArray(t)&&t.length>0&&"object"==typeof t[0]?t.filter(e=>e&&e.imgBase64&&(parseInt(e.count,10)||0)>0):buildUniqueEntriesFromCardsArray(t),await prepareTurnEntries(s);
 const chosenCover=customCover||(r?.coverImage&&s.some(x=>x.imgBase64===r.coverImage)?r.coverImage:"")||s[0]?.imgBase64||"";
 const l=s.reduce((e,t)=>e+deckEntryCount(t),0),d= {
-id:r?r.id:"deck_"+Date.now()+"_"+Math.random().toString(36).substring(2,7),name:e,cardCount:l,uniqueCount:s.length,coverImage:chosenCover,entries:s,cardBack:o||(r?r.cardBack:null),updatedAt:Date.now()
+id:r?r.id:(a||"deck_"+Date.now()+"_"+Math.random().toString(36).substring(2,7)),name:e,cardCount:l,uniqueCount:s.length,coverImage:chosenCover,entries:s,cardBack:o||(r?r.cardBack:null),updatedAt:Date.now()
 };
 await waitForDeckCloud(),await window.saveGlobalDeckToCloud(d);
 try {
@@ -2671,11 +2671,25 @@ const activeTurn=gameState.activeTurnPlayer||"p1";
 const ab=gameState.activeBattle;
 if(t) {
 const canCombat = typeof window.isCombatEligibleCard === "function" ? window.isCombatEligibleCard(o) : true;
+const effRot = window.BSComputedState?.getEffectiveCard?.(o);
 if(curPh==="ATTACK" && deg===0 && o.owner===activeTurn && !ab && canCombat) {
+if(effRot?.cantAttackOrBlock) {
+if(typeof showNotice==="function") showNotice("🚫 受到場上效果限制：此卡目前不可進行攻擊！");
+return;
+}
 o.rotation=90;
 o.battleState="attacking";
 if(typeof window.declareAttackBattle==="function") window.declareAttackBattle(o.id);
-} else if(curPh==="ATTACK" && deg===0 && ab && ab.status==="DECLARE" && o.owner===ab.defenderOwner && canCombat) {
+} else if(curPh==="ATTACK" && (deg===0 || (deg===90 && effRot?.canBlockExhausted)) && ab && ab.status==="DECLARE" && o.owner===ab.defenderOwner && canCombat) {
+if(effRot?.cantAttackOrBlock) {
+if(typeof showNotice==="function") showNotice("🚫 受到場上效果限制：此卡目前不可進行防禦！");
+return;
+}
+const atkC = ab.attackerId ? gameState.cards[ab.attackerId] : null;
+if(atkC && window.BSComputedState?.getEffectiveCard?.(atkC)?.unblockable) {
+if(typeof showNotice==="function") showNotice("🚫 攻擊中的 Spirit 受到效果影響：不可被防禦！");
+return;
+}
 o.rotation=90;
 o.battleState="blocking";
 if(typeof window.selectBattleBlocker==="function") window.selectBattleBlocker(o.id);
@@ -3188,7 +3202,7 @@ return {
 turnFaces:gameState.turnFaces|| {
 },p1_life:gameState.p1_life,p1_reserve:gameState.p1_reserve,p1_count:gameState.p1_count,p1_trash_core:gameState.p1_trash_core,p2_life:gameState.p2_life,p2_reserve:gameState.p2_reserve,p2_count:gameState.p2_count,p2_trash_core:gameState.p2_trash_core,p1Deck:gameState.p1Deck,p2Deck:gameState.p2Deck,soulCoreLocation:gameState.soulCoreLocation,zoneCollapsed:gameState.zoneCollapsed|| {
 god_p1:!1,god_p2:!1,openhand_p1:!1,openhand_p2:!1
-},lastShuffle:gameState.lastShuffle,lastLottery:gameState.lastLottery,lastActionEffect:gameState.lastActionEffect,lastPhaseBanner:gameState.lastPhaseBanner||null,lotteryPendingWinner:gameState.lotteryPendingWinner||null,lotteryUsed:!!gameState.lotteryUsed,currentPhase:gameState.currentPhase||"START",activeTurnPlayer:gameState.activeTurnPlayer||"p1",isFirstTurn:!!gameState.isFirstTurn,activeBattle:gameState.activeBattle||null,tempBuffs:Array.isArray(gameState.tempBuffs)?gameState.tempBuffs:[],usedEffectsTurn:gameState.usedEffectsTurn||{},oracleWindows:gameState.oracleWindows||{p1:null,p2:null},revealWindows:gameState.revealWindows||{p1:null,p2:null},pendingHandPick:gameState.pendingHandPick||null,bs5LiveHud:gameState.bs5LiveHud||null,bs5Modifiers:Array.isArray(gameState.bs5Modifiers)?gameState.bs5Modifiers:[],seats:gameState.seats|| {
+},lastShuffle:gameState.lastShuffle,lastLottery:gameState.lastLottery,lastActionEffect:gameState.lastActionEffect,lastPhaseBanner:gameState.lastPhaseBanner||null,lotteryPendingWinner:gameState.lotteryPendingWinner||null,lotteryUsed:!!gameState.lotteryUsed,currentPhase:gameState.currentPhase||"START",activeTurnPlayer:gameState.activeTurnPlayer||"p1",isFirstTurn:!!gameState.isFirstTurn,activeBattle:gameState.activeBattle||null,tempBuffs:Array.isArray(gameState.tempBuffs)?gameState.tempBuffs:[],usedEffectsTurn:gameState.usedEffectsTurn||{},usedEffectsGame:gameState.usedEffectsGame||{},oracleWindows:gameState.oracleWindows||{p1:null,p2:null},revealWindows:gameState.revealWindows||{p1:null,p2:null},pendingHandPick:gameState.pendingHandPick||null,bs5LiveHud:gameState.bs5LiveHud||null,bs5Modifiers:Array.isArray(gameState.bs5Modifiers)?gameState.bs5Modifiers:[],seats:gameState.seats|| {
 p1:null,p2:null
 },seatNames:gameState.seatNames|| {
 p1:"",p2:""
@@ -3256,7 +3270,7 @@ if(!e)return;e.turnFaces||(gameState.turnFaces= {
 void 0!==e[t]&&e[t]!==gameState[t]&&triggerCounterKeyFlash(t,e[t]-gameState[t])
 }),void 0!==e.p1_life&&t>0&&0===e.p1_life&&triggerZeroLifeSequence("p1"),void 0!==e.p2_life&&o>0&&0===e.p2_life&&triggerZeroLifeSequence("p2");let a=null;e.lastShuffle&&e.lastShuffle.timestamp>lastSeenShuffleTime&&(lastSeenShuffleTime=e.lastShuffle.timestamp,gameState.lastShuffle=e.lastShuffle,a=e.lastShuffle.player);let n=null;e.lastLottery&&e.lastLottery.timestamp>lastSeenLotteryTime&&(lastSeenLotteryTime=e.lastLottery.timestamp,gameState.lastLottery=e.lastLottery,n=e.lastLottery.winner);let r=null;e.lastActionEffect&&e.lastActionEffect.timestamp>lastSeenActionEffectTime&&(lastSeenActionEffectTime=e.lastActionEffect.timestamp,gameState.lastActionEffect=e.lastActionEffect,r=e.lastActionEffect);const s= {
 p1:gameState.soulCoreLocation?.p1,p2:gameState.soulCoreLocation?.p2
-};["p1_life","p1_reserve","p1_count","p1_trash_core","p2_life","p2_reserve","p2_count","p2_trash_core","turnFaces","soulCoreLocation","zoneCollapsed","lotteryUsed","lotteryPendingWinner","lastPhaseBanner","currentPhase","activeTurnPlayer","isFirstTurn","activeBattle","tempBuffs","usedEffectsTurn","oracleWindows","revealWindows","pendingHandPick","bs5LiveHud","bs5Modifiers","seats","seatNames"].forEach(t=> {
+};["p1_life","p1_reserve","p1_count","p1_trash_core","p2_life","p2_reserve","p2_count","p2_trash_core","turnFaces","soulCoreLocation","zoneCollapsed","lotteryUsed","lotteryPendingWinner","lastPhaseBanner","currentPhase","activeTurnPlayer","isFirstTurn","activeBattle","tempBuffs","usedEffectsTurn","usedEffectsGame","oracleWindows","revealWindows","pendingHandPick","bs5LiveHud","bs5Modifiers","seats","seatNames"].forEach(t=> {
 void 0!==e[t]&&(gameState[t]=e[t])
 }),Array.isArray(e.p1Deck)&&(gameState.p1Deck=e.p1Deck),Array.isArray(e.p2Deck)&&(gameState.p2Deck=e.p2Deck),gameState.seats||(gameState.seats= {
 p1:null,p2:null
@@ -5848,6 +5862,7 @@ return host && host.owner === card.owner && host.zone === card.zone && host.zone
 function canAdvent(card, target) {
 if (!card || !target || card.id === target.id) return false;
 if (!isAdventCard(card)) return false;
+if (window.BSComputedState?.getPlayerRestriction?.(card.owner, "noEnemyAdvent")) return false;
 if (card.isFaceDown || target.isFaceDown) return false;
 if (card.owner !== target.owner) return false;
 if (!target.zone?.startsWith("field-")) return false;
@@ -5969,6 +5984,10 @@ return Boolean(host && host.owner === owner && host.zone === `field-${owner}`);
 function promptAdventConfirm(cardId, targetId) {
 const card = gameState.cards[cardId];
 const target = gameState.cards[targetId];
+if (card && isAdventCard(card) && window.BSComputedState?.getPlayerRestriction?.(card.owner, "noEnemyAdvent")) {
+showNotice("🚫 受到場上效果（如黄昏のレクリス）限制：目前不可進行《煌臨》！");
+return false;
+}
 if (!canAdvent(card, target)) return false;
 const soulOk = canPayAdventSoulCore(card.owner);
 pendingAdventDrop = { cardId, targetId };
@@ -11043,7 +11062,7 @@ ensureMirageFormUI();
 /* =========================================================================
 PART 1: 左上角 BS 版本號齒輪控制（語意化 major.minor：支援 3.7 -> 3.8 -> 3.9 -> 3.10 -> 3.11）
 ========================================================================= */
-const BS_DEFAULT_VERSION = "6.0";
+const BS_DEFAULT_VERSION = "6.4";
 const VER_KEY = "bs_app_version_str";
 const VER_BASE_KEY = "bs_app_version_base";
 window.BS_APP_VERSION = BS_DEFAULT_VERSION;
@@ -11348,7 +11367,7 @@ godDeployBtn.classList.add("hidden");
     <div class="changelog-header">
       <div class="flex items-center gap-2.5 flex-wrap">
         <h2 id="changelog-modal-title" class="text-base sm:text-lg font-black tracking-widest text-[#e0b25b]">📜 更新日誌 (CHANGELOG)</h2>
-        <span id="changelog-current-ver" class="text-xs font-black bg-emerald-950/80 border border-emerald-500/60 text-emerald-300 px-2 py-0.5 rounded-sm">v6.0</span>
+        <span id="changelog-current-ver" class="text-xs font-black bg-emerald-950/80 border border-emerald-500/60 text-emerald-300 px-2 py-0.5 rounded-sm">v6.4</span>
       </div>
       <button type="button" class="border border-[#b09466]/55 bg-black/70 text-[#dcd6cc] hover:bg-[#c8aa76] hover:text-black px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="closeChangelogModal()">關閉 (✕)</button>
     </div>
@@ -11362,6 +11381,48 @@ godDeployBtn.classList.add("hidden");
 版本更新日誌資料（往後每次更新 3.8、3.9、3.10、3.11… 請於陣列最上方新增物件）
 ========================================================================= */
 window.BS_CHANGELOG = [
+{
+  version: "6.4",
+  date: "2026-11-24",
+  title: "v6.4 卡組庫新增「🧪 實測驗證專用測試牌組」：自動累積追加新測試卡、永不刪除舊卡、支援單鍵雙邊載入 P1+P2",
+  highlights: [
+    "【專用實測測試牌組自動建立與累積追加】開啟「🗂️ 卡組庫」時自動建立並置頂「🧪 實測驗證專用測試牌組」（固定 ID 同步雲端與本機），自動從卡池收錄 v6.2 與 v6.3 全部 48 張實測卡與對應轉醒 A/B 面；往後新增測試卡一律只追加合併，絕不刪除既有卡片。",
+    "【單鍵雙邊載入 P1+P2】在專用測試牌組卡片上新增「⚡ 雙邊 P1+P2」按鈕，單人實測雙方互動（對手破壞、對手抽牌、對手防禦稅、疲勞防禦等）時可一鍵將測試牌組同時載入 P1 與 P2。",
+    "【內建實測清單與手動批次追加卡號】點擊「📋 測試清單」即可對照每批測試卡的收錄狀態與操作提示，亦可隨時貼上任意卡號批次追加進測試牌組（同樣保證永不刪舊卡）。"
+  ]
+},
+{
+  version: "6.3",
+  date: "2026-11-24",
+  title: "v6.3 規則閉環大升級：6 項引擎觸發／攔截閉環 ＋ 手牌【加速】與廢棄區 Flash 快捷鈕 ＋ 全確認視窗半透明化",
+  highlights: [
+    "【事件與替換全面閉環】補齊 AFTER_ENEMY_DESTROYED（附帶 destroyedBP，修通 BSC49-054／BSC50-X01／CB11-019／PX20-01／SD49-X01）、AFTER_ENEMY_HAND_INCREASED（修通 BS73-032 幻境抽牌）、AFTER_ALLY_PLAY_OR_TURN 轉醒連動，並正式接入 BEFORE_CARD_LEAVE_FIELD 離場留場替換（BSC47-RV010(B)／BSC50-020）。",
+    "【4 項戰鬥／手牌限制旗標實戰生效】正式攔截 cantAttackOrBlock（含 BSC49-XV09 指定 Cost 鎖攻防）、unblockable（不可防禦）、lockEnemyOpenhandCosts（BS69-X04 手元同費封鎖），並支援 canBlockExhausted 疲勞狀態直接點擊防禦（BS70-040／BS75-CX02 騎裝甲全白銀光環）。",
+    "【手牌【加速】與廢棄區 Flash 快捷入口】攻擊階段於手牌【加速】卡上方顯示 ⚡加速 按鈕（BSC45-XV03／BSC45-XV05／BSC49-XV05／BSC49-XV12），廢棄區檢視窗內為復活型 Flash 卡（BSC50-XV03／BS57-X02）加上 ⚡發動 Flash 鈕，並支援合體 Brave（如 BSC50-020）顯示宿主 ⚡Flash。",
+    "【全對局確認彈窗統一半透明毛玻璃化】將出牌付費、Core 歸還、神託確認、煌臨確認、設置創界神、牌組頂底與魂狀態彈窗全面升級為低遮蔽半透明毛玻璃風格，操作時不再遮擋戰場視野。"
+  ]
+},
+{
+  version: "6.2",
+  date: "2026-11-24",
+  title: "v6.2 修復抽牌階段特別效果（BS61-CP04 灼熱の谷 / BS60-074 溶岩海のエデラ砦）與階段視窗全新半透明化",
+  highlights: [
+    "【修復 BS61-CP04 灼熱の谷點擊選項無效】重寫抽牌階段特別效果解析與執行管線：點擊「灼熱の谷」後確實連抽 2 張牌（多張可疊加同時發動），隨後立即開啟半透明手牌選擇列捨棄 1 張手牌；並同步修復 BS60-074 溶岩海のエデラ砦（Lv2 抽 2 棄 1，Count 5+ 自動免捨棄）與手動點擊抽牌階段流程。",
+    "【階段特別效果視窗全新半透明化】全面移除舊版全螢幕黑底遮罩彈窗（#bs-phase-action-modal），改用與 v5/v6 引擎一致的頂部浮動半透明毛玻璃橫幅（backdrop-filter + 金色漸層細線 + 滑鼠懸停掃光選項列），選擇時完整看清戰場與手牌。",
+    "【補齊 BS61-CP04 幻境效果與選牌預覽】支援「對手以效果從空間增加 Core 時」自動觸發設置中灼熱の谷回收廢棄區 1 張純紅卡；半透明手牌選擇列新增滑鼠懸停大圖預覽。"
+  ]
+},
+{
+  version: "6.1",
+  date: "2026-11-24",
+  title: "v6.1 全面深度檢修：修復 7 大核心引擎 Bug ＋ 完整實作 16 項特殊規則 Modifier ＋ 幻境區隔離與 Flash 入口",
+  highlights: [
+    "【修復致命崩潰與歸屬反轉】修正 checkZeroBpStateBasedAction 殘留 ReferenceError (bs5Modifiers)；修正全域 ADD_MODIFIER 與 getHandCostDelta 歸屬方向，暴風雪牆LT／假面之魂／激覇ウォール／神盾ノ輝／巨人大帝XV 全面準確作用於正確陣營。",
+    "【修復戰鬥完結與幻境區】selfIsAttacker 改讀事件 payload 保留之攻擊者 ID，修復 BS70-XV01、BSC45-XV01、BS55-TX02(B)、CB07-XX01 戰鬥完結燒血；常駐與觸發掃描納入表側幻境區並與場上效果嚴格隔離，表側幻境亦顯示 ⚡Flash 按鈕。",
+    "【完整實作 16 項特殊規則 Modifier】支援條件型生命護盾（BS70-CP02 / BS73-079 / BSC50-041）、手牌費用＝生命值（BS70-079 / BSC50-036）、BP比拼勝出燒血（BS52-CP14）、抽牌階段抽2棄1（BS61-CP04）、防禦稅回底（BS73-AX03）、爆裂廢棄區稅（BS74-X09）、禁對手煌臨（BS67-073）、創界神Core保護（BS70-075）、繼承顏色（BSC50-XV05）、攻擊時發動防禦效果（BSC50-026）與無法防止（BSC50-XV01 / CB11-X01）。",
+    "【每場遊戲 1 次連線同步】usedEffectsGame 正式納入房間狀態同步並下放至子節點，BS43-RVXX01／SD51-X02 等遊戲中 1 次分支嚴格鎖定不重複觸發。"
+  ]
+},
 {
   version: "6.0",
   date: "2026-11-24",
@@ -11543,15 +11604,31 @@ if (e.key === "Escape") closeChangelogModal();
 <!-- #endregion -->
 
 <!-- #region 22. [外掛] 中央階段追蹤列、階段限定常駐 (第2類) 與 期間限定 Buff 系統 (第5類) -->
-<div id="bs-phase-action-modal" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-[13600] hidden flex justify-center items-center p-4">
-  <div class="border border-[#e0b25b] bg-[#0c0b0a]/98 w-full max-w-md flex flex-col p-4 gap-3 shadow-2xl rounded-sm">
-    <div class="flex justify-between items-center border-b border-[#b09466]/35 pb-2">
-      <div id="bs-phase-action-title" class="text-[#e0b25b] font-black tracking-widest text-sm uppercase">⚡ 階段特別效果觸發</div>
-      <span id="bs-phase-action-step-tag" class="text-[10px] font-black px-2 py-0.5 rounded-sm bg-amber-950/80 border border-[#c8aa76]/60 text-[#fde68a]">CORE STEP</span>
+<style>
+#bs-phase-action-modal{position:fixed;top:clamp(54px,9vh,110px);left:50%;transform:translateX(-50%);z-index:13600;width:min(760px,95vw);pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:8px}
+#bs-phase-action-modal.hidden{display:none!important}
+.bs-phase-glass-shell{pointer-events:auto;width:100%;background:linear-gradient(90deg,rgba(10,9,8,.10) 0%,rgba(14,11,9,.80) 12%,rgba(14,11,9,.82) 88%,rgba(10,9,8,.10) 100%);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);border-top:1.5px solid rgba(224,178,91,.78);border-bottom:1.5px solid rgba(224,178,91,.78);box-shadow:0 12px 36px rgba(0,0,0,.58);color:#f5efe6;overflow:hidden}
+.bs-phase-glass-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 20px;border-bottom:1px solid rgba(224,178,91,.28);font-size:12px;font-weight:900;color:#fde68a;letter-spacing:.06em}
+.bs-phase-glass-row{position:relative;overflow:hidden;padding:10px 24px;cursor:pointer;display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;transition:background .18s ease,transform .14s ease}
+.bs-phase-glass-row+.bs-phase-glass-row{border-top:1px solid rgba(224,178,91,.22)}
+.bs-phase-glass-row:hover{background:linear-gradient(90deg,transparent 0%,rgba(224,178,91,.22) 18%,rgba(250,204,21,.28) 50%,rgba(224,178,91,.22) 82%,transparent 100%)}
+.bs-phase-glass-row:active{transform:scale(.992)}
+.bs-phase-glass-cta{display:inline-flex;align-items:center;gap:6px;margin-top:2px;padding:3px 12px;border-radius:3px;font-size:11.5px;font-weight:900;background:linear-gradient(135deg,rgba(212,176,106,.92),rgba(159,120,53,.92));color:#0a0806;border:1px solid rgba(254,240,138,.85);box-shadow:0 2px 10px rgba(0,0,0,.45)}
+.bs-phase-glass-actions{pointer-events:auto;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:8px}
+.bs-phase-glass-btn{background:rgba(16,13,11,.78);color:#e5dccb;border:1px solid rgba(224,178,91,.62);padding:6px 18px;border-radius:3px;font-size:12px;font-weight:900;cursor:pointer;transition:all .15s ease;backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
+.bs-phase-glass-btn:hover{background:#c8aa76;color:#0a0806}
+.bs-phase-glass-btn.gold{background:linear-gradient(135deg,rgba(212,176,106,.92),rgba(159,120,53,.92));color:#0a0806;border-color:#fef08a}
+.bs-phase-glass-btn.gold:hover{background:#fef08a}
+</style>
+<div id="bs-phase-action-modal" class="hidden" role="dialog" aria-label="階段特別效果觸發">
+  <div class="bs-phase-glass-shell">
+    <div class="bs-phase-glass-head">
+      <div id="bs-phase-action-title">⚡ 階段特別效果觸發</div>
+      <span id="bs-phase-action-step-tag" class="text-[10px] font-black px-2 py-0.5 rounded-sm bg-amber-950/60 border border-[#c8aa76]/60 text-[#fde68a]">DRAW STEP</span>
     </div>
-    <div id="bs-phase-action-desc" class="text-xs text-[#dcd6cc] leading-relaxed"></div>
-    <div id="bs-phase-action-buttons" class="flex flex-col gap-2"></div>
+    <div id="bs-phase-action-desc"></div>
   </div>
+  <div id="bs-phase-action-buttons" class="bs-phase-glass-actions"></div>
 </div>
 
 <style>.bs-phase-bar{display:inline-flex;align-items:center;gap:2px;background:rgba(0,0,0,0.55);border:1px solid rgba(186,158,108,0.4);border-radius:2px;padding:1px 2px}.bs-phase-btn{font-size:9px;font-weight:800;padding:1.5px 5px;border-radius:1.5px;border:1px solid transparent;background:transparent;color:#a89f91;cursor:pointer;transition:all 0.14s ease;line-height:1.2;white-space:nowrap}.bs-phase-btn:hover{color:#f5efe6;background:rgba(200,170,118,0.18)}.bs-phase-btn.is-active{background:#c8aa76;color:#090807;border-color:#fef08a;box-shadow:0 0 8px rgba(200,170,118,0.65)}body.phone-mode .bs-phase-btn{font-size:10px;padding:3px 5px}.bs-buff-open-btn{font-size:10px;font-weight:900;padding:2px 7px;border-radius:2px;border:1px solid rgba(192,132,252,0.7);background:rgba(88,28,135,0.45);color:#f3e8ff;cursor:pointer;transition:all 0.15s ease;white-space:nowrap}.bs-buff-open-btn:hover{background:#a855f7;color:#090807;border-color:#ffffff}.card-cont-badges{position:absolute;top:50%;left:50%;width:var(--badge-box-w,100px);height:var(--badge-box-h,140px);padding:3px;box-sizing:border-box;transform:translate(-50%,-50%) rotate(var(--card-ui-rotation,0deg));display:flex;flex-wrap:wrap;align-content:flex-start;align-items:flex-start;justify-content:flex-start;gap:2px;pointer-events:none;z-index:45}.bs-phase-cutin-wrap{position:fixed;inset:0;z-index:16900;pointer-events:none;display:flex;justify-content:center;align-items:center;overflow:hidden}.bs-phase-cutin-banner{position:relative;width:min(700px,86vw);min-width:0;max-width:86vw;height:92px;overflow:hidden;background:linear-gradient(90deg,rgba(12,10,8,0) 0%,rgba(28,20,11,0.86) 20%,rgba(58,41,18,0.96) 50%,rgba(28,20,11,0.86) 80%,rgba(12,10,8,0) 100%);border-top:2px solid #e0b25b;border-bottom:2px solid #e0b25b;box-shadow:inset 0 0 28px rgba(250,204,21,0.18);mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,0.45) 10%,#000 24%,#000 76%,rgba(0,0,0,0.45) 90%,transparent 100%);-webkit-mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,0.45) 10%,#000 24%,#000 76%,rgba(0,0,0,0.45) 90%,transparent 100%);transform-origin:center center;will-change:transform,opacity}.bs-phase-cutin-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;will-change:transform,opacity;z-index:2}.bs-phase-cutin-sheen{position:absolute;top:-30%;bottom:-30%;left:0;width:36%;background:linear-gradient(100deg,transparent 0%,rgba(255,255,255,0.06) 18%,rgba(255,255,255,0.48) 44%,rgba(255,255,255,0.84) 50%,rgba(255,255,255,0.48) 56%,rgba(255,255,255,0.06) 82%,transparent 100%);filter:blur(5px);transform:translateX(-140%) skewX(-22deg);pointer-events:none;z-index:3;will-change:transform,opacity}.bs-phase-cutin-en{font-size:11px;font-weight:900;letter-spacing:0.34em;color:#fde68a;text-transform:uppercase;text-shadow:0 2px 6px #000}.bs-phase-cutin-zh{font-size:28px;font-weight:900;letter-spacing:0.18em;color:#ffffff;text-shadow:0 0 18px rgba(250,204,21,0.85),0 3px 8px #000;line-height:1.15}.bs-phase-cutin-sub{font-size:11px;font-weight:800;color:#c8aa76;letter-spacing:0.12em}.bs-phase-cutin-banner.is-attack-banner{background:linear-gradient(90deg,rgba(45,6,6,0) 0%,rgba(115,16,16,0.92) 18%,rgba(185,28,28,0.97) 50%,rgba(115,16,16,0.92) 82%,rgba(45,6,6,0) 100%);border-top:2px solid #ef4444;border-bottom:2px solid #ef4444;box-shadow:0 0 28px rgba(239,68,68,0.68),inset 0 0 28px rgba(248,113,113,0.34)}.bs-phase-cutin-banner.is-attack-banner .bs-phase-cutin-en{color:#fecaca}.bs-phase-cutin-banner.is-attack-banner .bs-phase-cutin-zh{color:#ffffff;text-shadow:0 0 20px rgba(239,68,68,0.95),0 3px 8px #000}.bs-phase-cutin-banner.is-attack-banner .bs-phase-cutin-sub{color:#fca5a5}.bs-phase-cutin-banner.is-end-banner{background:linear-gradient(90deg,rgba(18,18,21,0) 0%,rgba(46,51,58,0.92) 18%,rgba(75,85,99,0.96) 50%,rgba(46,51,58,0.92) 82%,rgba(18,18,21,0) 100%);border-top:2px solid #9ca3af;border-bottom:2px solid #9ca3af;box-shadow:0 0 24px rgba(156,163,175,0.5),inset 0 0 24px rgba(229,231,235,0.2)}.bs-phase-cutin-banner.is-end-banner .bs-phase-cutin-en{color:#e5e7eb}.bs-phase-cutin-banner.is-end-banner .bs-phase-cutin-zh{color:#f9fafb;text-shadow:0 0 16px rgba(156,163,175,0.85),0 3px 8px #000}.bs-phase-cutin-banner.is-end-banner .bs-phase-cutin-sub{color:#d1d5db}.bs-autoturn-btn{font-size:9.5px;font-weight:900;padding:2px 6px;border-radius:2px;border:1px solid rgba(52,211,153,0.65);background:rgba(6,78,59,0.55);color:#a7f3d0;cursor:pointer;transition:all 0.15s ease;white-space:nowrap}.bs-autoturn-btn.is-off{border-color:rgba(168,159,145,0.45);background:rgba(20,18,16,0.7);color:#a89f91}.bs-autoturn-btn:hover{background:#10b981;color:#090807;border-color:#ffffff}.card-cont-pill{font-size:8.5px;font-weight:900;line-height:1.15;padding:1px 3.5px;border-radius:2px;background:rgba(9,8,7,0.88);border:1px solid rgba(224,178,91,0.72);color:#fef08a;text-shadow:0 1px 2px #000;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.card-cont-pill.is-armor{background:rgba(12,74,110,0.9);border-color:rgba(56,189,248,0.85);color:#e0f2fe}.card-cont-pill.is-cond{background:rgba(88,28,135,0.9);border-color:rgba(192,132,252,0.85);color:#f3e8ff}.card-cont-pill.is-temp{background:rgba(146,64,14,0.92);border-color:rgba(250,204,21,0.9);color:#fef08a}.field-aura-bar{position:absolute;top:42px;right:10px;z-index:75;display:flex;flex-wrap:wrap;justify-content:flex-end;gap:4px;max-width:65%;pointer-events:none}.field-aura-pill{font-size:9.5px;font-weight:900;padding:2px 6px;border-radius:2px;background:rgba(127,29,29,0.88);border:1px solid rgba(248,113,113,0.75);color:#fecaca;box-shadow:0 2px 8px rgba(0,0,0,0.75);white-space:nowrap}.field-aura-pill.is-buff{background:rgba(6,78,59,0.88);border-color:rgba(52,211,153,0.75);color:#a7f3d0}.field-aura-pill.is-temp{background:rgba(113,63,18,0.92);border-color:rgba(250,204,21,0.85);color:#fef08a}.trash-undead-badge{display:inline-flex;align-items:center;gap:2px;font-size:9px;font-weight:900;padding:0 4px;border-radius:2px;background:rgba(88,28,135,0.85);border:1px solid rgba(192,132,252,0.75);color:#f3e8ff;margin-left:3px}#bs-temp-buff-modal{position:fixed;inset:0;z-index:12600;background:rgba(0,0,0,0.82);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;padding:12px}#bs-temp-buff-modal.hidden{display:none !important}.bs-buff-panel{width:min(460px,95vw);max-height:88dvh;overflow-y:auto;background:#0d0c0b;border:1px solid #c8aa76;border-radius:4px;padding:16px;color:#f5efe6;display:flex;flex-direction:column;gap:11px;box-shadow:0 20px 55px rgba(0,0,0,0.95)}.bs-buff-presets{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.bs-buff-preset-btn{font-size:11px;font-weight:800;padding:6px 4px;border-radius:3px;border:1px solid rgba(186,158,108,0.5);background:rgba(255,255,255,0.05);color:#fef08a;cursor:pointer;transition:all 0.14s ease}.bs-buff-preset-btn:hover{background:#c8aa76;color:#090807}.bs-buff-active-item{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 8px;border:1px solid rgba(186,158,108,0.35);background:rgba(255,255,255,0.03);border-radius:3px;font-size:11px}</style>
@@ -12248,55 +12325,118 @@ if (matchingBlock.length >= 4) break;
 }
 if (!matchingBlock) continue;
 const snippet = matchingBlock.join("\n");
+const noStack = /不能重複|不可重複|重複不可/.test(snippet);
+if (noStack && results.some(r => r.cardName === (cat.name || c.catalogNumber || c.id))) continue;
 const drawReplaceM = snippet.match(/(?:變更為|改為|代わりに)[^。\n]{0,20}?抽\s*(\d+)\s*張/);
+const extraDrawM = snippet.match(/抽牌數量[^。\n]{0,12}?\+\s*(\d+)\s*張/);
+const discardAfterM = snippet.match(/抽牌後[^。\n]{0,24}?捨棄\s*(\d+)\s*張手牌/);
+const reduceDiscM = snippet.match(/計數值在\s*(\d+)\s*點?(?:或以上|以上)時[^。\n]{0,30}?捨棄[^。\n]{0,16}?-\s*(\d+)\s*張/);
+const ownCnt = Number(gameState[`${owner}_count`]) || 0;
+const extraDraw = extraDrawM ? (parseInt(extraDrawM[1], 10) || 0) : 0;
+let discardAfterDraw = discardAfterM ? (parseInt(discardAfterM[1], 10) || 0) : 0;
+const discardReduced = Boolean(reduceDiscM && ownCnt >= (parseInt(reduceDiscM[1], 10) || 999));
+if (discardReduced) {
+discardAfterDraw = Math.max(0, discardAfterDraw - (parseInt(reduceDiscM[2], 10) || 0));
+}
 results.push({
 cardId: c.id,
 cardName: cat.name || c.catalogNumber || c.id,
 snippet,
-replaceWithDraw: drawReplaceM ? (parseInt(drawReplaceM[1], 10) || 1) : 0
+noStack,
+replaceWithDraw: drawReplaceM ? (parseInt(drawReplaceM[1], 10) || 1) : 0,
+extraDraw,
+discardAfterDraw,
+discardReduced
 });
 }
 return results;
 }
-function promptPhaseSpecialModal(phaseKey, owner, actions, defaultActionLabel) {
+function promptPhaseSpecialModal(phaseKey, owner, actions, defaultActionLabel, extraButtons = []) {
 return new Promise(resolve => {
 const modal = document.getElementById("bs-phase-action-modal");
 const titleEl = document.getElementById("bs-phase-action-title");
 const tagEl = document.getElementById("bs-phase-action-step-tag");
 const descEl = document.getElementById("bs-phase-action-desc");
 const btnsEl = document.getElementById("bs-phase-action-buttons");
-if (!modal || !btnsEl) return resolve({ type: "default" });
+if (!modal || !btnsEl || !descEl) return resolve({ type: "default" });
 const meta = PHASE_BANNER_META[phaseKey] || { en: phaseKey, zh: phaseKey };
-if (titleEl) titleEl.textContent = `⚡ ${owner.toUpperCase()} ${meta.zh}特別效果`;
+if (titleEl) titleEl.textContent = `⚡ ${owner.toUpperCase()} ${meta.zh}特別效果（點擊選項發動）`;
 if (tagEl) tagEl.textContent = meta.en;
-if (descEl) {
-descEl.innerHTML = actions.map(a =>
-`<div class="mb-2 p-2 rounded-sm bg-black/60 border border-[#b09466]/40"><div class="text-[#fef08a] font-black mb-0.5">${a.cardName}</div><div class="text-[11px] text-[#dcd6cc] whitespace-pre-wrap">${a.snippet}</div></div>`
-).join("");
-}
-btnsEl.innerHTML = "";
-actions.forEach(a => {
-const b = document.createElement("button");
-b.type = "button";
-b.className = "w-full py-2 px-3 rounded-sm text-xs font-black bg-[#c8aa76] text-black hover:bg-white cursor-pointer transition-colors";
-b.textContent = a.replaceWithDraw
-? `🃏 發動「${a.cardName}」：改為抽 ${a.replaceWithDraw} 張卡`
-: `⚡ 發動「${a.cardName}」效果並繼續`;
-b.onclick = () => {
+
+const finishModal = (res) => {
 modal.classList.add("hidden");
-resolve({ type: a.replaceWithDraw ? "replaceDraw" : "triggerOnly", action: a });
+descEl.innerHTML = "";
+btnsEl.innerHTML = "";
+resolve(res);
 };
-btnsEl.appendChild(b);
+
+descEl.innerHTML = "";
+const drawAdjustActs = actions.filter(a => a.extraDraw > 0);
+if (phaseKey === "DRAW" && drawAdjustActs.length >= 2) {
+const sumExtra = drawAdjustActs.reduce((acc, a) => acc + a.extraDraw, 0);
+const sumDisc = drawAdjustActs.reduce((acc, a) => acc + a.discardAfterDraw, 0);
+const allRow = document.createElement("div");
+allRow.className = "bs-phase-glass-row";
+allRow.innerHTML = `<div class="bs5-tag">🔥 同時發動全部 ${drawAdjustActs.length} 張抽牌加成（${drawAdjustActs.map(x => x.cardName).join(" ＋ ")}）</div>`
++ `<div class="bs5-desc">基本抽 1 張 ＋ 額外抽 ${sumExtra} 張 ＝ 共抽 ${1 + sumExtra} 張${sumDisc > 0 ? `，抽牌後選擇捨棄 ${sumDisc} 張手牌` : "（免捨棄手牌）"}</div>`
++ `<div class="bs-phase-glass-cta">🃏 點擊一次發動：抽 ${1 + sumExtra} 張${sumDisc > 0 ? ` ➔ 棄 ${sumDisc} 張` : ""}</div>`;
+allRow.onclick = () => finishModal({
+type: "drawAdjust",
+extraDraw: sumExtra,
+discardCount: sumDisc,
+cardIds: drawAdjustActs.map(x => x.cardId),
+cardName: drawAdjustActs.map(x => x.cardName).join(" / ")
 });
+descEl.appendChild(allRow);
+}
+
+actions.forEach(a => {
+const row = document.createElement("div");
+row.className = "bs-phase-glass-row";
+const ctaText = a.replaceWithDraw
+? `🃏 點擊發動：改為抽 ${a.replaceWithDraw} 張卡`
+: a.extraDraw > 0
+? `🃏 點擊發動：共抽 ${1 + a.extraDraw} 張牌${a.discardAfterDraw > 0 ? ` ➔ 捨棄 ${a.discardAfterDraw} 張手牌` : (a.discardReduced ? "（Count 5+ 免捨棄）" : "")}`
+: `⚡ 點擊發動「${a.cardName}」效果並繼續`;
+row.innerHTML = `<div class="bs5-tag">✨ ${a.cardName}</div>`
++ `<div class="bs5-desc">${a.snippet}</div>`
++ `<div class="bs-phase-glass-cta">${ctaText}</div>`;
+row.onclick = () => {
+if (a.replaceWithDraw) {
+finishModal({ type: "replaceDraw", action: a });
+} else if (a.extraDraw > 0) {
+finishModal({
+type: "drawAdjust",
+action: a,
+extraDraw: a.extraDraw,
+discardCount: a.discardAfterDraw,
+cardIds: [a.cardId],
+cardName: a.cardName
+});
+} else {
+finishModal({ type: "triggerOnly", action: a });
+}
+};
+descEl.appendChild(row);
+});
+
+btnsEl.innerHTML = "";
 const defBtn = document.createElement("button");
 defBtn.type = "button";
-defBtn.className = "w-full py-2 px-3 rounded-sm text-xs font-bold border border-[#b09466]/55 bg-black/75 text-[#dcd6cc] hover:bg-white/15 cursor-pointer transition-colors";
+defBtn.className = "bs-phase-glass-btn";
 defBtn.textContent = defaultActionLabel || `▶ 略過並執行正常${meta.zh}`;
-defBtn.onclick = () => {
-modal.classList.add("hidden");
-resolve({ type: "default" });
-};
+defBtn.onclick = () => finishModal({ type: "default" });
 btnsEl.appendChild(defBtn);
+
+(extraButtons || []).forEach(eb => {
+const b = document.createElement("button");
+b.type = "button";
+b.className = "bs-phase-glass-btn" + (eb.gold ? " gold" : "");
+b.textContent = eb.label;
+b.onclick = () => finishModal({ type: eb.type || "cancel" });
+btnsEl.appendChild(b);
+});
+
 modal.classList.remove("hidden");
 });
 }
@@ -12398,17 +12538,46 @@ await sleep(240);
 }
 if (!await setStep("DRAW")) return;
 const drawActs = detectPhaseSpecialActions(owner, "DRAW");
+let totalDrawCount = 1;
+let discardAfterDrawCount = 0;
+let drawSourceLabel = "";
+let drawSourceCardId = null;
 if (drawActs.length) {
 const choice = await promptPhaseSpecialModal("DRAW", owner, drawActs, "🃏 正常執行：抽 1 張牌");
 if (myRun !== autoTurnRunId) return;
-if (choice.type === "triggerOnly" && choice.action?.cardId && typeof announceCardFlash === "function") {
+if (choice.type === "drawAdjust") {
+totalDrawCount = 1 + (Number(choice.extraDraw) || 0);
+discardAfterDrawCount = Number(choice.discardCount) || 0;
+drawSourceLabel = choice.cardName || "抽牌階段效果";
+drawSourceCardId = choice.cardIds?.[0] || choice.action?.cardId || null;
+(choice.cardIds || []).forEach(cid => {
+if (cid && typeof announceCardFlash === "function") announceCardFlash(cid, ["#ef4444", "#fde047"]);
+});
+} else if (choice.type === "triggerOnly" && choice.action?.cardId && typeof announceCardFlash === "function") {
 announceCardFlash(choice.action.cardId, ["#34d399"]);
 }
 }
+for (let di = 0; di < totalDrawCount; di++) {
 const deckArr = gameState[`${owner}Deck`];
-if (deckArr && deckArr.length > 0) {
+if (!deckArr || deckArr.length === 0) break;
 moveCardToZone(deckArr[0], `hand-${owner}`);
-await sleep(260);
+await sleep(di < totalDrawCount - 1 ? 220 : 280);
+if (myRun !== autoTurnRunId) return;
+}
+if (discardAfterDrawCount > 0 && typeof window.executeAstNode === "function") {
+const handCards = Object.values(gameState.cards).filter(c => c.owner === owner && c.zone === `hand-${owner}`);
+if (handCards.length > 0) {
+const actualDisc = Math.min(discardAfterDrawCount, handCards.length);
+await window.executeAstNode({
+op: "MOVE_CARDS",
+query: { owner: "self", zones: ["hand"], count: actualDisc, exactRequired: true },
+to: { owner: "self", zone: "trash" },
+optional: false,
+text: `「${drawSourceLabel}」抽牌階段效果：請選擇 ${actualDisc} 張手牌捨棄至廢棄區`
+}, { owner, sourceCard: drawSourceCardId ? gameState.cards[drawSourceCardId] : null, payload: {}, vars: {}, eventResult: {} });
+if (myRun !== autoTurnRunId) return;
+await sleep(220);
+}
 }
 if (!await setStep("REFRESH")) return;
 const refActs = detectPhaseSpecialActions(owner, "REFRESH");
@@ -12424,6 +12593,43 @@ await sleep(260);
 await setStep("MAIN");
 }
 window.runAutoTurnSequence = runAutoTurnSequence;
+window.triggerManualDrawPhaseSpecial = async function (owner) {
+const drawActs = detectPhaseSpecialActions(owner, "DRAW");
+if (!drawActs.length) return;
+const choice = await promptPhaseSpecialModal("DRAW", owner, drawActs, "🃏 正常執行：抽 1 張牌", [{ label: "✕ 僅切換階段（略過）", type: "cancel" }]);
+if (choice.type === "cancel") return;
+let totalDraw = 1, discCount = 0, srcLabel = "", srcId = null;
+if (choice.type === "drawAdjust") {
+totalDraw = 1 + (Number(choice.extraDraw) || 0);
+discCount = Number(choice.discardCount) || 0;
+srcLabel = choice.cardName || "抽牌階段效果";
+srcId = choice.cardIds?.[0] || choice.action?.cardId || null;
+(choice.cardIds || []).forEach(cid => {
+if (cid && typeof announceCardFlash === "function") announceCardFlash(cid, ["#ef4444", "#fde047"]);
+});
+} else if (choice.type === "triggerOnly" && choice.action?.cardId && typeof announceCardFlash === "function") {
+announceCardFlash(choice.action.cardId, ["#34d399"]);
+}
+for (let i = 0; i < totalDraw; i++) {
+const dk = gameState[`${owner}Deck`];
+if (!dk || !dk.length) break;
+moveCardToZone(dk[0], `hand-${owner}`);
+await new Promise(r => setTimeout(r, 220));
+}
+if (discCount > 0 && typeof window.executeAstNode === "function") {
+const handCards = Object.values(gameState.cards).filter(c => c.owner === owner && c.zone === `hand-${owner}`);
+if (handCards.length > 0) {
+const actualDisc = Math.min(discCount, handCards.length);
+await window.executeAstNode({
+op: "MOVE_CARDS",
+query: { owner: "self", zones: ["hand"], count: actualDisc, exactRequired: true },
+to: { owner: "self", zone: "trash" },
+optional: false,
+text: `「${srcLabel}」抽牌階段效果：請選擇 ${actualDisc} 張手牌捨棄至廢棄區`
+}, { owner, sourceCard: srcId ? gameState.cards[srcId] : null, payload: {}, vars: {}, eventResult: {} });
+}
+}
+};
 window.startFirstTurnOpening = function (owner) {
 gameState.activeTurnPlayer = owner || "p1";
 gameState.turnCount = 1;
@@ -16006,6 +16212,7 @@ window.notifyBurstEvent("OWN_SPIRIT_LEFT_FIELD", cOwner, { cardId: id });
 }
 if (curZ === `hand-${cOwner}` && prevZ !== curZ && (gameState.currentPhase || "") !== "DRAW") {
 window.notifyBurstEvent("OPP_HAND_INCREASED", cOwner, { cardId: id });
+if (window.BSGameBus?.emitAfter) setTimeout(() => window.BSGameBus.emitAfter("AFTER_ENEMY_HAND_INCREASED", { cardId: id, owner: cOwner }), 220);
 }
 }
 return res;
@@ -16118,9 +16325,13 @@ renderPendingHandPickModal();
 .mini-translation-source.has-main-act.has-turn > .mini-main-act-btn{transform:translate(-50%,-50%) rotate(var(--card-ui-rotation,0deg)) translate(54px,calc(-1 * var(--card-ui-edge,70px) - 14px))}
 #preview-main-act-btn{border:1px solid #34d399;background:#064e3bed;color:#a7f3d0;padding:7px 16px;margin-top:7px;border-radius:3px;cursor:pointer;font-weight:900;pointer-events:auto}
 body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
+/* v6.3 Unified Semi-Transparent Frosted Glass In-Game Confirm Modals */
+#core-return-modal,#deck-choice-modal,#god-confirm-modal,#advent-confirm-modal,#oracle-trigger-confirm-modal,#oracle-hand-confirm-modal,#play-pay-confirm-modal,#soul-state-confirm-modal{background:rgba(6,5,4,0.28)!important;backdrop-filter:blur(2px)!important;-webkit-backdrop-filter:blur(2px)!important}
+#core-return-modal>div,#deck-choice-modal>div,#god-confirm-modal>div,#advent-confirm-modal>div,#oracle-trigger-confirm-modal>div,#oracle-hand-confirm-modal>div,#play-pay-confirm-modal>div,#soul-state-confirm-modal>div{background:linear-gradient(180deg,rgba(18,14,11,0.78) 0%,rgba(12,10,8,0.82) 100%)!important;backdrop-filter:blur(9px)!important;-webkit-backdrop-filter:blur(9px)!important;border:1.5px solid rgba(224,178,91,0.76)!important;box-shadow:0 14px 40px rgba(0,0,0,0.62),inset 0 0 18px rgba(224,178,91,0.08)!important}
+.mini-accel-btn{border-color:#c084fc!important;color:#f3e8ff!important;background:rgba(88,28,135,0.92)!important;font-weight:900!important;top:-26px!important;bottom:auto!important;left:50%!important;transform:translateX(-50%)!important}
 </style>
 
-<div id="bs5-standby-hud" class="hidden" role="dialog" aria-label="BS v6.0 規則引擎待機佇列">
+<div id="bs5-standby-hud" class="hidden" role="dialog" aria-label="BS v6.4 規則引擎待機佇列">
   <div id="bs5-shell" class="bs5-shell"></div>
   <div id="bs5-tray" class="bs5-tray hidden"></div>
   <div id="bs5-actions" class="bs5-actions"></div>
@@ -16135,7 +16346,7 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
 (function () {
   "use strict";
 
-  const AST_SCHEMA_VERSION = 21;
+  const AST_SCHEMA_VERSION = 24;
   const ALLOWED_OPS = new Set([
     "MOVE_CARDS", "MOVE_CORES", "SET_CARD_STATE", "MODIFY_COUNTER",
     "ATTACH_CARD", "ADD_MODIFIER", "ACTIVATE_BURST", "INVOKE_CARD_EFFECT",
@@ -16962,7 +17173,24 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
         }
         list = cat.__bs5CompiledCache;
       }
-      return list.map(e => this.normalizeEffectMeta(e, cat));
+      const out = list.map(e => this.normalizeEffectMeta(e, cat));
+      if (cat.number === "BS61-CP04" && !out.some(e => e.events?.includes("AFTER_ENEMY_GAIN_CORE_FROM_SPACE"))) {
+        out.unshift(this.normalizeEffectMeta({
+          schema: 23,
+          kind: "TRIGGERED",
+          events: ["AFTER_ENEMY_GAIN_CORE_FROM_SPACE"],
+          header: "【設置中】幻境『對手以效果從空間增加Core時』",
+          minLv: 0,
+          script: {
+            op: "MOVE_CARDS",
+            query: { owner: "self", zones: ["trash"], pureColor: "紅", count: 1 },
+            to: { owner: "self", zone: "hand" },
+            optional: true,
+            text: "對手以效果從空間增加Core時，自己廢棄區1張純紅色卡牌可以返回手牌。"
+          }
+        }, cat));
+      }
+      return out;
     }
   };
 
@@ -16982,25 +17210,44 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
     return { lv: 1, bp: 0, maxLvOverride: false };
   }
 
+  function isMirageEffectMeta(ef) {
+    return /【設置中】|幻境/.test(String(ef?.header || ""));
+  }
+
   function getActiveContinuousEffects() {
     const out = [];
+    const curPhaseNow = gameState.currentPhase || "START";
     for (const c of Object.values(gameState.cards)) {
       if (c.isFaceDown || c.isSoulState) continue;
-      if (!c.zone?.startsWith("field-") && !c.zone?.startsWith("zone-god-")) continue;
+      const inMirage = Boolean(c.zone?.startsWith("zone-burst-"));
+      const inFieldOrGod = Boolean(c.zone?.startsWith("field-") || c.zone?.startsWith("zone-god-"));
+      if (!inFieldOrGod && !inMirage) continue;
       const cat = lookupCatalog(c);
       if (!cat) continue;
-      const effs = BSRuleCompiler.getEffectsForCard(c).filter(e => e.kind === "CONTINUOUS");
+      const effs = BSRuleCompiler.getEffectsForCard(c).filter(e => {
+        if (e.kind !== "CONTINUOUS") return false;
+        if (c.adventHostId && !e.fromAdventSource) return false;
+        const isMir = isMirageEffectMeta(e);
+        return inMirage ? isMir : !isMir;
+      });
       if (!effs.length) continue;
-      const base = getBaseLvBpRaw(c);
+      const hostCard = c.braveHostId ? gameState.cards[c.braveHostId] : (c.adventHostId ? gameState.cards[c.adventHostId] : c);
+      const base = getBaseLvBpRaw(hostCard || c);
       const cnt = Number(gameState[`${c.owner}_count`]) || 0;
       const activeTurnSide = gameState.activeTurnPlayer || "p1";
       for (const ef of effs) {
         if (ef.phaseOwner === "self" && c.owner !== activeTurnSide) continue;
         if (ef.phaseOwner === "opponent" && c.owner === activeTurnSide) continue;
-        if ((ef.minLv || 0) > 0 && base.lv < ef.minLv) continue;
+        if (ef.onlyPhase && curPhaseNow !== ef.onlyPhase) continue;
+        if (!inMirage && !c.braveHostId && !c.adventHostId && (ef.minLv || 0) > 0 && base.lv < ef.minLv) continue;
         if (ef.requireOC && cnt < Number(ef.ocCount ?? cat.oc?.count ?? 0)) continue;
         if (ef.requireAdvent && !(typeof adventChildren === "function" && adventChildren(c).length > 0)) continue;
-        if (ef.requireBrave && !(typeof braveChildren === "function" && braveChildren(c).length > 0)) continue;
+        if (ef.requireBrave && !(c.braveHostId || (typeof braveChildren === "function" && braveChildren(c).length > 0))) continue;
+        if (ef.minHostCores != null) {
+          const hc = hostCard || c;
+          const hCores = typeof getDisplayedCardCoreCount === "function" ? getDisplayedCardCoreCount(hc) : (hc.cores || 0);
+          if (hCores < Number(ef.minHostCores)) continue;
+        }
         if (ef.condition?.minCount != null && cnt < ef.condition.minCount) continue;
         if (ef.condition?.hasCardName && !Object.values(gameState.cards).some(x => x.owner === c.owner && (x.zone?.startsWith("field-") || x.zone?.startsWith("zone-god-") || x.isSoulState) && norm(lookupCatalog(x)?.name).includes(ef.condition.hasCardName))) continue;
         if (ef.whileAttacking) {
@@ -17077,14 +17324,36 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
         if (mod.cardUseTaxLifeToSpace && !sameSide) state.cardUseTaxLifeToSpace = Math.max(state.cardUseTaxLifeToSpace || 0, Number(mod.cardUseTaxLifeToSpace) || 1);
         if (mod.enemyLvCostDelta && !sameSide) state.enemyLvCostDelta = (state.enemyLvCostDelta || 0) + Number(mod.enemyLvCostDelta);
         if (mod.magicTaxDestroySpirit && !sameSide) state.magicTaxDestroySpirit = Math.max(state.magicTaxDestroySpirit, Number(mod.magicTaxDestroySpirit));
-        if (mod.unblockable && src.id === card.id) state.unblockable = true;
-        if (mod.canBlockExhausted && src.id === card.id) state.canBlockExhausted = true;
-        if (Array.isArray(mod.armorColors) && src.id === card.id) state.armorColors.push(...mod.armorColors);
+        const matchContTq = (tq) => {
+          if (!tq) return true;
+          if (tq.selfOnly) return src.id === card.id;
+          if (Array.isArray(tq.anyOf) && tq.anyOf.length) return tq.anyOf.some(sub => matchContTq(sub));
+          if (tq.types?.length) {
+            const isSpBr = baseType === "brave" && card.zone?.startsWith("field-") && !card.braveHostId;
+            if (!tq.types.includes(baseType) && !(isSpBr && tq.types.includes("spirit"))) return false;
+          }
+          if (tq.families?.length && !tq.families.some(f => baseFams.includes(f))) return false;
+          if (tq.colors?.length && !tq.colors.some(col => baseColors.includes(COLOR_MAP[col] || col))) return false;
+          if (tq.nameIncludes?.length && !tq.nameIncludes.some(nm => norm(cat.name).includes(nm))) return false;
+          if (tq.minCost != null && baseCost < Number(tq.minCost)) return false;
+          return true;
+        };
+        const tqOk = matchContTq(ef.targetQuery);
+        if (mod.unblockable && (ef.targetQuery ? (sameSide && tqOk) : src.id === card.id)) state.unblockable = true;
+        if (mod.canBlockExhausted && (ef.targetQuery ? (sameSide && tqOk) : src.id === card.id)) state.canBlockExhausted = true;
+        if (Array.isArray(mod.armorColors) && (ef.targetQuery ? (sameSide && tqOk) : src.id === card.id)) state.armorColors.push(...mod.armorColors);
         if (Array.isArray(mod.lockEnemyCosts) && !sameSide && mod.lockEnemyCosts.includes(baseCost)) state.cantAttackOrBlock = true;
-        const famOk = !ef.targetQuery?.families?.length || ef.targetQuery.families.some(f => baseFams.includes(f));
-        if (mod.bpDelta && sameSide && famOk) state.bp = Math.max(0, state.bp + Number(mod.bpDelta));
-        if (mod.symbolDelta && sameSide && famOk) state.symbols += Number(mod.symbolDelta);
-        if (mod.fixedSymbolCount != null && sameSide && famOk) state.symbols = Number(mod.fixedSymbolCount);
+        if (mod.bpDelta && sameSide && tqOk) state.bp = Math.max(0, state.bp + Number(mod.bpDelta));
+        if (mod.symbolDelta && sameSide && tqOk) state.symbols += Number(mod.symbolDelta);
+        if (mod.fixedSymbolCount != null && sameSide && tqOk) state.symbols = Number(mod.fixedSymbolCount);
+        if (mod.unpreventable && sameSide) state.unpreventable = true;
+        if (mod.extraDrawDiscardOne && sameSide) state.extraDrawDiscardOne = true;
+        if (mod.godCoresProtected && sameSide) state.godCoresProtected = true;
+        if (mod.mirageActive && sameSide) state.mirageActive = true;
+        if (mod.mirageOppDrawCounter && sameSide) state.mirageOppDrawCounter = true;
+        if (mod.noEnemyAdvent && !sameSide) state.noEnemyAdvent = true;
+        if (mod.blockTaxReturnSpirit && !sameSide) state.blockTaxReturnSpirit = Math.max(state.blockTaxReturnSpirit || 0, Number(mod.blockTaxReturnSpirit));
+        if (mod.burstTaxEnemyTrashToDeck && !sameSide) state.burstTaxEnemyTrashToDeck = Math.max(state.burstTaxEnemyTrashToDeck || 0, Number(mod.burstTaxEnemyTrashToDeck));
         if (mod.copySelfSymbolsToAllies && sameSide && src.id !== card.id && baseFams.includes("審判")) {
           state.symbols += getCardBaseSymbols(lookupCatalog(src));
         }
@@ -17099,17 +17368,29 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
         if (mod.fixedSymbolCount != null) state.symbols = Number(mod.fixedSymbolCount);
         if (mod.treatAsMaxLv) state.maxLvOverride = true;
         if (mod.colorless) state.colors = [];
+        if (Array.isArray(mod.addColors) && mod.addColors.length) {
+          state.colors = [...new Set([...state.colors, ...mod.addColors])];
+        }
         if (mod.unblockable) state.unblockable = true;
         if (mod.cantAttackOrBlock) state.cantAttackOrBlock = true;
         if (mod.negateEffects) state.negateEffects = true;
         if (mod.noBurst) state.noBurst = true;
         if (mod.noMagic) state.noMagic = true;
         if (mod.noEndAttackStep) state.noEndAttackStep = true;
+        if (mod.noEndTurn) state.noEndTurn = true;
         if (mod.lockEnemyOpenhandCosts) state.lockEnemyOpenhandCosts = true;
         if (mod.destroyAtBattleEnd) state.destroyAtBattleEnd = true;
         if (mod.enemyLvCostDelta) state.enemyLvCostDelta = (state.enemyLvCostDelta || 0) + Number(mod.enemyLvCostDelta);
         if (mod.opponentLifeLocked) state.opponentLifeLocked = true;
         if (mod.ignoreWhiteProtection) state.ignoreWhiteProtection = true;
+        if (mod.unpreventable) state.unpreventable = true;
+        if (mod.suppressEnemyDrawNexus) state.suppressEnemyDrawNexus = true;
+        if (mod.triggerOnBlockEffectsOnAttack) state.triggerOnBlockEffectsOnAttack = true;
+        if (mod.sagittNovaClashBurn) state.sagittNovaClashBurn = Math.max(state.sagittNovaClashBurn || 0, Number(mod.sagittNovaClashBurn));
+        if (mod.maxLifeLossPerAttack) state.maxLifeLossPerAttack = Math.min(state.maxLifeLossPerAttack ?? 99, Number(mod.maxLifeLossPerAttack));
+        if (mod.immuneLifeLossBelowCost) state.immuneLifeLossBelowCost = Math.max(state.immuneLifeLossBelowCost || 0, Number(mod.immuneLifeLossBelowCost));
+        if (mod.lifeGuardExceptCost3to6) state.lifeGuardExceptCost3to6 = true;
+        if (mod.lifeGuardLowCore) state.lifeGuardLowCore = Math.max(state.lifeGuardLowCore || 0, Number(mod.lifeGuardLowCore));
       }
 
       if (state.enemyLvCostDelta && Array.isArray(cat.levels) && cat.levels.length && !state.maxLvOverride) {
@@ -17131,9 +17412,12 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
     getHandCostDelta(player, targetData) {
       let delta = 0;
       const notes = [];
+      const targetFams = targetData ? getCardFamilies(targetData) : [];
+      const baseCost = targetData ? getCardBaseCost(targetData) : 0;
+      const ownLife = Number(gameState[`${player}_life`]) || 0;
       for (const m of getBs5Modifiers()) {
         const mod = m.modifier || {};
-        if (mod.enemyHandCostDelta && m.owner && m.owner !== player) {
+        if (mod.enemyHandCostDelta && m.owner === player) {
           delta += Number(mod.enemyHandCostDelta);
           notes.push(`⚡ ${m.sourceName || "戰鬥效果"}：手牌/手元 Cost +${mod.enemyHandCostDelta}`);
         }
@@ -17141,17 +17425,27 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
           delta += Number(mod.ownHandCostDelta);
           notes.push(`⚡ ${m.sourceName || "效果"}：手牌/手元 Cost ${mod.ownHandCostDelta > 0 ? "+" : ""}${mod.ownHandCostDelta}`);
         }
+        if (mod.ownFamilyCostEqualsLife && m.owner === player && targetFams.includes(mod.ownFamilyCostEqualsLife)) {
+          delta += (ownLife - baseCost);
+          notes.push(`⚡ ${m.sourceName || "效果"}：「${mod.ownFamilyCostEqualsLife}」Cost 變更為與生命值相同 (${ownLife})`);
+        }
       }
       return { delta, notes };
     },
 
     getPlayerRestriction(player, prop) {
+      const SELF_PROPS = new Set([
+        "maxLifeLossPerAttack", "noDeckMill", "ignoreWhiteProtection", "doubleBlockRequired",
+        "destroyBpBonus", "unpreventable", "extraDrawDiscardOne", "godCoresProtected",
+        "mirageActive", "mirageOppDrawCounter", "sagittNovaClashBurn", "triggerOnBlockEffectsOnAttack",
+        "suppressEnemyDrawNexus", "immuneLifeLossBelowCost", "lifeGuardExceptCost3to6", "lifeGuardLowCore",
+        "ownFamilyCostEqualsLife", "cost5AttackBurnOne"
+      ]);
       for (const { card: src, ef } of getActiveContinuousEffects()) {
         const mod = ef.modifier || {};
         if (!mod[prop]) continue;
         const sameSide = sideOfCard(src) === player;
-        const selfBeneficial = prop === "maxLifeLossPerAttack" || prop === "noDeckMill" || prop === "ignoreWhiteProtection" || prop === "doubleBlockRequired" || prop === "destroyBpBonus";
-        if (selfBeneficial ? sameSide : !sameSide) return mod[prop];
+        if (SELF_PROPS.has(prop) ? sameSide : !sameSide) return mod[prop];
       }
       const m = getBs5Modifiers().find(x => (!x.owner || x.owner === player) && x.modifier && x.modifier[prop]);
       return m ? m.modifier[prop] : false;
@@ -17159,7 +17453,7 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
 
     checkZeroBpStateBasedAction() {
       const removed = [];
-      for (const m of [...bs5Modifiers]) {
+      for (const m of [...getBs5Modifiers()]) {
         if (!m.targetCardId || !(Number(m.modifier?.bpDelta) < 0)) continue;
         const c = gameState.cards[m.targetCardId];
         if (!c || !c.zone?.startsWith("field-") || c.isFaceDown || c.isSoulState) continue;
@@ -17257,7 +17551,8 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
     const srcEff = ctx.sourceCard ? BSComputedState.getEffectiveCard(ctx.sourceCard) : null;
     if (ctx.sourceCard && c.owner !== ctx.owner && eff.armorColors.length && srcEff?.colors?.some(col => eff.armorColors.includes(col))) {
       const ignoreWhite = Boolean(srcEff?.ignoreWhiteProtection || BSComputedState.getPlayerRestriction(ctx.owner, "ignoreWhiteProtection"));
-      const blockingCols = ignoreWhite ? eff.armorColors.filter(col => col !== "白") : eff.armorColors;
+      const isUnprev = Boolean(srcEff?.unpreventable || BSComputedState.getPlayerRestriction(ctx.owner, "unpreventable"));
+      const blockingCols = (ignoreWhite || isUnprev) ? eff.armorColors.filter(col => col !== "白") : eff.armorColors;
       if (srcEff.colors.some(col => blockingCols.includes(col))) return false;
     }
     if (q.anyOf && Array.isArray(q.anyOf)) {
@@ -17269,6 +17564,7 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
       if (!typeMatched) return false;
     }
     if (q.families?.length && !q.families.some(f => eff.families.includes(f))) return false;
+    if (q.excludeFamilies?.length && q.excludeFamilies.some(f => eff.families.includes(f))) return false;
     if (q.familiesAll?.length) {
       const okAll = q.familiesAll.every(group => String(group).split("|").some(f => eff.families.includes(f)));
       if (!okAll) return false;
@@ -17363,7 +17659,7 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
     }
 
     if (zoneList.length === 1 && zoneList[0] === "advent_source") {
-      const host = ctx.sourceCard;
+      const host = (q.ofCard && q.ofCard !== "$self" && gameState.cards[q.ofCard]) ? gameState.cards[q.ofCard] : ctx.sourceCard;
       if (!host || typeof adventChildren !== "function") return [];
       return adventChildren(host).filter(c => cardMatchesFilter(c, q, ctx));
     }
@@ -17536,6 +17832,7 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
 
       const finish = (resultCards) => {
         clearBs5BoardPick();
+        if (typeof hideCardPreview === "function") hideCardPreview();
         tray.innerHTML = "";
         tray.classList.add("hidden");
         hud.classList.add("hidden");
@@ -17578,6 +17875,16 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
               const b = document.createElement("div");
               b.className = "oa-pick-check-badge"; b.textContent = "✓";
               tile.appendChild(b);
+            }
+            if (!opts.blindPick && img) {
+              tile.addEventListener("mouseenter", () => {
+                if (typeof controlMode !== "undefined" && controlMode === "PC" && typeof showCardPreviewNextToElement === "function") {
+                  showCardPreviewNextToElement(tile, img, c.id, false);
+                }
+              });
+              tile.addEventListener("mouseleave", () => {
+                if (typeof controlMode !== "undefined" && controlMode === "PC" && typeof hideCardPreview === "function") hideCardPreview();
+              });
             }
             tile.onclick = () => toggleCardId(c.id);
             tray.appendChild(tile);
@@ -17690,13 +17997,18 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
       if (!milled.some(mc => cardMatchesFilter(mc, cond.milledAnyMatch, ctx))) return false;
     }
     if (cond.selfIsAttacker) {
-      if (!ctx.sourceCard || gameState.activeBattle?.attackerId !== ctx.sourceCard.id) return false;
+      const atkRefId = gameState.activeBattle?.attackerId || ctx.payload?.attackerId || ctx.payload?.cardId;
+      if (!ctx.sourceCard || atkRefId !== ctx.sourceCard.id) return false;
     }
     if (cond.destroyedMinBP != null) {
       if (Number(ctx.payload?.destroyedBP || 0) < Number(cond.destroyedMinBP)) return false;
     }
     if (cond.selfNameIncludes) {
       if (!ctx.sourceCard || !norm(lookupCatalog(ctx.sourceCard)?.name).includes(cond.selfNameIncludes)) return false;
+    }
+    if (cond.hasOwnMirage) {
+      const hasMir = Object.values(gameState.cards).some(c => c.owner === own && c.zone === `zone-burst-${own}` && !c.isFaceDown);
+      if (!hasMir) return false;
     }
     return true;
   }
@@ -17964,6 +18276,15 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
         return { ok: false, skippedOnce: true };
       }
     }
+    const gameOnceKey = node.oncePerGame
+      ? `${ctx.owner}|${lookupCatalog(ctx.sourceCard)?.name || ctx.sourceCard?.id}|${node.onceKey || node.text || node.op || node.type}`
+      : null;
+    if (gameOnceKey) {
+      gameState.usedEffectsGame = gameState.usedEffectsGame || {};
+      if (gameState.usedEffectsGame[gameOnceKey]) {
+        return { ok: false, skippedOnce: true };
+      }
+    }
     const isAlreadyPaidGodSkillCost = (n) => Boolean(
       ctx?.payload?.godSkillPaid &&
       n && n.op === "MOVE_CORES" &&
@@ -17994,11 +18315,14 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
     if (node.type === "PAY_THEN") {
       if (isAlreadyPaidGodSkillCost(node.cost)) {
         ctx.lastOk = true;
-        return executeAstNode(node.then, ctx);
+        const r = await executeAstNode(node.then, ctx);
+        if (gameOnceKey && r?.ok) { gameState.usedEffectsGame[gameOnceKey] = 1; updateRoomState(); }
+        return r;
       }
       const costRes = await executeAstNode(node.cost, ctx);
       ctx.lastOk = Boolean(costRes.ok);
       if (!costRes.ok) return { ok: false };
+      if (gameOnceKey) { gameState.usedEffectsGame[gameOnceKey] = 1; updateRoomState(); }
       return executeAstNode(node.then, ctx);
     }
     if (node.type === "CHOOSE") {
@@ -18218,6 +18542,10 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
           gameState.usedEffectsTurn = gameState.usedEffectsTurn || {};
           gameState.usedEffectsTurn[subKey] = (Number(gameState.usedEffectsTurn[subKey]) || 0) + 1;
         }
+        if (gameOnceKey) {
+          gameState.usedEffectsGame = gameState.usedEffectsGame || {};
+          gameState.usedEffectsGame[gameOnceKey] = 1;
+        }
 
         if (node.to?.reason === "destroy" && typeof window.playAttackDestroyAnimation === "function") {
           window.playAttackDestroyAnimation(picked.map(c => c.id));
@@ -18230,9 +18558,6 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
         if (node.to?.suppressOracle) window.__bs5SuppressOracle = true;
         try {
           for (const c of picked) {
-            if (node.to?.removeCoreToSpace && (c.cores || 0) > 0) {
-              c.cores = Math.max(0, c.cores - Number(node.to.removeCoreToSpace));
-            }
             const toOwner = node.to?.owner === "self" ? own : (node.to?.owner === "opponent" ? oppOf(own) : c.owner);
             const destZ = destZoneKey === "field" ? `field-${toOwner}`
               : destZoneKey === "god" ? `zone-god-${toOwner}`
@@ -18243,6 +18568,16 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
               : destZoneKey === "deck_bottom" ? `deck-${toOwner}-bottom`
               : destZoneKey === "deck_top" ? `deck-${toOwner}-top`
               : `zone-trash-${toOwner}`;
+            if (!isSyncing && c.zone?.startsWith("field-") && !destZ.startsWith("field-") && (c.owner !== own || node.to?.reason === "destroy")) {
+              const leaveRes = await BSGameBus.emitBefore("BEFORE_CARD_LEAVE_FIELD", { cardId: c.id, owner: c.owner, reason: node.to?.reason || "leave", actorOwner: own });
+              if (leaveRes.stayOnField) {
+                showNotice(`🛡️ 替換效果生效：「${lookupCatalog(c)?.name || "卡牌"}」以相同狀態留在場上！`);
+                continue;
+              }
+            }
+            if (node.to?.removeCoreToSpace && (c.cores || 0) > 0) {
+              c.cores = Math.max(0, c.cores - Number(node.to.removeCoreToSpace));
+            }
             if (node.to?.faceDown) c.isFaceDown = true;
             moveCardToZone(c.id, destZ);
           }
@@ -18283,11 +18618,14 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
           if (to.zone === "life" || to.zone === "reserve") {
             const ow = to.owner === "opponent" ? oppOf(own) : own;
             updateCounter(`${ow}_${to.zone}`, amt);
+            if (!isSyncing && amt > 0) setTimeout(() => BSGameBus.emitAfter("AFTER_ENEMY_GAIN_CORE_FROM_SPACE", { owner: ow, amount: amt }), 180);
             return { ok: true, amount: amt };
           }
           if (!dstCards.length) return { ok: false };
           dstCards.forEach(dc => { dc.cores = (dc.cores || 0) + amt; });
           updateAllUI(); updateRoomState();
+          const gainOwner = dstCards[0]?.owner || own;
+          if (!isSyncing && amt > 0) setTimeout(() => BSGameBus.emitAfter("AFTER_ENEMY_GAIN_CORE_FROM_SPACE", { owner: gainOwner, amount: amt }), 180);
           return { ok: true, amount: amt };
         }
         if (from.zone === "life") {
@@ -18339,6 +18677,10 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
           let movedTotal = 0;
           const leaveMin = Number(from.leaveCores || 0);
           for (const sc of srcCards) {
+            if (sc.owner !== own && sc.zone?.startsWith("zone-god-") && BSComputedState.getPlayerRestriction(sc.owner, "godCoresProtected")) {
+              showNotice(`🛡️ 場上常時效果生效：「${lookupCatalog(sc)?.name || "創界神"}」上的 Core 不受對手效果影響！`);
+              continue;
+            }
             const avail = Number(sc.cores) || 0;
             const maxTake = leaveMin > 0 ? Math.max(0, avail - leaveMin) : avail;
             const take = Math.min(maxTake, amt);
@@ -18352,6 +18694,10 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
               ctx.lastVanishedCount++;
               moveCardToZone(sc.id, `zone-trash-${sc.owner}`);
             }
+          }
+          if (gameOnceKey && movedTotal > 0) {
+            gameState.usedEffectsGame = gameState.usedEffectsGame || {};
+            gameState.usedEffectsGame[gameOnceKey] = 1;
           }
           updateAllUI(); updateRoomState();
           return { ok: movedTotal > 0, amount: movedTotal };
@@ -18390,6 +18736,10 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
         if (subKey) {
           gameState.usedEffectsTurn = gameState.usedEffectsTurn || {};
           gameState.usedEffectsTurn[subKey] = (Number(gameState.usedEffectsTurn[subKey]) || 0) + 1;
+        }
+        if (gameOnceKey) {
+          gameState.usedEffectsGame = gameState.usedEffectsGame || {};
+          gameState.usedEffectsGame[gameOnceKey] = 1;
         }
         return { ok: true };
       }
@@ -18433,6 +18783,13 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
           modCopy.symbolDelta = evalExpr(modCopy.symbolDeltaExpr, ctx);
           delete modCopy.symbolDeltaExpr;
         }
+        if (modCopy.gainColorFrom) {
+          const refCard = modCopy.gainColorFrom === "$ctx.moved[0]" ? ctx.vars.moved?.[0] : null;
+          if (refCard) {
+            modCopy.addColors = BSComputedState.getEffectiveCard(refCard).colors || [];
+          }
+          delete modCopy.gainColorFrom;
+        }
         if (modCopy.inheritStatsFromQuery) {
           const srcPicked = await promptCardPicker(evalQuery(modCopy.inheritStatsFromQuery, ctx), { title: "選擇繼承 BP 與標誌的疲勞 Spirit", max: 1, optional: true });
           if (!srcPicked.length) return { ok: false };
@@ -18446,8 +18803,24 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
           : [];
         if (targets.length) {
           targets.forEach(t => getBs5Modifiers().push({ id: "m_" + Date.now() + Math.random(), scope: node.scope || "turn", owner: t.owner, targetCardId: t.id, modifier: modCopy, sourceName: lookupCatalog(ctx.sourceCard)?.name || "" }));
-        } else {
-          getBs5Modifiers().push({ id: "m_" + Date.now() + Math.random(), scope: node.scope || "turn", owner: oppOf(ctx.owner), targetCardId: null, modifier: modCopy, sourceName: lookupCatalog(ctx.sourceCard)?.name || "" });
+        } else if (!node.targetQuery) {
+          const isSelfCardMod = Boolean(modCopy.colorless || modCopy.addColors);
+          const SELF_GLOBAL_KEYS = [
+            "maxLifeLossPerAttack", "immuneLifeLossBelowCost", "lifeGuardExceptCost3to6", "lifeGuardLowCore",
+            "ownFamilyCostEqualsLife", "ownHandCostDelta", "sagittNovaClashBurn", "triggerOnBlockEffectsOnAttack",
+            "destroyBpBonus", "ignoreWhiteProtection", "noDeckMill", "doubleBlockRequired",
+            "suppressEnemyDrawNexus", "unpreventable", "designatedAttack", "extraDrawDiscardOne", "godCoresProtected", "cost5AttackBurnOne"
+          ];
+          const isSelfLifeLock = Boolean(modCopy.opponentLifeLocked && /(?:自己|己方)(?:的)?生命值/.test(String(node.text || "")));
+          const affectsSelf = isSelfCardMod || isSelfLifeLock || SELF_GLOBAL_KEYS.some(k => modCopy[k] != null && modCopy[k] !== false);
+          getBs5Modifiers().push({
+            id: "m_" + Date.now() + Math.random(),
+            scope: node.scope || "turn",
+            owner: affectsSelf ? ctx.owner : oppOf(ctx.owner),
+            targetCardId: isSelfCardMod ? (ctx.sourceCard?.id || null) : null,
+            modifier: modCopy,
+            sourceName: lookupCatalog(ctx.sourceCard)?.name || ""
+          });
         }
         ctx.lastZeroBpRemoved = BSComputedState.checkZeroBpStateBasedAction();
         updateAllUI(); updateRoomState();
@@ -18533,21 +18906,43 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
   const BSGameBus = {
     async emitBefore(eventName, payload) {
       const eventResult = {};
+      const activeTurnSide = gameState.activeTurnPlayer || "p1";
       const scanZones = eventName === "BEFORE_MAGIC_RESOLVE" ? ["hand", "openhand", "field", "god"] : ["field", "god"];
+      const leavingCard = eventName === "BEFORE_CARD_LEAVE_FIELD" && payload?.cardId ? gameState.cards[payload.cardId] : null;
+      gameState.usedEffectsTurn = gameState.usedEffectsTurn || {};
+
       for (const c of Object.values(gameState.cards)) {
         if (c.isFaceDown || c.isSoulState) continue;
         const inZone = scanZones.some(zk => (zk === "field" && c.zone?.startsWith("field-")) || (zk === "god" && c.zone?.startsWith("zone-god-")) || (zk === "hand" && c.zone?.startsWith("hand-")) || (zk === "openhand" && c.zone?.startsWith("zone-openhand-")));
         if (!inZone) continue;
         if (eventName === "BEFORE_MAGIC_RESOLVE" && payload.actorOwner && c.owner === payload.actorOwner) continue;
         if (eventName === "BEFORE_LIFE_REDUCE" && payload.player && c.owner !== payload.player) continue;
+        if (eventName === "BEFORE_CARD_LEAVE_FIELD" && payload.owner && c.owner !== payload.owner) continue;
         const hooks = BSRuleCompiler.getEffectsForCard(c).filter(e => (e.kind === "REPLACEMENT" || e.kind === "INTERRUPT") && e.event === eventName);
         for (const hk of hooks) {
-          const curLv = BSComputedState.getEffectiveCard(c).lv;
-          if ((hk.minLv || 0) > 0 && curLv < hk.minLv) continue;
-          const ctx = { owner: c.owner, sourceCard: c, payload, vars: {}, eventResult };
+          if (hk.phaseOwner === "self" && c.owner !== activeTurnSide) continue;
+          if (hk.phaseOwner === "opponent" && c.owner === activeTurnSide) continue;
+          if (hk.requireBrave && !(c.braveHostId || (typeof braveChildren === "function" && braveChildren(c).length > 0))) continue;
+          const hostC = c.braveHostId ? (gameState.cards[c.braveHostId] || c) : c;
+          if (eventName === "BEFORE_CARD_LEAVE_FIELD") {
+            if (hk.selfOnlyLeave && hostC.id !== payload.cardId) continue;
+            if (hk.leaveTargetFilter && (!leavingCard || !cardMatchesFilter(leavingCard, hk.leaveTargetFilter, { owner: c.owner, sourceCard: hostC, vars: {} }))) continue;
+          }
+          const tKey = getTurnUsageKey(c, hk);
+          const maxU = Number(hk.maxUsesPerTurn || (tKey ? 1 : 0));
+          if (tKey && (Number(gameState.usedEffectsTurn[tKey]) || 0) >= maxU) continue;
+          const curLv = BSComputedState.getEffectiveCard(hostC).lv;
+          if (!c.braveHostId && (hk.minLv || 0) > 0 && curLv < hk.minLv) continue;
+          const ctx = { owner: c.owner, sourceCard: hostC, payload, vars: {}, eventResult };
           if (!evalCondition(hk.condition, ctx)) continue;
           const accept = await this.askHookConfirm(c, hk);
-          if (accept) await executeAstNode(hk.script, ctx);
+          if (accept) {
+            const res = await executeAstNode(hk.script, ctx);
+            if (tKey && (res?.ok || eventResult.stayOnField || eventResult.preventLifeLoss || eventResult.cancelMagic)) {
+              gameState.usedEffectsTurn[tKey] = (Number(gameState.usedEffectsTurn[tKey]) || 0) + 1;
+              updateRoomState();
+            }
+          }
         }
       }
       return eventResult;
@@ -18591,7 +18986,7 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
       const candidates = [];
       if (isSelfOnly && actorCard) {
         candidates.push({ card: actorCard, hostCard: actorCard, fromBrave: false, fromAdventSource: false });
-        if ((eventName === "AFTER_ATTACK_DECLARE" || eventName === "AFTER_BLOCK_DECLARE") && typeof braveChildren === "function") {
+        if ((eventName === "AFTER_ATTACK_DECLARE" || eventName === "AFTER_BLOCK_DECLARE" || eventName === "FLASH_WINDOW") && typeof braveChildren === "function") {
           braveChildren(actorCard).forEach(b => { if (!b.isFaceDown) candidates.push({ card: b, hostCard: actorCard, fromBrave: true, fromAdventSource: false }); });
         }
         if (typeof adventChildren === "function") {
@@ -18600,15 +18995,17 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
       } else {
         for (const c of Object.values(gameState.cards)) {
           if (c.isFaceDown || c.isSoulState || c.braveHostId || c.adventHostId) continue;
-          if (!c.zone?.startsWith("field-") && !c.zone?.startsWith("zone-god-")) continue;
+          const inMirage = Boolean(c.zone?.startsWith("zone-burst-"));
+          const inFieldOrGod = Boolean(c.zone?.startsWith("field-") || c.zone?.startsWith("zone-god-"));
+          if (!inFieldOrGod && !inMirage) continue;
           if (isAllyEvent && actorOwner && c.owner !== actorOwner) continue;
           if (isEnemyEvent && actorOwner && c.owner === actorOwner) continue;
           if (eventName === "PHASE_OWN_ATTACK_START" && c.owner !== activeTurnSide) continue;
           if (eventName === "PHASE_ENEMY_ATTACK_START" && c.owner === activeTurnSide) continue;
           if (eventName === "PHASE_OWN_END_START" && c.owner !== activeTurnSide) continue;
-          candidates.push({ card: c, hostCard: c, fromBrave: false, fromAdventSource: false });
-          if (typeof braveChildren === "function") {
-            braveChildren(c).forEach(b => candidates.push({ card: b, hostCard: c, fromBrave: true, fromAdventSource: false }));
+          candidates.push({ card: c, hostCard: c, fromBrave: false, fromAdventSource: false, inMirage });
+          if (inFieldOrGod && typeof braveChildren === "function") {
+            braveChildren(c).forEach(b => candidates.push({ card: b, hostCard: c, fromBrave: true, fromAdventSource: false, inMirage: false }));
           }
         }
       }
@@ -18624,7 +19021,18 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
         const curLv = payload.overrideLv != null ? Number(payload.overrideLv) : BSComputedState.getEffectiveCard(host).lv;
         const ownCnt = Number(gameState[`${host.owner}_count`]) || 0;
 
-        const effs = BSRuleCompiler.getEffectsForCard(c).filter(e => e.kind === "TRIGGERED" && Array.isArray(e.events) && e.events.includes(eventName));
+        const inMir = Boolean(item.inMirage ?? c.zone?.startsWith("zone-burst-"));
+        const inHand = Boolean(c.zone?.startsWith("hand-"));
+        const inTrash = Boolean(c.zone?.startsWith("zone-trash-"));
+        const effs = BSRuleCompiler.getEffectsForCard(c).filter(e => {
+          if (e.kind !== "TRIGGERED" || !Array.isArray(e.events) || !e.events.includes(eventName)) return false;
+          if (eventName === "ON_BURST") return true;
+          if (inHand) return Boolean(e.fromHandAccel || payload.fromHandAccel);
+          if (inTrash) return Boolean(e.fromTrashFlash || payload.fromTrash);
+          if (e.fromHandAccel || e.fromTrashFlash) return false;
+          const isMirEff = isMirageEffectMeta(e);
+          return inMir ? isMirEff : !isMirEff;
+        });
         for (const ef of effs) {
           if (ef.phaseOwner === "self" && host.owner !== activeTurnSide) continue;
           if (ef.phaseOwner === "opponent" && host.owner === activeTurnSide) continue;
@@ -18632,7 +19040,7 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
           if (item.fromBrave && !ef.requireBrave) continue;
           if (!item.fromBrave && ef.requireBrave && !(typeof braveChildren === "function" && braveChildren(host).length > 0)) continue;
           if (ef.requireAdvent && !(typeof adventChildren === "function" && adventChildren(host).length > 0)) continue;
-          if (!item.fromBrave && !item.fromAdventSource && (ef.minLv || 0) > 0 && curLv < ef.minLv) continue;
+          if (!inMir && !item.fromBrave && !item.fromAdventSource && (ef.minLv || 0) > 0 && curLv < ef.minLv) continue;
           if (ef.requireOC && ownCnt < Number(ef.ocCount ?? cat.oc?.count ?? 0)) continue;
           if (ef.selfOnlyExhaust && actorCard && host.id !== actorCard.id) continue;
           if (ef.condition && !evalCondition(ef.condition, { owner: host.owner, sourceCard: host, payload, vars: {} })) continue;
@@ -18651,7 +19059,7 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
           const tKey = getTurnUsageKey(c, ef);
           const maxU = Number(ef.maxUsesPerTurn || (tKey ? 1 : 0));
           if (tKey && (Number(gameState.usedEffectsTurn[tKey]) || 0) >= maxU) continue;
-          if (ef.script?.oncePerGame && usedGameEffects.has(`${host.owner}|${cat.name}|${ef.header}`)) continue;
+          if (ef.script?.oncePerGame && (gameState.usedEffectsGame?.[`${host.owner}|${cat.name}|${ef.header}`] || usedGameEffects.has(`${host.owner}|${cat.name}|${ef.header}`))) continue;
 
           const isRuleFlagOnly = (n) => !n || (n.op === "ADD_MODIFIER" && Boolean(n.modifier?.ruleFlag)) || (n.type === "SEQ" && (!n.nodes?.length || n.nodes.every(isRuleFlagOnly)));
           if (isRuleFlagOnly(ef.script)) continue;
@@ -18709,7 +19117,7 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
               resolve(idx);
             };
             const renderQueue = () => {
-              shell.innerHTML = `<div class="bs5-head"><span>⚡ BS v6.0 待機效果佇列（點擊優先發動）</span><span>待處理 ${standbyQueue.length} 項</span></div>`;
+              shell.innerHTML = `<div class="bs5-head"><span>⚡ BS v6.4 待機效果佇列（點擊優先發動）</span><span>待處理 ${standbyQueue.length} 項</span></div>`;
               standbyQueue.forEach((item, i) => {
                 const row = document.createElement("div");
                 row.className = "bs5-row";
@@ -18747,7 +19155,10 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
             gameState.usedEffectsTurn[tKey] = (Number(gameState.usedEffectsTurn[tKey]) || 0) + 1;
           }
           if (item.ef.script?.oncePerGame) {
-            usedGameEffects.add(`${card.owner}|${lookupCatalog(srcCard)?.name}|${item.ef.header}`);
+            const gk = `${card.owner}|${lookupCatalog(srcCard)?.name}|${item.ef.header}`;
+            usedGameEffects.add(gk);
+            gameState.usedEffectsGame = gameState.usedEffectsGame || {};
+            gameState.usedEffectsGame[gk] = 1;
           }
 
           if (typeof window.playCardEffectFeedbackFx === "function") {
@@ -18808,6 +19219,9 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
     if (triggerType === "ON_ATTACK") {
       batch.push({ event: "AFTER_ALLY_ATTACK", payload: { cardId, owner: card.owner } });
       batch.push({ event: "AFTER_ENEMY_ATTACK_OR_BLOCK", payload: { cardId, owner: card.owner } });
+      if (BSComputedState.getPlayerRestriction(card.owner, "triggerOnBlockEffectsOnAttack")) {
+        batch.push({ event: "AFTER_BLOCK_DECLARE", payload: { cardId, owner: card.owner, attackerId: cardId } });
+      }
     } else if (triggerType === "ON_BLOCK") {
       batch.push({ event: "AFTER_ALLY_BLOCK", payload: { cardId, owner: card.owner } });
       batch.push({ event: "AFTER_ENEMY_ATTACK_OR_BLOCK", payload: { cardId, owner: card.owner } });
@@ -18822,6 +19236,8 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
       batch.push({ event: "AFTER_ALLY_PLAY_OR_TURN", payload: { cardId, owner: card.owner } });
     } else if (triggerType === "ON_ADVENT") {
       batch.push({ event: "AFTER_ALLY_ADVENT", payload: { cardId, owner: card.owner } });
+    } else if (triggerType === "ON_DESTROY") {
+      batch.push({ event: "AFTER_ENEMY_DESTROYED", payload: { cardId, owner: card.owner, destroyedBP: opts?.destroyedBP || 0 } });
     }
     BSGameBus.emitBatch(batch);
   };
@@ -18848,7 +19264,13 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
     const origTurn = turnCard;
     turnCard = function (id) {
       const res = origTurn(id);
-      if (!isSyncing) setTimeout(() => BSGameBus.emitAfter("AFTER_TURN_FLIP", { cardId: id }), 360);
+      if (!isSyncing) setTimeout(() => {
+        const tc = gameState.cards[id];
+        BSGameBus.emitBatch([
+          { event: "AFTER_TURN_FLIP", payload: { cardId: id, owner: tc?.owner } },
+          { event: "AFTER_ALLY_PLAY_OR_TURN", payload: { cardId: id, owner: tc?.owner } }
+        ]);
+      }, 360);
       return res;
     };
   }
@@ -18892,7 +19314,7 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
   function handleBattleEndCleanup(attackerId) {
     const endAfter = getBs5Modifiers().some(m => m.scope === "battle" && m.modifier?.endAttackStepAfterBattle);
     const toDestroyIds = getBs5Modifiers().filter(m => m.scope === "battle" && m.modifier?.destroyAtBattleEnd && m.targetCardId).map(m => m.targetCardId);
-    BSGameBus.emitAfter("AFTER_BATTLE_END", { cardId: attackerId });
+    BSGameBus.emitAfter("AFTER_BATTLE_END", { cardId: attackerId, attackerId });
     for (let i = getBs5Modifiers().length - 1; i >= 0; i--) {
       if (getBs5Modifiers()[i].scope === "battle") getBs5Modifiers().splice(i, 1);
     }
@@ -18910,9 +19332,32 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
     window.resolveBattleTakeLife = async function () {
       const ab = gameState.activeBattle;
       if (ab && !isSyncing) {
+        const atkCard = ab.attackerId ? gameState.cards[ab.attackerId] : null;
+        const atkEff = atkCard ? BSComputedState.getEffectiveCard(atkCard) : null;
+        const atkCost = atkEff ? atkEff.cost : 0;
+        const atkCores = atkCard ? (typeof getDisplayedCardCoreCount === "function" ? getDisplayedCardCoreCount(atkCard) : (atkCard.cores || 0)) : 0;
+        const atkIsBraved = Boolean(atkCard && typeof braveChildren === "function" && braveChildren(atkCard).length > 0);
+
         if (BSComputedState.getPlayerRestriction(ab.defenderOwner, "opponentLifeLocked")) {
           ab.lifeDamage = 0;
           showNotice("🛡️ 場上效果生效：生命值目前鎖定不可削減！");
+        }
+        const minCostGuard = BSComputedState.getPlayerRestriction(ab.defenderOwner, "immuneLifeLossBelowCost");
+        if (minCostGuard && atkCost < Number(minCostGuard)) {
+          ab.lifeDamage = 0;
+          showNotice(`🛡️ 激覇護盾生效：Cost ${minCostGuard} 以下的攻擊不會削減生命值！`);
+        }
+        if (BSComputedState.getPlayerRestriction(ab.defenderOwner, "lifeGuardExceptCost3to6") && (atkCost < 3 || atkCost > 6)) {
+          ab.lifeDamage = 0;
+          showNotice("🛡️ 神盾ノ輝生效：Cost 3～6 以外的攻擊不會削減生命值！");
+        }
+        const lowCoreMax = BSComputedState.getPlayerRestriction(ab.defenderOwner, "lifeGuardLowCore");
+        if (lowCoreMax) {
+          const hasMai = Object.values(gameState.cards).some(x => x.owner === ab.defenderOwner && (x.zone?.startsWith("field-") || x.zone?.startsWith("zone-god-") || x.isSoulState) && norm(lookupCatalog(x)?.name).includes("ヴィオレ魔"));
+          if (atkCores <= Number(lowCoreMax) || (hasMai && atkIsBraved)) {
+            ab.lifeDamage = 0;
+            showNotice("🛡️ 護盾效果生效：本次攻擊不會削減生命值！");
+          }
         }
         const cap = BSComputedState.getPlayerRestriction(ab.defenderOwner, "maxLifeLossPerAttack");
         if (cap && Number(ab.lifeDamage || 0) > Number(cap)) {
@@ -18928,8 +19373,21 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
       const atkId = ab?.attackerId;
       const defOwner = ab?.defenderOwner;
       const res = origTakeLifeBattle();
+      const dmgTaken = Number(ab?.lifeDamage || 0);
+      const atkCardRef = atkId ? gameState.cards[atkId] : null;
+      const atkCostRef = atkCardRef ? BSComputedState.getEffectiveCard(atkCardRef).cost : 0;
       setTimeout(() => {
-        if (defOwner) BSGameBus.emitAfter("AFTER_LIFE_REDUCED", { player: defOwner, cardId: atkId });
+        if (defOwner && dmgTaken > 0) {
+          if (atkCardRef && atkCostRef >= 5 && BSComputedState.getPlayerRestriction(atkCardRef.owner, "cost5AttackBurnOne")) {
+            const curDefLife = Number(gameState[`${defOwner}_life`]) || 0;
+            if (curDefLife > 0) {
+              updateCounter(`${defOwner}_life`, -1);
+              updateCounter(`${defOwner}_reserve`, 1);
+              showNotice("🦀 「巨蟹武神キャンサードXV」加速效果發動：Cost 5 以上攻擊削減生命，對手生命值區再移 1 Core 至預備區！");
+            }
+          }
+          BSGameBus.emitAfter("AFTER_LIFE_REDUCED", { player: defOwner, cardId: atkId, attackerId: atkId });
+        }
         handleBattleEndCleanup(atkId);
       }, 650);
       return res;
@@ -18939,9 +19397,32 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
   const origBpClash = window.resolveBattleBpComparison;
   if (typeof origBpClash === "function") {
     window.resolveBattleBpComparison = function (...args) {
-      const atkId = gameState.activeBattle?.attackerId;
+      const ab = gameState.activeBattle;
+      const atkId = ab?.attackerId;
+      const blkId = ab?.blockerId;
+      const defOwner = ab?.defenderOwner;
+      const atkCard = atkId ? gameState.cards[atkId] : null;
+      const blkCard = blkId ? gameState.cards[blkId] : null;
+      const atkBp = atkCard ? BSComputedState.getEffectiveCard(atkCard).bp : 0;
+      const blkBp = blkCard ? BSComputedState.getEffectiveCard(blkCard).bp : 0;
+      const noDestroy = Boolean(args[0]);
+      const atkWillWinSolo = !noDestroy && atkCard && blkCard && atkBp > blkBp;
       const res = origBpClash(...args);
-      setTimeout(() => handleBattleEndCleanup(atkId), 780);
+      setTimeout(() => {
+        if (atkWillWinSolo && !isSyncing && atkCard && defOwner) {
+          const burnAmt = BSComputedState.getPlayerRestriction(atkCard.owner, "sagittNovaClashBurn");
+          const atkNm = norm(lookupCatalog(atkCard)?.name || "");
+          if (burnAmt && atkNm.includes("超龍騎神グラン・サジット・ノヴァ")) {
+            const take = Math.min(Number(gameState[`${defOwner}_life`]) || 0, Number(burnAmt));
+            if (take > 0) {
+              updateCounter(`${defOwner}_life`, -take);
+              updateCounter(`${defOwner}_reserve`, take);
+              showNotice(`🔥 「最後のカード」效果發動：BP 比拼勝出，對手生命值區 ${take} 個 Core 移至預備區！`);
+            }
+          }
+        }
+        handleBattleEndCleanup(atkId);
+      }, 780);
       return res;
     };
   }
@@ -18951,8 +19432,18 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
   if (typeof origSetPhase === "function") {
     window.setGamePhase = function (phaseKey) {
       if (phaseKey === "START") {
-        getBs5Modifiers().splice(0, getBs5Modifiers().length);
+        const modsArr = getBs5Modifiers();
+        for (let mi = modsArr.length - 1; mi >= 0; mi--) {
+          if (modsArr[mi].scope !== "turn" || !modsArr[mi].modifier?.skipNextMainStep) modsArr.splice(mi, 1);
+        }
         gameState.usedEffectsTurn = {};
+      }
+      if (phaseKey === "MAIN" && !isSyncing) {
+        const turnSide = gameState.activeTurnPlayer || "p1";
+        if (BSComputedState.getPlayerRestriction(turnSide, "skipNextMainStep")) {
+          showNotice("⏭️ 受到對手效果（時の破壊者ロンバルディア・Ω）影響：本回合跳過主要階段，直接進入攻擊階段！");
+          return origSetPhase("ATTACK");
+        }
       }
       const res = origSetPhase(phaseKey);
       if (phaseKey === "ATTACK" && !isSyncing) {
@@ -18961,6 +19452,11 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
           { event: "PHASE_ENEMY_ATTACK_START", payload: { owner: gameState.activeTurnPlayer } },
           { event: "PHASE_ANY_ATTACK_START", payload: { owner: gameState.activeTurnPlayer } }
         ]);
+      } else if (phaseKey === "DRAW" && !isSyncing) {
+        const turnSide = gameState.activeTurnPlayer || "p1";
+        if (typeof window.triggerManualDrawPhaseSpecial === "function") {
+          setTimeout(() => window.triggerManualDrawPhaseSpecial(turnSide), 380);
+        }
       } else if (phaseKey === "END" && !isSyncing) {
         BSGameBus.emitAfter("PHASE_OWN_END_START", { owner: gameState.activeTurnPlayer });
       }
@@ -18974,7 +19470,11 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
         showNotice("🚫 受到場上效果限制：目前不可結束回合！");
         return;
       }
-      getBs5Modifiers().splice(0, getBs5Modifiers().length);
+      const modsArr = getBs5Modifiers();
+      for (let mi = modsArr.length - 1; mi >= 0; mi--) {
+        if (modsArr[mi].scope === "next_turn") modsArr[mi].scope = "turn";
+        else modsArr.splice(mi, 1);
+      }
       gameState.usedEffectsTurn = {};
       const res = origEndTurn(...args);
       if (gameState.__bs5SkipNextTurnFor && gameState.activeTurnPlayer === gameState.__bs5SkipNextTurnFor) {
@@ -19237,6 +19737,10 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
     window.declareAttackBattle = function (attackerId) {
       const atk = gameState.cards[attackerId];
       if (atk && !isSyncing) {
+        if (BSComputedState.getEffectiveCard(atk).cantAttackOrBlock) {
+          showNotice("🚫 受到場上效果限制：此卡目前不可進行攻擊！");
+          return;
+        }
         const lowTax = BSComputedState.getPlayerRestriction(atk.owner, "enemyLowCostAttackTax");
         const atkCost = getCardBaseCost(lookupCatalog(atk));
         if (lowTax && atkCost <= Number(lowTax.maxCost ?? 5)) {
@@ -19256,6 +19760,14 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
     window.useMagicCard = async function (cardId) {
       const mc = gameState.cards[cardId];
       if (mc && !isSyncing) {
+        if (BSComputedState.getPlayerRestriction(mc.owner, "lockEnemyOpenhandCosts")) {
+          const myCost = getCardBaseCost(lookupCatalog(mc));
+          const ohHasSame = Object.values(gameState.cards).some(x => x.owner === mc.owner && x.zone === `zone-openhand-${mc.owner}` && getCardBaseCost(lookupCatalog(x)) === myCost);
+          if (ohHasSame) {
+            showNotice(`🚫 受到對手效果（至高英雄獣トリスメギストス）限制：目前不可使用與自己手元區相同 Cost (${myCost}) 的卡牌！`);
+            return;
+          }
+        }
         const rTax = BSComputedState.getPlayerRestriction(mc.owner, "coreTaxReserveToTrash");
         if (rTax) showNotice(`⚠️ 場上效果提醒：使用 Magic／加速須額外從預備區移 ${rTax} Core 至廢棄區！`);
         const lTax = BSComputedState.getPlayerRestriction(mc.owner, "cardUseTaxLifeToSpace");
@@ -19298,15 +19810,66 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
 
   window.getCardFieldFlashEffects = function (card) {
     if (!card || card.isFaceDown || card.isSoulState) return [];
-    if (!card.zone?.startsWith("field-")) return [];
+    const inMir = Boolean(card.zone?.startsWith("zone-burst-"));
+    const inFld = Boolean(card.zone?.startsWith("field-"));
+    if (!inFld && !inMir) return [];
     if ((gameState.currentPhase || "") !== "ATTACK") return [];
     const activeSide = gameState.activeTurnPlayer || "p1";
-    return BSRuleCompiler.getEffectsForCard(card).filter(e => {
+    const ownEffs = BSRuleCompiler.getEffectsForCard(card).filter(e => {
       if (e.kind !== "TRIGGERED" || !Array.isArray(e.events) || !e.events.includes("FLASH_WINDOW")) return false;
+      if (e.fromHandAccel || e.fromTrashFlash) return false;
+      const isMirEff = isMirageEffectMeta(e);
+      if (inMir ? !isMirEff : isMirEff) return false;
       if (e.phaseOwner === "self" && card.owner !== activeSide) return false;
       if (e.phaseOwner === "opponent" && card.owner === activeSide) return false;
       return true;
     });
+    if (inFld && typeof braveChildren === "function") {
+      braveChildren(card).forEach(b => {
+        if (b.isFaceDown) return;
+        BSRuleCompiler.getEffectsForCard(b).forEach(e => {
+          if (e.kind === "TRIGGERED" && Array.isArray(e.events) && e.events.includes("FLASH_WINDOW") && e.requireBrave) {
+            if (e.phaseOwner === "self" && card.owner !== activeSide) return;
+            if (e.phaseOwner === "opponent" && card.owner === activeSide) return;
+            ownEffs.push(e);
+          }
+        });
+      });
+    }
+    return ownEffs;
+  };
+
+  window.getCardHandAccelEffects = function (card) {
+    if (!card || !card.zone?.startsWith("hand-")) return [];
+    const ph = gameState.currentPhase || "";
+    if (ph !== "ATTACK" && ph !== "MAIN") return [];
+    return BSRuleCompiler.getEffectsForCard(card).filter(e => e.kind === "TRIGGERED" && e.fromHandAccel);
+  };
+
+  window.activateCardHandAccel = async function (cardId) {
+    const card = gameState.cards[cardId];
+    if (!card || !card.zone?.startsWith("hand-")) return;
+    if (BSComputedState.getPlayerRestriction(card.owner, "noMagic")) {
+      showNotice("🚫 受到場上效果限制：目前不可使用【加速】效果！");
+      return;
+    }
+    if (BSComputedState.getPlayerRestriction(card.owner, "lockEnemyOpenhandCosts")) {
+      const myCost = getCardBaseCost(lookupCatalog(card));
+      if (Object.values(gameState.cards).some(x => x.owner === card.owner && x.zone === `zone-openhand-${card.owner}` && getCardBaseCost(lookupCatalog(x)) === myCost)) {
+        showNotice(`🚫 受到對手效果（至高英雄獣トリスメギストス）限制：不可使用與手元區相同 Cost (${myCost}) 的卡牌！`);
+        return;
+      }
+    }
+    const effs = window.getCardHandAccelEffects(card);
+    if (!effs.length) return;
+    BSGameBus.emitAfter("FLASH_WINDOW", { cardId: card.id, owner: card.owner, fromHandAccel: true });
+  };
+
+  window.activateCardTrashFlash = function (cardId) {
+    const card = gameState.cards[cardId];
+    if (!card || !card.zone?.startsWith("zone-trash-")) return;
+    if (typeof closeZoneModal === "function") closeZoneModal();
+    BSGameBus.emitAfter("FLASH_WINDOW", { cardId: card.id, owner: card.owner, fromTrash: true });
   };
 
   window.activateCardFieldFlashEffect = function (cardId) {
@@ -19325,7 +19888,7 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
 
   function updateFieldFlashButton(el, card) {
     if (!el || !card) return;
-    const show = Boolean(card.zone?.startsWith("field-") && !card.isFaceDown && !card.isSoulState && !card.braveHostId && !card.adventHostId && window.getCardFieldFlashEffects(card).length > 0);
+    const show = Boolean((card.zone?.startsWith("field-") || card.zone?.startsWith("zone-burst-")) && !card.isFaceDown && !card.isSoulState && !card.braveHostId && !card.adventHostId && window.getCardFieldFlashEffects(card).length > 0);
     let btn = el.querySelector(":scope > .mini-flash-act-btn");
     if (show) {
       if (!btn) {
@@ -19353,25 +19916,162 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
     if (el && cardId && gameState.cards[cardId]) updateFieldFlashButton(el, gameState.cards[cardId]);
   };
   const origUpdateAllV6 = updateAllUI;
+  function updateHandAccelButton(el, card) {
+    if (!el || !card) return;
+    const isOppHand = el.closest(".opponent-hand");
+    const show = Boolean(!isOppHand && card.zone?.startsWith("hand-") && window.getCardHandAccelEffects(card).length > 0);
+    let btn = el.querySelector(":scope > .mini-accel-btn");
+    if (show) {
+      if (!btn) {
+        btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "mini-translate-btn mini-accel-btn";
+        btn.textContent = "⚡加速";
+        btn.draggable = false;
+        ["pointerdown", "mousedown", "dblclick", "dragstart"].forEach(ev => btn.addEventListener(ev, e => e.stopPropagation()));
+        btn.onclick = e => { e.preventDefault(); e.stopPropagation(); window.activateCardHandAccel(card.id); };
+        el.append(btn);
+      }
+    } else {
+      btn?.remove();
+    }
+  }
+
   updateAllUI = function () {
     origUpdateAllV6();
     Object.values(gameState.cards).forEach(c => {
-      if (c.zone?.startsWith("field-")) {
-        const el = document.getElementById(c.id);
-        if (el && el.classList.contains("mini-translation-source")) updateFieldFlashButton(el, c);
+      const el = document.getElementById(c.id);
+      if (!el) return;
+      if (c.zone?.startsWith("field-") || (c.zone?.startsWith("zone-burst-") && !c.isFaceDown)) {
+        updateFieldFlashButton(el, c);
+        el.querySelector(":scope > .mini-accel-btn")?.remove();
+      } else if (c.zone?.startsWith("hand-")) {
+        el.querySelector(":scope > .mini-flash-act-btn")?.remove();
+        updateHandAccelButton(el, c);
+      } else {
+        el.querySelector(":scope > .mini-flash-act-btn")?.remove();
+        el.querySelector(":scope > .mini-accel-btn")?.remove();
       }
     });
   };
+
+  // Inject ⚡Flash button inside Trash Zone View Modal for Trash Flash cards (BSC50-XV03, BS57-X02)
+  const origRenderZoneModalV63 = renderZoneModalContent;
+  renderZoneModalContent = function () {
+    origRenderZoneModalV63();
+    if (!currentModalInfo || currentModalInfo.type !== "trash") return;
+    const listEl = document.getElementById("zone-view-list");
+    if (!listEl) return;
+    const trashIds = getTrashCards(currentModalInfo.player).slice().reverse().map(c => c.id);
+    [...listEl.children].forEach((tile, idx) => {
+      const cid = trashIds[idx];
+      const card = cid ? gameState.cards[cid] : null;
+      if (!card) return;
+      const hasTrashFlash = BSRuleCompiler.getEffectsForCard(card).some(e => e.kind === "TRIGGERED" && e.fromTrashFlash);
+      if (!hasTrashFlash) return;
+      const fBtn = document.createElement("button");
+      fBtn.type = "button";
+      fBtn.className = "w-full mt-1 py-1 px-2 text-[10px] font-black rounded-sm bg-purple-900/90 hover:bg-purple-500 text-purple-100 hover:text-black border border-purple-400/75 cursor-pointer transition-colors";
+      fBtn.textContent = "⚡ 發動廢棄區 Flash";
+      fBtn.onclick = e => { e.stopPropagation(); window.activateCardTrashFlash(cid); };
+      tile.appendChild(fBtn);
+    });
+  };
+
+  // Enforce BS69-X04 lockEnemyOpenhandCosts on hand/openhand -> field/god plays
+  const origMoveLockOhV63 = moveCardToZone;
+  moveCardToZone = function (id, zone, options = {}) {
+    const c = gameState.cards[id];
+    if (c && !isSyncing && /^(hand-|zone-openhand-)/.test(c.zone || "") && /^(field-|zone-god-)/.test(String(zone || ""))) {
+      if (BSComputedState.getPlayerRestriction(c.owner, "lockEnemyOpenhandCosts")) {
+        const myCost = getCardBaseCost(lookupCatalog(c));
+        const ohHasSame = Object.values(gameState.cards).some(x => x.id !== c.id && x.owner === c.owner && x.zone === `zone-openhand-${c.owner}` && getCardBaseCost(lookupCatalog(x)) === myCost);
+        if (ohHasSame) {
+          showNotice(`🚫 受到對手效果（至高英雄獣トリスメギストス）限制：目前不可使用與自己手元區相同 Cost (${myCost}) 的卡牌！`);
+          return;
+        }
+      }
+    }
+    return origMoveLockOhV63(id, zone, options);
+  };
+
+  // Enforce BS73-AX03 blockTaxReturnSpirit & BS74-X09 burstTaxEnemyTrashToDeck
+  const origSelectBlockerV61 = window.selectBattleBlocker;
+  if (typeof origSelectBlockerV61 === "function") {
+    window.selectBattleBlocker = async function (blockerId) {
+      const blk = gameState.cards[blockerId];
+      if (blk && !isSyncing) {
+        if (BSComputedState.getEffectiveCard(blk).cantAttackOrBlock) {
+          showNotice("🚫 受到場上效果限制：此卡目前不可進行防禦！");
+          return;
+        }
+        const atkC = gameState.activeBattle?.attackerId ? gameState.cards[gameState.activeBattle.attackerId] : null;
+        if (atkC && BSComputedState.getEffectiveCard(atkC).unblockable) {
+          showNotice("🚫 攻擊中的 Spirit 受到效果影響：不可被防禦！");
+          return;
+        }
+        const taxN = BSComputedState.getPlayerRestriction(blk.owner, "blockTaxReturnSpirit");
+        if (taxN) {
+          const ownSpirits = evalQuery({ owner: "self", zones: ["field"], types: ["spirit"] }, { owner: blk.owner, sourceCard: blk, vars: {} });
+          if (ownSpirits.length < Number(taxN)) {
+            showNotice(`🚫 受到場上效果（天魔王ゴッド・ゼクス）影響：場上不足 ${taxN} 張 Spirit 可返回卡組底，無法進行防禦！`);
+            return;
+          }
+          const paid = await executeAstNode({
+            op: "MOVE_CARDS",
+            query: { owner: "self", zones: ["field"], types: ["spirit"], count: Number(taxN), exactRequired: true },
+            to: { owner: "self", zone: "deck_bottom" },
+            optional: true,
+            text: `防禦條件：須將自己 ${taxN} 張 Spirit 返回卡組底才可進行防禦`
+          }, { owner: blk.owner, sourceCard: blk, payload: {}, vars: {}, eventResult: {} });
+          if (!paid.ok) {
+            showNotice("🚫 未支付防禦代價，取消防禦。");
+            return;
+          }
+        }
+      }
+      return origSelectBlockerV61(blockerId);
+    };
+  }
+
+  const origActivateBurstV61 = window.activateReadyBurstCard;
+  if (typeof origActivateBurstV61 === "function") {
+    window.activateReadyBurstCard = async function (cardId) {
+      const bc = gameState.cards[cardId];
+      if (bc && !isSyncing) {
+        const trashTax = BSComputedState.getPlayerRestriction(bc.owner, "burstTaxEnemyTrashToDeck");
+        if (trashTax) {
+          const trashCards = evalQuery({ owner: "self", zones: ["trash"] }, { owner: bc.owner, sourceCard: bc, vars: {} });
+          if (trashCards.length < Number(trashTax)) {
+            showNotice(`🚫 受到場上效果（零號キリンジ）影響：廢棄區不足 ${trashTax} 張卡牌可返回卡組底，無法發動爆裂！`);
+            return;
+          }
+          const paid = await executeAstNode({
+            op: "MOVE_CARDS",
+            query: { owner: "self", zones: ["trash"], count: Number(trashTax), exactRequired: true },
+            to: { owner: "self", zone: "deck_bottom" },
+            optional: true,
+            text: `爆裂發動條件：須將自己廢棄區 ${trashTax} 張卡牌返回卡組底`
+          }, { owner: bc.owner, sourceCard: bc, payload: {}, vars: {}, eventResult: {} });
+          if (!paid.ok) {
+            showNotice("🚫 未支付爆裂代價，取消發動。");
+            return;
+          }
+        }
+      }
+      return origActivateBurstV61(cardId);
+    };
+  }
 
   // =========================================================================
   // v6.0 Built-in Zero-Manual Gemini AI Auto-Compiler (for all future cards!)
   // =========================================================================
   const GEMINI_KEY_STORAGE = "bs_gemini_api_key";
   const BS6_AST_PROMPT_SPEC = [
-    "You are a strict Battle Spirits TCG rule compiler. Convert the card effect text into a JSON array of BS v21 AST effect objects.",
+    "You are a strict Battle Spirits TCG rule compiler. Convert the card effect text into a JSON array of BS v24 AST effect objects.",
     "OUTPUT ONLY A VALID JSON ARRAY (no markdown fences, no commentary).",
     "1. Ignore flavor text, 神託/真神託, 復活, keyword definitions (煌臨/顯現/幻境), 減輕標誌當作滿足, 標誌也當作, and hand cost changes.",
-    "2. Each item: {schema:21, kind:'TRIGGERED'|'CONTINUOUS'|'REPLACEMENT'|'INTERRUPT', header:string, minLv:number}.",
+    "2. Each item: {schema:24, kind:'TRIGGERED'|'CONTINUOUS'|'REPLACEMENT'|'INTERRUPT', header:string, minLv:number}.",
     "3. TRIGGERED events: AFTER_SUMMON, AFTER_DEPLOY, AFTER_ADVENT, AFTER_MANIFEST, AFTER_TURN_FLIP, AFTER_ATTACK_DECLARE, AFTER_BLOCK_DECLARE, AFTER_CARD_DESTROYED, AFTER_ENEMY_DESTROYED, AFTER_OWN_NEXUS_DESTROYED, AFTER_ALLY_SUMMON, AFTER_ALLY_DEPLOY, AFTER_ALLY_ADVENT, AFTER_ALLY_ATTACK, AFTER_ALLY_BLOCK, AFTER_CARD_EXHAUSTED, AFTER_LIFE_REDUCED, AFTER_BATTLE_END, PHASE_OWN_ATTACK_START, PHASE_ENEMY_ATTACK_START, PHASE_ANY_ATTACK_START, PHASE_OWN_END_START, MAIN_STEP_ACTIVATE, MAIN_WINDOW, FLASH_WINDOW, ON_BURST.",
     "4. Control nodes: SEQ({nodes}), PAY_THEN({optional,cost,then}), IF({cond,then,else}), CHOOSE({options}), REPEAT({timesExpr,body}).",
     "5. Atomic ops (NEVER invent ops, NEVER output ruleFlag): MOVE_CARDS, MOVE_CORES, SET_CARD_STATE, MODIFY_COUNTER, ATTACH_CARD, ADD_MODIFIER, ACTIVATE_BURST, INVOKE_CARD_EFFECT, CONTROL_FLOW_PHASE.",
@@ -19423,7 +20123,7 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
         });
         if (Array.isArray(aiAst) && aiAst.length) {
           jsonInput.value = JSON.stringify(aiAst);
-          catalogStatus(`🤖 AI 編譯成功（${aiAst.length} 條 v21 AST），正在儲存…`);
+          catalogStatus(`🤖 AI 編譯成功（${aiAst.length} 條 v24 AST），正在儲存…`);
         }
       } catch (aiErr) {
         console.warn("Gemini AI compile fallback to offline:", aiErr);
@@ -19439,9 +20139,9 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
       return showNotice("請先在上方「🤖 AI 自動編譯」欄位貼上你的免費 Gemini API Key（僅存於本機瀏覽器），儲存後新增任何新卡都會自動編譯！");
     }
     await ensureCatalogData(false);
-    const missing = catalogEntries.filter(c => c?.effect && (!Array.isArray(c.structuredEffects) || !c.structuredEffects.some(e => Number(e?.schema || 0) >= 21)));
-    if (!missing.length) return showNotice("🎉 卡池全部卡片均已是最新 v21 AST，無須補編！");
-    if (!confirm(`偵測到 ${missing.length} 張尚未擁有 v21 AST 的新卡，要立即使用 Gemini AI 逐張語義編譯並同步雲端嗎？\n（已擁有的 v21 卡資料不會被覆蓋）`)) return;
+    const missing = catalogEntries.filter(c => c?.effect && (!Array.isArray(c.structuredEffects) || !c.structuredEffects.some(e => Number(e?.schema || 0) >= 24)));
+    if (!missing.length) return showNotice("🎉 卡池全部卡片均已是最新 v24 AST，無須補編！");
+    if (!confirm(`偵測到 ${missing.length} 張尚未擁有 v24 AST 的新卡，要立即使用 Gemini AI 逐張語義編譯並同步雲端嗎？\n（已擁有的 v21 卡資料不會被覆蓋）`)) return;
     const items = [];
     let fail = 0;
     for (let i = 0; i < missing.length; i++) {
@@ -19468,7 +20168,7 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
     }
     await indexCatalogImages();
     if (typeof window.updateCatalogEffectsVersionUI === "function") window.updateCatalogEffectsVersionUI();
-    showNotice(`🤖 AI 補編完成！成功編譯並同步 ${res.count} 張新卡至 v21 AST（失敗 ${fail} 張）。`);
+    showNotice(`🤖 AI 補編完成！成功編譯並同步 ${res.count} 張新卡至 v24 AST（失敗 ${fail} 張）。`);
   };
 
   const dbPanel = document.querySelector("#card-db-modal .card-db-panel");
@@ -19497,25 +20197,472 @@ body:not(.mobile-mode) #preview-main-act-btn{display:none!important}
         if (inp) inp.value = "••••••••";
         document.getElementById("bs6-ai-key-badge").textContent = "✓ 已啟用：存新卡自動 AI 編譯";
         document.getElementById("bs6-ai-key-badge").style.color = "#6ee7b7";
-        showNotice("已將 Gemini API Key 儲存於本機瀏覽器！之後新增或編輯卡片儲存時將自動由 AI 編譯為嚴格驗證的 v21 AST。");
+        showNotice("已將 Gemini API Key 儲存於本機瀏覽器！之後新增或編輯卡片儲存時將自動由 AI 編譯為嚴格驗證的 v24 AST。");
       }
     };
     document.getElementById("bs6-ai-compile-missing").onclick = () => window.aiCompileMissingCatalogCards();
   }
 
-  // Protect verified v21 AST against accidental offline mass-overwrite!
+  // Protect verified v24 AST against accidental offline mass-overwrite!
   const origOfflineBatch = window.autoCompileEntireCatalogToAst;
   window.autoCompileEntireCatalogToAst = async function () {
     await ensureCatalogData(false);
-    const uncompiled = catalogEntries.filter(c => c?.effect && (!Array.isArray(c.structuredEffects) || !c.structuredEffects.some(e => Number(e?.schema || 0) >= 21)));
+    const uncompiled = catalogEntries.filter(c => c?.effect && (!Array.isArray(c.structuredEffects) || !c.structuredEffects.some(e => Number(e?.schema || 0) >= 24)));
     if (!uncompiled.length) {
-      return showNotice("🛡️ 保護機制生效：目前卡池全部卡片均已具備精修版 v21 AST，無須使用離線編譯覆寫！若要新增卡片，請直接貼上文字儲存（或設定上方 Gemini API Key 自動 AI 編譯）。");
+      return showNotice("🛡️ 保護機制生效：目前卡池全部卡片均已具備精修版 v24 AST，無須使用離線編譯覆寫！若要新增卡片，請直接貼上文字儲存（或設定上方 Gemini API Key 自動 AI 編譯）。");
     }
     return origOfflineBatch();
   };
 
   window.promptBs5CardPicker = promptCardPicker;
   Object.assign(window, { BSRuleCompiler, BSComputedState, BSGameBus, executeAstNode });
+})();
+</script>
+<!-- #endregion -->
+
+
+<!-- #region 27. [實測] 專用實測驗證測試牌組引擎 (自動累積追加・永不刪舊卡・雙邊一鍵載入) -->
+<div id="bs-verif-lab-modal" class="fixed inset-0 z-[12450] hidden flex justify-center items-center p-4" style="background:rgba(6,5,4,0.34);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)">
+  <div class="w-full max-w-3xl max-h-[86vh] flex flex-col p-5 gap-3 rounded-sm shadow-2xl" style="background:linear-gradient(180deg,rgba(16,15,12,0.88) 0%,rgba(10,9,8,0.92) 100%);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1.5px solid rgba(52,211,153,0.72)">
+    <div class="flex items-center justify-between gap-2 border-b border-emerald-500/30 pb-2.5 flex-wrap">
+      <div class="flex items-center gap-2">
+        <span class="text-emerald-300 font-black tracking-wider text-base">🧪 實測驗證專用測試牌組清單</span>
+        <span id="bs-verif-lab-summary" class="text-[11px] font-bold px-2 py-0.5 rounded-sm bg-emerald-950/70 border border-emerald-400/50 text-emerald-200"></span>
+      </div>
+      <div class="flex items-center gap-1.5">
+        <button type="button" class="text-xs font-black px-2.5 py-1 rounded-sm bg-sky-950/70 border border-sky-400/60 text-sky-200 hover:bg-sky-400 hover:text-black cursor-pointer" onclick="loadVerificationDeckBothSides()">⚡ 雙邊載入 P1+P2</button>
+        <button type="button" class="text-xs font-black px-2.5 py-1 rounded-sm bg-emerald-950/70 border border-emerald-400/60 text-emerald-200 hover:bg-emerald-400 hover:text-black cursor-pointer" onclick="syncVerificationTestDeck({silent:false,forceNotify:true}).then(()=>renderVerificationLabModal())">🔄 補齊卡池新卡</button>
+        <button type="button" class="text-xs font-bold px-2.5 py-1 rounded-sm bg-black/70 border border-[#b09466]/50 text-[#dcd6cc] hover:bg-[#c8aa76] hover:text-black cursor-pointer" onclick="closeVerificationLabModal()">關閉 ✕</button>
+      </div>
+    </div>
+    <div class="flex items-center gap-2 flex-wrap bg-black/45 border border-emerald-500/25 p-2.5 rounded-sm">
+      <input id="bs-verif-extra-input" type="text" placeholder="手動追加卡號（以逗號或空白分隔，例如：BS70-X05, BS75-X09）" class="flex-1 min-w-[210px] bg-black/80 border border-[#b09466]/50 text-[#f5efe6] px-2.5 py-1.5 rounded-sm text-xs outline-none focus:border-emerald-400">
+      <button type="button" class="text-xs font-black px-3 py-1.5 rounded-sm bg-emerald-500 text-black hover:bg-emerald-300 cursor-pointer whitespace-nowrap" onclick="appendManualNumbersToVerificationDeck()">＋ 追加進測試牌組（不刪舊卡）</button>
+    </div>
+    <div class="text-[11px] text-emerald-200/85 leading-relaxed">
+      🛡️ <b>永不刪舊卡保護</b>：往後每次版本升級或手動追加測試卡，只會「補齊新增」未收錄的卡片並保留您之前累積的所有測試卡，方便隨時反覆交叉實測。
+    </div>
+    <div id="bs-verif-lab-list" class="flex-1 overflow-y-auto flex flex-col gap-3 pr-1 custom-scrollbar"></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  const VERIF_DECK_ID = "deck_bs_verification_lab";
+  const VERIF_DECK_NAME = "🧪 實測驗證專用測試牌組";
+
+  // 累積制實測卡清單：往後新增版本測試卡只需在下方追加，系統永遠只合併新增、絕不刪除既有舊卡！
+  const VERIF_TEST_BATCHES = [
+    {
+      batch: "v6.3 離場替換／對手破壞／疲勞防禦／Cost鎖／加速／廢棄區Flash／轉醒",
+      cards: [
+        { number: "BSC50-020", count: 1, note: "合體留場替換 (BEFORE_CARD_LEAVE_FIELD) ＋ 宿主 ⚡Flash" },
+        { number: "BSC50-XV05", count: 1, note: "月光神龍宿主（配 BSC50-020 留場後回復並加紫標誌）" },
+        { number: "BSC47-RV010(A)", count: 1, note: "轉醒 A 面（翻面後測試時の狭間）" },
+        { number: "BSC47-RV010(B)", count: 1, note: "轉醒 B 面：轉醒炸非時冠 ＋ Lv2 時冠離場留場替換" },
+        { number: "BSC49-054", count: 1, note: "合體攻擊中對手 BP8000+ 被破壞時燒血 (AFTER_ENEMY_DESTROYED)" },
+        { number: "PX20-01", count: 1, note: "【神域】對手被破壞時移自身 3 Core 燒血" },
+        { number: "BSC50-X01", count: 1, note: "攻擊中對手被破壞時移生命至廢棄區" },
+        { number: "SD49-X01", count: 1, note: "攻擊破壞對手 Spirit 時燒血" },
+        { number: "BS75-CX02", count: 1, note: "【騎裝甲】全己方「白銀」Spirit 疲勞狀態可直接防禦" },
+        { number: "BS75-032", count: 1, note: "白銀 Spirit（配合 BS75-CX02 實測 90° 疲勞直接點右側防禦）" },
+        { number: "BS70-040", count: 1, note: "自身常駐疲勞防禦 (canBlockExhausted)" },
+        { number: "BSC49-XV09", count: 1, note: "對手 Cost 2/3/5/7/11/13 不可攻擊／阻擋 (lockEnemyCosts)" },
+        { number: "BSC45-XV03", count: 1, note: "手牌紫色「⚡加速」鈕：彈對手 2 體回手元" },
+        { number: "BSC45-XV05", count: 1, note: "手牌紫色「⚡加速」鈕：-10000BP×2 ＋ 手元或付1召喚" },
+        { number: "BSC49-XV05", count: 1, note: "手牌紫色「⚡加速」鈕：Cost 5+ 攻擊減生命時追加燒 1 血" },
+        { number: "BSC49-XV12", count: 1, note: "手牌紫色「⚡加速」鈕：炸對手最高 Cost Spirit" },
+        { number: "BSC50-XV03", count: 1, note: "廢棄區 VIEW「⚡ 發動廢棄區 Flash」付 1 Cost 復活" },
+        { number: "BS57-X02", count: 1, note: "廢棄區 VIEW「⚡ 發動廢棄區 Flash」棄牌組 3 張復活" },
+        { number: "BSC47-RV012(A)", count: 1, note: "時空の門（轉醒 A 面）" },
+        { number: "BSC47-RV012(B)", count: 1, note: "轉醒 B 面：設有幻境時改炸最多 3 張 Cost 7 以下" },
+        { number: "BSC47-RV014(A)", count: 1, note: "時冠の創界石（轉醒 A 面）" },
+        { number: "BSC47-RV014(B)", count: 1, note: "轉醒 B 面：轉醒炸 Cost 合計至 8" },
+        { number: "BSC47-RV011", count: 1, note: "表側幻境：己方回合全「時冠」Spirit BP+5000" },
+        { number: "BS55-TX03(A)", count: 1, note: "時の監視者ロンバルディア（轉醒 A 面）" },
+        { number: "BS55-TX03(B)", count: 1, note: "轉醒 B 面：除外 3 張藍時冠跳過對手下回合主要階段" },
+        { number: "BS55-060", count: 2, note: "Cost 3 藍「時冠」（測 BSC49-XV09 鎖 3 費 ＋ 湊藍時冠除外）" },
+        { number: "BS59-049", count: 1, note: "Cost 4 藍「時冠」（測 BSC49-XV09 不鎖 4 費 ＋ 湊 3 張藍時冠）" },
+        { number: "BS73-032", count: 1, note: "表側幻境：對手回合對手效果加手牌時自動提示抽 1 張" },
+        { number: "BS73-CX03", count: 1, note: "契約神ヤマトタケル（配 BS73-032 幻境與 BS74-039）" },
+        { number: "BS74-039", count: 1, note: "主要階段僅限自身 +2 標誌（不誤加全場）" }
+      ]
+    },
+    {
+      batch: "v6.2 幻境／抽牌半透明橫幅／防禦稅／爆裂稅／動態費用／護盾",
+      cards: [
+        { number: "BS61-CP04", count: 1, note: "抽牌半透明橫幅 ＋ 幻境區對手空間加 Core 回收純紅卡" },
+        { number: "BS47-027", count: 1, note: "召喚從空間加 Core（觸發對手灼熱の谷幻境）" },
+        { number: "BS70-026", count: 1, note: "系統「激覇」＋ 召喚空間加 Core" },
+        { number: "BS69-011", count: 1, note: "表側幻境原初 +5000BP ＋ 幻境區「⚡Flash」炸 Nexus 跳場" },
+        { number: "BS69-004", count: 1, note: "系統「原初」Spirit（配 BS69-011 幻境光環）" },
+        { number: "BS69-068", count: 1, note: "系統「原初」Nexus（配 BS69-011 ⚡Flash 代價）" },
+        { number: "BS73-AX03", count: 1, note: "Lv2 攻擊防禦稅：對手防禦前強制送 1 張 Spirit 回卡組底" },
+        { number: "BS74-X09", count: 1, note: "Lv2 爆裂稅：對手開爆裂前強制送廢棄區 3 張回卡組底" },
+        { number: "BS70-055", count: 1, note: "爆裂卡（蓋在爆裂區測 BS74-X09 爆裂稅）" },
+        { number: "BS70-079", count: 1, note: "主要階段使手牌「激覇」費用等於自身生命值" },
+        { number: "BS70-CP01", count: 1, note: "激覇の契約神ダン（配 BS70-CP02 激覇ウォール）" },
+        { number: "BS70-CP02", count: 1, note: "激覇護盾：免疫 Cost 3 以下攻擊生命值傷害" },
+        { number: "BS70-XV01", count: 1, note: "高費「激覇」「ヴルム」（配 BS70-079 動態改費與 BSC50-XV03）" }
+      ]
+    },
+    {
+      batch: "進階常駐光環與手元攔截檢核",
+      cards: [
+        { number: "BS69-X04", count: 1, note: "界放後鎖定對手不可使用與對手手元區相同 Cost 的卡牌" },
+        { number: "BS70-XV04", count: 1, note: "手元區攔截對手 Magic 並立即無效化" },
+        { number: "BS71-066", count: 1, note: "爬獣光環 ＋ Count 8+ 固定 2 紅標誌" },
+        { number: "BS49-X07", count: 1, note: "Nexus 合體且 4 Core+ 時，Cost 5+ 光導 +5000BP / +1 紅標誌" },
+        { number: "BSC49-XV08", count: 1, note: "Lv3 合體中光導/眷属/神星 +1 白標誌" },
+        { number: "BSC49-XV11", count: 1, note: "攻擊階段締皇/光導 +10000BP / +1 藍標誌" }
+      ]
+    }
+  ];
+
+  const ALL_VERIF_TEST_ITEMS = VERIF_TEST_BATCHES.flatMap(b => b.cards.map(c => ({ ...c, batch: b.batch })));
+  window.BS_VERIFICATION_DECK_ID = VERIF_DECK_ID;
+  window.BS_VERIFICATION_DECK_NAME = VERIF_DECK_NAME;
+  window.BS_VERIFICATION_TEST_CARDS = ALL_VERIF_TEST_ITEMS;
+
+  let verifSyncPromise = null;
+
+  async function fetchCurrentVerificationDeck() {
+    let deck = await getDeckFromVaultDB(VERIF_DECK_ID);
+    if (window.globalCloudDecksCache?.[VERIF_DECK_ID] && window.fetchGlobalDeckEntriesFromCloud) {
+      try {
+        deck = (await window.fetchGlobalDeckEntriesFromCloud(VERIF_DECK_ID)) || deck;
+      } catch (e) {}
+    }
+    if (!deck) {
+      const allMeta = await getAllDecksFromVaultDB(true);
+      const byName = allMeta.find(d => d && d.name === VERIF_DECK_NAME);
+      if (byName) {
+        deck = await getDeckFromVaultDB(byName.id);
+        if (window.globalCloudDecksCache?.[byName.id] && window.fetchGlobalDeckEntriesFromCloud) {
+          try {
+            deck = (await window.fetchGlobalDeckEntriesFromCloud(byName.id)) || deck;
+          } catch (e) {}
+        }
+      }
+    }
+    return deck || null;
+  }
+
+  window.syncVerificationTestDeck = async function (opts = {}) {
+    const { silent = true, extraNumbers = [], forceNotify = false } = opts || {};
+    if (verifSyncPromise) return verifSyncPromise;
+    verifSyncPromise = (async () => {
+      try {
+        await ensureCatalogData(false);
+        const existingDeck = await fetchCurrentVerificationDeck();
+        // 絕對保留全部既有卡片（包含舊版測試卡與使用者自行加入的卡片）
+        const merged = getDeckEntriesFromRecord(existingDeck).map(e => ({ ...e }));
+
+        const byNumber = new Map();
+        const byImage = new Map();
+        for (const entry of merged) {
+          const catMatch = lookupCatalog(entry);
+          const normNum = String(entry.catalogNumber || catMatch?.number || "").trim().toUpperCase();
+          if (normNum) {
+            entry.catalogNumber = normNum;
+            byNumber.set(normNum, entry);
+          }
+          if (entry.imgBase64) byImage.set(entry.imgBase64, entry);
+        }
+
+        const requestedMap = new Map();
+        for (const item of ALL_VERIF_TEST_ITEMS) {
+          const num = String(item.number || "").trim().toUpperCase();
+          if (!num) continue;
+          const prev = requestedMap.get(num);
+          requestedMap.set(num, Math.max(prev || 0, Number(item.count) || 1));
+        }
+        for (const rawNum of (extraNumbers || [])) {
+          const num = String(rawNum || "").trim().toUpperCase();
+          if (!num) continue;
+          requestedMap.set(num, Math.max(requestedMap.get(num) || 0, 1));
+        }
+
+        let addedCount = 0;
+        let bumpedCount = 0;
+        const missingImages = [];
+        const notInCatalog = [];
+
+        for (const [num, reqCount] of requestedMap.entries()) {
+          const cat = window.catalogByNumber?.get(num);
+          if (!cat) {
+            notInCatalog.push(num);
+            continue;
+          }
+          if (!cat.image) {
+            missingImages.push(num);
+            continue;
+          }
+          const existing = byNumber.get(num) || byImage.get(cat.image);
+          if (existing) {
+            if (!existing.catalogNumber) existing.catalogNumber = cat.number;
+            if ((Number(existing.count) || 0) < reqCount) {
+              existing.count = reqCount;
+              bumpedCount++;
+            }
+          } else {
+            const newEntry = {
+              imgBase64: cat.image,
+              catalogNumber: cat.number,
+              name: cat.name || cat.number,
+              count: reqCount
+            };
+            merged.push(newEntry);
+            byNumber.set(cat.number, newEntry);
+            byImage.set(cat.image, newEntry);
+            addedCount++;
+          }
+        }
+
+        const deckIdToUse = existingDeck?.id || VERIF_DECK_ID;
+        const deckNameToUse = existingDeck?.name || VERIF_DECK_NAME;
+        const needsSave = (!existingDeck && merged.length > 0) || addedCount > 0 || bumpedCount > 0;
+
+        if (needsSave && merged.length > 0) {
+          await saveDeckToVaultDB(
+            deckNameToUse,
+            merged,
+            existingDeck?.cardBack || null,
+            deckIdToUse,
+            existingDeck?.coverImage || null
+          );
+          if (!silent || forceNotify) {
+            const extraMsg = missingImages.length ? `\n（另有 ${missingImages.length} 張卡池尚未導入卡圖，導入後可再按補齊）` : "";
+            showNotice(`🧪「${deckNameToUse}」已更新！本次追加 ${addedCount} 種新測試卡（共保留 ${merged.length} 種卡圖，未刪除任何舊卡）。${extraMsg}`);
+          }
+        } else if (!silent || forceNotify) {
+          if (merged.length === 0) {
+            showNotice("卡池尚未載入任何卡圖，請先確認「📚 卡池」已有卡圖後再按補齊實測牌組。");
+          } else {
+            const extraMsg = (missingImages.length || notInCatalog.length)
+              ? `\n尚待補圖/導入卡池：${[...missingImages, ...notInCatalog].slice(0, 8).join("、")}`
+              : "";
+            showNotice(`✅「${deckNameToUse}」已是最新狀態（共保留 ${merged.length} 種實測卡，無任何舊卡被刪除）。${extraMsg}`);
+          }
+        }
+
+        return { ok: true, addedCount, bumpedCount, totalUnique: merged.length, missingImages, notInCatalog };
+      } catch (err) {
+        console.warn("syncVerificationTestDeck warning:", err);
+        if (!silent || forceNotify) {
+          showNotice("更新實測專用牌組失敗：" + (err?.message || "請確認網路連線後重試。"));
+        }
+        return { ok: false, error: err };
+      } finally {
+        verifSyncPromise = null;
+      }
+    })();
+    return verifSyncPromise;
+  };
+
+  window.loadVerificationDeckBothSides = async function () {
+    const deck = await fetchCurrentVerificationDeck();
+    if (!deck) {
+      await window.syncVerificationTestDeck({ silent: true });
+    }
+    const readyDeck = await fetchCurrentVerificationDeck();
+    if (!readyDeck) return showNotice("尚未建立實測專用測試牌組，請先點擊「🧪 補齊實測牌組」。");
+    const entries = getDeckEntriesFromRecord(readyDeck);
+    const cardsArr = expandEntriesToCardsArray(entries);
+    if (!cardsArr.length) return showNotice("實測測試牌組內沒有可載入的卡片！");
+    closeVerificationLabModal();
+    closeDeckVaultModal();
+    const origNotice = window.showNotice;
+    window.showNotice = () => {};
+    try {
+      applyDeckCardsToPlayer("p1", cardsArr, readyDeck.cardBack || null, readyDeck.name, entries);
+      applyDeckCardsToPlayer("p2", cardsArr, readyDeck.cardBack || null, readyDeck.name, entries);
+    } finally {
+      window.showNotice = origNotice;
+    }
+    showNotice(`🧪 已將「${readyDeck.name}」(${cardsArr.length} 張) 同時載入至 P1 與 P2 雙方牌組！可直接點擊 Deck 的 VIEW 抓出任意指定測試卡進行雙邊實測。`);
+  };
+
+  window.openVerificationLabModal = async function () {
+    document.getElementById("bs-verif-lab-modal")?.classList.remove("hidden");
+    await window.renderVerificationLabModal();
+  };
+
+  window.closeVerificationLabModal = function () {
+    document.getElementById("bs-verif-lab-modal")?.classList.add("hidden");
+  };
+
+  window.renderVerificationLabModal = async function () {
+    const listEl = document.getElementById("bs-verif-lab-list");
+    const sumEl = document.getElementById("bs-verif-lab-summary");
+    if (!listEl) return;
+    listEl.innerHTML = '<div class="text-center text-xs text-stone-400 py-8">正在掃描測試牌組收錄狀態…</div>';
+    await ensureCatalogData(false);
+    const deck = await fetchCurrentVerificationDeck();
+    const entries = getDeckEntriesFromRecord(deck);
+    const inDeckSet = new Set(entries.map(e => String(e.catalogNumber || lookupCatalog(e)?.number || "").trim().toUpperCase()).filter(Boolean));
+    const totalDeckCards = entries.reduce((s, e) => s + deckEntryCount(e), 0);
+    if (sumEl) sumEl.textContent = `目前收錄 ${entries.length} 種卡（牌組 ${totalDeckCards} 張）`;
+
+    const presetSet = new Set(ALL_VERIF_TEST_ITEMS.map(x => x.number.toUpperCase()));
+    const extraExisting = entries.filter(e => {
+      const n = String(e.catalogNumber || lookupCatalog(e)?.number || "").trim().toUpperCase();
+      return n && !presetSet.has(n);
+    });
+
+    listEl.innerHTML = "";
+    VERIF_TEST_BATCHES.forEach(group => {
+      const sec = document.createElement("div");
+      sec.className = "border border-[#b09466]/35 bg-black/45 rounded-sm p-3 flex flex-col gap-2";
+      const hd = document.createElement("div");
+      hd.className = "text-xs font-black text-[#e0b25b] border-b border-[#b09466]/25 pb-1.5";
+      hd.textContent = "📌 " + group.batch;
+      sec.appendChild(hd);
+
+      const grid = document.createElement("div");
+      grid.className = "grid grid-cols-1 sm:grid-cols-2 gap-1.5";
+      group.cards.forEach(item => {
+        const num = item.number.toUpperCase();
+        const cat = window.catalogByNumber?.get(num);
+        const hasInDeck = inDeckSet.has(num);
+        const row = document.createElement("div");
+        row.className = "flex items-start justify-between gap-2 px-2 py-1.5 rounded-sm border text-[11px] " +
+          (hasInDeck ? "border-emerald-500/35 bg-emerald-950/25" : "border-amber-500/40 bg-amber-950/25");
+        const left = document.createElement("div");
+        left.className = "min-w-0 flex-1";
+        left.innerHTML = `<div class="font-black ${hasInDeck ? "text-emerald-200" : "text-amber-200"} truncate">${hasInDeck ? "✅" : "⚠️"} ${escapeHtmlSimple(num)} ${escapeHtmlSimple(cat?.name || "")}</div>`
+          + `<div class="text-[10px] text-[#c8bea8] leading-snug mt-0.5">${escapeHtmlSimple(item.note)}</div>`;
+        const tag = document.createElement("span");
+        tag.className = "flex-shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded-sm " +
+          (hasInDeck ? "bg-emerald-900/70 text-emerald-200" : "bg-amber-900/70 text-amber-200");
+        tag.textContent = hasInDeck ? `×${item.count}` : (cat ? "卡池缺圖" : "未入卡池");
+        row.append(left, tag);
+        grid.appendChild(row);
+      });
+      sec.appendChild(grid);
+      listEl.appendChild(sec);
+    });
+
+    if (extraExisting.length) {
+      const sec = document.createElement("div");
+      sec.className = "border border-sky-500/35 bg-sky-950/20 rounded-sm p-3 flex flex-col gap-1.5";
+      sec.innerHTML = `<div class="text-xs font-black text-sky-300 border-b border-sky-500/25 pb-1">💾 您額外保留／手動追加的舊測試卡（共 ${extraExisting.length} 種，永不刪除）</div>`;
+      const tags = document.createElement("div");
+      tags.className = "flex flex-wrap gap-1.5";
+      extraExisting.forEach(e => {
+        const sp = document.createElement("span");
+        sp.className = "text-[10px] font-bold px-2 py-0.5 rounded-sm bg-black/70 border border-sky-400/40 text-sky-200";
+        sp.textContent = `${e.catalogNumber || ""} ${e.name || ""} ×${e.count || 1}`.trim();
+        tags.appendChild(sp);
+      });
+      sec.appendChild(tags);
+      listEl.appendChild(sec);
+    }
+  };
+
+  window.appendManualNumbersToVerificationDeck = async function () {
+    const inp = document.getElementById("bs-verif-extra-input");
+    const raw = (inp?.value || "").trim();
+    if (!raw) return showNotice("請先輸入要追加的卡號（例如：BS70-X05, BSC49-XV08）。");
+    const nums = raw.split(/[\s,，、;；]+/).map(s => s.trim().toUpperCase()).filter(Boolean);
+    if (!nums.length) return;
+    await window.syncVerificationTestDeck({ silent: false, extraNumbers: nums, forceNotify: true });
+    if (inp) inp.value = "";
+    await window.renderVerificationLabModal();
+    await renderDeckVaultList();
+  };
+
+  // Backdrop click to close lab modal
+  document.getElementById("bs-verif-lab-modal")?.addEventListener("pointerdown", e => {
+    if (e.target === e.currentTarget) { e.stopPropagation(); closeVerificationLabModal(); }
+  });
+
+  // Hook openDeckVaultModal -> auto ensure & non-destructively append new test cards!
+  const origOpenDeckVaultV64 = openDeckVaultModal;
+  openDeckVaultModal = async function () {
+    const el = document.getElementById("deck-vault-modal");
+    if (el) el.classList.remove("hidden");
+    if (window.refreshGlobalDecksFromCloud) await window.refreshGlobalDecksFromCloud(false);
+    await window.syncVerificationTestDeck({ silent: true });
+    await renderDeckVaultList();
+  };
+
+  // Hook getAllDecksFromVaultDB -> pin 🧪 實測驗證專用測試牌組 at position #1!
+  const origGetAllDecksV64 = getAllDecksFromVaultDB;
+  getAllDecksFromVaultDB = async function (metaOnly = false) {
+    const list = await origGetAllDecksV64(metaOnly);
+    const idx = list.findIndex(d => d && (d.id === VERIF_DECK_ID || d.name === VERIF_DECK_NAME));
+    if (idx > 0) {
+      const [item] = list.splice(idx, 1);
+      list.unshift(item);
+    }
+    return list;
+  };
+
+  // Hook renderDeckVaultList -> style the dedicated test deck card & add ⚡雙邊 P1+P2 / 📋 測試清單 buttons!
+  const origRenderVaultV64 = renderDeckVaultList;
+  renderDeckVaultList = async function () {
+    await origRenderVaultV64();
+    const listEl = document.getElementById("deck-vault-list");
+    if (!listEl || deckVaultPage !== 0) return;
+    const allMeta = await getAllDecksFromVaultDB(true);
+    const first = allMeta[0];
+    if (!first || (first.id !== VERIF_DECK_ID && first.name !== VERIF_DECK_NAME)) return;
+    const cardEl = listEl.firstElementChild;
+    if (!cardEl || cardEl.dataset.verifEnhanced === "1") return;
+    cardEl.dataset.verifEnhanced = "1";
+    cardEl.style.borderColor = "rgba(52, 211, 153, 0.78)";
+    cardEl.style.background = "linear-gradient(180deg, rgba(6, 46, 36, 0.58) 0%, rgba(16, 17, 16, 0.94) 100%)";
+    cardEl.style.boxShadow = "0 0 22px rgba(16, 185, 129, 0.18)";
+
+    const badge = document.createElement("div");
+    badge.className = "text-[10px] font-black tracking-wider text-emerald-200 bg-emerald-950/90 border border-emerald-400/60 px-2 py-0.5 rounded-sm self-start";
+    badge.textContent = "🛡️ 實測專用・自動累積追加・永不刪舊卡";
+    cardEl.insertBefore(badge, cardEl.firstChild);
+
+    const btnBar = cardEl.lastElementChild;
+    if (btnBar) {
+      const bothBtn = document.createElement("button");
+      bothBtn.type = "button";
+      bothBtn.className = "w-full bg-emerald-500 hover:bg-emerald-300 text-black text-xs font-black py-1.5 px-2 rounded-sm cursor-pointer transition-colors";
+      bothBtn.textContent = "⚡ 單鍵雙邊載入 P1 + P2（立即實測）";
+      bothBtn.onclick = () => window.loadVerificationDeckBothSides();
+
+      const labBtn = document.createElement("button");
+      labBtn.type = "button";
+      labBtn.className = "flex-1 bg-indigo-950/75 border border-indigo-400/60 hover:bg-indigo-400 hover:text-black text-indigo-200 text-xs font-black py-1.5 px-2 rounded-sm cursor-pointer transition-colors whitespace-nowrap";
+      labBtn.textContent = "📋 測試清單／追加卡";
+      labBtn.onclick = () => window.openVerificationLabModal();
+
+      btnBar.insertBefore(bothBtn, btnBar.firstChild);
+      btnBar.appendChild(labBtn);
+    }
+  };
+
+  // Protect dedicated test deck against accidental single-click deletion
+  const origDeleteDeckV64 = deleteDeckFromVaultDB;
+  deleteDeckFromVaultDB = async function (deckId) {
+    if (deckId === VERIF_DECK_ID) {
+      if (!confirm("「🧪 實測驗證專用測試牌組」保留了歷代實測與自訂追加的卡片，確定要刪除嗎？\n（刪除後若再按「🧪 補齊實測牌組」會重新建置預設清單，但手動追加的卡片會遺失）")) {
+        return;
+      }
+    }
+    return origDeleteDeckV64(deckId);
+  };
+
+  Object.assign(window, {
+    openDeckVaultModal,
+    renderDeckVaultList,
+    deleteDeckFromVaultDB,
+    syncVerificationTestDeck: window.syncVerificationTestDeck,
+    loadVerificationDeckBothSides: window.loadVerificationDeckBothSides,
+    openVerificationLabModal: window.openVerificationLabModal,
+    closeVerificationLabModal: window.closeVerificationLabModal,
+    renderVerificationLabModal: window.renderVerificationLabModal,
+    appendManualNumbersToVerificationDeck: window.appendManualNumbersToVerificationDeck
+  });
 })();
 </script>
 <!-- #endregion -->
