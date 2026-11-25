@@ -17,7 +17,7 @@
  10. 創界神 (Grandwalker) 技與域   -> 搜尋: function useGrandwalkerSkill
  11. 顕現 (Manifest) 系統與特效    -> 搜尋: function triggerManifestFromHand
 ========================================================================= -->
-<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><title>BS v7.0</title><script src="https://cdn.tailwindcss.com"></script><style>
+<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><title>BS v7.0.1</title><script src="https://cdn.tailwindcss.com"></script><style>
 /* #region 1. 基礎排版、卡背 SVG 與戰場區域樣式 */
 body,html{touch-action:manipulation;overflow-x:hidden!important;overscroll-behavior-x:none}.action-btn,.counter-box,.counter-title,.counter-value,.small-action-btn,body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}body{background-color:#0d0c0b;background-image:radial-gradient(ellipse at 50% 50%,rgba(46,40,34,.45) 0,rgba(10,9,8,.95) 100%),repeating-linear-gradient(135deg,rgba(255,255,255,.012) 0,rgba(255,255,255,.012) 2px,transparent 2px,transparent 8px);color:#dcd6cc;font-family:Cinzel,"Noto Serif TC",PMingLiU,Georgia,serif}.custom-scrollbar::-webkit-scrollbar{display:none}.custom-scrollbar{-ms-overflow-style:none;scrollbar-width:none}:root{--bs-cardback-svg:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 280'%3E%3Crect width='200' height='280' rx='13' fill='%23040404'/%3E%3Cg fill='none' stroke='%23dcdcdc' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4.5' y='4.5' width='191' height='271' rx='10' stroke-width='2.6'/%3E%3Crect x='11' y='11' width='178' height='258' rx='7' stroke-width='1.1' stroke-opacity='0.6'/%3E%3Cpath d='M5 42 C18 16,48 6,86 14 C122 22,152 6,195 26' stroke-width='3'/%3E%3Cpath d='M10 26 C32 6,76 22,118 10 C152 2,178 14,190 38' stroke-width='1.8'/%3E%3Cpath d='M5 238 C18 264,48 274,86 266 C122 258,152 274,195 254' stroke-width='3'/%3E%3Cpath d='M10 254 C32 274,76 258,118 270 C152 278,178 266,190 242' stroke-width='1.8'/%3E%3Cpath d='M14 5 C4 36,20 82,8 138 C-2 184,18 232,10 275' stroke-width='2.8'/%3E%3Cpath d='M6 28 C22 68,4 114,16 156 C24 192,6 226,18 262' stroke-width='1.5'/%3E%3Cpath d='M186 5 C196 36,180 82,192 138 C202 184,182 232,190 275' stroke-width='2.8'/%3E%3Cpath d='M194 28 C178 68,196 114,184 156 C176 192,194 226,182 262' stroke-width='1.5'/%3E%3Cpath d='M8 46 C26 42,34 24,22 14 C14 8,6 18,16 28' stroke-width='2.2'/%3E%3Cpath d='M192 46 C174 42,166 24,178 14 C186 8,194 18,184 28' stroke-width='2.2'/%3E%3Cpath d='M8 234 C26 238,34 256,22 266 C14 272,6 262,16 252' stroke-width='2.2'/%3E%3Cpath d='M192 234 C174 238,166 256,178 266 C186 272,194 262,184 252' stroke-width='2.2'/%3E%3C/g%3E%3Cg transform='translate(100,128)'%3E%3Cg stroke='%23d4d4d4' stroke-width='1.35' opacity='0.88'%3E%3Cline x1='0' y1='-96' x2='0' y2='96'/%3E%3Cline x1='-74' y1='-74' x2='74' y2='74'/%3E%3Cline x1='74' y1='-74' x2='-74' y2='74'/%3E%3Cline x1='-38' y1='-90' x2='38' y2='90'/%3E%3Cline x1='38' y1='-90' x2='-38' y2='90'/%3E%3Cline x1='-86' y1='-36' x2='86' y2='36'/%3E%3Cline x1='86' y1='-36' x2='-86' y2='36'/%3E%3Cline x1='-20' y1='-93' x2='20' y2='93' stroke-width='0.8'/%3E%3Cline x1='20' y1='-93' x2='-20' y2='93' stroke-width='0.8'/%3E%3Cline x1='-58' y1='-82' x2='58' y2='82' stroke-width='0.8'/%3E%3Cline x1='58' y1='-82' x2='-58' y2='82' stroke-width='0.8'/%3E%3C/g%3E%3Cpolygon points='0,-84 4,-26 0,-18 -4,-26' fill='%23dcdcdc'/%3E%3Cpolygon points='0,84 4,26 0,18 -4,26' fill='%23dcdcdc'/%3E%3Cpolygon points='-64,-64 -18,-22 -14,-14 -22,-18' fill='%23dcdcdc'/%3E%3Cpolygon points='64,-64 18,-22 14,-14 22,-18' fill='%23dcdcdc'/%3E%3Cpolygon points='-64,64 -18,22 -14,14 -22,18' fill='%23dcdcdc'/%3E%3Cpolygon points='64,64 18,22 14,14 22,18' fill='%23dcdcdc'/%3E%3Cpolygon points='-32,-78 -10,-26 -6,-20 -14,-24' fill='%23dcdcdc'/%3E%3Cpolygon points='32,-78 10,-26 6,-20 14,-24' fill='%23dcdcdc'/%3E%3Cpolygon points='-32,78 -10,26 -6,20 -14,24' fill='%23dcdcdc'/%3E%3Cpolygon points='32,78 10,26 6,20 14,24' fill='%23dcdcdc'/%3E%3Ccircle r='50' fill='none' stroke='%23dcdcdc' stroke-width='1.8' stroke-dasharray='7 4'/%3E%3Ccircle r='40' fill='%23050505' stroke='%23e5e5e5' stroke-width='2.2'/%3E%3Cpath d='M-46,-18 C-62,-32 -32,-58 -12,-42 C2,-58 36,-54 26,-32 C52,-38 62,-8 40,8 C58,26 32,52 12,38 C-4,56 -38,50 -28,28 C-54,32 -60,4 -46,-18 Z' fill='none' stroke='%23dcdcdc' stroke-width='2'/%3E%3Cellipse cx='-4' cy='0' rx='46' ry='33' fill='%23050505' stroke='%23ececec' stroke-width='3.8'/%3E%3Cellipse cx='-4' cy='0' rx='41' ry='28' fill='%23050505' stroke='%23888888' stroke-width='1.1'/%3E%3Ctext x='-7' y='17' text-anchor='middle' font-family='Georgia,Times New Roman,serif' font-size='50' font-weight='900' font-style='italic' fill='%23e8e8e8' stroke='%23050505' stroke-width='1.5' letter-spacing='-3'%3EBS%3C/text%3E%3C/g%3E%3Ctext x='100' y='244' text-anchor='middle' font-family='Georgia,Times New Roman,serif' font-size='23' font-weight='900' font-style='italic' fill='%23e2e2e2' letter-spacing='0.6'%3EBattle Spirits%3C/text%3E%3C/svg%3E")}.zone{min-height:100px;background-color:rgba(10,9,8,.18);border:1px solid rgba(186,158,108,.34);border-radius:3px;position:relative;transition:background-color .2s ease,border-color .2s ease,box-shadow .2s ease}.field-zone{background:0 0!important;border:none!important;border-radius:0!important;box-shadow:none!important}.card{width:100px;height:140px;background-color:#0e0e0e;border:1px solid rgba(196,168,118,.55);border-radius:3.5px;display:flex;justify-content:center;align-items:center;cursor:grab;position:absolute;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease,opacity .15s;box-shadow:0 6px 16px rgba(0,0,0,.85),0 1px 3px rgba(0,0,0,.7);background-size:cover;background-position:center;background-repeat:no-repeat;image-rendering:-webkit-optimize-contrast;transform-origin:center center;color:#a89f91;font-size:10px;font-weight:700;overflow:visible}body.mobile-mode .card{touch-action:none}.card:active{cursor:grabbing;box-shadow:0 14px 30px rgba(0,0,0,.95);z-index:1000!important}.card.has-soul-core{border:2px solid #f87171!important;box-shadow:0 0 12px 3px rgba(239,68,68,.95),0 0 24px 6px rgba(185,28,28,.65),inset 0 0 10px rgba(252,165,165,.55)!important}.card.face-down{background-image:var(--bs-cardback-svg)!important;background-size:100% 100%!important;background-position:center!important;background-color:#050505!important;border:1px solid rgba(220,220,220,.65)!important;box-shadow:0 6px 14px rgba(0,0,0,.85)}.card.face-down::after{content:none!important}.card-controls{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) translateY(90px);display:none;align-items:center;gap:5px;background:rgba(10,9,8,.76);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);padding:3px 7px;border-radius:4px;border:1px solid rgba(186,158,108,.55);box-shadow:0 4px 12px rgba(0,0,0,.8);z-index:60;white-space:nowrap;pointer-events:auto}.field-zone .card .card-controls{display:flex!important;opacity:1!important;visibility:visible!important}.field-bottom-left-dock{position:absolute;left:10px;bottom:10px;top:auto;display:flex;flex-direction:row;align-items:flex-end;gap:10px;max-width:calc(100% - 20px);z-index:25;pointer-events:none}.opponent-field-top .field-bottom-left-dock{bottom:auto;top:10px;left:auto;right:10px;flex-direction:row-reverse;align-items:flex-start}.opponent-main-area>.side-col-left{grid-column:3;grid-row:1;flex-direction:column-reverse}.opponent-main-area>.field-zone{grid-column:2;grid-row:1}.opponent-main-area>.side-col-right{grid-column:1;grid-row:1;flex-direction:column-reverse}.god-zone-wrapper,.openhand-zone-wrapper{pointer-events:auto;width:max-content;max-width:100%;flex-shrink:0;background:rgba(12,11,10,.28);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);border:1px solid rgba(186,158,108,.42);border-radius:3px;padding:5px 8px;display:inline-flex;flex-direction:column;box-shadow:0 4px 14px rgba(0,0,0,.45);transition:border-color .2s,background-color .2s,box-shadow .2s;box-sizing:border-box}.god-zone-wrapper.drag-over,.openhand-zone-wrapper.drag-over{background-color:rgba(176,148,102,.18)!important;border-color:rgba(235,205,145,.85)!important}.god-zone,.openhand-zone{display:inline-flex;flex-direction:row;flex-wrap:nowrap;align-items:center;gap:10px;width:max-content;min-width:112px;min-height:152px;padding:6px 8px;overflow:visible;background:rgba(10,9,8,.18);border:1px solid rgba(186,158,108,.25);border-radius:3px;position:relative;box-sizing:border-box}.openhand-zone{gap:0!important;padding:6px 10px!important}.openhand-zone .card+.card{margin-left:-52px!important}.god-zone.has-cards{padding-bottom:36px}.openhand-zone.has-cards{padding-bottom:6px}.god-zone .card,.openhand-zone .card{position:relative!important;left:auto!important;top:auto!important;flex-shrink:0;margin:0}.field-zone .god-zone .card .card-controls,.god-zone .card .card-controls{display:flex!important;opacity:1!important;visibility:visible!important;border-color:rgba(255,255,255,.18)}.field-zone .card .card-core-pill,.god-zone .card .card-core-pill{cursor:grab;user-select:none;-webkit-user-select:none;touch-action:none;border-radius:2px;transition:background-color .15s,transform .15s}.field-zone .card .card-core-pill:hover,.god-zone .card .card-core-pill:hover{background-color:rgba(56,189,248,.25);transform:scale(1.08)}.field-zone .card .card-core-pill:active,.god-zone .card .card-core-pill:active{cursor:grabbing}.god-zone .card .card-soul-btn{display:none!important}.field-zone .openhand-zone .card .card-controls,.openhand-zone .card .card-controls{display:none!important}.card-btn{background:rgba(24,22,19,.95);color:#e2dacd;border:1px solid rgba(176,148,102,.5);border-radius:2px;width:19px;height:19px;font-size:12px;font-weight:700;display:flex;justify-content:center;align-items:center;cursor:pointer;padding:0;line-height:1;flex-shrink:0;transition:background .15s,color .15s,border-color .15s}.card-btn:hover{background:#d4b886;color:#000;border-color:#fff}.card-btn.soul-active{width:20px;height:20px;clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0% 50%);background:linear-gradient(135deg,#fff 0,#cbd5e1 45%,#64748b 100%)!important;border:none!important;border-radius:0!important;color:transparent!important;font-size:0!important;position:relative;filter:drop-shadow(0 0 6px rgba(239,68,68,.95));box-shadow:none!important}.card-btn.soul-active::after{content:"";position:absolute;inset:3.5px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fecaca 0,#ef4444 45%,#7f1d1d 100%);box-shadow:inset 0 0 3px #fff;pointer-events:none}.card-core-pill{display:flex;align-items:center;gap:4px;padding:1px 5px;background:rgba(255,255,255,.03);border:1px solid rgba(56,189,248,.25)}.card-core-dot,.physical-core-gem{width:17px;height:17px;display:inline-block;position:relative;clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0% 50%);background:radial-gradient(circle at 35% 30%,#fff 0,#bae6fd 22%,#38bdf8 52%,#0284c7 82%,#0c4a6e 100%);box-shadow:inset 0 0 4px rgba(255,255,255,.9);filter:drop-shadow(0 0 4px rgba(56,189,248,.75));flex-shrink:0;transition:transform .12s ease,filter .12s ease}.card-core-dot::after,.physical-core-gem::after{content:"";position:absolute;inset:3px;clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0% 50%);background:linear-gradient(135deg,rgba(255,255,255,.85) 0,rgba(125,211,252,.25) 55%,rgba(2,132,199,.6) 100%);pointer-events:none}.card-core-dot{width:14px;height:14px}.physical-core-gem.interactive-core{cursor:pointer}.physical-core-gem.interactive-core:hover{transform:scale(1.22);filter:drop-shadow(0 0 8px rgba(125,211,252,1))}.core-gem-tray{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:5px;min-height:24px;padding:3px 4px;margin-top:2px}.card-cores{color:#f8fafc;font-size:13px;font-weight:900;min-width:14px;text-align:center;text-shadow:1px 1px 2px #000}.soul-core-token{width:19px;height:19px;clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0% 50%);font-size:0px;display:inline-flex;align-items:center;justify-content:center;cursor:grab;user-select:none;-webkit-user-select:none;touch-action:none;position:relative;transition:transform .15s,filter .15s;z-index:40;background:linear-gradient(135deg,#fff 0,#cbd5e1 45%,#64748b 100%);filter:drop-shadow(0 0 6px rgba(239,68,68,.9))}.soul-core-token::after{content:"";position:absolute;inset:3.5px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fecaca 0,#ef4444 45%,#7f1d1d 100%);box-shadow:inset 0 0 3px #fff}.soul-core-token:hover{transform:scale(1.22);filter:drop-shadow(0 0 10px rgba(248,113,113,1))}.soul-core-token:active{cursor:grabbing}.soul-core-slot-empty{width:17px;height:17px;clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0% 50%);background:rgba(255,255,255,.08);color:rgba(255,255,255,.35);font-size:8px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s}.soul-core-slot-empty:hover{background:rgba(239,68,68,.45);color:#fff;transform:scale(1.15)}.counter-box{border:1px solid rgba(186,158,108,.42);border-radius:3px;padding:5px 7px;text-align:center;background:rgba(12,11,10,.24);box-shadow:inset 0 0 10px rgba(0,0,0,.28);transition:border-color .2s,box-shadow .2s,background-color .2s;transform:translateZ(0);backface-visibility:hidden}.counter-title{font-size:11px;color:#d8ccb8;font-weight:700;letter-spacing:.1em;margin-bottom:2px;text-transform:uppercase;text-align:center;text-shadow:0 1px 3px rgba(0,0,0,.9);transform:translateZ(0)}.counter-value{font-size:15px;font-weight:900;color:#f5efe6;display:flex;align-items:center;justify-content:center;gap:8px;transform:translateZ(0)}.counter-btn{background:rgba(255,255,255,.05);color:#d6cbb9;border:1px solid rgba(176,148,102,.45);border-radius:1px;width:16px;height:16px;display:flex;justify-content:center;align-items:center;cursor:pointer;font-size:11px;line-height:1;transition:all .15s ease}.counter-btn:hover{background:#c8aa76;color:#090a0f;border-color:#fff}.action-btn{font-size:8.5px;border:1px solid rgba(176,148,102,.38);border-radius:1px;padding:3px 5px;background:rgba(16,15,14,.85);color:#d6cbb9;cursor:pointer;text-transform:uppercase;font-weight:700;letter-spacing:.06em;width:100%;margin-top:2px;transition:all .15s ease}.action-btn:hover{background:rgba(196,164,108,.9);color:#090a0f;border-color:#fff}.small-action-btn{font-size:7.5px;font-weight:700;border:1px solid rgba(176,148,102,.38);border-radius:1px;padding:1px 4px;background:rgba(12,12,12,.85);color:#bfb39e;cursor:pointer;position:absolute;top:3px;right:4px;transition:all .15s ease}.small-action-btn:hover{background:rgba(196,164,108,.85);border-color:#fff;color:#000}.highlight-action-btn{font-size:8px;font-weight:900;padding:1.5px 5px;border-radius:1px;cursor:pointer;position:absolute;top:3px;right:4px;letter-spacing:.5px;transition:all .18s ease;text-transform:uppercase}.btn-take-life{background:rgba(127,29,29,.65);border:1px solid rgba(248,113,113,.55);color:#fecaca}.btn-take-life:hover{background:#dc2626;color:#fff;border-color:#fff}.btn-pay-cost{background:rgba(12,74,110,.65);border:1px solid rgba(56,189,248,.55);color:#bae6fd}.btn-pay-cost:hover{background:#0284c7;color:#fff;border-color:#fff}.btn-refresh-state{background:rgba(6,78,59,.7);border:1px solid rgba(52,211,153,.55);color:#a7f3d0;border-radius:1px;transition:all .18s ease}.btn-refresh-state:hover{background:#10b981;color:#050608;border-color:#fff}
 /* #endregion */
@@ -30,6 +30,8 @@ body,html{touch-action:manipulation;overflow-x:hidden!important;overscroll-behav
 #card-db-modal{position:fixed;inset:0;z-index:12000;background:#000d;display:flex;align-items:center;justify-content:center;padding:12px}#card-db-modal .hidden,#card-db-modal.hidden{display:none!important}.card-db-panel{width:min(960px,100%);max-height:min(90dvh,900px);overflow-y:auto;background:#100e0b;border:1px solid #b09466;color:#eee3d1;padding:16px;border-radius:4px}.card-db-actions,.card-db-header{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.card-db-header{justify-content:space-between;border-bottom:1px solid #b0946655;padding-bottom:8px}.card-db-header h2,.card-db-panel h3{color:#e0b25b;font-weight:700}.card-db-panel button,.card-db-upload{border:1px solid #b09466;color:#e0b25b;background:#080706;padding:6px 10px;border-radius:3px;cursor:pointer;font-size:13px}.card-db-panel button:disabled{opacity:.5;cursor:wait}.card-db-panel button:hover{background:#503d24}.card-db-panel input:not([type=file]),.card-db-panel textarea{display:block;background:#080706;color:#fff;border:1px solid #8d7955;border-radius:3px;width:100%;padding:6px;min-width:0}.card-db-panel label{display:block;color:#e5d6ba;font-size:13px}.card-db-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.card-db-actions{margin:10px 0}#card-db-search{flex:1 1 200px}#card-db-status,.card-db-hint{color:#c8bea8;font-size:12px;line-height:1.5}.card-db-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px;max-height:35vh;overflow-y:auto}.card-db-entry{border:1px solid #b0946655;padding:9px;background:#050505;overflow-wrap:anywhere}.card-db-entry h4{color:#e0b25b;font-weight:700}.card-db-entry p{font-size:12px;white-space:pre-wrap;margin:4px 0}#card-db-form{margin-top:12px;padding:12px;border:1px solid #b0946655;display:grid;gap:9px}#catalog-image-preview{max-height:140px;object-fit:contain}.catalog-level-row{display:grid;grid-template-columns:1fr 1fr 1.5fr auto;gap:7px;margin:6px 0;align-items:end}.catalog-level-row label{min-width:0}.catalog-level-row input{width:100%;box-sizing:border-box}#card-db-form fieldset{min-width:0}#card-db-form select{background:#151310;color:#e0b25b;border:1px solid #b0946666;padding:6px}#card-preview-mobile-hint{border:1px solid #b09466;background:#14110eed;color:#e0b25b;padding:7px 22px;margin-top:7px;border-radius:3px;cursor:pointer}body:not(.mobile-mode) #card-preview-mobile-hint{display:none!important}body:not(.mobile-mode) #card-preview{pointer-events:none!important}.card-level-badge{position:absolute;bottom:3px;left:50%;transform:translateX(-50%);padding:2px 4px;background:#090807ed;border:1px solid #b09466aa;color:#f1d9a8;font-size:10px;white-space:nowrap;pointer-events:none;border-radius:2px}#card-translation{position:fixed;inset:0;z-index:11500;display:flex;justify-content:flex-end;background:#0007}#card-translation.hidden,#deck-description-modal.hidden{display:none}#translation-dismiss{position:absolute;inset:0;border:0;background:0 0;cursor:pointer}#translation-panel{position:relative;width:min(440px,calc(100% - 56px));height:100%;background:#0d0c0bf5;border-left:1px solid #b09466;box-shadow:-8px 0 30px #000a;display:flex;flex-direction:column;padding:16px;box-sizing:border-box;color:#dcd6cc}#translation-panel header{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid #b0946655;padding-bottom:12px}#translation-scroll{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y}#translation-content{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.85;font-size:14px;padding:14px 0}#deck-description-modal button,#translation-panel button{border:1px solid #b0946688;color:#e0b25b;background:#17130f;padding:7px;border-radius:3px;cursor:pointer}#deck-description-modal{position:fixed;inset:0;z-index:11200;background:#000c;display:flex;align-items:center;justify-content:center;padding:12px}#deck-description-modal>section{width:min(950px,100%);max-height:88dvh;display:flex;flex-direction:column;background:#0d0c0b;border:1px solid #b09466;padding:16px;gap:12px}#deck-description-modal header{display:flex;justify-content:space-between;align-items:center;gap:10px}#deck-description-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px;overflow-y:auto;min-height:0}.deck-description-card{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:11px;overflow-wrap:anywhere}.deck-description-card{position:relative}.deck-description-card.missing-sym-card{border-color:rgba(248,113,113,0.85)!important;box-shadow:inset 0 0 10px rgba(239,68,68,0.22)}.deck-description-card img{width:100%;max-width:106px;aspect-ratio:5/7;object-fit:contain}.deck-desc-badge{width:100%;text-align:center;font-size:10px;line-height:1.25;padding:2px 4px;border-radius:2px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.deck-desc-badge.is-missing{background:rgba(127,29,29,0.92);color:#fecaca;border:1px solid rgba(248,113,113,0.8)}.deck-desc-badge.is-unlinked{background:rgba(55,48,40,0.85);color:#d6cbb9;border:1px solid rgba(176,148,102,0.45)}.deck-desc-badge.is-filled{background:rgba(6,78,59,0.85);color:#a7f3d0;border:1px solid rgba(52,211,153,0.55)}.mini-translate-btn{display:none;position:absolute;bottom:100%;left:50%;transform:translateX(-50%);z-index:1001;white-space:nowrap;background:#14110f;color:#e0b25b;border:1px solid #b09466;border-radius:3px;padding:4px 10px;font-size:11px;line-height:16px;cursor:pointer}body:not(.mobile-mode) .mini-translation-source:focus-within>.mini-translate-btn,body:not(.mobile-mode) .mini-translation-source:hover>.mini-translate-btn{display:block}body.mobile-mode .openhand-zone-wrapper>div:first-child{gap:4px;flex-wrap:wrap}body.mobile-mode .openhand-zone-wrapper .counter-title{white-space:nowrap;flex-shrink:0;gap:4px}body.mobile-mode .openhand-zone-wrapper .counter-title>span{white-space:nowrap;flex-shrink:0}body.mobile-mode .openhand-zone-wrapper button{flex-shrink:0}#card-db-modal input,#card-db-modal textarea{user-select:text!important;-webkit-user-select:text!important;touch-action:auto}#card-db-list.hidden,#card-db-modal .card-db-actions.hidden{display:none!important}#catalog-delete-one,#catalog-delete-selected{border-color:#e07878;color:#ffb8b8}#card-db-modal input[type=checkbox],#card-db-modal input[type=radio]{width:auto;margin-right:5px}#card-db-form .catalog-paste-choice{display:inline-flex;flex-direction:row;align-items:center;margin-right:12px}#card-db-form .card-db-grid label{min-width:0}#card-db-form input{box-sizing:border-box;max-width:100%}#card-db-form input[type=file]{min-width:0;width:100%;font-size:11px}@media(max-width:600px){#card-db-form .catalog-image-inputs{grid-template-columns:1fr}}#card-db-modal{z-index:30000}#card-db-list{grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:12px}.pool-card-tile{position:relative;min-width:0}.pool-card-tile>button{padding:0!important;width:100%;border:0!important;background:0 0!important}.pool-card-tile img{width:100%;aspect-ratio:5/7;object-fit:contain;display:block}.pool-card-tile>input{position:absolute;z-index:1;top:4px;left:4px}.pool-missing-image{border:1px solid #b0946655;box-sizing:border-box}.pool-card-import input{max-width:100%}#translation-link-box select{width:100%;background:#17130f;color:#e0b25b;padding:6px}.catalog-edit-heading{display:flex;align-items:center;gap:16px;flex-wrap:wrap}.catalog-edit-heading h3{margin:0}.card>.card-level-badge,.mini-translation-source>.mini-translate-btn{top:50%;bottom:auto;left:50%;transform:translate(-50%,-50%) rotate(var(--card-ui-rotation,0deg)) translateY(calc(-1 * var(--card-ui-edge,70px) - 14px))}.card>.card-level-badge{transform:translate(-50%,-50%) rotate(var(--card-ui-rotation,0deg)) translateY(calc(var(--card-ui-edge,70px) - 12px))}#deck-vault-pager button,.pool-add-trigger{border:1px solid #b09466;background:#17130f;color:#e0b25b;padding:5px 10px;white-space:nowrap}#deck-vault-pager{display:flex;justify-content:center;align-items:center;gap:14px;grid-column:1/-1;padding:8px}#pool-deck-builder{position:fixed;inset:0;background:#000c;z-index:11400;display:flex;align-items:center;justify-content:center;padding:16px}#pool-deck-builder.hidden{display:none}.pool-builder-panel{width:min(1180px,100%);height:90dvh;display:flex;flex-direction:column;gap:12px;padding:18px;background:#100f0e;border:1px solid #b09466;color:#dcd6cc;box-sizing:border-box;min-height:0}.pool-builder-panel header,.pool-builder-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.pool-builder-panel h2,.pool-builder-panel h3{color:#e0b25b;font-weight:700}.pool-builder-toolbar input{flex:1;min-width:100px}.pool-builder-panel button,.pool-builder-panel input,.pool-builder-panel select{border:1px solid #b0946688;border-radius:3px;background:#090807;color:#e0b25b;padding:7px;min-width:0}.pool-builder-panel button{cursor:pointer}.pool-builder-panel button:disabled{opacity:.4;cursor:default}#pool-builder-save{background:#c8aa76;color:#090807;font-weight:700}.pool-builder-columns{display:grid;grid-template-columns:1fr 1fr;gap:16px;flex:1;min-height:0}.pool-builder-left,.pool-builder-right{min-width:0;overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y}.pool-builder-left,.pool-builder-right{scrollbar-width:thin;scrollbar-color:#b0946688 #17130f}.pool-builder-right{border-left:1px solid #b0946655;padding-left:16px}.pool-builder-left>input{width:100%;box-sizing:border-box}#pool-builder-filters{display:flex;gap:7px;flex-wrap:wrap;padding:10px 0}#pool-builder-filters select{max-width:150px;font-size:12px}.pool-builder-pages{display:flex;gap:7px;align-items:center;flex-wrap:wrap;font-size:11px;padding-bottom:10px}.pool-builder-pages>span:first-child{margin-right:auto}.pool-builder-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:10px;align-content:start}.pool-builder-cards img{width:100%;aspect-ratio:5/7;object-fit:contain;display:block}.pool-builder-cards>button{padding:0;border:0;background:0 0}.pool-builder-entry{min-width:0}.pool-builder-quantity{display:flex;align-items:center;justify-content:space-between;background:#090807;gap:2px}.pool-builder-quantity button{padding:2px 8px}.pool-builder-quantity span{font-size:12px}#pool-builder-status{font-size:12px;color:#c8bea8}@media(max-width:600px){#pool-deck-builder{padding:8px}.pool-builder-panel{padding:10px;height:94dvh;gap:8px}.pool-builder-columns{gap:8px;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.pool-builder-right{padding-left:8px}.pool-builder-cards{grid-template-columns:repeat(auto-fill,minmax(65px,1fr));gap:7px}#pool-builder-filters select{max-width:100%;width:calc(50% - 4px);font-size:11px;padding:6px 2px}.pool-builder-pages{font-size:10px}.pool-builder-pages button{padding:4px}.pool-builder-toolbar{gap:6px}}.god-core-badge{display:none;position:absolute;top:2px;left:2px;background:#080706ee;border:1px solid #b09466;color:#f1d9a8;padding:1px 3px;font-size:10px;pointer-events:none}body.mobile-mode .god-core-badge{display:block}body.mobile-mode .god-zone .card .card-controls{display:none!important}body.mobile-mode .god-zone .card .card-level-badge{font-size:9px;padding:1px 2px}body.mobile-mode .god-modal-core{width:100%;justify-content:space-between;gap:6px}body.mobile-mode .god-modal-core button{min-width:42px;min-height:42px;font-size:24px}body.mobile-mode #card-preview-core-bar button{width:44px;height:44px;font-size:22px}body.mobile-mode #card-preview-core-bar{gap:8px}body:not(.mobile-mode) .mini-translate-btn::after{content:"";position:absolute;top:calc(100% - 1px);left:50%;transform:translateX(-50%);height:16px;width:max(100%,140px);background:0 0}body .contract-deck-button,body.mobile-mode .contract-deck-button{display:block!important;font-size:11px!important;line-height:16px!important;min-width:34px;padding:1px 4px!important}#contract-modal{position:fixed;inset:0;z-index:11600;background:#000c;display:flex;justify-content:center;align-items:center;padding:12px}#contract-modal.hidden{display:none}#contract-modal>section{width:min(880px,100%);max-height:88dvh;display:flex;flex-direction:column;gap:12px;border:1px solid #b09466;background:#100e0b;padding:16px;box-sizing:border-box;color:#dcd6cc}#contract-modal header{display:flex;justify-content:space-between;align-items:center;gap:12px;color:#e0b25b;font-weight:700}#contract-modal button{border:1px solid #b0946688;background:#080706;color:#e0b25b;padding:6px;border-radius:3px;cursor:pointer}#contract-card-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(95px,1fr));gap:10px;overflow-y:auto;min-height:0;overscroll-behavior:contain}#contract-card-list img{width:100%;aspect-ratio:5/7;object-fit:contain}#contract-card-list span{display:block;font-size:12px;overflow-wrap:anywhere}#contract-status{font-size:12px;color:#c8bea8}#preview-turn-btn{border:1px solid #b09466;background:#14110eed;color:#e0b25b;padding:7px 18px;margin-top:7px;border-radius:3px;cursor:pointer}body:not(.mobile-mode) #preview-turn-btn{display:none!important}.mini-translation-source.has-turn>.mini-translate-btn{transform:translate(-50%,-50%) rotate(var(--card-ui-rotation,0deg)) translate(-26px,calc(-1 * var(--card-ui-edge,70px) - 14px))}.mini-translation-source.has-turn>.mini-turn-btn{transform:translate(-50%,-50%) rotate(var(--card-ui-rotation,0deg)) translate(26px,calc(-1 * var(--card-ui-edge,70px) - 14px))}.card.brave-attached{position:absolute!important;flex-shrink:0;margin:0!important;transform:rotate(0deg)!important}#playmat-root .card.brave-attached .card-controls,#playmat-root .card.brave-attached .card-level-badge{display:none!important}#catalog-brave-core,#catalog-brave-bp{width:100px;background:#171717;color:#eee;border:1px solid #b09466;padding:4px}#playmat-root .card.brave-attached{left:var(--brave-left)!important;top:var(--brave-top)!important}#playmat-root .card.brave-god-attached{width:var(--brave-mini-width,50px)!important;height:var(--brave-mini-height,70px)!important}#playmat-root .brave-god-attached>.mini-translate-btn{display:none!important}body.mobile-mode .god-zone,body.mobile-mode .openhand-zone{height:90px;padding:5px 6px;min-height:0}body.mobile-mode .god-zone .card{transition:left .24s ease,transform .18s ease}#playmat-root .card.brave-god-attached{transform-origin:center center!important}body.mobile-mode #playmat-root .brave-god-attached .god-core-badge{display:none!important}.god-modal-brave{position:absolute;left:50%;top:0;width:50%;height:50%;background-size:cover;background-position:center;border:1px solid #b09466;border-radius:3px;cursor:pointer;box-shadow:0 2px 5px #000}#preview-release-brave{border:1px solid #b09466;background:#14110e;color:#e0b25b;padding:7px 18px;margin-top:7px;border-radius:3px;cursor:pointer;pointer-events:auto}#card-preview.brave-release-preview #card-preview-mobile-hint{display:block!important}
 /* #region 4b. Phase 4b 戰場視覺層次、微互動手感與無障礙焦點規範 */
 :root{--bs-obsidian-deep:#0a0908;--bs-obsidian-surface:#141210;--bs-gold-antique:#b09466;--bs-gold-warm:#c8aa76;--bs-gold-luminous:#e0b25b;--bs-parchment:#dcd6cc}button,input,select,textarea,[role="button"],.card,.deck-cardback-visual,.physical-core-gem,.soul-core-token,.soul-core-slot-empty,.center-core-spawner{-webkit-tap-highlight-color:transparent}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,[tabindex]:focus-visible{outline:2px solid #facc15!important;outline-offset:2px!important}button:focus:not(:focus-visible),input:focus:not(:focus-visible),select:focus:not(:focus-visible){outline:none}.counter-value,.card-cores,.deck-cardback-count,#turn-counter-badge,#card-preview-core-count{font-variant-numeric:tabular-nums}.playmat-panel{transition:border-color .25s ease,box-shadow .28s ease}.playmat-panel:not(.is-active-turn-mat){border-left-color:rgba(140,118,84,.24);border-right-color:rgba(140,118,84,.24);border-top-color:rgba(140,118,84,.24);border-bottom-color:rgba(140,118,84,.24);box-shadow:inset 0 0 56px rgba(0,0,0,.92)}.playmat-panel.is-active-turn-mat{border-left:2.5px solid #e0b25b;border-right:2.5px solid #e0b25b;border-top-color:rgba(224,178,91,.74);border-bottom-color:rgba(224,178,91,.74);box-shadow:inset 0 0 48px rgba(0,0,0,.88),inset 0 0 26px rgba(224,178,91,.22),0 0 18px rgba(200,170,118,.24)}.player-status-badge{transition:border-color .25s ease,background .25s ease,box-shadow .25s ease,opacity .25s ease}.playmat-panel:not(.is-active-turn-mat) .player-status-badge{border-color:rgba(140,118,84,.3);opacity:.78}.playmat-panel.is-active-turn-mat .player-status-badge{border-color:#e0b25b;background:linear-gradient(135deg,rgba(44,33,16,.95),rgba(14,12,10,.95));box-shadow:0 0 12px rgba(224,178,91,.35);opacity:1}.playmat-panel.is-active-turn-mat .player-status-badge span:last-child{color:#fef08a}.counter-box{box-shadow:inset 0 1px 0 rgba(255,255,255,.05),inset 0 0 12px rgba(0,0,0,.34)}.counter-box:hover{border-color:rgba(200,170,118,.62)}.god-zone-wrapper,.openhand-zone-wrapper{box-shadow:inset 0 1px 0 rgba(255,255,255,.05),0 6px 18px rgba(0,0,0,.55)}.deck-cardback-visual{box-shadow:0 2px 0 #1c1917,0 3px 0 rgba(186,158,108,.35),0 6px 0 #0c0a09,0 10px 18px rgba(0,0,0,.88);transition:transform .16s cubic-bezier(.22,1,.36,1),box-shadow .16s ease,border-color .16s ease}body:not(.mobile-mode) .deck-cardback-visual:hover{transform:translateY(-2px);border-color:rgba(240,210,150,.92);box-shadow:0 3px 0 #1c1917,0 4px 0 rgba(224,178,91,.55),0 8px 0 #0c0a09,0 14px 24px rgba(0,0,0,.92),0 0 14px rgba(200,170,118,.28)}.deck-cardback-visual:active{transform:translateY(1px) scale(.985)}body:not(.mobile-mode) .field-zone > .card:not(.brave-attached):not(.is-flipping):hover{border-color:rgba(240,210,150,.92);box-shadow:0 12px 26px rgba(0,0,0,.92),0 0 14px rgba(200,170,118,.32)}.action-btn:active:not(:disabled),.counter-btn:active:not(:disabled),.card-btn:active:not(:disabled),.small-action-btn:active:not(:disabled),.highlight-action-btn:active:not(:disabled),.btn-refresh-state:active:not(:disabled){transform:translateY(1px) scale(.96)}body.mobile-mode .card-btn{min-width:22px;min-height:22px}@media (prefers-reduced-motion:reduce){.victory-banner,.zero-life-shake,.deck-shuffle-flash,.count-surge-gold,.counter-num-pop{animation:none!important}.card,.action-btn,.counter-btn,.card-btn,.deck-cardback-visual,.playmat-panel{transition-duration:.01ms!important}}
+/* #region 4c. v7.0.1 手機／iPad 觸控防重疊、彈窗防爆框與目標選取優先樣式 */
+body:not(.mobile-mode) #life-box-p1 .counter-value,body:not(.mobile-mode) #life-box-p2 .counter-value,body:not(.mobile-mode) #reserve-box-p1 .counter-value,body:not(.mobile-mode) #reserve-box-p2 .counter-value,body:not(.mobile-mode) #trash-core-box-p1 .counter-value,body:not(.mobile-mode) #trash-core-box-p2 .counter-value{padding-right:22px}body.mobile-mode .counter-box .soul-core-slot-wrap{position:static!important;inset:auto!important;width:100%!important;margin-top:4px!important;padding-top:4px!important;border-top:1px dashed rgba(186,158,108,.26);display:flex!important;align-items:center!important;justify-content:center!important;min-height:24px!important}body.mobile-mode #count-box-p1,body.mobile-mode #count-box-p2{flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:4px!important;padding:5px 6px!important}body.mobile-mode #count-box-p1 .counter-value,body.mobile-mode #count-box-p2 .counter-value{gap:6px!important}body.mobile-mode .counter-box .counter-value{width:100%;justify-content:center!important;gap:6px!important;padding-right:0!important}body.phone-mode .counter-box .counter-value{gap:4px!important}body.mobile-mode .counter-box .counter-btn{width:24px!important;height:24px!important;font-size:14px!important;flex-shrink:0!important}body.mobile-mode .card.oa-board-selectable,body.mobile-mode .card.blocker-selectable,body.mobile-mode .card.manifest-god-candidate,body.mobile-mode .card.magic-pay-candidate,body.mobile-mode .card.play-pay-candidate{cursor:pointer!important;touch-action:manipulation!important}#deck-vault-toolbar,#deck-editor-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:6px;max-width:100%}body.mobile-mode #deck-vault-modal,body.mobile-mode #deck-editor-modal,body.mobile-mode #bs-verif-lab-modal{padding:8px!important}body.mobile-mode #deck-vault-panel,body.mobile-mode #deck-editor-panel{width:100%!important;max-width:calc(100vw - 16px)!important;max-height:92dvh!important;padding:10px!important;gap:8px!important;box-sizing:border-box!important;overflow-x:hidden!important}body.mobile-mode #deck-vault-toolbar,body.mobile-mode #deck-editor-toolbar,body.mobile-mode #deck-description-modal header > div,body.mobile-mode #bs-verif-lab-modal .flex-wrap{flex-wrap:wrap!important;gap:5px!important;width:100%!important;max-width:100%!important}body.mobile-mode #deck-vault-toolbar button,body.mobile-mode #deck-editor-toolbar button,body.mobile-mode #deck-description-modal header button,body.mobile-mode #bs-verif-lab-modal button,body.mobile-mode #card-db-modal .card-db-actions button{white-space:nowrap!important;writing-mode:horizontal-tb!important;word-break:keep-all!important;font-size:11px!important;line-height:1.2!important;padding:5px 8px!important;min-height:30px!important;max-width:100%!important;flex-shrink:0!important}body.phone-mode #deck-vault-panel > div:first-child,body.phone-mode #deck-editor-panel > div:first-child{padding-bottom:8px!important;gap:6px!important}body.phone-mode #deck-vault-panel .text-lg{font-size:14px!important;letter-spacing:.04em!important}body.phone-mode #deck-vault-toolbar button,body.phone-mode #deck-editor-toolbar button{font-size:10.5px!important;padding:5px 7px!important;min-height:28px!important}
 /* #endregion */
 </style></head><body class="h-screen w-screen flex flex-col p-2 box-border gap-1.5 overflow-hidden">
 <button id="top-header-toggle-btn" class="header-tab-hidden" onclick="toggleTopHeader(!0)" title="點擊展開頂部控制列">
@@ -39,14 +41,14 @@ body,html{touch-action:manipulation;overflow-x:hidden!important;overscroll-behav
 <header id="main-top-header" class="flex flex-wrap justify-between items-center bg-[#0a0a0a]/90 border border-[#b09466]/40 rounded-sm py-1.5 px-3 flex-none gap-x-2 gap-y-1.5 shadow-lg transition-all duration-200">
 <div class="header-brand-row flex items-center gap-2 flex-shrink-0">
 <div class="relative text-sm sm:text-base font-black tracking-wider text-[#e5dccb] flex items-center gap-1.5 whitespace-nowrap">
-<span id="bs-brand-title-text" class="cursor-pointer hover:text-[#e0b25b] transition-colors" onclick="openChangelogModal()" title="點擊查看更新日誌">BS v7.0</span>
+<span id="bs-brand-title-text" class="cursor-pointer hover:text-[#e0b25b] transition-colors" onclick="openChangelogModal()" title="點擊查看更新日誌">BS v7.0.1</span>
 <button id="btn-changelog" type="button" class="text-[10px] sm:text-xs bg-black/70 border border-[#b09466]/50 hover:bg-[#c8aa76] hover:text-black text-[#e0b25b] px-1.5 py-0.5 rounded-sm cursor-pointer transition-colors leading-none font-bold" onclick="openChangelogModal()" title="查看版本更新日誌">📜 日誌</button>
 <button id="btn-version-gear" type="button" class="text-xs bg-black/70 border border-[#b09466]/50 hover:bg-[#c8aa76] hover:text-black text-[#e0b25b] px-1.5 py-0.5 rounded-sm cursor-pointer transition-colors leading-none" onclick="toggleVersionGearMenu(event)" title="點擊調整版本號數字">⚙️</button>
 <div id="bs-version-gear-menu" class="hidden absolute left-0 top-full mt-1.5 z-[12500] bg-[#0d0c0b]/95 border border-[#c8aa76] rounded-sm shadow-2xl p-2 flex items-center gap-1.5">
 <button type="button" class="text-[11px] font-black bg-[#c8aa76] text-black hover:bg-white px-2 py-1 rounded-sm cursor-pointer" onclick="bumpBsVersion(0, 1)" title="次版本 +1 (例：3.9 ➔ 3.10)">+0.1</button>
 <button type="button" class="text-[11px] font-black bg-sky-950/80 border border-sky-400/60 text-sky-200 hover:bg-sky-500 hover:text-black px-2 py-1 rounded-sm cursor-pointer" onclick="bumpBsVersion(1, 0)" title="主版本 +1">+1</button>
 <button type="button" class="text-[11px] font-bold bg-black/80 border border-[#b09466]/50 text-[#dcd6cc] hover:bg-[#c8aa76] hover:text-black px-2 py-1 rounded-sm cursor-pointer" onclick="bumpBsVersion(0, -1)" title="次版本 -1">-0.1</button>
-<button type="button" class="text-[10px] font-bold bg-rose-950/70 border border-rose-500/50 text-rose-200 hover:bg-rose-600 hover:text-white px-2 py-1 rounded-sm cursor-pointer" onclick="resetBsVersion()">7.0</button>
+<button type="button" class="text-[10px] font-bold bg-rose-950/70 border border-rose-500/50 text-rose-200 hover:bg-rose-600 hover:text-white px-2 py-1 rounded-sm cursor-pointer" onclick="resetBsVersion()">7.0.1</button>
 </div>
 </div>
 <span id="room-status-badge" class="hidden text-[10px] bg-emerald-950/80 border border-emerald-500/50 text-emerald-300 px-2 py-0.5 rounded-sm font-bold cursor-pointer hover:bg-emerald-800/80 transition-colors whitespace-nowrap" onclick="copyRoomCode()" title="點擊複製房間代碼">
@@ -426,28 +428,28 @@ body,html{touch-action:manipulation;overflow-x:hidden!important;overscroll-behav
 </div>
 </section>
 </div>
-<div id="deck-vault-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-[10500] hidden flex justify-center items-center p-6">
-<div class="border border-[#b09466]/60 bg-[#0a0a0a]/95 w-full max-w-4xl max-h-[85vh] flex flex-col p-5 gap-3.5 shadow-2xl rounded-sm">
+<div id="deck-vault-modal" class="fixed inset-0 bg-black/85 backdrop-blur-md z-[10500] hidden flex justify-center items-center p-2 sm:p-6">
+<div id="deck-vault-panel" class="border border-[#b09466]/60 bg-[#0a0a0a]/95 w-full max-w-4xl max-h-[90vh] sm:max-h-[85vh] flex flex-col p-3 sm:p-5 gap-3 shadow-2xl rounded-sm overflow-x-hidden">
 <div class="flex justify-between items-center border-b border-[#b09466]/30 pb-3 flex-wrap gap-2">
-<div class="flex items-center gap-2.5">
-<div class="text-[#e0b25b] font-black tracking-widest text-lg uppercase">🗂️ 卡組庫 & 卡片數量編輯 (DECK VAULT)</div>
-<span id="deck-vault-count-badge" class="bg-black/80 border border-[#b09466]/45 text-[#e0b25b] px-2 py-0.5 rounded-sm text-xs font-bold">0 副卡組</span>
+<div class="flex items-center gap-2 flex-wrap">
+<div class="text-[#e0b25b] font-black tracking-widest text-sm sm:text-lg uppercase">🗂️ 卡組庫 & 卡片數量編輯 (DECK VAULT)</div>
+<span id="deck-vault-count-badge" class="bg-black/80 border border-[#b09466]/45 text-[#e0b25b] px-2 py-0.5 rounded-sm text-xs font-bold whitespace-nowrap">0 副卡組</span>
 </div>
-<div class="flex items-center gap-2">
-<button class="border border-[#c8aa76] bg-[#c8aa76]/25 text-[#fef08a] hover:bg-[#c8aa76] hover:text-black px-3 py-1 rounded-sm text-xs font-black cursor-pointer transition-colors" onclick="openPoolDeckBuilder(true)" title="直接從卡池挑選卡片建立一副全新卡組">＋ 建立卡組</button> <button id="btn-sync-verification-deck" class="border border-emerald-400/75 bg-emerald-950/65 text-emerald-200 hover:bg-emerald-400 hover:text-black px-3 py-1 rounded-sm text-xs font-black cursor-pointer transition-colors" onclick="syncVerificationTestDeck({silent:false,forceNotify:true}).then(()=>renderDeckVaultList())" title="自動掃描卡池並將最新實測卡片追加至「🧪 實測驗證專用測試牌組」（絕不刪除既有舊卡）">🧪 補齊實測牌組</button> <button id="btn-open-self-test-vault" class="border border-fuchsia-400/75 bg-fuchsia-950/65 text-fuchsia-200 hover:bg-fuchsia-400 hover:text-black px-3 py-1 rounded-sm text-xs font-black cursor-pointer transition-colors" onclick="openVerificationLabModal(true)" title="開啟實測實驗室並自動執行 41 項瀏覽器規則引擎沙盒自檢">🤖 自動跑自檢</button> <input type="file" id="vault-import-zip-input" accept=".zip" class="hidden" onchange="importZipToVaultOnly(event)"> <button class="border border-emerald-500/55 bg-emerald-950/50 text-emerald-300 hover:bg-emerald-500 hover:text-black px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick='document.getElementById("vault-import-zip-input").click()'>＋ 新增匯入 .ZIP 卡組</button> <button class="border border-[#b09466]/55 bg-black/70 text-[#e0b25b] hover:bg-[#c8aa76] hover:text-black px-2.5 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="window.refreshGlobalDecksFromCloud&&window.refreshGlobalDecksFromCloud(true).then(()=>renderDeckVaultList())" title="從雲端重新同步最新卡組列表">🔄 同步</button> <input type="file" id="vault-restore-backup-input" accept=".json,application/json" class="hidden" onchange="restoreFullBackupFromFile(event)"> <button id="btn-export-full-backup" class="border border-sky-500/55 bg-sky-950/50 text-sky-300 hover:bg-sky-500 hover:text-black px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="exportFullBackupToFile()" title="將所有卡組、卡池資料與自訂卡背打包下載成 .json 備份檔">📥 匯出全部備份</button> <button id="btn-restore-full-backup" class="border border-amber-500/55 bg-amber-950/50 text-amber-300 hover:bg-amber-400 hover:text-black px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick='document.getElementById("vault-restore-backup-input").click()' title="從之前下載的 .json 備份檔還原卡組與卡池">📤 還原備份</button> <button class="border border-amber-400/65 bg-amber-950/60 text-amber-200 hover:bg-amber-400 hover:text-black px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="openDeckSymbolToolsModal()" title="單獨選擇某一副卡組移除所有輕減/標誌，或單獨匯出/導入該卡組純卡號清單">🧹 移除卡組輕減/標誌</button> <button class="border border-rose-500/55 bg-rose-950/50 text-rose-300 hover:bg-rose-600 hover:text-white px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="clearAllDecksFromVault()" title="刪除並清空所有已儲存的匯入卡組資料庫">🗑️ 清空整個資料庫</button> <button class="border border-[#b09466]/45 bg-black/70 text-[#dcd6cc] hover:bg-[#c8aa76] hover:text-black px-3.5 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="closeDeckVaultModal()">CLOSE (✕)</button>
+<div id="deck-vault-toolbar" class="flex items-center flex-wrap gap-1.5 sm:gap-2 w-full sm:w-auto">
+<button class="border border-[#c8aa76] bg-[#c8aa76]/25 text-[#fef08a] hover:bg-[#c8aa76] hover:text-black px-3 py-1 rounded-sm text-xs font-black cursor-pointer transition-colors" onclick="openPoolDeckBuilder(true)" title="直接從卡池挑選卡片建立一副全新卡組">＋ 建立卡組</button> <button id="btn-sync-verification-deck" class="border border-emerald-400/75 bg-emerald-950/65 text-emerald-200 hover:bg-emerald-400 hover:text-black px-3 py-1 rounded-sm text-xs font-black cursor-pointer transition-colors" onclick="syncVerificationTestDeck({silent:false,forceNotify:true}).then(()=>renderDeckVaultList())" title="自動掃描卡池並將最新實測卡片追加至「🧪 實測驗證專用測試牌組」（絕不刪除既有舊卡）">🧪 補齊實測牌組</button> <button id="btn-open-self-test-vault" class="border border-fuchsia-400/75 bg-fuchsia-950/65 text-fuchsia-200 hover:bg-fuchsia-400 hover:text-black px-3 py-1 rounded-sm text-xs font-black cursor-pointer transition-colors" onclick="openVerificationLabModal(true)" title="開啟實測實驗室並自動執行 42 項瀏覽器規則引擎沙盒自檢">🤖 自動跑自檢</button> <input type="file" id="vault-import-zip-input" accept=".zip" class="hidden" onchange="importZipToVaultOnly(event)"> <button class="border border-emerald-500/55 bg-emerald-950/50 text-emerald-300 hover:bg-emerald-500 hover:text-black px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick='document.getElementById("vault-import-zip-input").click()'>＋ 新增匯入 .ZIP 卡組</button> <button class="border border-[#b09466]/55 bg-black/70 text-[#e0b25b] hover:bg-[#c8aa76] hover:text-black px-2.5 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="window.refreshGlobalDecksFromCloud&&window.refreshGlobalDecksFromCloud(true).then(()=>renderDeckVaultList())" title="從雲端重新同步最新卡組列表">🔄 同步</button> <input type="file" id="vault-restore-backup-input" accept=".json,application/json" class="hidden" onchange="restoreFullBackupFromFile(event)"> <button id="btn-export-full-backup" class="border border-sky-500/55 bg-sky-950/50 text-sky-300 hover:bg-sky-500 hover:text-black px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="exportFullBackupToFile()" title="將所有卡組、卡池資料與自訂卡背打包下載成 .json 備份檔">📥 匯出全部備份</button> <button id="btn-restore-full-backup" class="border border-amber-500/55 bg-amber-950/50 text-amber-300 hover:bg-amber-400 hover:text-black px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick='document.getElementById("vault-restore-backup-input").click()' title="從之前下載的 .json 備份檔還原卡組與卡池">📤 還原備份</button> <button class="border border-amber-400/65 bg-amber-950/60 text-amber-200 hover:bg-amber-400 hover:text-black px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="openDeckSymbolToolsModal()" title="單獨選擇某一副卡組移除所有輕減/標誌，或單獨匯出/導入該卡組純卡號清單">🧹 移除卡組輕減/標誌</button> <button class="border border-rose-500/55 bg-rose-950/50 text-rose-300 hover:bg-rose-600 hover:text-white px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="clearAllDecksFromVault()" title="刪除並清空所有已儲存的匯入卡組資料庫">🗑️ 清空整個資料庫</button> <button class="border border-[#b09466]/45 bg-black/70 text-[#dcd6cc] hover:bg-[#c8aa76] hover:text-black px-3.5 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="closeDeckVaultModal()">CLOSE (✕)</button>
 </div>
 </div>
 <div id="deck-vault-list" class="flex-1 overflow-y-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3.5 p-1 custom-scrollbar">
 </div>
 </div>
 </div>
-<div id="deck-editor-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[10800] hidden flex justify-center items-center p-6">
-<div class="border border-[#c8aa76] bg-[#0a0a0a]/98 w-full max-w-5xl max-h-[88vh] flex flex-col p-5 gap-3.5 shadow-2xl rounded-sm">
+<div id="deck-editor-modal" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[10800] hidden flex justify-center items-center p-2 sm:p-6">
+<div id="deck-editor-panel" class="border border-[#c8aa76] bg-[#0a0a0a]/98 w-full max-w-5xl max-h-[90vh] sm:max-h-[88vh] flex flex-col p-3 sm:p-5 gap-3 shadow-2xl rounded-sm overflow-x-hidden">
 <div class="flex justify-between items-center border-b border-[#b09466]/35 pb-3 flex-wrap gap-2">
-<div class="flex items-center gap-3 flex-wrap">
-<span class="text-[#e0b25b] font-black tracking-widest text-base uppercase">✏️ 編輯卡組卡片數量</span> <input id="deck-editor-name-input" class="bg-black/80 border border-[#b09466]/50 text-[#f5efe6] px-2.5 py-1 rounded-sm text-xs font-bold focus:border-[#e0b25b] outline-none" placeholder="卡組名稱"> <span id="deck-editor-total-badge" class="bg-amber-950/70 border border-[#c8aa76] text-[#e0b25b] px-2.5 py-0.5 rounded-sm text-xs font-black">總張數：0 張</span>
+<div class="flex items-center gap-2 sm:gap-3 flex-wrap">
+<span class="text-[#e0b25b] font-black tracking-widest text-sm sm:text-base uppercase">✏️ 編輯卡組卡片數量</span> <input id="deck-editor-name-input" class="bg-black/80 border border-[#b09466]/50 text-[#f5efe6] px-2.5 py-1 rounded-sm text-xs font-bold focus:border-[#e0b25b] outline-none" placeholder="卡組名稱"> <span id="deck-editor-total-badge" class="bg-amber-950/70 border border-[#c8aa76] text-[#e0b25b] px-2.5 py-0.5 rounded-sm text-xs font-black whitespace-nowrap">總張數：0 張</span>
 </div>
-<div class="flex items-center gap-2">
+<div id="deck-editor-toolbar" class="flex items-center flex-wrap gap-1.5 sm:gap-2 w-full sm:w-auto">
 <button type="button" class="pool-add-trigger" onclick="openPoolDeckBuilder()">＋ 卡池添加</button>
 <input type="file" id="deck-editor-add-img-input" accept="image/*" multiple="multiple" class="hidden" onchange="addExtraCardImagesToEditor(event)"> <button class="border border-sky-400/50 bg-sky-950/50 text-sky-200 hover:bg-sky-500 hover:text-black px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick='document.getElementById("deck-editor-add-img-input").click()'>＋ 追加新卡圖</button> <button class="bg-[#c8aa76] text-black hover:bg-white px-4 py-1 rounded-sm text-xs font-black cursor-pointer transition-colors" onclick="saveDeckEditorChanges()">💾 儲存卡組變更</button> <button class="border border-[#b09466]/45 bg-black/70 text-[#dcd6cc] hover:bg-rose-600 hover:text-white px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="closeDeckEditorModal()">取消 (✕)</button>
 </div>
@@ -476,7 +478,7 @@ return` <div id="section-hand-${e}" class="h-[175px] hand-panel ${"p2"===e?"mb-1
 }
 function createMainAreaHTML(e,t) {
 const o=e.toUpperCase();
-return` <div id="section-main-${e}" class="flex-none playmat-panel p-2.5 pt-7 grid grid-cols-[164px_1fr_164px] gap-2.5 relative transition-all duration-300"> <div class="player-status-badge" title="${o} 玩家在線狀態"> <span id="status-light-${e}" class="status-dot"></span> <span id="status-name-${e}" class="text-[9px] font-black text-[#dcd6cc] tracking-wider">${o}</span> </div> <div class="side-col-left flex flex-col gap-2"> <div class="counter-box relative flex-1 min-h-[150px] flex flex-col"> <div class="counter-title flex items-center justify-between pr-1"> <div class="flex items-center gap-1.5"> <span>Burst</span> <button class="text-[8px] border border-[#b09466]/45 bg-amber-950/50 hover:bg-[#c8aa76] hover:text-black text-[#e0b25b] px-1.5 py-0.5 rounded-sm font-black cursor-pointer transition-all shadow-sm" onclick="launchBurstFireworks('${e}')" title="向對手放射煙花特效">🎆 煙花</button> </div> <span id="val_${e}_burst_card_count" class="bg-black/70 border border-[#b09466]/40 text-[#e0b25b] px-2 py-0 rounded-sm text-[10px] font-black">0</span> </div> <div id="zone-burst-${e}" class="zone burst-zone custom-scrollbar flex-1 mt-1 text-stone-500 text-xs flex justify-center items-center" ondrop="drop(event, 'zone-burst-${e}')" ondragover="allowDrop(event)"></div> </div> <div id="life-box-${e}" class="counter-box relative flex-none" ondrop="dropOnCounterBox(event, '${e}', 'life')" ondragover="allowDrop(event)"> <div class="counter-title">Life</div> <button class="highlight-action-btn btn-take-life" onclick="takeLife('${e}')" title="扣減 1 點生命值並將 1 個 Core 移至預備區">⚡ TAKE</button> <div id="gems_${e}_life" class="core-gem-tray"></div> <div class="counter-value mt-0.5"> <button class="counter-btn" onclick="updateCounter('${e}_life', -1)">-</button> <span id="val_${e}_life">5</span> <button class="counter-btn" onclick="updateCounter('${e}_life', 1)">+</button> </div> <div class="absolute bottom-1.5 right-2 z-50 flex items-center justify-center pointer-events-auto" id="slot_${e}_soul_life"></div> </div> <div id="reserve-box-${e}" class="counter-box relative flex-none" ondrop="dropOnCounterBox(event, '${e}', 'reserve')" ondragover="allowDrop(event)"> <div class="counter-title">Reserve</div> <button class="highlight-action-btn btn-pay-cost" onclick="payCost('${e}')" title="支付 1 個預備區 Core 至廢棄區">💎 PAY</button> <div id="gems_${e}_reserve" class="core-gem-tray"></div> <div class="counter-value mt-0.5"> <button class="counter-btn" onclick="updateCounter('${e}_reserve', -1)">-</button> <span id="val_${e}_reserve">3</span> <button class="counter-btn" onclick="updateCounter('${e}_reserve', 1)">+</button> </div> <div class="absolute bottom-1.5 right-2 z-50 flex items-center justify-center pointer-events-auto" id="slot_${e}_soul_reserve"></div> </div> </div> <div id="field-${e}" class="zone field-zone relative overflow-hidden min-h-[370px]" ondrop="drop(event, 'field-${e}')" ondragover="allowDrop(event)"> <div class="field-label">${t}</div> <div id="victory-overlay-${e}" class="victory-banner hidden"> <div class="text-5xl font-black tracking-widest text-yellow-300 drop-shadow-[0_0_20px_rgba(250,204,21,1)]">VICTORY</div> <div class="text-sm font-bold text-white tracking-widest mt-1">${o} 獲勝！</div> </div> <div class="field-bottom-left-dock"> <div id="god-wrapper-${e}" class="god-zone-wrapper" ondrop="dropOnGodZone(event, '${e}')" ondragover="allowDrop(event)"> <div class="flex items-center justify-between gap-2 mb-1"> <div class="counter-title mb-0">創界神</div> <button class="compact-zone-button" onclick="openZoneModal('${e}', 'god')">檢視</button> <button id="btn-toggle-god-${e}" class="text-[9px] text-[#c8bea8] hover:text-white border border-[#b09466]/40 bg-black/60 hover:bg-[#c8aa76] hover:text-black px-2 py-0.5 rounded-sm leading-tight cursor-pointer transition-colors" onclick="toggleGodZone('${e}')" title="收起 / 展開創界神區域">▼</button> </div> <div id="zone-god-${e}" class="zone god-zone custom-scrollbar"></div> </div> <div id="openhand-wrapper-${e}" class="openhand-zone-wrapper" ondrop="drop(event, 'zone-openhand-${e}')" ondragover="allowDrop(event)"> <div class="flex items-center justify-between gap-2 mb-1"> <div class="counter-title mb-0 flex items-center gap-1.5"> <span>手元區</span> <span id="val_${e}_openhand_card_count" class="bg-black/70 border border-[#b09466]/40 text-[#e0b25b] px-1.5 py-0 rounded-sm text-[9px] font-black">0</span> </div> <button class="compact-zone-button" onclick="openZoneModal('${e}', 'openhand')">檢示</button> <button id="btn-toggle-openhand-${e}" class="text-[9px] text-[#c8bea8] hover:text-white border border-[#b09466]/40 bg-black/60 hover:bg-[#c8aa76] hover:text-black px-2 py-0.5 rounded-sm leading-tight cursor-pointer transition-colors" onclick="toggleOpenHandZone('${e}')" title="收起 / 展開手元區">▼</button> </div> <div id="zone-openhand-${e}" class="zone openhand-zone custom-scrollbar"></div> </div> </div> </div> <div class="side-col-right flex flex-col gap-2"> <div id="count-box-${e}" class="counter-box relative flex-none py-1 px-2 flex items-center justify-between" ondrop="dropOnCounterBox(event, '${e}', 'count')" ondragover="allowDrop(event)"> <div class="counter-title mb-0 text-[9px]">Count</div> <div class="counter-value text-xs gap-1.5"> <button class="counter-btn w-3.5 h-3.5 text-[10px]" onclick="updateCounter('${e}_count', -1)">-</button> <span id="val_${e}_count" class="min-w-[14px]">0</span> <button class="counter-btn w-3.5 h-3.5 text-[10px]" onclick="updateCounter('${e}_count', 1)">+</button> </div> <div class="relative z-50 flex items-center justify-center min-w-[20px] pointer-events-auto" id="slot_${e}_soul_count"></div> </div> <div id="deck-box-${e}" class="counter-box relative flex-none flex flex-col" ondrop="dropOnDeck(event, '${e}')" ondragover="allowDrop(event)" title="可將卡牌拖曳至此放回牌組頂或底；點擊卡背直接抽牌"> <div class="counter-title">Deck</div>\n                        \x3c!-- 電腦 / iPad 模式原本的完整獨立按鈕 --\x3e <button class="small-action-btn contract-deck-button" onclick="openContractCards('${e}')">契約</button> <input type="file" id="import-zip-${e}" accept=".zip" class="hidden" onchange="importZip(event, '${e}')"> <div class="flex gap-1 mt-1 mb-0.5 pc-ipad-only-ui"> <button class="action-btn" onclick="shuffleDeck('${e}')">洗牌</button> <button class="action-btn" onclick="openZoneModal('${e}', 'deck')">VIEW</button> </div> <div class="deck-cardback-visual cursor-grab active:cursor-grabbing" id="deck-visual-${e}" draggable="true" title="單擊抽 1 張牌至手牌；或按住直接拖動牌組頂第一張卡（正面）到任意區域"> <div class="deck-cardback-emblem">BS</div> <div class="deck-cardback-count transition-transform pointer-events-none" id="val_${e}_deck_count">0</div> </div> <button class="action-btn mb-0.5" onclick="deployTop('${e}')">公開卡牌</button> <div class="flex gap-1 pc-ipad-only-ui"> <button class="action-btn" onclick="drawCard('${e}', 'top')">抽牌組頂</button> <button class="action-btn" onclick="drawCard('${e}', 'bottom')">抽牌組底</button> </div>\n                        \x3c!-- 手機模式專屬：將其他不常用牌組功能整合為單一大按鈕 --\x3e <button class="action-btn phone-only-ui bg-[#c8aa76]/20 border-[#c8aa76]/70 text-[#e0b25b]" onclick="openDeckActionMenu('${e}')">⚙️ 牌組選單</button> </div> <div id="trash-card-box-${e}" class="counter-box relative flex-1 flex flex-col gap-1.5"> <div class="counter-title flex items-center justify-center gap-1.5"> <span>Trash</span> <span id="val_${e}_trash_card_count" class="bg-black/70 border border-[#b09466]/40 text-[#e0b25b] px-2 py-0 rounded-sm text-[10px] font-black">0</span> </div>\n                        \x3c!-- 電腦 / iPad 模式原本的 VIEW 按鈕 --\x3e <button class="small-action-btn pc-ipad-only-ui" onclick="openZoneModal('${e}', 'trash')">VIEW</button>\n                        \x3c!-- 手機模式專屬：大顆整合選單按鈕 --\x3e <button class="phone-only-ui text-xs border border-[#c8aa76]/75 bg-black/85 hover:bg-[#c8aa76] hover:text-black text-[#e0b25b] py-1.5 px-2 rounded-sm font-black cursor-pointer transition-colors w-full" onclick="openTrashActionMenu('${e}')">⚙️ 廢棄/除外選單</button> <div id="zone-trash-${e}" class="zone stack-zone flex-1 mt-0.5 text-stone-600 text-xs cursor-pointer" onclick="openZoneModal('${e}', 'trash')" ondrop="drop(event, 'zone-trash-${e}')" ondragover="allowDrop(event)" title="點擊檢視 Trash 廢棄區卡牌"> <span class="pointer-events-none select-none text-lg font-bold text-stone-600/80">0</span> </div>\n                        \x3c!-- 電腦 / iPad 模式原本的除外區完整按鈕列 --\x3e <div id="exclude-card-box-${e}" class="bg-black/50 border border-[#b09466]/30 hover:border-[#c8aa76] transition-colors px-2 py-1 flex items-center justify-between gap-1 relative rounded-sm" ondrop="drop(event, 'zone-exclude-${e}')" ondragover="allowDrop(event)" title="可將卡牌直接拖曳至此處除外"> <div class="flex items-center gap-1.5"> <span class="text-[9px] font-bold text-[#c8bea8]">除外區</span> <span id="val_${e}_exclude_card_count" class="bg-black/70 border border-[#b09466]/40 text-[#e0b25b] px-1.5 py-0 rounded-sm text-[9px] font-black">0</span> </div> <div class="flex items-center gap-1 pc-ipad-only-ui"> <button class="text-[8px] border border-[#b09466]/40 bg-black/60 hover:bg-[#c8aa76] hover:text-black px-2 py-0.5 rounded-sm text-[#dcd6cc] cursor-pointer transition-colors" onclick="openZoneModal('${e}', 'exclude')">VIEW</button> <button class="text-[8px] border border-[#b09466]/40 bg-[#c8aa76]/20 hover:bg-[#c8aa76] px-2 py-0.5 rounded-sm text-[#e0b25b] hover:text-black cursor-pointer font-bold transition-colors" onclick="moveAllTrashToExclude('${e}')" title="將 Trash 所有卡片移至除外區">全除外</button> </div> <button class="phone-only-ui text-[11px] text-[#e0b25b] font-black px-1.5 py-0.5 border border-[#c8aa76]/50 rounded-sm bg-black/70" onclick="openZoneModal('${e}', 'exclude')">檢視</button> <div id="zone-exclude-${e}" class="zone exclude-mini-zone hidden"></div> </div> </div> <div id="trash-core-box-${e}" class="counter-box relative flex-none" ondrop="dropOnCounterBox(event, '${e}', 'trash')" ondragover="allowDrop(event)"> <div class="flex items-center justify-between gap-1 mb-0.5 pc-ipad-only-ui"> <div class="counter-title mb-0 text-[9.5px] tracking-wider whitespace-nowrap">TRASH</div> <div class="flex items-center gap-1"> <button class="text-[7.5px] border border-[#b09466]/40 bg-black/45 hover:bg-[#c8aa76] hover:text-black px-1.5 py-0.5 rounded-sm text-[#dcd6cc] cursor-pointer transition-colors leading-none" onclick="recoverCore('${e}')" title="將 1 個 Core 移回預備區">↺1</button> <button class="text-[7.5px] border border-[#b09466]/40 bg-black/45 hover:bg-[#c8aa76] hover:text-black px-1.5 py-0.5 rounded-sm text-[#dcd6cc] cursor-pointer font-bold transition-colors leading-none" onclick="recoverAllCores('${e}')" title="將所有 Trash Core 移回預備區">ALL</button> <button class="text-[7.5px] px-1.5 py-0.5 font-black cursor-pointer btn-refresh-state leading-none" onclick="refreshState('${e}')" title="回復狀態：Trash Core 全回預備區 + 預備區 Core+1 + 抽 1 張卡 + 場上橫置卡牌全部轉正">⟳ 回復</button> </div> </div>\n                        \x3c!-- 2. 手機模式專屬：緊湊不重疊的「TRASH + ALL」與「⟳ 回復」按鈕 --\x3e <div class="phone-only-ui flex-col gap-1 mb-0.5 w-full"> <div class="flex items-center justify-between w-full gap-1"> <span class="counter-title mb-0">TRASH</span> <button class="text-[10px] border border-[#b09466]/60 bg-black/80 text-[#e5dccb] px-1.5 py-0.5 rounded-sm font-black leading-tight whitespace-nowrap" onclick="recoverAllCores('${e}')">ALL</button> </div> <button class="w-full py-1 text-[11px] font-black cursor-pointer btn-refresh-state rounded-sm leading-tight" onclick="refreshState('${e}')">⟳ 回復</button> </div> <div id="gems_${e}_trash_core" class="core-gem-tray mt-0.5"></div> <div class="counter-value mt-0.5"> <button class="counter-btn" onclick="updateCounter('${e}_trash_core', -1)">-</button> <span id="val_${e}_trash_core">0</span> <button class="counter-btn" onclick="updateCounter('${e}_trash_core', 1)">+</button> </div> <div class="absolute bottom-1.5 right-2 z-50 flex items-center justify-center pointer-events-auto" id="slot_${e}_soul_trash"></div> </div> </div> </div>`
+return` <div id="section-main-${e}" class="flex-none playmat-panel p-2.5 pt-7 grid grid-cols-[164px_1fr_164px] gap-2.5 relative transition-all duration-300"> <div class="player-status-badge" title="${o} 玩家在線狀態"> <span id="status-light-${e}" class="status-dot"></span> <span id="status-name-${e}" class="text-[9px] font-black text-[#dcd6cc] tracking-wider">${o}</span> </div> <div class="side-col-left flex flex-col gap-2"> <div class="counter-box relative flex-1 min-h-[150px] flex flex-col"> <div class="counter-title flex items-center justify-between pr-1"> <div class="flex items-center gap-1.5"> <span>Burst</span> <button class="text-[8px] border border-[#b09466]/45 bg-amber-950/50 hover:bg-[#c8aa76] hover:text-black text-[#e0b25b] px-1.5 py-0.5 rounded-sm font-black cursor-pointer transition-all shadow-sm" onclick="launchBurstFireworks('${e}')" title="向對手放射煙花特效">🎆 煙花</button> </div> <span id="val_${e}_burst_card_count" class="bg-black/70 border border-[#b09466]/40 text-[#e0b25b] px-2 py-0 rounded-sm text-[10px] font-black">0</span> </div> <div id="zone-burst-${e}" class="zone burst-zone custom-scrollbar flex-1 mt-1 text-stone-500 text-xs flex justify-center items-center" ondrop="drop(event, 'zone-burst-${e}')" ondragover="allowDrop(event)"></div> </div> <div id="life-box-${e}" class="counter-box relative flex-none" ondrop="dropOnCounterBox(event, '${e}', 'life')" ondragover="allowDrop(event)"> <div class="counter-title">Life</div> <button class="highlight-action-btn btn-take-life" onclick="takeLife('${e}')" title="扣減 1 點生命值並將 1 個 Core 移至預備區">⚡ TAKE</button> <div id="gems_${e}_life" class="core-gem-tray"></div> <div class="counter-value mt-0.5"> <button class="counter-btn" onclick="updateCounter('${e}_life', -1)">-</button> <span id="val_${e}_life">5</span> <button class="counter-btn" onclick="updateCounter('${e}_life', 1)">+</button> </div> <div class="soul-core-slot-wrap absolute bottom-1.5 right-2 z-50 flex items-center justify-center pointer-events-auto" id="slot_${e}_soul_life"></div> </div> <div id="reserve-box-${e}" class="counter-box relative flex-none" ondrop="dropOnCounterBox(event, '${e}', 'reserve')" ondragover="allowDrop(event)"> <div class="counter-title">Reserve</div> <button class="highlight-action-btn btn-pay-cost" onclick="payCost('${e}')" title="支付 1 個預備區 Core 至廢棄區">💎 PAY</button> <div id="gems_${e}_reserve" class="core-gem-tray"></div> <div class="counter-value mt-0.5"> <button class="counter-btn" onclick="updateCounter('${e}_reserve', -1)">-</button> <span id="val_${e}_reserve">3</span> <button class="counter-btn" onclick="updateCounter('${e}_reserve', 1)">+</button> </div> <div class="soul-core-slot-wrap absolute bottom-1.5 right-2 z-50 flex items-center justify-center pointer-events-auto" id="slot_${e}_soul_reserve"></div> </div> </div> <div id="field-${e}" class="zone field-zone relative overflow-hidden min-h-[370px]" ondrop="drop(event, 'field-${e}')" ondragover="allowDrop(event)"> <div class="field-label">${t}</div> <div id="victory-overlay-${e}" class="victory-banner hidden"> <div class="text-5xl font-black tracking-widest text-yellow-300 drop-shadow-[0_0_20px_rgba(250,204,21,1)]">VICTORY</div> <div class="text-sm font-bold text-white tracking-widest mt-1">${o} 獲勝！</div> </div> <div class="field-bottom-left-dock"> <div id="god-wrapper-${e}" class="god-zone-wrapper" ondrop="dropOnGodZone(event, '${e}')" ondragover="allowDrop(event)"> <div class="flex items-center justify-between gap-2 mb-1"> <div class="counter-title mb-0">創界神</div> <button class="compact-zone-button" onclick="openZoneModal('${e}', 'god')">檢視</button> <button id="btn-toggle-god-${e}" class="text-[9px] text-[#c8bea8] hover:text-white border border-[#b09466]/40 bg-black/60 hover:bg-[#c8aa76] hover:text-black px-2 py-0.5 rounded-sm leading-tight cursor-pointer transition-colors" onclick="toggleGodZone('${e}')" title="收起 / 展開創界神區域">▼</button> </div> <div id="zone-god-${e}" class="zone god-zone custom-scrollbar"></div> </div> <div id="openhand-wrapper-${e}" class="openhand-zone-wrapper" ondrop="drop(event, 'zone-openhand-${e}')" ondragover="allowDrop(event)"> <div class="flex items-center justify-between gap-2 mb-1"> <div class="counter-title mb-0 flex items-center gap-1.5"> <span>手元區</span> <span id="val_${e}_openhand_card_count" class="bg-black/70 border border-[#b09466]/40 text-[#e0b25b] px-1.5 py-0 rounded-sm text-[9px] font-black">0</span> </div> <button class="compact-zone-button" onclick="openZoneModal('${e}', 'openhand')">檢示</button> <button id="btn-toggle-openhand-${e}" class="text-[9px] text-[#c8bea8] hover:text-white border border-[#b09466]/40 bg-black/60 hover:bg-[#c8aa76] hover:text-black px-2 py-0.5 rounded-sm leading-tight cursor-pointer transition-colors" onclick="toggleOpenHandZone('${e}')" title="收起 / 展開手元區">▼</button> </div> <div id="zone-openhand-${e}" class="zone openhand-zone custom-scrollbar"></div> </div> </div> </div> <div class="side-col-right flex flex-col gap-2"> <div id="count-box-${e}" class="counter-box relative flex-none py-1 px-2 flex items-center justify-between" ondrop="dropOnCounterBox(event, '${e}', 'count')" ondragover="allowDrop(event)"> <div class="counter-title mb-0 text-[9px]">Count</div> <div class="counter-value text-xs gap-1.5"> <button class="counter-btn w-3.5 h-3.5 text-[10px]" onclick="updateCounter('${e}_count', -1)">-</button> <span id="val_${e}_count" class="min-w-[14px]">0</span> <button class="counter-btn w-3.5 h-3.5 text-[10px]" onclick="updateCounter('${e}_count', 1)">+</button> </div> <div class="soul-core-slot-wrap soul-core-slot-count relative z-50 flex items-center justify-center min-w-[20px] pointer-events-auto" id="slot_${e}_soul_count"></div> </div> <div id="deck-box-${e}" class="counter-box relative flex-none flex flex-col" ondrop="dropOnDeck(event, '${e}')" ondragover="allowDrop(event)" title="可將卡牌拖曳至此放回牌組頂或底；點擊卡背直接抽牌"> <div class="counter-title">Deck</div>\n                        \x3c!-- 電腦 / iPad 模式原本的完整獨立按鈕 --\x3e <button class="small-action-btn contract-deck-button" onclick="openContractCards('${e}')">契約</button> <input type="file" id="import-zip-${e}" accept=".zip" class="hidden" onchange="importZip(event, '${e}')"> <div class="flex gap-1 mt-1 mb-0.5 pc-ipad-only-ui"> <button class="action-btn" onclick="shuffleDeck('${e}')">洗牌</button> <button class="action-btn" onclick="openZoneModal('${e}', 'deck')">VIEW</button> </div> <div class="deck-cardback-visual cursor-grab active:cursor-grabbing" id="deck-visual-${e}" draggable="true" title="單擊抽 1 張牌至手牌；或按住直接拖動牌組頂第一張卡（正面）到任意區域"> <div class="deck-cardback-emblem">BS</div> <div class="deck-cardback-count transition-transform pointer-events-none" id="val_${e}_deck_count">0</div> </div> <button class="action-btn mb-0.5" onclick="deployTop('${e}')">公開卡牌</button> <div class="flex gap-1 pc-ipad-only-ui"> <button class="action-btn" onclick="drawCard('${e}', 'top')">抽牌組頂</button> <button class="action-btn" onclick="drawCard('${e}', 'bottom')">抽牌組底</button> </div>\n                        \x3c!-- 手機模式專屬：將其他不常用牌組功能整合為單一大按鈕 --\x3e <button class="action-btn phone-only-ui bg-[#c8aa76]/20 border-[#c8aa76]/70 text-[#e0b25b]" onclick="openDeckActionMenu('${e}')">⚙️ 牌組選單</button> </div> <div id="trash-card-box-${e}" class="counter-box relative flex-1 flex flex-col gap-1.5"> <div class="counter-title flex items-center justify-center gap-1.5"> <span>Trash</span> <span id="val_${e}_trash_card_count" class="bg-black/70 border border-[#b09466]/40 text-[#e0b25b] px-2 py-0 rounded-sm text-[10px] font-black">0</span> </div>\n                        \x3c!-- 電腦 / iPad 模式原本的 VIEW 按鈕 --\x3e <button class="small-action-btn pc-ipad-only-ui" onclick="openZoneModal('${e}', 'trash')">VIEW</button>\n                        \x3c!-- 手機模式專屬：大顆整合選單按鈕 --\x3e <button class="phone-only-ui text-xs border border-[#c8aa76]/75 bg-black/85 hover:bg-[#c8aa76] hover:text-black text-[#e0b25b] py-1.5 px-2 rounded-sm font-black cursor-pointer transition-colors w-full" onclick="openTrashActionMenu('${e}')">⚙️ 廢棄/除外選單</button> <div id="zone-trash-${e}" class="zone stack-zone flex-1 mt-0.5 text-stone-600 text-xs cursor-pointer" onclick="openZoneModal('${e}', 'trash')" ondrop="drop(event, 'zone-trash-${e}')" ondragover="allowDrop(event)" title="點擊檢視 Trash 廢棄區卡牌"> <span class="pointer-events-none select-none text-lg font-bold text-stone-600/80">0</span> </div>\n                        \x3c!-- 電腦 / iPad 模式原本的除外區完整按鈕列 --\x3e <div id="exclude-card-box-${e}" class="bg-black/50 border border-[#b09466]/30 hover:border-[#c8aa76] transition-colors px-2 py-1 flex items-center justify-between gap-1 relative rounded-sm" ondrop="drop(event, 'zone-exclude-${e}')" ondragover="allowDrop(event)" title="可將卡牌直接拖曳至此處除外"> <div class="flex items-center gap-1.5"> <span class="text-[9px] font-bold text-[#c8bea8]">除外區</span> <span id="val_${e}_exclude_card_count" class="bg-black/70 border border-[#b09466]/40 text-[#e0b25b] px-1.5 py-0 rounded-sm text-[9px] font-black">0</span> </div> <div class="flex items-center gap-1 pc-ipad-only-ui"> <button class="text-[8px] border border-[#b09466]/40 bg-black/60 hover:bg-[#c8aa76] hover:text-black px-2 py-0.5 rounded-sm text-[#dcd6cc] cursor-pointer transition-colors" onclick="openZoneModal('${e}', 'exclude')">VIEW</button> <button class="text-[8px] border border-[#b09466]/40 bg-[#c8aa76]/20 hover:bg-[#c8aa76] px-2 py-0.5 rounded-sm text-[#e0b25b] hover:text-black cursor-pointer font-bold transition-colors" onclick="moveAllTrashToExclude('${e}')" title="將 Trash 所有卡片移至除外區">全除外</button> </div> <button class="phone-only-ui text-[11px] text-[#e0b25b] font-black px-1.5 py-0.5 border border-[#c8aa76]/50 rounded-sm bg-black/70" onclick="openZoneModal('${e}', 'exclude')">檢視</button> <div id="zone-exclude-${e}" class="zone exclude-mini-zone hidden"></div> </div> </div> <div id="trash-core-box-${e}" class="counter-box relative flex-none" ondrop="dropOnCounterBox(event, '${e}', 'trash')" ondragover="allowDrop(event)"> <div class="flex items-center justify-between gap-1 mb-0.5 pc-ipad-only-ui"> <div class="counter-title mb-0 text-[9.5px] tracking-wider whitespace-nowrap">TRASH</div> <div class="flex items-center gap-1"> <button class="text-[7.5px] border border-[#b09466]/40 bg-black/45 hover:bg-[#c8aa76] hover:text-black px-1.5 py-0.5 rounded-sm text-[#dcd6cc] cursor-pointer transition-colors leading-none" onclick="recoverCore('${e}')" title="將 1 個 Core 移回預備區">↺1</button> <button class="text-[7.5px] border border-[#b09466]/40 bg-black/45 hover:bg-[#c8aa76] hover:text-black px-1.5 py-0.5 rounded-sm text-[#dcd6cc] cursor-pointer font-bold transition-colors leading-none" onclick="recoverAllCores('${e}')" title="將所有 Trash Core 移回預備區">ALL</button> <button class="text-[7.5px] px-1.5 py-0.5 font-black cursor-pointer btn-refresh-state leading-none" onclick="refreshState('${e}')" title="回復狀態：Trash Core 全回預備區 + 預備區 Core+1 + 抽 1 張卡 + 場上橫置卡牌全部轉正">⟳ 回復</button> </div> </div>\n                        \x3c!-- 2. 手機模式專屬：緊湊不重疊的「TRASH + ALL」與「⟳ 回復」按鈕 --\x3e <div class="phone-only-ui flex-col gap-1 mb-0.5 w-full"> <div class="flex items-center justify-between w-full gap-1"> <span class="counter-title mb-0">TRASH</span> <button class="text-[10px] border border-[#b09466]/60 bg-black/80 text-[#e5dccb] px-1.5 py-0.5 rounded-sm font-black leading-tight whitespace-nowrap" onclick="recoverAllCores('${e}')">ALL</button> </div> <button class="w-full py-1 text-[11px] font-black cursor-pointer btn-refresh-state rounded-sm leading-tight" onclick="refreshState('${e}')">⟳ 回復</button> </div> <div id="gems_${e}_trash_core" class="core-gem-tray mt-0.5"></div> <div class="counter-value mt-0.5"> <button class="counter-btn" onclick="updateCounter('${e}_trash_core', -1)">-</button> <span id="val_${e}_trash_core">0</span> <button class="counter-btn" onclick="updateCounter('${e}_trash_core', 1)">+</button> </div> <div class="soul-core-slot-wrap absolute bottom-1.5 right-2 z-50 flex items-center justify-center pointer-events-auto" id="slot_${e}_soul_trash"></div> </div> </div> </div>`
 }
 !function() {
 const e=document.getElementById("playmat-root");
@@ -1065,7 +1067,32 @@ const BSHookRegistry = (() => {
   };
 })();
 window.BSHookRegistry = BSHookRegistry;
+const BS_TARGET_PICK_SELECTOR=".oa-board-selectable,.blocker-selectable,.manifest-god-candidate,.magic-pay-candidate,.play-pay-candidate";
+function isCardSelectableTarget(el) {
+return Boolean(el&&el.matches&&el.matches(BS_TARGET_PICK_SELECTOR));
+}
+function isBoardTargetSelectionActive() {
+return Boolean(window.__bsActiveBoardPicker||document.querySelector(".card.oa-board-selectable,.card.blocker-selectable,.card.manifest-god-candidate,.card.magic-pay-candidate,.card.play-pay-candidate"));
+}
+function resetAllTouchDragState() {
+draggedCard=null,draggedSoulOwner=null,draggedGodCoreCardId=null,draggedZoneCoreInfo=null,isDraggingCenterCore=!1;
+const g=document.getElementById("touch-drag-ghost");
+g&&(g.style.display="none",g.style.backgroundImage="none",g.querySelectorAll(".brave-drag-copy").forEach(x=>x.remove()));
+const cg=document.getElementById("core-drag-ghost");
+cg&&(cg.style.display="none",cg.style.background="",cg.style.filter="");
+document.querySelectorAll(".drag-over").forEach(x=>x.classList.remove("drag-over"));
+document.querySelectorAll(".card").forEach(x=> {
+if(x.style.opacity&&x.style.opacity!=="1")x.style.opacity="1";
+});
+}
+window.isCardSelectableTarget=isCardSelectableTarget;
+window.isBoardTargetSelectionActive=isBoardTargetSelectionActive;
+window.resetAllTouchDragState=resetAllTouchDragState;
+window.addEventListener("blur",resetAllTouchDragState);
+window.addEventListener("touchcancel",resetAllTouchDragState,{passive:!0});
+document.addEventListener("visibilitychange",()=>{document.hidden&&resetAllTouchDragState()});
 function hideCardPreview() {
+resetAllTouchDragState();
 const e=document.getElementById("card-preview"),t=document.getElementById("card-preview-img"),o=document.getElementById("card-preview-mobile-hint"),a=document.getElementById("card-preview-core-bar");
 activePreviewCardId=null,activePreviewTargetEl=null,document.getElementById("preview-turn-btn")?.classList.add("hidden"),document.querySelectorAll(".card.hand-card-popped").forEach(e=>e.classList.remove("hand-card-popped")),e&&(e.style.opacity="0",e.style.visibility="hidden",e.classList.remove("pointer-events-auto"),e.classList.add("pointer-events-none"),t&&(t.style.transform="rotate(0deg)"),o&&o.classList.add("hidden"),document.getElementById("preview-deploy")?.classList.add("hidden"),a&&(a.classList.add("hidden"),a.classList.remove("flex")));
 BSHookRegistry.runAfter("preview:hide");
@@ -2964,33 +2991,54 @@ m=null;const t=gameState.cards[e.id];t&&t.zone&&(t.zone.startsWith("field-")||t.
 "PC"!==controlMode||t.target.closest(".card-controls")||(t.preventDefault(),t.stopPropagation(),null!==m&&(clearTimeout(m),m=null),flipCardFace(e.id))
 });
 let g=!1,p=0,f=0,y=null;
-t.addEventListener("pointerdown",e=> {
-if("MOBILE"===controlMode&&!e.target.closest(".card-controls")&&null===y) {
-e.preventDefault(),e.stopPropagation(),y=e.pointerId,p=e.clientX,f=e.clientY,g=!1;try {
-t.setPointerCapture(e.pointerId)
+t.addEventListener("pointerdown",ev=> {
+if("MOBILE"!==controlMode||ev.target.closest(".card-controls"))return;
+if(isCardSelectableTarget(t)||isBoardTargetSelectionActive()) {
+y=null,g=!1;
+return;
 }
-catch(e) {
+if(null!==y) {
+y=null,g=!1,resetAllTouchDragState();
 }
+ev.preventDefault(),ev.stopPropagation(),y=ev.pointerId,p=ev.clientX,f=ev.clientY,g=!1;try {
+t.setPointerCapture(ev.pointerId)
+}
+catch(err) {
 }
 }),t.addEventListener("pointermove",o=> {
-if("MOBILE"!==controlMode||y!==o.pointerId)return;const a=Math.hypot(o.clientX-p,o.clientY-f);!g&&a>2&&(g=!0,startTouchCardDrag(e.id,t,o.clientX,o.clientY)),g&&(o.preventDefault(),moveTouchCardDrag(o.clientX,o.clientY))
+if("MOBILE"!==controlMode||y!==o.pointerId)return;
+if(isCardSelectableTarget(t)||isBoardTargetSelectionActive()) {
+y=null,g=!1,resetAllTouchDragState();
+return;
+}
+const a=Math.hypot(o.clientX-p,o.clientY-f);!g&&a>10&&(g=!0,startTouchCardDrag(e.id,t,o.clientX,o.clientY)),g&&(o.preventDefault(),moveTouchCardDrag(o.clientX,o.clientY))
 });
 const h=o=> {
-if("MOBILE"===controlMode&&y===o.pointerId) {
+if(y===o.pointerId||("lostpointercapture"===o.type&&null!==y)) {
+const wasDrag=g;
 try {
-t.hasPointerCapture(o.pointerId)&&t.releasePointerCapture(o.pointerId)
+null!==o.pointerId&&t.hasPointerCapture&&t.hasPointerCapture(o.pointerId)&&t.releasePointerCapture(o.pointerId)
 }
-catch(e) {
+catch(err) {
 }
-if(y=null,g)return g=!1,void("pointerup"===o.type?endTouchCardDrag(e.id,o.clientX,o.clientY):(t.style.opacity="1",document.getElementById("touch-drag-ghost").style.display="none",document.querySelectorAll(".drag-over").forEach(e=>e.classList.remove("drag-over")),draggedCard=null));
-if("pointerup"===o.type) {
+y=null,g=!1;
+if(wasDrag) {
+if("pointerup"===o.type)endTouchCardDrag(e.id,o.clientX,o.clientY);
+else resetAllTouchDragState();
+return;
+}
+if("pointerup"===o.type&&"MOBILE"===controlMode) {
+if(isCardSelectableTarget(t)||isBoardTargetSelectionActive()) {
+hideCardPreview();
+return;
+}
 if(t.closest(".opponent-hand"))return;
-const o=gameState.cards[e.id],a=o?.imgBase64||cardImageCache[e.id];
-activePreviewCardId===e.id?hideCardPreview():(document.querySelectorAll(".card.hand-card-popped").forEach(e=>e.classList.remove("hand-card-popped")),t.closest(".hand-zone")&&t.classList.add("hand-card-popped"),showCardPreviewNextToElement(t,a,e.id,!0))
+const cardObj=gameState.cards[e.id],imgSrc=cardObj?.imgBase64||cardImageCache[e.id];
+activePreviewCardId===e.id?hideCardPreview():(document.querySelectorAll(".card.hand-card-popped").forEach(x=>x.classList.remove("hand-card-popped")),t.closest(".hand-zone")&&t.classList.add("hand-card-popped"),showCardPreviewNextToElement(t,imgSrc,e.id,!0))
 }
 }
 };
-return t.addEventListener("pointerup",h),t.addEventListener("pointercancel",h),t.addEventListener("dragover",e=>e.preventDefault()),t.addEventListener("drop",t=> {
+return t.addEventListener("pointerup",h),t.addEventListener("pointercancel",h),t.addEventListener("lostpointercapture",h),t.addEventListener("dragover",e=>e.preventDefault()),t.addEventListener("drop",t=> {
 const o=t.dataTransfer.getData("text/plain");if("CENTER_CORE"===o||isDraggingCenterCore)return t.preventDefault(),t.stopPropagation(),isDraggingCenterCore=!1,void addSpawnedCoreToCard(e.id);if(o&&o.startsWith("ZONE_CORE:")||draggedZoneCoreInfo) {
 t.preventDefault(),t.stopPropagation();let a=draggedZoneCoreInfo?.player,n=draggedZoneCoreInfo?.place;if(o&&o.startsWith("ZONE_CORE:")) {
 const e=o.split(":");a=e[1],n=e[2]
@@ -3029,12 +3077,9 @@ const n=a.closest(".god-zone-wrapper")||a.closest(".openhand-zone-wrapper")||a.c
 n&&n.classList.add("drag-over")
 }
 function endTouchCardDrag(e,t,o) {
-const a=document.getElementById(e);
-a&&(a.style.opacity="1");
-const n=document.getElementById("touch-drag-ghost");
-n&&(n.style.display="none"),document.querySelectorAll(".drag-over").forEach(e=>e.classList.remove("drag-over"));
+resetAllTouchDragState();
 const r=document.elementFromPoint(t,o);
-if(draggedCard=null,!r)return;
+if(!r)return;
 const s=r.closest("#god-wrapper-p1, #god-wrapper-p2");
 if(s)return void triggerGodZoneConfirmForCard(e,s.id.endsWith("p2")?"p2":"p1");
 const l=r.closest("#openhand-wrapper-p1, #openhand-wrapper-p2, #zone-openhand-p1, #zone-openhand-p2");
@@ -11660,7 +11705,7 @@ ensureMirageFormUI();
 /* =========================================================================
 PART 1: 左上角 BS 版本號齒輪控制（語意化 major.minor：支援 3.7 -> 3.8 -> 3.9 -> 3.10 -> 3.11）
 ========================================================================= */
-const BS_DEFAULT_VERSION = "7.0";
+const BS_DEFAULT_VERSION = "7.0.1";
 const VER_KEY = "bs_app_version_str";
 const VER_BASE_KEY = "bs_app_version_base";
 window.BS_APP_VERSION = BS_DEFAULT_VERSION;
@@ -11964,7 +12009,7 @@ godDeployBtn.classList.add("hidden");
     <div class="changelog-header">
       <div class="flex items-center gap-2.5 flex-wrap">
         <h2 id="changelog-modal-title" class="text-base sm:text-lg font-black tracking-widest text-[#e0b25b]">📜 更新日誌 (CHANGELOG)</h2>
-        <span id="changelog-current-ver" class="text-xs font-black bg-emerald-950/80 border border-emerald-500/60 text-emerald-300 px-2 py-0.5 rounded-sm">v7.0</span>
+        <span id="changelog-current-ver" class="text-xs font-black bg-emerald-950/80 border border-emerald-500/60 text-emerald-300 px-2 py-0.5 rounded-sm">v7.0.1</span>
       </div>
       <button type="button" class="border border-[#b09466]/55 bg-black/70 text-[#dcd6cc] hover:bg-[#c8aa76] hover:text-black px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="closeChangelogModal()">關閉 (✕)</button>
     </div>
@@ -11978,6 +12023,17 @@ godDeployBtn.classList.add("hidden");
 版本更新日誌資料（往後每次更新 3.8、3.9、3.10、3.11… 請於陣列最上方新增物件）
 ========================================================================= */
 window.BS_CHANGELOG = [
+{
+  version: "7.0.1",
+  date: "2026-11-25",
+  title: "v7.0.1 手機與 iPad 觸控實戰補強版：目標選取優先權、魂Core防重疊、彈窗工具列防爆框與觸控防卡死",
+  highlights: [
+    "【修復目標選取與放大預覽衝突】為戰場選取目標（.oa-board-selectable／.blocker-selectable／顯現／魔術／付費候選）建立統一優先權機制（isCardSelectableTarget／isBoardTargetSelectionActive），手機與 iPad 觸控模式下直接以 capture 階段 pointerup 選取／取消選取敵我目標，暫停該次點擊的放大預覽彈窗。",
+    "【徹底分離魂 Core (S) 與 ＋ 按鈕】將手機與 iPad 模式下 LIFE、RESERVE、TRASH、COUNT 區塊的 Soul Core 槽位（.soul-core-slot-wrap）由絕對定位改為獨立底行並加上虛線分隔，確保點擊 ＋ 掣絕不誤觸魂 Core。",
+    "【修復彈窗按鈕爆框與文字直排】為卡組庫（#deck-vault-toolbar）與卡組編輯器（#deck-editor-toolbar）補上強制自動換行（flex-wrap）與手機精簡尺寸（white-space: nowrap），所有工具列按鈕完整留在視窗框內、絕不超出右邊界。",
+    "【消除觸控點擊殘影與卡牌卡死】將觸控拖曳門檻由 2px 調升至 10px 避免快速點擊誤觸拖曳，新增 lostpointercapture／window blur／visibilitychange 全域清理引擎（resetAllTouchDragState），杜絕半透明殘影、浮空幽靈卡或指針鎖死；自動化自檢擴充至 T01–T42（全數 PASS）。"
+  ]
+},
 {
   version: "7.0",
   date: "2026-11-25",
@@ -15060,13 +15116,26 @@ document.getElementById(c.id)?.classList.add("blocker-selectable");
 }
 }
 
-document.addEventListener("click", ev => {
+let _lastBlockerTapTs = 0;
+const handleBlockerTargetPick = ev => {
 if (!isPickingBlockerMode) return;
-const cardEl = ev.target.closest(".card.blocker-selectable");
+const cardEl = ev.target?.closest?.(".card.blocker-selectable");
 if (!cardEl || !cardEl.id) return;
+if (ev.type === "click" && Date.now() - _lastBlockerTapTs < 350) {
 ev.preventDefault();
 ev.stopImmediatePropagation();
+return;
+}
+if (ev.type === "pointerup") _lastBlockerTapTs = Date.now();
+ev.preventDefault();
+ev.stopPropagation();
+ev.stopImmediatePropagation();
+if (typeof hideCardPreview === "function") hideCardPreview();
 window.selectBattleBlocker(cardEl.id);
+};
+document.addEventListener("click", handleBlockerTargetPick, true);
+document.addEventListener("pointerup", ev => {
+if (typeof controlMode !== "undefined" && controlMode === "MOBILE") handleBlockerTargetPick(ev);
 }, true);
 
 function renderBattleActionBar() {
@@ -17156,7 +17225,7 @@ body:not(.mobile-mode) .mini-translation-source:not(.advent-source):not(.has-god
 body:not(.mobile-mode) #preview-flash-act-btn,body:not(.mobile-mode) #preview-accel-btn{display:none!important}
 </style>
 
-<div id="bs5-standby-hud" class="hidden" role="dialog" aria-label="BS v7.0 規則引擎待機佇列">
+<div id="bs5-standby-hud" class="hidden" role="dialog" aria-label="BS v7.0.1 規則引擎待機佇列">
   <div id="bs5-shell" class="bs5-shell"></div>
   <div id="bs5-tray" class="bs5-tray hidden"></div>
   <div id="bs5-actions" class="bs5-actions"></div>
@@ -18757,6 +18826,7 @@ body:not(.mobile-mode) #preview-flash-act-btn,body:not(.mobile-mode) #preview-ac
   let activeBoardClickCleanup = null;
 
   function clearBs5BoardPick() {
+    window.__bsActiveBoardPicker = null;
     if (typeof activeBoardClickCleanup === "function") {
       activeBoardClickCleanup();
       activeBoardClickCleanup = null;
@@ -18765,6 +18835,7 @@ body:not(.mobile-mode) #preview-flash-act-btn,body:not(.mobile-mode) #preview-ac
       el.classList.remove("oa-board-selectable", "oa-board-picked");
       el.querySelector(".oa-pick-check-badge")?.remove();
     });
+    if (typeof resetAllTouchDragState === "function") resetAllTouchDragState();
   }
 
   function evalExpr(expr, ctx) {
@@ -19331,15 +19402,47 @@ body:not(.mobile-mode) #preview-flash-act-btn,body:not(.mobile-mode) #preview-ac
       };
 
       if (useBoardDirect) {
+        if (typeof hideCardPreview === "function") hideCardPreview();
         const candIds = new Set(cards.map(c => c.id));
+        let tapStart = null;
+        let lastTouchPickTs = 0;
+        window.__bsActiveBoardPicker = { candIds, toggle: toggleCardId };
+        const downHandler = (e) => {
+          const cardEl = e.target?.closest?.(".card");
+          if (!cardEl || !candIds.has(cardEl.id)) return;
+          tapStart = { id: cardEl.id, x: e.clientX || 0, y: e.clientY || 0, pointerId: e.pointerId };
+          if (typeof controlMode !== "undefined" && controlMode === "MOBILE") {
+            e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
+          }
+        };
+        const upHandler = (e) => {
+          if (typeof controlMode === "undefined" || controlMode !== "MOBILE") return;
+          const cardEl = e.target?.closest?.(".card");
+          if (!cardEl || !candIds.has(cardEl.id)) { tapStart = null; return; }
+          const moved = tapStart && tapStart.id === cardEl.id ? Math.hypot((e.clientX || 0) - tapStart.x, (e.clientY || 0) - tapStart.y) : 0;
+          tapStart = null;
+          if (moved > 24) return;
+          lastTouchPickTs = Date.now();
+          e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
+          if (typeof hideCardPreview === "function") hideCardPreview();
+          toggleCardId(cardEl.id);
+        };
         const clickHandler = (e) => {
           const cardEl = e.target?.closest?.(".card");
           if (!cardEl || !candIds.has(cardEl.id)) return;
           e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
+          if (Date.now() - lastTouchPickTs < 350) return;
+          if (typeof hideCardPreview === "function") hideCardPreview();
           toggleCardId(cardEl.id);
         };
+        document.addEventListener("pointerdown", downHandler, true);
+        document.addEventListener("pointerup", upHandler, true);
         document.addEventListener("click", clickHandler, true);
-        activeBoardClickCleanup = () => document.removeEventListener("click", clickHandler, true);
+        activeBoardClickCleanup = () => {
+          document.removeEventListener("pointerdown", downHandler, true);
+          document.removeEventListener("pointerup", upHandler, true);
+          document.removeEventListener("click", clickHandler, true);
+        };
       }
 
       render();
@@ -20960,7 +21063,7 @@ body:not(.mobile-mode) #preview-flash-act-btn,body:not(.mobile-mode) #preview-ac
               resolve(idx);
             };
             const renderQueue = () => {
-              shell.innerHTML = `<div class="bs5-head"><span>⚡ BS v7.0 待機效果佇列（點擊優先發動）</span><span>待處理 ${standbyQueue.length} 項</span></div>`;
+              shell.innerHTML = `<div class="bs5-head"><span>⚡ BS v7.0.1 待機效果佇列（點擊優先發動）</span><span>待處理 ${standbyQueue.length} 項</span></div>`;
               standbyQueue.forEach((item, i) => {
                 const row = document.createElement("div");
                 row.className = "bs5-row";
@@ -22739,7 +22842,7 @@ body:not(.mobile-mode) #preview-flash-act-btn,body:not(.mobile-mode) #preview-ac
 <!-- #endregion -->
 
 
-<!-- #region 28. [自檢] 瀏覽器自動化規則自檢引擎 (41 項沙盒隔離實機斷言 ＋ 一鍵複製報告) -->
+<!-- #region 28. [自檢] 瀏覽器自動化規則自檢引擎 (42 項沙盒隔離實機斷言 ＋ 一鍵複製報告) -->
 <script>
 (function () {
   "use strict";
@@ -24499,6 +24602,116 @@ body:not(.mobile-mode) #preview-flash-act-btn,body:not(.mobile-mode) #preview-ac
           }
 
           return `已收斂 ${totalHooks} 個核心 Hook / 優先順序＋攔截＋自動卸載=OK / updateAllUI＋hideCardPreview 單次精準派發=OK`;
+        }      },
+      {
+        id: "T42",
+        group: "v7.0.1 手機／iPad 觸控與排版補強",
+        name: "目標選取優先於放大預覽 ＋ 魂Core(S)與＋按鈕零重疊 ＋ 卡組庫彈窗換行防爆框 ＋ 觸控殘影清理",
+        async run() {
+          const prevDevice = typeof deviceMode !== "undefined" ? deviceMode : "PC";
+          const vaultModal = document.getElementById("deck-vault-modal");
+          const vaultWasHidden = vaultModal ? vaultModal.classList.contains("hidden") : true;
+          let testCardEl = null;
+          let testCardId = "__st_t42_target";
+          try {
+            // 1. Target selection priority over mobile preview
+            setControlMode("PHONE");
+            resetSandboxBoard();
+            const tinyImg = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+            const tc = {
+              id: testCardId, owner: "p2", zone: "field-p2", catalogNumber: "", imgBase64: tinyImg,
+              x: 40, y: 40, rx: 0.25, ry: 0.25, rotation: 0, battleState: "", isFaceDown: false,
+              isSoulState: false, cores: 1, zOrder: 500
+            };
+            gameState.cards[testCardId] = tc;
+            cardImageCache[testCardId] = tinyImg;
+            testCardEl = createCardElement(tc);
+            document.getElementById("field-p2")?.appendChild(testCardEl);
+            testCardEl.classList.add("oa-board-selectable");
+            assertCond(typeof window.isCardSelectableTarget === "function" && window.isCardSelectableTarget(testCardEl), "應辨識 .oa-board-selectable 為目標選取模式");
+            assertCond(typeof window.isBoardTargetSelectionActive === "function" && window.isBoardTargetSelectionActive(), "isBoardTargetSelectionActive 應回傳 true");
+            hideCardPreview();
+            const pDown = new PointerEvent("pointerdown", { bubbles: true, cancelable: true, pointerId: 77, clientX: 50, clientY: 50 });
+            const pUp = new PointerEvent("pointerup", { bubbles: true, cancelable: true, pointerId: 77, clientX: 50, clientY: 50 });
+            testCardEl.dispatchEvent(pDown);
+            testCardEl.dispatchEvent(pUp);
+            const prevEl = document.getElementById("card-preview");
+            const previewHidden = !prevEl || getComputedStyle(prevEl).visibility === "hidden" || activePreviewCardId === null;
+            assertCond(previewHidden, "選取場上目標模式下，手機點擊卡牌不應彈出放大預覽");
+            testCardEl.classList.remove("oa-board-selectable");
+
+            // 2. Soul Core (S) vs (+) button zero-overlap on PHONE & IPAD
+            const checkSoulNoOverlap = (modeLabel) => {
+              const checks = [
+                ["life-box-p1", "slot_p1_soul_life"],
+                ["reserve-box-p1", "slot_p1_soul_reserve"],
+                ["trash-core-box-p1", "slot_p1_soul_trash"],
+                ["count-box-p1", "slot_p1_soul_count"]
+              ];
+              for (const [boxId, slotId] of checks) {
+                const box = document.getElementById(boxId);
+                const slot = document.getElementById(slotId);
+                assertCond(box && slot, `${modeLabel} 找不到 ${boxId} 或 ${slotId}`);
+                const pos = getComputedStyle(slot).position;
+                assertCond(pos === "static", `${modeLabel} ${slotId} 應為 static 獨立排版避免遮擋，實測 ${pos}`);
+                const plusBtns = [...box.querySelectorAll(".counter-value .counter-btn")];
+                const plusBtn = plusBtns[plusBtns.length - 1];
+                if (plusBtn) {
+                  const pr = plusBtn.getBoundingClientRect();
+                  const sr = slot.getBoundingClientRect();
+                  if (pr.width > 0 && sr.width > 0) {
+                    const overlapX = pr.left < sr.right - 1 && pr.right > sr.left + 1;
+                    const overlapY = pr.top < sr.bottom - 1 && pr.bottom > sr.top + 1;
+                    assertCond(!(overlapX && overlapY), `${modeLabel} ${boxId} 的 ＋ 按鈕與魂 Core 槽位重疊`);
+                  }
+                }
+              }
+            };
+            checkSoulNoOverlap("PHONE");
+            setControlMode("IPAD");
+            checkSoulNoOverlap("IPAD");
+
+            // 3. Deck Vault modal toolbar wraps cleanly & stays inside panel bounds in PHONE mode
+            setControlMode("PHONE");
+            if (vaultModal && vaultWasHidden) {
+              vaultModal.style.visibility = "hidden";
+              vaultModal.classList.remove("hidden");
+            }
+            const panel = document.getElementById("deck-vault-panel");
+            const toolbar = document.getElementById("deck-vault-toolbar");
+            assertCond(panel && toolbar, "缺少 #deck-vault-panel 或 #deck-vault-toolbar");
+            assertCond(getComputedStyle(toolbar).flexWrap === "wrap", `手機版 #deck-vault-toolbar 應強制 flex-wrap:wrap，實測 ${getComputedStyle(toolbar).flexWrap}`);
+            const pRect = panel.getBoundingClientRect();
+            const tBtns = [...toolbar.querySelectorAll("button")].filter(b => getComputedStyle(b).display !== "none");
+            assertCond(tBtns.length >= 6, `卡組庫工具列預期至少 6 顆按鈕，實測 ${tBtns.length}`);
+            for (const b of tBtns) {
+              const br = b.getBoundingClientRect();
+              if (br.width > 0 && pRect.width > 0) {
+                assertCond(br.right <= pRect.right + 2, `卡組庫按鈕「${b.textContent.trim()}」超出視窗右邊界 (${Math.round(br.right)} > ${Math.round(pRect.right)})`);
+                assertCond(br.height <= 48, `卡組庫按鈕「${b.textContent.trim()}」異常直排拉長 (${Math.round(br.height)}px)`);
+              }
+            }
+
+            // 4. Touch drag ghost & stuck opacity recovery
+            assertCond(typeof window.resetAllTouchDragState === "function", "缺少 window.resetAllTouchDragState 清理函式");
+            const ghost = document.getElementById("touch-drag-ghost");
+            if (ghost) ghost.style.display = "block";
+            testCardEl.style.opacity = "0.4";
+            window.resetAllTouchDragState();
+            assertCond(!ghost || ghost.style.display === "none", "resetAllTouchDragState 應隱藏 #touch-drag-ghost");
+            assertCond(testCardEl.style.opacity === "1", `resetAllTouchDragState 應恢復卡牌不透明度為 1，實測 ${testCardEl.style.opacity}`);
+
+            return "目標選取優先免預覽=OK / Phone＋iPad 魂Core與＋零重疊=OK / 卡組庫工具列換行不爆框=OK / 觸控殘影清理=OK";
+          } finally {
+            testCardEl?.remove();
+            delete gameState.cards[testCardId];
+            delete cardImageCache[testCardId];
+            if (vaultModal && vaultWasHidden) {
+              vaultModal.classList.add("hidden");
+              vaultModal.style.visibility = "";
+            }
+            setControlMode(prevDevice);
+          }
         }
       }
     ];
@@ -24512,7 +24725,7 @@ body:not(.mobile-mode) #preview-flash-act-btn,body:not(.mobile-mode) #preview-ac
     const scoreEl = document.getElementById("bs-selftest-score");
     const runBtn = document.getElementById("bs-run-selftest-btn");
     if (panel) panel.classList.remove("hidden");
-    if (resEl) resEl.innerHTML = '<div class="text-center text-xs text-fuchsia-200 py-4">🤖 正在建立隔離沙盒並逐項執行 41 項引擎自檢…</div>';
+    if (resEl) resEl.innerHTML = '<div class="text-center text-xs text-fuchsia-200 py-4">🤖 正在建立隔離沙盒並逐項執行 42 項引擎自檢…</div>';
     if (scoreEl) scoreEl.textContent = "執行中…";
     if (runBtn) { runBtn.disabled = true; runBtn.textContent = "⏳ 自檢中…"; }
 
@@ -24643,7 +24856,7 @@ body:not(.mobile-mode) #preview-flash-act-btn,body:not(.mobile-mode) #preview-ac
     }
 
     lastSelfTestReportText = [
-      `=== BS v7.0 瀏覽器自動化規則自檢報告 (${new Date().toLocaleString("zh-HK", { hour12: false })}) ===`,
+      `=== BS v7.0.1 瀏覽器自動化規則自檢報告 (${new Date().toLocaleString("zh-HK", { hour12: false })}) ===`,
       `結果：PASS ${passN} / FAIL ${failN} / SKIP ${skipN}（總耗時 ${totalMs} ms）`,
       ...results.map(r => `[${r.status}] ${r.id} (${r.group}) ${r.name} -> ${r.detail} (${r.ms}ms)`)
     ].join("\n");
@@ -26885,7 +27098,7 @@ body:not(.mobile-mode) #preview-flash-act-btn,body:not(.mobile-mode) #preview-ac
     rec.editors = [rec.editorName];
     const payload = {
       app: "BS_EFFECT_DIFF_REPORT",
-      engineVersion: "7.0",
+      engineVersion: "7.0.1",
       schemaVersion: 25,
       exportedAt: new Date().toISOString(),
       mode: "single_card",
@@ -26902,7 +27115,7 @@ body:not(.mobile-mode) #preview-flash-act-btn,body:not(.mobile-mode) #preview-ac
     const allEditors = [...new Set(hist.flatMap(h => Array.isArray(h.editors) ? h.editors : ["玩家"]))];
     const payload = {
       app: "BS_EFFECT_DIFF_REPORT",
-      engineVersion: "7.0",
+      engineVersion: "7.0.1",
       schemaVersion: 25,
       exportedAt: new Date().toISOString(),
       mode: "cloud_shared_staging_batch",
@@ -26926,7 +27139,7 @@ body:not(.mobile-mode) #preview-flash-act-btn,body:not(.mobile-mode) #preview-ac
     const hist = await window.refreshCloudEffectDiffStaging(false);
     const list = hist.length ? hist : (curCardNumber ? [buildSingleCardDiffRecord()] : []);
     if (!list.length) return showNotice("雲端暫存區目前沒有可複製的修改紀錄。");
-    const lines = [`=== BS v7.0 多人雲端效果修改比較摘要（共 ${list.length} 張）===`];
+    const lines = [`=== BS v7.0.1 多人雲端效果修改比較摘要（共 ${list.length} 張）===`];
     list.forEach(r => {
       const edStr = Array.isArray(r.editors) && r.editors.length ? `［編輯者：${r.editors.join("、")}］` : "";
       lines.push(`\n[${r.card.number}] ${r.card.name} ${edStr} (${(r.tags || []).join("/") || "未分類"})${r.userNote ? " — " + r.userNote : ""}`);
@@ -27050,7 +27263,7 @@ body:not(.mobile-mode) #preview-flash-act-btn,body:not(.mobile-mode) #preview-ac
       if (autoExp) {
         const payload = {
           app: "BS_EFFECT_DIFF_REPORT",
-          engineVersion: "7.0",
+          engineVersion: "7.0.1",
           schemaVersion: 25,
           exportedAt: new Date().toISOString(),
           mode: "auto_on_save",
