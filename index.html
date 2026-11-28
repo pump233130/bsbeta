@@ -17,7 +17,7 @@
  10. 創界神 (Grandwalker) 技與域   -> 搜尋: function useGrandwalkerSkill
  11. 顕現 (Manifest) 系統與特效    -> 搜尋: function triggerManifestFromHand
 ========================================================================= -->
-<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><title>BS v7.4.3.28</title><script src="https://cdn.tailwindcss.com"></script><style>
+<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><title>BS v7.4.3.29</title><script src="https://cdn.tailwindcss.com"></script><style>
 /* #region 1. 基礎排版、卡背 SVG 與戰場區域樣式 */
 body,html{touch-action:manipulation;overflow-x:hidden!important;overscroll-behavior-x:none}.action-btn,.counter-box,.counter-title,.counter-value,.small-action-btn,body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}body{background-color:#0d0c0b;background-image:radial-gradient(ellipse at 50% 50%,rgba(46,40,34,.45) 0,rgba(10,9,8,.95) 100%),repeating-linear-gradient(135deg,rgba(255,255,255,.012) 0,rgba(255,255,255,.012) 2px,transparent 2px,transparent 8px);color:#dcd6cc;font-family:Cinzel,"Noto Serif TC",PMingLiU,Georgia,serif}.custom-scrollbar::-webkit-scrollbar{display:none}.custom-scrollbar{-ms-overflow-style:none;scrollbar-width:none}:root{--bs-cardback-svg:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 280'%3E%3Crect width='200' height='280' rx='13' fill='%23040404'/%3E%3Cg fill='none' stroke='%23dcdcdc' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4.5' y='4.5' width='191' height='271' rx='10' stroke-width='2.6'/%3E%3Crect x='11' y='11' width='178' height='258' rx='7' stroke-width='1.1' stroke-opacity='0.6'/%3E%3Cpath d='M5 42 C18 16,48 6,86 14 C122 22,152 6,195 26' stroke-width='3'/%3E%3Cpath d='M10 26 C32 6,76 22,118 10 C152 2,178 14,190 38' stroke-width='1.8'/%3E%3Cpath d='M5 238 C18 264,48 274,86 266 C122 258,152 274,195 254' stroke-width='3'/%3E%3Cpath d='M10 254 C32 274,76 258,118 270 C152 278,178 266,190 242' stroke-width='1.8'/%3E%3Cpath d='M14 5 C4 36,20 82,8 138 C-2 184,18 232,10 275' stroke-width='2.8'/%3E%3Cpath d='M6 28 C22 68,4 114,16 156 C24 192,6 226,18 262' stroke-width='1.5'/%3E%3Cpath d='M186 5 C196 36,180 82,192 138 C202 184,182 232,190 275' stroke-width='2.8'/%3E%3Cpath d='M194 28 C178 68,196 114,184 156 C176 192,194 226,182 262' stroke-width='1.5'/%3E%3Cpath d='M8 46 C26 42,34 24,22 14 C14 8,6 18,16 28' stroke-width='2.2'/%3E%3Cpath d='M192 46 C174 42,166 24,178 14 C186 8,194 18,184 28' stroke-width='2.2'/%3E%3Cpath d='M8 234 C26 238,34 256,22 266 C14 272,6 262,16 252' stroke-width='2.2'/%3E%3Cpath d='M192 234 C174 238,166 256,178 266 C186 272,194 262,184 252' stroke-width='2.2'/%3E%3C/g%3E%3Cg transform='translate(100,128)'%3E%3Cg stroke='%23d4d4d4' stroke-width='1.35' opacity='0.88'%3E%3Cline x1='0' y1='-96' x2='0' y2='96'/%3E%3Cline x1='-74' y1='-74' x2='74' y2='74'/%3E%3Cline x1='74' y1='-74' x2='-74' y2='74'/%3E%3Cline x1='-38' y1='-90' x2='38' y2='90'/%3E%3Cline x1='38' y1='-90' x2='-38' y2='90'/%3E%3Cline x1='-86' y1='-36' x2='86' y2='36'/%3E%3Cline x1='86' y1='-36' x2='-86' y2='36'/%3E%3Cline x1='-20' y1='-93' x2='20' y2='93' stroke-width='0.8'/%3E%3Cline x1='20' y1='-93' x2='-20' y2='93' stroke-width='0.8'/%3E%3Cline x1='-58' y1='-82' x2='58' y2='82' stroke-width='0.8'/%3E%3Cline x1='58' y1='-82' x2='-58' y2='82' stroke-width='0.8'/%3E%3C/g%3E%3Cpolygon points='0,-84 4,-26 0,-18 -4,-26' fill='%23dcdcdc'/%3E%3Cpolygon points='0,84 4,26 0,18 -4,26' fill='%23dcdcdc'/%3E%3Cpolygon points='-64,-64 -18,-22 -14,-14 -22,-18' fill='%23dcdcdc'/%3E%3Cpolygon points='64,-64 18,-22 14,-14 22,-18' fill='%23dcdcdc'/%3E%3Cpolygon points='-64,64 -18,22 -14,14 -22,18' fill='%23dcdcdc'/%3E%3Cpolygon points='64,64 18,22 14,14 22,18' fill='%23dcdcdc'/%3E%3Cpolygon points='-32,-78 -10,-26 -6,-20 -14,-24' fill='%23dcdcdc'/%3E%3Cpolygon points='32,-78 10,-26 6,-20 14,-24' fill='%23dcdcdc'/%3E%3Cpolygon points='-32,78 -10,26 -6,20 -14,24' fill='%23dcdcdc'/%3E%3Cpolygon points='32,78 10,26 6,20 14,24' fill='%23dcdcdc'/%3E%3Ccircle r='50' fill='none' stroke='%23dcdcdc' stroke-width='1.8' stroke-dasharray='7 4'/%3E%3Ccircle r='40' fill='%23050505' stroke='%23e5e5e5' stroke-width='2.2'/%3E%3Cpath d='M-46,-18 C-62,-32 -32,-58 -12,-42 C2,-58 36,-54 26,-32 C52,-38 62,-8 40,8 C58,26 32,52 12,38 C-4,56 -38,50 -28,28 C-54,32 -60,4 -46,-18 Z' fill='none' stroke='%23dcdcdc' stroke-width='2'/%3E%3Cellipse cx='-4' cy='0' rx='46' ry='33' fill='%23050505' stroke='%23ececec' stroke-width='3.8'/%3E%3Cellipse cx='-4' cy='0' rx='41' ry='28' fill='%23050505' stroke='%23888888' stroke-width='1.1'/%3E%3Ctext x='-7' y='17' text-anchor='middle' font-family='Georgia,Times New Roman,serif' font-size='50' font-weight='900' font-style='italic' fill='%23e8e8e8' stroke='%23050505' stroke-width='1.5' letter-spacing='-3'%3EBS%3C/text%3E%3C/g%3E%3Ctext x='100' y='244' text-anchor='middle' font-family='Georgia,Times New Roman,serif' font-size='23' font-weight='900' font-style='italic' fill='%23e2e2e2' letter-spacing='0.6'%3EBattle Spirits%3C/text%3E%3C/svg%3E")}.zone{min-height:100px;background-color:rgba(10,9,8,.18);border:1px solid rgba(186,158,108,.34);border-radius:3px;position:relative;transition:background-color .2s ease,border-color .2s ease,box-shadow .2s ease}.field-zone{background:0 0!important;border:none!important;border-radius:0!important;box-shadow:none!important}.card{width:100px;height:140px;background-color:#0e0e0e;border:1px solid rgba(196,168,118,.55);border-radius:3.5px;display:flex;justify-content:center;align-items:center;cursor:grab;position:absolute;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease,opacity .15s;box-shadow:0 6px 16px rgba(0,0,0,.85),0 1px 3px rgba(0,0,0,.7);background-size:cover;background-position:center;background-repeat:no-repeat;image-rendering:-webkit-optimize-contrast;transform-origin:center center;color:#a89f91;font-size:10px;font-weight:700;overflow:visible}body.mobile-mode .card{touch-action:none}.card:active{cursor:grabbing;box-shadow:0 14px 30px rgba(0,0,0,.95);z-index:1000!important}.card.has-soul-core{border:2px solid #f87171!important;box-shadow:0 0 12px 3px rgba(239,68,68,.95),0 0 24px 6px rgba(185,28,28,.65),inset 0 0 10px rgba(252,165,165,.55)!important}.card.face-down{background-image:var(--bs-cardback-svg)!important;background-size:100% 100%!important;background-position:center!important;background-color:#050505!important;border:1px solid rgba(220,220,220,.65)!important;box-shadow:0 6px 14px rgba(0,0,0,.85)}.card.face-down::after{content:none!important}.card-controls{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) translateY(90px);display:none;align-items:center;gap:5px;background:rgba(10,9,8,.76);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);padding:3px 7px;border-radius:4px;border:1px solid rgba(186,158,108,.55);box-shadow:0 4px 12px rgba(0,0,0,.8);z-index:60;white-space:nowrap;pointer-events:auto}.field-zone .card .card-controls{display:flex!important;opacity:1!important;visibility:visible!important}.field-bottom-left-dock{position:absolute;left:10px;bottom:10px;top:auto;display:flex;flex-direction:row;align-items:flex-end;gap:10px;max-width:calc(100% - 20px);z-index:25;pointer-events:none}.opponent-field-top .field-bottom-left-dock{bottom:auto;top:10px;left:auto;right:10px;flex-direction:row-reverse;align-items:flex-start}.opponent-main-area>.side-col-left{grid-column:3;grid-row:1;flex-direction:column-reverse}.opponent-main-area>.field-zone{grid-column:2;grid-row:1}.opponent-main-area>.side-col-right{grid-column:1;grid-row:1;flex-direction:column-reverse}.god-zone-wrapper,.openhand-zone-wrapper{pointer-events:auto;width:max-content;max-width:100%;flex-shrink:0;background:rgba(12,11,10,.28);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);border:1px solid rgba(186,158,108,.42);border-radius:3px;padding:5px 8px;display:inline-flex;flex-direction:column;box-shadow:0 4px 14px rgba(0,0,0,.45);transition:border-color .2s,background-color .2s,box-shadow .2s;box-sizing:border-box}.god-zone-wrapper.drag-over,.openhand-zone-wrapper.drag-over{background-color:rgba(176,148,102,.18)!important;border-color:rgba(235,205,145,.85)!important}.god-zone,.openhand-zone{display:inline-flex;flex-direction:row;flex-wrap:nowrap;align-items:center;gap:10px;width:max-content;min-width:112px;min-height:152px;padding:6px 8px;overflow:visible;background:rgba(10,9,8,.18);border:1px solid rgba(186,158,108,.25);border-radius:3px;position:relative;box-sizing:border-box}.openhand-zone{gap:0!important;padding:6px 10px!important}.openhand-zone .card+.card{margin-left:-52px!important}.god-zone.has-cards{padding-bottom:36px}.openhand-zone.has-cards{padding-bottom:6px}.god-zone .card,.openhand-zone .card{position:relative!important;left:auto!important;top:auto!important;flex-shrink:0;margin:0}.field-zone .god-zone .card .card-controls,.god-zone .card .card-controls{display:flex!important;opacity:1!important;visibility:visible!important;border-color:rgba(255,255,255,.18)}.field-zone .card .card-core-pill,.god-zone .card .card-core-pill{cursor:grab;user-select:none;-webkit-user-select:none;touch-action:none;border-radius:2px;transition:background-color .15s,transform .15s}.field-zone .card .card-core-pill:hover,.god-zone .card .card-core-pill:hover{background-color:rgba(56,189,248,.25);transform:scale(1.08)}.field-zone .card .card-core-pill:active,.god-zone .card .card-core-pill:active{cursor:grabbing}.god-zone .card .card-soul-btn{display:none!important}.field-zone .openhand-zone .card .card-controls,.openhand-zone .card .card-controls{display:none!important}.card-btn{background:rgba(24,22,19,.95);color:#e2dacd;border:1px solid rgba(176,148,102,.5);border-radius:2px;width:19px;height:19px;font-size:12px;font-weight:700;display:flex;justify-content:center;align-items:center;cursor:pointer;padding:0;line-height:1;flex-shrink:0;transition:background .15s,color .15s,border-color .15s}.card-btn:hover{background:#d4b886;color:#000;border-color:#fff}.card-btn.soul-active{width:20px;height:20px;clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0% 50%);background:linear-gradient(135deg,#fff 0,#cbd5e1 45%,#64748b 100%)!important;border:none!important;border-radius:0!important;color:transparent!important;font-size:0!important;position:relative;filter:drop-shadow(0 0 6px rgba(239,68,68,.95));box-shadow:none!important}.card-btn.soul-active::after{content:"";position:absolute;inset:3.5px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fecaca 0,#ef4444 45%,#7f1d1d 100%);box-shadow:inset 0 0 3px #fff;pointer-events:none}.card-core-pill{display:flex;align-items:center;gap:4px;padding:1px 5px;background:rgba(255,255,255,.03);border:1px solid rgba(56,189,248,.25)}.card-core-dot,.physical-core-gem{width:17px;height:17px;display:inline-block;position:relative;clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0% 50%);background:radial-gradient(circle at 35% 30%,#fff 0,#bae6fd 22%,#38bdf8 52%,#0284c7 82%,#0c4a6e 100%);box-shadow:inset 0 0 4px rgba(255,255,255,.9);filter:drop-shadow(0 0 4px rgba(56,189,248,.75));flex-shrink:0;transition:transform .12s ease,filter .12s ease}.card-core-dot::after,.physical-core-gem::after{content:"";position:absolute;inset:3px;clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0% 50%);background:linear-gradient(135deg,rgba(255,255,255,.85) 0,rgba(125,211,252,.25) 55%,rgba(2,132,199,.6) 100%);pointer-events:none}.card-core-dot{width:14px;height:14px}.physical-core-gem.interactive-core{cursor:pointer}.physical-core-gem.interactive-core:hover{transform:scale(1.22);filter:drop-shadow(0 0 8px rgba(125,211,252,1))}.core-gem-tray{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:5px;min-height:24px;padding:3px 4px;margin-top:2px}.card-cores{color:#f8fafc;font-size:13px;font-weight:900;min-width:14px;text-align:center;text-shadow:1px 1px 2px #000}.soul-core-token{width:19px;height:19px;clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0% 50%);font-size:0px;display:inline-flex;align-items:center;justify-content:center;cursor:grab;user-select:none;-webkit-user-select:none;touch-action:none;position:relative;transition:transform .15s,filter .15s;z-index:40;background:linear-gradient(135deg,#fff 0,#cbd5e1 45%,#64748b 100%);filter:drop-shadow(0 0 6px rgba(239,68,68,.9))}.soul-core-token::after{content:"";position:absolute;inset:3.5px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#fecaca 0,#ef4444 45%,#7f1d1d 100%);box-shadow:inset 0 0 3px #fff}.soul-core-token:hover{transform:scale(1.22);filter:drop-shadow(0 0 10px rgba(248,113,113,1))}.soul-core-token:active{cursor:grabbing}.soul-core-slot-empty{width:17px;height:17px;clip-path:polygon(25% 5%,75% 5%,100% 50%,75% 95%,25% 95%,0% 50%);background:rgba(255,255,255,.08);color:rgba(255,255,255,.35);font-size:8px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:all .15s}.soul-core-slot-empty:hover{background:rgba(239,68,68,.45);color:#fff;transform:scale(1.15)}.counter-box{border:1px solid rgba(186,158,108,.42);border-radius:3px;padding:5px 7px;text-align:center;background:rgba(12,11,10,.24);box-shadow:inset 0 0 10px rgba(0,0,0,.28);transition:border-color .2s,box-shadow .2s,background-color .2s;transform:translateZ(0);backface-visibility:hidden}.counter-title{font-size:11px;color:#d8ccb8;font-weight:700;letter-spacing:.1em;margin-bottom:2px;text-transform:uppercase;text-align:center;text-shadow:0 1px 3px rgba(0,0,0,.9);transform:translateZ(0)}.counter-value{font-size:15px;font-weight:900;color:#f5efe6;display:flex;align-items:center;justify-content:center;gap:8px;transform:translateZ(0)}.counter-btn{background:rgba(255,255,255,.05);color:#d6cbb9;border:1px solid rgba(176,148,102,.45);border-radius:1px;width:16px;height:16px;display:flex;justify-content:center;align-items:center;cursor:pointer;font-size:11px;line-height:1;transition:all .15s ease}.counter-btn:hover{background:#c8aa76;color:#090a0f;border-color:#fff}.action-btn{font-size:8.5px;border:1px solid rgba(176,148,102,.38);border-radius:1px;padding:3px 5px;background:rgba(16,15,14,.85);color:#d6cbb9;cursor:pointer;text-transform:uppercase;font-weight:700;letter-spacing:.06em;width:100%;margin-top:2px;transition:all .15s ease}.action-btn:hover{background:rgba(196,164,108,.9);color:#090a0f;border-color:#fff}.small-action-btn{font-size:7.5px;font-weight:700;border:1px solid rgba(176,148,102,.38);border-radius:1px;padding:1px 4px;background:rgba(12,12,12,.85);color:#bfb39e;cursor:pointer;position:absolute;top:3px;right:4px;transition:all .15s ease}.small-action-btn:hover{background:rgba(196,164,108,.85);border-color:#fff;color:#000}.highlight-action-btn{font-size:8px;font-weight:900;padding:1.5px 5px;border-radius:1px;cursor:pointer;position:absolute;top:3px;right:4px;letter-spacing:.5px;transition:all .18s ease;text-transform:uppercase}.btn-take-life{background:rgba(127,29,29,.65);border:1px solid rgba(248,113,113,.55);color:#fecaca}.btn-take-life:hover{background:#dc2626;color:#fff;border-color:#fff}.btn-pay-cost{background:rgba(12,74,110,.65);border:1px solid rgba(56,189,248,.55);color:#bae6fd}.btn-pay-cost:hover{background:#0284c7;color:#fff;border-color:#fff}.btn-refresh-state{background:rgba(6,78,59,.7);border:1px solid rgba(52,211,153,.55);color:#a7f3d0;border-radius:1px;transition:all .18s ease}.btn-refresh-state:hover{background:#10b981;color:#050608;border-color:#fff}
 /* #endregion */
@@ -367,7 +367,7 @@ body:not(.mobile-mode) #life-box-p1 .counter-value,body:not(.mobile-mode) #life-
 <header id="main-top-header" class="flex flex-wrap justify-between items-center bg-[#0a0a0a]/90 border border-[#b09466]/40 rounded-sm py-1.5 px-3 flex-none gap-x-2 gap-y-1.5 shadow-lg transition-all duration-200">
 <div class="header-brand-row flex items-center gap-2 flex-shrink-0">
 <div class="relative text-sm sm:text-base font-black tracking-wider text-[#e5dccb] flex items-center gap-1.5 whitespace-nowrap">
-<span id="bs-brand-title-text" class="cursor-pointer hover:text-[#e0b25b] transition-colors" onclick="openChangelogModal()" title="點擊查看更新日誌">BS v7.4.3.28</span>
+<span id="bs-brand-title-text" class="cursor-pointer hover:text-[#e0b25b] transition-colors" onclick="openChangelogModal()" title="點擊查看更新日誌">BS v7.4.3.29</span>
 <button id="btn-changelog" type="button" class="text-[10px] sm:text-xs bg-black/70 border border-[#b09466]/50 hover:bg-[#c8aa76] hover:text-black text-[#e0b25b] px-1.5 py-0.5 rounded-sm cursor-pointer transition-colors leading-none font-bold" onclick="openChangelogModal()" title="查看版本更新日誌">📜 日誌</button>
 <button id="btn-version-gear" type="button" class="text-xs bg-black/70 border border-[#b09466]/50 hover:bg-[#c8aa76] hover:text-black text-[#e0b25b] px-1.5 py-0.5 rounded-sm cursor-pointer transition-colors leading-none" onclick="toggleVersionGearMenu(event)" title="點擊調整版本號數字">⚙️</button>
 <div id="bs-version-gear-menu" class="hidden absolute left-0 top-full mt-1.5 z-[12500] bg-[#0d0c0b]/95 border border-[#c8aa76] rounded-sm shadow-2xl p-2 flex items-center gap-1.5">
@@ -399,7 +399,7 @@ body:not(.mobile-mode) #life-box-p1 .counter-value,body:not(.mobile-mode) #life-
 <span class="text-[10px] sm:text-[11px] text-[#c8bea8] font-bold whitespace-nowrap" title="調整放大預覽卡片的顯示尺寸">🔍 預覽</span> <input id="preview-scale-slider" type="range" min="50" max="160" value="100" class="w-12 sm:w-16 h-1 bg-stone-700 rounded-none appearance-none cursor-pointer accent-[#c8aa76]" oninput="changePreviewCardScale(this.value)" title="拉動放大或縮細預覽卡片尺寸 (50% ~ 160%)"> <span id="preview-scale-label" class="text-[9px] sm:text-[10px] text-[#c8bea8] font-bold min-w-[28px] text-right">100%</span> <button type="button" class="text-[9px] sm:text-[10px] border border-[#b09466]/45 bg-white/5 hover:bg-[#c8aa76] hover:text-black text-[#e0b25b] px-1.5 py-0.5 rounded-sm font-bold cursor-pointer transition-colors leading-none whitespace-nowrap" onclick="changePreviewCardScale(100)" title="重設為預設 100% 預覽尺寸">預設</button>
 </div>
 <div class="header-main-actions flex items-center gap-1 flex-shrink-0">
-<input type="file" id="upload-cardback-input" accept="image/*" class="hidden" onchange="uploadCustomCardBack(event)"> <button id="btn-custom-cardback" class="phone-drawer-btn text-[10px] sm:text-xs bg-black/70 border border-[#b09466]/45 px-2 py-0.5 sm:py-1 rounded-sm text-[#e0b25b] hover:bg-[#c8aa76] hover:text-black font-bold cursor-pointer transition-all whitespace-nowrap" onclick='document.getElementById("upload-cardback-input").click()' title="上傳你自己的 BS 卡背圖片">🖼️ 卡背</button> <button id="btn-top-lottery" class="phone-drawer-btn text-[10px] sm:text-xs bg-black/70 border border-[#b09466]/45 px-2 py-0.5 sm:py-1 rounded-sm text-[#e0b25b] hover:bg-[#c8aa76] hover:text-black font-bold cursor-pointer transition-all whitespace-nowrap" onclick="startPlayerLottery()" title="隨機抽籤決定先攻">🎲 抽籤</button> <button id="btn-reset" class="phone-drawer-btn text-[10px] sm:text-xs bg-rose-950/50 border border-rose-500/45 px-2.5 py-0.5 sm:py-1 rounded-sm text-rose-300 hover:bg-rose-700 hover:text-white font-bold cursor-pointer transition-all whitespace-nowrap" onclick="openResetModal()" title="重設場上所有卡片與 Core 至初始狀態 (保留牌組)">RESET</button> <button id="btn-sync" class="text-[10px] sm:text-xs bg-emerald-950/50 border border-emerald-500/45 px-2.5 py-0.5 sm:py-1 rounded-sm text-emerald-300 hover:bg-emerald-600 hover:text-black font-bold cursor-pointer transition-all whitespace-nowrap" onclick="openMultiplayerModal()">ONLINE SYNC</button> <button type="button" id="btn-open-card-pool" onclick="openCardDatabase()" class="phone-drawer-btn text-[10px] sm:text-xs bg-black/70 border border-[#b09466]/45 px-2 py-1 text-[#e0b25b] font-bold inline-flex items-center gap-1"><span>📚 卡池</span><span id="top-catalog-eff-ver" class="hidden text-[9px] px-1 py-0 rounded-sm bg-sky-950/90 border border-sky-400/60 text-sky-200 font-black leading-tight"></span></button> <button type="button" id="btn-manual-fallback-toggle" onclick="toggleManualFallbackMode()" class="phone-drawer-btn text-[10px] sm:text-xs bg-emerald-950/60 border border-emerald-500/55 hover:bg-emerald-500 hover:text-black px-2 py-0.5 sm:py-1 rounded-sm text-emerald-200 font-black cursor-pointer transition-all whitespace-nowrap" title="切換純全自動模式（預設 OFF）或手動結算兜底提示模式（ON：遇到未編譯或缺漏機制卡時在邊角顯示不卡操作提醒）">🤖 純全自動</button> <button type="button" id="btn-main-quick-capture" onclick="BSAutoVerifyHub.openQuickCapture()" class="phone-drawer-btn text-[10px] sm:text-xs bg-amber-950/60 border border-[#d4b16a]/70 hover:bg-[#d4b16a] hover:text-black px-2 py-0.5 sm:py-1 rounded-sm text-[#f4dfb0] font-black cursor-pointer whitespace-nowrap" title="一鍵抓取當前戰場純文字快照（自動開啟快速回報抽屜）">📸 抓異常</button> <button type="button" id="btn-open-effect-editor" onclick="openEffectEditor()" class="phone-drawer-btn text-[10px] sm:text-xs bg-violet-950/60 border border-violet-400/60 hover:bg-violet-400 hover:text-black px-2 py-0.5 sm:py-1 rounded-sm text-violet-200 font-black cursor-pointer transition-all whitespace-nowrap inline-flex items-center gap-1" title="開啟自定義可視化效果編輯器：完全自定義編輯任何卡牌 AST 並自動導出修改比較檔"><span>🛠️ 效果編輯</span><span id="effect-editor-diff-badge" class="hidden text-[9px] px-1 py-0 rounded-sm bg-amber-400 text-black font-black leading-tight">0</span></button> <button id="btn-deck-vault" class="text-[10px] sm:text-xs bg-amber-950/50 border border-[#c8aa76]/60 px-2.5 py-0.5 sm:py-1 rounded-sm text-[#e0b25b] hover:bg-[#c8aa76] hover:text-black font-bold cursor-pointer transition-all whitespace-nowrap" onclick="openDeckVaultModal()" title="查看、編輯卡片張數或載入已儲存的牌組">🗂️ 卡組庫</button>
+<input type="file" id="upload-cardback-input" accept="image/*" class="hidden" onchange="uploadCustomCardBack(event)"> <button id="btn-custom-cardback" class="phone-drawer-btn text-[10px] sm:text-xs bg-black/70 border border-[#b09466]/45 px-2 py-0.5 sm:py-1 rounded-sm text-[#e0b25b] hover:bg-[#c8aa76] hover:text-black font-bold cursor-pointer transition-all whitespace-nowrap" onclick='document.getElementById("upload-cardback-input").click()' title="上傳你自己的 BS 卡背圖片">🖼️ 卡背</button> <button id="btn-top-lottery" class="phone-drawer-btn text-[10px] sm:text-xs bg-black/70 border border-[#b09466]/45 px-2 py-0.5 sm:py-1 rounded-sm text-[#e0b25b] hover:bg-[#c8aa76] hover:text-black font-bold cursor-pointer transition-all whitespace-nowrap" onclick="startPlayerLottery()" title="隨機抽籤決定先攻">🎲 抽籤</button> <button id="btn-reset" class="phone-drawer-btn text-[10px] sm:text-xs bg-rose-950/50 border border-rose-500/45 px-2.5 py-0.5 sm:py-1 rounded-sm text-rose-300 hover:bg-rose-700 hover:text-white font-bold cursor-pointer transition-all whitespace-nowrap" onclick="openResetModal()" title="重設場上所有卡片與 Core 至初始狀態 (保留牌組)">RESET</button> <button id="btn-sync" class="text-[10px] sm:text-xs bg-emerald-950/50 border border-emerald-500/45 px-2.5 py-0.5 sm:py-1 rounded-sm text-emerald-300 hover:bg-emerald-600 hover:text-black font-bold cursor-pointer transition-all whitespace-nowrap" onclick="openMultiplayerModal()">ONLINE SYNC</button> <button type="button" id="btn-open-card-pool" onclick="openCardDatabase()" class="phone-drawer-btn text-[10px] sm:text-xs bg-black/70 border border-[#b09466]/45 px-2 py-1 text-[#e0b25b] font-bold inline-flex items-center gap-1"><span>📚 卡池</span><span id="top-catalog-eff-ver" class="hidden text-[9px] px-1 py-0 rounded-sm bg-sky-950/90 border border-sky-400/60 text-sky-200 font-black leading-tight"></span></button> <button type="button" id="btn-full-manual-toggle" aria-pressed="false" onclick="toggleFullManualMode()" class="phone-drawer-btn text-[10px] sm:text-xs bg-black/70 border border-[#b09466]/45 px-2 py-0.5 sm:py-1 rounded-sm text-[#e8decb] font-black cursor-pointer transition-all whitespace-nowrap" title="切換「完全手動模式」：擺卡上場／創界神／幻境／合體全部免付費，不觸發自動效果與創界神神託自動加 Core，純手動旋轉與階段操作">🖐️ 完全手動: OFF</button> <button type="button" id="btn-manual-fallback-toggle" onclick="toggleManualFallbackMode()" class="phone-drawer-btn text-[10px] sm:text-xs bg-emerald-950/60 border border-emerald-500/55 hover:bg-emerald-500 hover:text-black px-2 py-0.5 sm:py-1 rounded-sm text-emerald-200 font-black cursor-pointer transition-all whitespace-nowrap" title="切換純全自動模式（預設 OFF）或手動結算兜底提示模式（ON：遇到未編譯或缺漏機制卡時在邊角顯示不卡操作提醒）">🤖 純全自動</button> <button type="button" id="btn-main-quick-capture" onclick="BSAutoVerifyHub.openQuickCapture()" class="phone-drawer-btn text-[10px] sm:text-xs bg-amber-950/60 border border-[#d4b16a]/70 hover:bg-[#d4b16a] hover:text-black px-2 py-0.5 sm:py-1 rounded-sm text-[#f4dfb0] font-black cursor-pointer whitespace-nowrap" title="一鍵抓取當前戰場純文字快照（自動開啟快速回報抽屜）">📸 抓異常</button> <button type="button" id="btn-open-effect-editor" onclick="openEffectEditor()" class="phone-drawer-btn text-[10px] sm:text-xs bg-violet-950/60 border border-violet-400/60 hover:bg-violet-400 hover:text-black px-2 py-0.5 sm:py-1 rounded-sm text-violet-200 font-black cursor-pointer transition-all whitespace-nowrap inline-flex items-center gap-1" title="開啟自定義可視化效果編輯器：完全自定義編輯任何卡牌 AST 並自動導出修改比較檔"><span>🛠️ 效果編輯</span><span id="effect-editor-diff-badge" class="hidden text-[9px] px-1 py-0 rounded-sm bg-amber-400 text-black font-black leading-tight">0</span></button> <button id="btn-deck-vault" class="text-[10px] sm:text-xs bg-amber-950/50 border border-[#c8aa76]/60 px-2.5 py-0.5 sm:py-1 rounded-sm text-[#e0b25b] hover:bg-[#c8aa76] hover:text-black font-bold cursor-pointer transition-all whitespace-nowrap" onclick="openDeckVaultModal()" title="查看、編輯卡片張數或載入已儲存的牌組">🗂️ 卡組庫</button>
 </div>
 <div class="header-seat-actions flex items-center gap-1 flex-shrink-0">
 <div class="flex items-center bg-black/70 p-0.5 rounded-sm border border-[#b09466]/35">
@@ -897,6 +897,52 @@ p1:"",p2:""
 },viewMode:"SPECTATOR"
 };
 let controlMode="PC",deviceMode="PC",activePreviewCardId=null,activePreviewTargetEl=null,previewCardScale=1,isBottomHandPinned=!0;
+const FULL_MANUAL_STORAGE_KEY="bs_full_manual_mode_v1";
+let fullManualMode=(()=>{try{return localStorage.getItem(FULL_MANUAL_STORAGE_KEY)==="1"}catch(e){return !1}})();
+window.isFullManualMode=function(){return Boolean(fullManualMode)};
+function syncFullManualModeUI(){
+  if(document.body)document.body.classList.toggle("bs-full-manual-mode",fullManualMode);
+  const btn=document.getElementById("btn-full-manual-toggle");
+  if(btn){
+    btn.textContent=fullManualMode?"🖐️ 完全手動: ON":"🖐️ 完全手動: OFF";
+    btn.setAttribute("aria-pressed",fullManualMode?"true":"false");
+    btn.classList.toggle("is-active",fullManualMode);
+  }
+}
+window.setFullManualMode=function(enabled,opts={}){
+  fullManualMode=Boolean(enabled);
+  try{localStorage.setItem(FULL_MANUAL_STORAGE_KEY,fullManualMode?"1":"0")}catch(e){}
+  if(fullManualMode){
+    window.BSGameBus&&typeof window.BSGameBus.resetAll==="function"&&window.BSGameBus.resetAll();
+    typeof window.cancelPlayPayment==="function"&&window.cancelPlayPayment();
+    typeof window.closePlayPayConfirmModal==="function"&&window.closePlayPayConfirmModal();
+    typeof window.cancelMagicPayment==="function"&&window.cancelMagicPayment();
+    typeof window.closeOracleTriggerConfirm==="function"&&window.closeOracleTriggerConfirm();
+    typeof window.closeOracleHandConfirm==="function"&&window.closeOracleHandConfirm();
+    typeof window.closeAdventConfirmModal==="function"&&window.closeAdventConfirmModal();
+    typeof window.cancelManifestSelection==="function"&&window.cancelManifestSelection();
+    typeof window.closeSoulStateConfirmModal==="function"&&window.closeSoulStateConfirmModal();
+    typeof closeGodConfirmModal==="function"&&closeGodConfirmModal();
+    typeof window.clearAllReadyBursts==="function"&&window.clearAllReadyBursts();
+    typeof window.clearAllManualFallbackReminders==="function"&&window.clearAllManualFallbackReminders();
+    gameState.activeBattle=null;
+    gameState.pendingHandPick=null;
+    Object.values(gameState.cards).forEach(c=>{if(c&&c.battleState)c.battleState=""});
+  }
+  syncFullManualModeUI();
+  if(!opts?.skipUI&&typeof updateAllUI==="function")updateAllUI();
+  return fullManualMode;
+};
+window.toggleFullManualMode=function(){
+  const next=window.setFullManualMode(!fullManualMode);
+  if(!window.__bsSandboxSilent&&typeof showNotice==="function"){
+    showNotice(next
+      ?"🖐️ 已開啟「完全手動模式：ON」：擺卡上場／創界神／幻境／合體全部免付費，停用所有自動效果、神託加 Core 與自動階段，純手動操作桌面。"
+      :"🤖 已關閉「完全手動模式：OFF」：已恢復全自動規則引擎、出牌支付與神託系統。");
+  }
+  return next;
+};
+syncFullManualModeUI();
 const cardImageCache= {
 },cardHighResCache= {
 };
@@ -3233,6 +3279,10 @@ if(!o||!o.zone||o.isSoulState)return;
 if(!o.zone.startsWith("field-")&&!o.zone.startsWith("zone-god-"))return;
 const deg=((Number(o.rotation||0)%360)+360)%360;
 if(o.zone.startsWith("field-")) {
+if(window.isFullManualMode&&window.isFullManualMode()) {
+o.battleState="";
+o.rotation=t?Math.min(180,deg+90):Math.max(0,deg-90);
+} else {
 const curPh=gameState.currentPhase||"START";
 const activeTurn=gameState.activeTurnPlayer||"p1";
 const ab=gameState.activeBattle;
@@ -3287,6 +3337,7 @@ return;
 }
 o.battleState="";
 o.rotation=deg>=180?90:0;
+}
 }
 } else {
 o.rotation=t?Math.min(180,deg+90):Math.max(0,deg-90);
@@ -3582,6 +3633,12 @@ const r=n?n.querySelector(".card-controls")||n:e;
 t>0?playCoreTransferAnimation(`reserve-box-${a}`,r,null,"cost",t):t<0&&playCoreTransferAnimation(r,`reserve-box-${a}`,null,"cost",Math.abs(t)),triggerCardCoreFlash(e,t),triggerCounterKeyFlash(`${a}_reserve`,-t),updateAllUI(),updateRoomState()
 }
 function triggerGodZoneConfirmForCard(e,t) {
+if(window.isFullManualMode&&window.isFullManualMode()) {
+if(e&&gameState.cards[e]&&gameState.cards[e].zone!==`zone-god-${t}`) {
+toggleGodZone(t,!0),moveCardToZone(e,`zone-god-${t}`);
+}
+return;
+}
 e&&gameState.cards[e]&&gameState.cards[e].zone!==`zone-god-${t}`&&(pendingGodDrop= {
 cardId:e,player:t
 },document.getElementById("god-confirm-modal")?.classList.remove("hidden"),document.getElementById("btn-god-confirm-yes").onclick=()=> {
@@ -6117,10 +6174,10 @@ hideCardPreview();
 updateAllUI();
 announceCardFlash(card.id,['#ffffff']);
 updateRoomState();
-if (isSummon && typeof window.checkFieldSummonOracle === "function") {
+if (isSummon && !(window.isFullManualMode && window.isFullManualMode()) && typeof window.checkFieldSummonOracle === "function") {
 setTimeout(() => window.checkFieldSummonOracle(card.owner, card), 120);
 }
-if (isSummon && typeof window.triggerCardEffects === "function") {
+if (isSummon && !(window.isFullManualMode && window.isFullManualMode()) && typeof window.triggerCardEffects === "function") {
 setTimeout(() => window.triggerCardEffects(card.id, "ON_SUMMON"), 260);
 }
 return true;
@@ -6129,7 +6186,7 @@ function combineBrave(cardId, hostId) {
 const card = gameState.cards[cardId], host = gameState.cards[hostId];
 if (!canCombineBrave(card, host)) return false;
 const fromHand = /^(hand-|zone-openhand-)/.test(card.zone || "");
-if (fromHand && typeof window.isPlayPaymentEnabled === "function" && window.isPlayPaymentEnabled() && !window.__bsBypassPlayPayment && typeof window.promptCustomPlayPayment === "function") {
+if (fromHand && !(window.isFullManualMode && window.isFullManualMode()) && typeof window.isPlayPaymentEnabled === "function" && window.isPlayPaymentEnabled() && !window.__bsBypassPlayPayment && typeof window.promptCustomPlayPayment === "function") {
 const data = lookupCatalog(card);
 if (data && data.cost != null && data.cost !== "") {
 window.promptCustomPlayPayment(cardId, host.zone, { __braveCombineHostId: hostId }, {
@@ -6957,6 +7014,7 @@ const host = gameState.cards[loc];
 return Boolean(host && host.owner === owner && host.zone === `field-${owner}`);
 }
 function promptAdventConfirm(cardId, targetId) {
+if (window.isFullManualMode && window.isFullManualMode()) return false;
 const card = gameState.cards[cardId];
 const target = gameState.cards[targetId];
 if (!canAdventBasic(card, target)) return false;
@@ -7176,7 +7234,7 @@ const colors = typeof attributeFlashColors === "function"
 : ["#ffffff"];
 announceAdventExplosion(card.id, colors);
 updateRoomState();
-if (typeof window.triggerCardEffects === "function" && !window.__bsSandboxSilent) {
+if (typeof window.triggerCardEffects === "function" && !window.__bsSandboxSilent && !(window.isFullManualMode && window.isFullManualMode())) {
 setTimeout(() => window.triggerCardEffects(card.id, "ON_ADVENT"), 340);
 }
 return true;
@@ -7665,7 +7723,7 @@ if (!el) return;
 const isInGodZone = !!(card && card.zone?.startsWith("zone-god-") && !card.isFaceDown && isGrandwalkerCard(card));
 let skillWrap = el.querySelector(":scope > .mini-god-skill-wrap");
 let levelBadge = el.querySelector(":scope > .card-level-badge");
-if (!isInGodZone) {
+if (!isInGodZone || (window.isFullManualMode && window.isFullManualMode())) {
 skillWrap?.remove();
 el.classList.remove("has-god-skills");
 levelBadge?.classList.remove("has-god-domain");
@@ -7781,7 +7839,7 @@ const row = document.getElementById("preview-action-row");
 const hintBtn = document.getElementById("card-preview-mobile-hint");
 if (!row) return;
 row.querySelectorAll(".preview-god-skill-btn").forEach(b => b.remove());
-if (controlMode === "PC" || !activePreviewCardId) return;
+if (controlMode === "PC" || !activePreviewCardId || (window.isFullManualMode && window.isFullManualMode())) return;
 const card = gameState.cards[activePreviewCardId];
 if (!card || !card.zone?.startsWith("zone-god-") || card.isFaceDown || !isGrandwalkerCard(card)) return;
 const { skills } = parseGrandwalkerAbilities(lookupCatalog(card)?.effect || "");
@@ -8338,7 +8396,7 @@ cancelManifestSelection();
 }
 });
 function updateMiniManifest(el, card) {
-const isManifest = isManifestCardInHand(card);
+const isManifest = !(window.isFullManualMode && window.isFullManualMode()) && isManifestCardInHand(card);
 el.classList.toggle("has-manifest", isManifest);
 let btn = el.querySelector(":scope > .mini-manifest-btn");
 if (isManifest) {
@@ -8394,7 +8452,7 @@ const baseSyncTurnForManifest = syncTurnPreview;
 syncTurnPreview = function () {
 baseSyncTurnForManifest();
 const card = gameState.cards[activePreviewCardId];
-const show = !!(card && isManifestCardInHand(card) && controlMode !== "PC");
+const show = !!(card && !(window.isFullManualMode && window.isFullManualMode()) && isManifestCardInHand(card) && controlMode !== "PC");
 previewManifestBtn.classList.toggle("hidden", !show);
 if (show) {
 const check = evaluateManifest(card);
@@ -9879,7 +9937,7 @@ const available = reserveTotal + fieldTotal;
 return { canExecute: !magicPaymentState && available >= actual, actual, available };
 }
 function updateMiniMagicUse(el, card) {
-const show = canUseMagicInHand(card);
+const show = !(window.isFullManualMode && window.isFullManualMode()) && canUseMagicInHand(card);
 el.classList.toggle("has-magic-use", show);
 let btn = el.querySelector(":scope > .mini-magic-use-btn");
 if (show) {
@@ -9938,7 +9996,7 @@ const baseSyncTurnForMagic = syncTurnPreview;
 syncTurnPreview = function () {
 baseSyncTurnForMagic();
 const card = gameState.cards[activePreviewCardId];
-const show = !!(canUseMagicInHand(card) && controlMode !== "PC");
+const show = !!(!(window.isFullManualMode && window.isFullManualMode()) && canUseMagicInHand(card) && controlMode !== "PC");
 previewMagicUseBtn.classList.toggle("hidden", !show);
 if (show) {
 const check = evaluateMagicCard(card);
@@ -10237,6 +10295,7 @@ pendingOracleTrigger = null;
 document.getElementById("oracle-trigger-confirm-modal")?.classList.add("hidden");
 };
 function promptOracleTrigger(owner, card) {
+if (window.isFullManualMode && window.isFullManualMode()) return;
 const deck = gameState[`${owner}Deck`];
 if (!Array.isArray(deck) || deck.length === 0) return;
 pendingOracleTrigger = { owner, cardId: card?.id || null };
@@ -10507,6 +10566,7 @@ grantOracleCoresFromSpace(godCardId, matchedIds.size);
 }
 window.checkFieldSummonOracle = checkFieldSummonOracle;
 function checkFieldSummonOracle(owner, deployedCard) {
+if (window.isFullManualMode && window.isFullManualMode()) return;
 if (!deployedCard || deployedCard.isFaceDown) return;
 const godCards = typeof getGodCards === "function" ? getGodCards(owner) : [];
 if (!godCards.length) return;
@@ -10524,6 +10584,10 @@ grantOracleCoresFromSpace(godCard.id, 1);
 卡牌左上角：即時顯示減輕後的 Cost 數字徽章（手牌與手元區）
 ========================================================================= */
 function refreshAllCardReducedCostBadges() {
+if (window.isFullManualMode && window.isFullManualMode()) {
+document.querySelectorAll(".card-reduced-cost-badge").forEach(b => b.remove());
+return;
+}
 if (typeof window.getPlayerFieldSymbols !== "function" || typeof window.calculateReducedCost !== "function") return;
 const symbolsByOwner = {
 p1: window.getPlayerFieldSymbols("p1"),
@@ -10570,6 +10634,7 @@ badge.title = calc.actual !== calc.cost
 }
 }
 BSHookRegistry.register("card:afterMove", ({ card, prevZone, targetZone }) => {
+if (window.isFullManualMode && window.isFullManualMode()) return;
 if (!isSyncing && card) {
 if (targetZone.startsWith("zone-god-") && !prevZone.startsWith("zone-god-") && isGrandwalkerNexusCard(card)) {
 const owner = targetZone.endsWith("p2") ? "p2" : "p1";
@@ -11326,6 +11391,7 @@ e.stopImmediatePropagation();
 }
 }, true);
 BSHookRegistry.register("card:beforeMove", ({ id, card, prevZone, targetZone, options }) => {
+if (window.isFullManualMode && window.isFullManualMode()) return;
 if (
 playPaymentEnabled &&
 !isSyncing &&
@@ -11345,6 +11411,7 @@ return false;
 }
 }, { id: "playPay:beforeMove", priority: 20 });
 BSHookRegistry.register("card:afterMove", ({ id, card, prevZone, targetZone, options }) => {
+if (window.isFullManualMode && window.isFullManualMode()) return;
 if (
 !isSyncing &&
 !options?.fromMagicBtn &&
@@ -12195,6 +12262,7 @@ el.animate([
 ], { duration: dur + 60, easing: "ease-out" });
 };
 BSHookRegistry.register("card:beforeMove", ({ id, card, prevZone, targetZone, options }) => {
+if (window.isFullManualMode && window.isFullManualMode()) return;
 const payOn = typeof window.isPlayPaymentEnabled === "function" ? window.isPlayPaymentEnabled() : false;
 if (
 payOn &&
@@ -12295,7 +12363,7 @@ ensureMirageFormUI();
 /* =========================================================================
 PART 1: 左上角 BS 版本號齒輪控制（語意化 major.minor：支援 3.7 -> 3.8 -> 3.9 -> 3.10 -> 3.11）
 ========================================================================= */
-const BS_DEFAULT_VERSION = "7.4.3.28";
+const BS_DEFAULT_VERSION = "7.4.3.29";
 const VER_KEY = "bs_app_version_str";
 const VER_BASE_KEY = "bs_app_version_base";
 window.BS_APP_VERSION = BS_DEFAULT_VERSION;
@@ -12524,6 +12592,7 @@ setTimeout(() => addCountWithEffect(owner, addAmt, cap, godCard.id, `✨ ${b.hea
 });
 }
 BSHookRegistry.register("card:afterMove", ({ card, prevZone, targetZone }) => {
+if (window.isFullManualMode && window.isFullManualMode()) return;
 if (!isSyncing && card && card.zone === targetZone) {
 const enteringBoard = (targetZone.startsWith("field-") || targetZone.startsWith("zone-god-")) &&
 !prevZone.startsWith("field-") && !prevZone.startsWith("zone-god-");
@@ -12608,7 +12677,7 @@ godDeployBtn.classList.add("hidden");
     <div class="changelog-header">
       <div class="flex items-center gap-2.5 flex-wrap">
         <h2 id="changelog-modal-title" class="text-base sm:text-lg font-black tracking-widest text-[#e0b25b]">📜 更新日誌 (CHANGELOG)</h2>
-        <span id="changelog-current-ver" class="text-xs font-black bg-emerald-950/80 border border-emerald-500/60 text-emerald-300 px-2 py-0.5 rounded-sm">v7.4.3.28</span>
+        <span id="changelog-current-ver" class="text-xs font-black bg-emerald-950/80 border border-emerald-500/60 text-emerald-300 px-2 py-0.5 rounded-sm">v7.4.3.29</span>
       </div>
       <button type="button" class="border border-[#b09466]/55 bg-black/70 text-[#dcd6cc] hover:bg-[#c8aa76] hover:text-black px-3 py-1 rounded-sm text-xs font-bold cursor-pointer transition-colors" onclick="closeChangelogModal()">關閉 (✕)</button>
     </div>
@@ -12622,6 +12691,17 @@ godDeployBtn.classList.add("hidden");
 版本更新日誌資料（往後每次更新 3.8、3.9、3.10、3.11… 請於陣列最上方新增物件）
 ========================================================================= */
 window.BS_CHANGELOG = [
+{
+  version: "7.4.3.29",
+  date: "2026-11-29",
+  title: "v7.4.3.29 新增「🖐️ 完全手動模式」一鍵切換（純實體桌遊沙盒：零付費擺卡、零自動效果與神託加Core、純手動旋轉）",
+  highlights: [
+    "【頂部一鍵切換「🖐️ 完全手動: OFF / ON」】預設 OFF 不影響全自動引擎，開關狀態自動記憶於瀏覽器；開啟後即時清場並切換為純實體桌遊沙盒模式。",
+    "【擺卡上場／創界神／幻境／合體完全免付費】停用出牌支付確認窗、幻境費用窗、合體扣費窗與煌臨魂Core付費攔截，拖入創界神區亦直接配置免確認，0 預備區 Core 亦可自由擺放任何卡牌。",
+    "【停用所有自動效果與創界神神託自動加 Core】全面旁路 BSGameBus（前後觸發／待機佇列）、神託翻牌彈窗、場上召喚自動加創界神 Core、契約域自動加 Count、爆裂發光提醒、契約魂狀態離場彈窗與常時／臨時 AST 修正；手動加減 Core、空間藍 Core 拖曳、魂 Core、翻譯與線上同步全面保留。",
+    "【純手動旋轉、階段與潔淨桌面 ＋ T146 自檢】場上單擊左右側純粹做 0°⇄90°⇄180° 旋轉（不開戰鬥條、不觸發攻擊／防禦效果），階段切換與結束回合不跑自動抽牌／加Core流程，並隱藏全部自動發動懸停按鈕與減輕費用徽章；新增 T146 自動化自檢（累積 146 項）。"
+  ]
+},
 {
   version: "7.4.3.28",
   date: "2026-11-28",
@@ -14461,6 +14541,7 @@ await setStep("MAIN");
 }
 window.runAutoTurnSequence = runAutoTurnSequence;
 window.triggerManualDrawPhaseSpecial = async function (owner) {
+if (window.isFullManualMode && window.isFullManualMode()) return;
 const drawActs = detectPhaseSpecialActions(owner, "DRAW");
 if (!drawActs.length) return;
 const choice = await promptPhaseSpecialModal("DRAW", owner, drawActs, "🃏 正常執行：抽 1 張牌", [{ label: "✕ 僅切換階段（略過）", type: "cancel" }]);
@@ -14501,7 +14582,7 @@ window.startFirstTurnOpening = function (owner) {
 gameState.activeTurnPlayer = owner || "p1";
 gameState.turnCount = 1;
 gameState.isFirstTurn = true;
-if (autoTurnEnabled) {
+if (autoTurnEnabled && !(window.isFullManualMode && window.isFullManualMode())) {
 runAutoTurnSequence(gameState.activeTurnPlayer, true);
 } else {
 gameState.currentPhase = "DRAW";
@@ -14513,7 +14594,7 @@ updateRoomState();
 };
 window.setGamePhase = function (phaseKey) {
 if (!BS_PHASES.some(p => p.key === phaseKey)) return;
-const isT1 = !!gameState.isFirstTurn && (parseInt(gameState.turnCount, 10) || 1) === 1;
+const isT1 = !(window.isFullManualMode && window.isFullManualMode()) && !!gameState.isFirstTurn && (parseInt(gameState.turnCount, 10) || 1) === 1;
 if (isT1 && (phaseKey === "CORE" || phaseKey === "ATTACK")) {
 if (typeof showNotice === "function") showNotice(`先攻第一回合沒有「${phaseKey === "CORE" ? "Core" : "攻擊"}階段」，請於主要階段後點擊「結束回合」。`);
 return;
@@ -14554,7 +14635,7 @@ pruneExpiredTempBuffs("END_TURN", prevPhase);
 playPhaseBannerCutIn("TURN_END", `${endingOwner.toUpperCase()} 回合結束`, true);
 const res = origEndTurn.apply(this, args);
 ensurePhaseBarMounted();
-if (autoTurnEnabled && !window.__bsSandboxSilent) {
+if (autoTurnEnabled && !window.__bsSandboxSilent && !(window.isFullManualMode && window.isFullManualMode())) {
 if (pendingEndTurnAutoTimer) clearTimeout(pendingEndTurnAutoTimer);
 pendingEndTurnAutoFn = () => runAutoTurnSequence(nextOwner);
 pendingEndTurnAutoTimer = setTimeout(() => {
@@ -16608,7 +16689,7 @@ return "廢棄區";
 const baseMoveForSoulState = moveCardToZone;
 moveCardToZone = function (id, zone, options = {}) {
 const card = gameState.cards[id];
-if (card && !isSyncing && !window.__bsBypassSoulStatePrompt && !options?.forbidSoulState) {
+if (card && !isSyncing && !window.__bsBypassSoulStatePrompt && !options?.forbidSoulState && !(window.isFullManualMode && window.isFullManualMode())) {
 const fromBoard = (card.zone || "").startsWith("field-") || (card.zone || "").startsWith("zone-god-");
 const zStr = String(zone || "");
 const toLeaveZone = zStr.startsWith("zone-trash-") || zStr.startsWith("deck-") || zStr.startsWith("hand-");
@@ -16649,7 +16730,7 @@ return res;
 const baseTriggerDeckChoiceForSoul = triggerDeckChoiceForCard;
 triggerDeckChoiceForCard = function (cardId, player) {
 const card = gameState.cards[cardId];
-if (card && !isSyncing && !window.__bsBypassSoulStatePrompt) {
+if (card && !isSyncing && !window.__bsBypassSoulStatePrompt && !(window.isFullManualMode && window.isFullManualMode())) {
 const fromBoard = (card.zone || "").startsWith("field-") || (card.zone || "").startsWith("zone-god-");
 if (fromBoard) {
 const advSources = getAdventChildrenLocal(cardId);
@@ -17805,7 +17886,7 @@ const baseDeclareAttackForOnAttack = window.declareAttackBattle;
 if (typeof baseDeclareAttackForOnAttack === "function") {
 window.declareAttackBattle = function (attackerId) {
 const res = baseDeclareAttackForOnAttack(attackerId);
-if ((gameState.currentPhase || "") === "ATTACK") {
+if ((gameState.currentPhase || "") === "ATTACK" && !(window.isFullManualMode && window.isFullManualMode())) {
 applyAutoBattleRestrictionsForAttack(attackerId);
 setTimeout(() => window.triggerOnAttackEffects(attackerId), 120);
 }
@@ -17815,7 +17896,7 @@ return res;
 const baseSelectBlockerForEffect = window.selectBattleBlocker;
 if (typeof baseSelectBlockerForEffect === "function") {
 window.selectBattleBlocker = function (blockerId) {
-if (!isSyncing && gameState.activeBattle) {
+if (!isSyncing && gameState.activeBattle && !(window.isFullManualMode && window.isFullManualMode())) {
 const blocker = gameState.cards[blockerId];
 const unblk = blocker ? getActiveBattleRestrictionsForPlayer(blocker.owner, "unblockable") : [];
 if (unblk.length) {
@@ -17824,7 +17905,7 @@ return;
 }
 }
 const res = baseSelectBlockerForEffect(blockerId);
-if (!isSyncing && (gameState.currentPhase || "") === "ATTACK") {
+if (!isSyncing && (gameState.currentPhase || "") === "ATTACK" && !(window.isFullManualMode && window.isFullManualMode())) {
 setTimeout(() => window.triggerCardEffects(blockerId, "ON_BLOCK"), 140);
 }
 return res;
@@ -17845,7 +17926,7 @@ return baseUseMagicForBattleTax(cardId);
 const baseMoveForBattleLock = moveCardToZone;
 moveCardToZone = function (id, zone, options = {}) {
 const card = gameState.cards[id];
-if (card && !isSyncing) {
+if (card && !isSyncing && !(window.isFullManualMode && window.isFullManualMode())) {
 const fromUseZone = /^(hand-|zone-openhand-|zone-burst-)/.test(card.zone || "");
 const zStr = String(zone || "");
 const isMagic = /magic|マジック/i.test(lookupCatalog(card)?.type || "");
@@ -17891,7 +17972,7 @@ if (card && (prevZoneBeforeSummon.startsWith("field-") || prevZoneBeforeSummon.s
     if (k.includes(cardMarker)) delete gameState.usedEffectsTurn[k];
   }
 }
-if (card && !isSyncing && !window.__bsSandboxSilent && actualZoneAfterMove === String(zone || "") && !card.isFaceDown && !card.isSoulState) {
+if (card && !isSyncing && !window.__bsSandboxSilent && !(window.isFullManualMode && window.isFullManualMode()) && actualZoneAfterMove === String(zone || "") && !card.isFaceDown && !card.isSoulState) {
 if (actualZoneAfterMove.startsWith("field-") && !prevZoneBeforeSummon.startsWith("field-")) {
 const isNex = typeof window.isNexusCard === "function" && window.isNexusCard(card);
 if (window.__bsManifestingCardId === id) {
@@ -17941,7 +18022,7 @@ if (typeof combineBrave === "function") {
 const baseBraveForLock = combineBrave;
 combineBrave = function (cardId, hostId) {
 const card = gameState.cards[cardId];
-if (card && /^(hand-|zone-openhand-)/.test(card.zone || "")) {
+if (card && !(window.isFullManualMode && window.isFullManualMode()) && /^(hand-|zone-openhand-)/.test(card.zone || "")) {
 const blk = isCardBlockedByBattleLock(card);
 if (blk) {
 showNotice(`🚫 受到「${blk.sourceName}」效果影響：這次戰鬥期間不可使用與手元區相同 Cost（Cost ${blk.cost}）的卡牌！`);
@@ -18107,6 +18188,7 @@ const targetOwner = (eventType === "LIFE_REDUCED" || eventType === "OWN_SPIRIT_D
 : (actorOwner === "p1" ? "p2" : "p1");
 if (!targetOwner) return;
 if (getActiveBattleRestrictionsForPlayer(targetOwner, "no_burst").length > 0 || window.BSComputedState?.getPlayerRestriction?.(targetOwner, "noBurst")) return;
+if (window.isFullManualMode && window.isFullManualMode()) return;
 const burstCards = Object.values(gameState.cards).filter(c => c.owner === targetOwner && c.zone === `zone-burst-${targetOwner}` && c.isFaceDown);
 let anyTriggered = false;
 for (const bc of burstCards) {
@@ -18265,7 +18347,7 @@ const card = gameState.cards[id];
 const prevZ = card ? String(card.zone || "") : "";
 const wasFaceUpSpirit = Boolean(card && prevZ.startsWith("field-") && !card.isFaceDown && !card.isSoulState && /spirit/i.test(lookupCatalog(card)?.type || ""));
 const res = baseMoveForBurst(id, zone, options);
-if (card && !isSyncing) {
+if (card && !isSyncing && !(window.isFullManualMode && window.isFullManualMode())) {
 const curZ = String(card.zone || "");
 const cOwner = card.owner;
 if (wasFaceUpSpirit && !curZ.startsWith("field-")) {
@@ -20112,6 +20194,7 @@ body:not(.mobile-mode) #preview-flash-act-btn,body:not(.mobile-mode) #preview-ac
         armorFromSelfColors: false
       };
 
+      if (window.isFullManualMode && window.isFullManualMode()) return state;
       const ownerSide = sideOfCard(card);
       for (const { card: src, ef } of getActiveContinuousEffects()) {
         const mod = ef.modifier || {};
@@ -20522,6 +20605,8 @@ body:not(.mobile-mode) #preview-flash-act-btn,body:not(.mobile-mode) #preview-ac
     },
 
     getPlayerRestriction(player, prop) {
+      const SUM_PROPS_FM = new Set(["coreRemoveBonus", "destroyBpBonus", "enemyLvCostDelta"]);
+      if (window.isFullManualMode && window.isFullManualMode()) return SUM_PROPS_FM.has(prop) ? 0 : false;
       const SELF_PROPS = new Set([
         "maxLifeLossPerAttack", "noDeckMill", "ignoreWhiteProtection", "doubleBlockRequired",
         "destroyBpBonus", "noLeaveFieldReplace", "unpreventable", "extraDrawDiscardOne", "godCoresProtected",
@@ -23646,6 +23731,7 @@ body:not(.mobile-mode) #preview-flash-act-btn,body:not(.mobile-mode) #preview-ac
 
   const BSGameBus = {
     async emitBefore(eventName, payload) {
+      if (window.isFullManualMode && window.isFullManualMode()) return {};
       const eventResult = {};
       const activeTurnSide = gameState.activeTurnPlayer || "p1";
       const scanZones = eventName === "BEFORE_MAGIC_RESOLVE" ? ["hand", "openhand", "field", "god", "burst"] : ["field", "god", "burst"];
@@ -23770,7 +23856,7 @@ body:not(.mobile-mode) #preview-flash-act-btn,body:not(.mobile-mode) #preview-ac
     },
 
     emitAfter(eventName, payload = {}) {
-      if (isSyncing) return;
+      if (isSyncing || (window.isFullManualMode && window.isFullManualMode())) return;
       const actorId = payload.cardId || payload.sourceCardId || null;
       const actorCard = actorId ? gameState.cards[actorId] : null;
       const isSelfOnly = ["AFTER_SUMMON", "AFTER_DEPLOY", "AFTER_ADVENT", "AFTER_MANIFEST", "AFTER_ATTACK_DECLARE", "AFTER_BLOCK_DECLARE", "AFTER_TURN_FLIP", "AFTER_CARD_DESTROYED", "ON_BURST", "FLASH_WINDOW", "MAIN_WINDOW", "MAIN_STEP_ACTIVATE"].includes(eventName);
@@ -24103,6 +24189,7 @@ body:not(.mobile-mode) #preview-flash-act-btn,body:not(.mobile-mode) #preview-ac
     },
 
     emitBatch(eventList) {
+      if (window.isFullManualMode && window.isFullManualMode()) return;
       standbyBatchDepth++;
       try {
         for (const item of (eventList || [])) {
@@ -24292,6 +24379,7 @@ body:not(.mobile-mode) #preview-flash-act-btn,body:not(.mobile-mode) #preview-ac
   };
 
   window.triggerCardEffects = function (cardId, triggerType = "ON_ATTACK", opts = {}) {
+    if (window.isFullManualMode && window.isFullManualMode()) return;
     if (window.__bs5SuppressOnSummon && triggerType === "ON_SUMMON") return;
     const card = gameState.cards[cardId];
     if (!card || (card.isFaceDown && triggerType !== "ON_BURST") || card.isSoulState) return;
@@ -24341,7 +24429,7 @@ body:not(.mobile-mode) #preview-flash-act-btn,body:not(.mobile-mode) #preview-ac
     const prevRot = c ? ((Number(c.rotation) || 0) % 360) : 0;
     const res = origRotate(id, right);
     const nowRot = c ? ((Number(c.rotation) || 0) % 360) : 0;
-    if (c && !isSyncing) {
+    if (c && !isSyncing && !(window.isFullManualMode && window.isFullManualMode())) {
       if (prevRot === 0 && nowRot > 0) BSGameBus.emitAfter("AFTER_CARD_EXHAUSTED", { cardId: id, owner: c.owner });
       else if (prevRot > 0 && nowRot === 0) BSGameBus.emitAfter("AFTER_CARD_REFRESHED", { cardId: id, owner: c.owner });
     }
@@ -24578,6 +24666,7 @@ body:not(.mobile-mode) #preview-flash-act-btn,body:not(.mobile-mode) #preview-ac
         }
       }
       const res = origSetPhase(phaseKey);
+      if (window.isFullManualMode && window.isFullManualMode()) return res;
       if (phaseKey === "ATTACK" && gameState.currentPhase === "ATTACK" && !isSyncing) {
         BSGameBus.emitBatch([
           { event: "PHASE_OWN_ATTACK_START", payload: { owner: gameState.activeTurnPlayer } },
@@ -24603,7 +24692,7 @@ body:not(.mobile-mode) #preview-flash-act-btn,body:not(.mobile-mode) #preview-ac
   const origEndTurn = window.endTurnPhase;
   if (typeof origEndTurn === "function") {
     window.endTurnPhase = function (...args) {
-      if (!isSyncing && BSComputedState.getPlayerRestriction(gameState.activeTurnPlayer || "p1", "noEndTurn")) {
+      if (!isSyncing && !(window.isFullManualMode && window.isFullManualMode()) && BSComputedState.getPlayerRestriction(gameState.activeTurnPlayer || "p1", "noEndTurn")) {
         showNotice("🚫 受到場上效果限制：目前不可結束回合！");
         return;
       }
@@ -24855,7 +24944,7 @@ body:not(.mobile-mode) #preview-flash-act-btn,body:not(.mobile-mode) #preview-ac
 
   function updateFieldMainActButton(el, card) {
     if (!el || !card) return;
-    const isFieldCard = Boolean(card.zone?.startsWith("field-") && !card.isFaceDown && !card.isSoulState && !card.braveHostId && !card.adventHostId);
+    const isFieldCard = !(window.isFullManualMode && window.isFullManualMode()) && Boolean(card.zone?.startsWith("field-") && !card.isFaceDown && !card.isSoulState && !card.braveHostId && !card.adventHostId);
     const inOwnMain = (gameState.currentPhase || "") === "MAIN" && (gameState.activeTurnPlayer || "p1") === card.owner;
     const mainEffs = isFieldCard ? window.getCardMainStepEffects(card) : [];
     const show = Boolean(isFieldCard && inOwnMain && mainEffs.length > 0);
@@ -24934,6 +25023,7 @@ body:not(.mobile-mode) #preview-flash-act-btn,body:not(.mobile-mode) #preview-ac
   const origUpdateCounterV5 = window.updateCounter;
   if (typeof origUpdateCounterV5 === "function") {
     window.updateCounter = function (key, delta) {
+      if (window.isFullManualMode && window.isFullManualMode()) return origUpdateCounterV5(key, delta);
       if ((key === "p1_count" || key === "p2_count") && delta !== 0 && !isSyncing) {
         const side = key.startsWith("p2") ? "p2" : "p1";
         const lockAt = BSComputedState.getPlayerRestriction(side, "lockEnemyCountAt");
@@ -25014,6 +25104,7 @@ body:not(.mobile-mode) #preview-flash-act-btn,body:not(.mobile-mode) #preview-ac
   // v6.0 Magic Cast Resolver + Non-Grandwalker Field ⚡Flash Activation Button
   // =========================================================================
   window.onBs6MagicCastResolved = function (cardId) {
+    if (window.isFullManualMode && window.isFullManualMode()) return;
     const card = gameState.cards[cardId];
     if (!card || isSyncing) return;
     const effs = BSRuleCompiler.getEffectsForCard(card).filter(e => e.kind === "TRIGGERED");
@@ -25198,7 +25289,7 @@ body:not(.mobile-mode) #preview-flash-act-btn,body:not(.mobile-mode) #preview-ac
 
   function updateFieldFlashButton(el, card) {
     if (!el || !card) return;
-    const show = Boolean((card.zone?.startsWith("field-") || card.zone?.startsWith("zone-burst-")) && !card.isFaceDown && !card.braveHostId && !card.adventHostId && window.getCardFieldFlashEffects(card).length > 0);
+    const show = !(window.isFullManualMode && window.isFullManualMode()) && Boolean((card.zone?.startsWith("field-") || card.zone?.startsWith("zone-burst-")) && !card.isFaceDown && !card.braveHostId && !card.adventHostId && window.getCardFieldFlashEffects(card).length > 0);
     el.classList.toggle("has-flash-act", show);
     let btn = el.querySelector(":scope > .mini-flash-act-btn");
     if (show) {
@@ -25224,7 +25315,7 @@ body:not(.mobile-mode) #preview-flash-act-btn,body:not(.mobile-mode) #preview-ac
   function updateHandAccelButton(el, card) {
     if (!el || !card) return;
     const isOppHand = el.closest(".opponent-hand");
-    const show = Boolean(!isOppHand && card.zone?.startsWith("hand-") && window.getCardHandAccelEffects(card).length > 0);
+    const show = !(window.isFullManualMode && window.isFullManualMode()) && Boolean(!isOppHand && card.zone?.startsWith("hand-") && window.getCardHandAccelEffects(card).length > 0);
     el.classList.toggle("has-accel-act", show);
     let btn = el.querySelector(":scope > .mini-accel-btn");
     if (show) {
@@ -25423,6 +25514,7 @@ body:not(.mobile-mode) #preview-flash-act-btn,body:not(.mobile-mode) #preview-ac
 
   // Enforce BS69-X04 lockEnemyOpenhandCosts on hand/openhand -> field/god plays
   BSHookRegistry.register("card:beforeMove", ({ card: c, prevZone, targetZone }) => {
+    if (window.isFullManualMode && window.isFullManualMode()) return;
     if (c && !isSyncing && /^hand-/.test(prevZone || "") && /^(field-|zone-god-|zone-burst-)/.test(String(targetZone || ""))) {
       if (BSComputedState.getPlayerRestriction(c.owner, "noHandUse")) {
         showNotice("🚫 受到對手效果限制：目前不可使用手牌中的卡牌！");
@@ -32741,6 +32833,109 @@ Lv2『這張Spirit攻擊時』對手1張Spirit返回手牌。",
             probe.cleanup();
           }
         }
+      },
+      {
+        id: "T146", group: "完全手動模式專項", name: "v7.4.3.29：完全手動模式（免付費直接上場／免確認置神／零自動效果與神託加Core／純手動旋轉與潔淨介面）",
+        run: async () => {
+          assertCond(typeof window.isFullManualMode === "function" && typeof window.setFullManualMode === "function" && typeof window.toggleFullManualMode === "function", "缺少完全手動模式公開 API");
+          const btn = document.getElementById("btn-full-manual-toggle");
+          assertCond(Boolean(btn), "頂部控制列缺少 #btn-full-manual-toggle 開關");
+          const origManual = window.isFullManualMode();
+          const origBypassPay = window.__bsBypassPlayPayment;
+          const tNumGod = "__T146_GOD", tNumSp = "__T146_SP";
+          const godCat = {
+            number: tNumGod, name: "測試契約神", type: "創界神Nexus", cost: 2, attribute: "赤", family: "創界神・緋炎",
+            effect: "《神託》〔緋炎〕◆這張Nexus配置時，從自己卡組頂翻開3張卡牌。對象卡牌每有1張，從空間放置1個Core到這張Nexus上。◆自己召喚對象Spirit時，從空間放置1個Core到這張Nexus上。
+[Lv1-Lv2]『這個Nexus配置時』計數+1。",
+            structuredEffects: [{ schema: 28, kind: "TRIGGERED", minLv: 0, events: ["AFTER_DEPLOY"], header: "配置時計數+1", script: { op: "MODIFY_COUNTER", owner: "self", stat: "count", delta: 1 } }]
+          };
+          const spCat = {
+            number: tNumSp, name: "測試高費紅龍", type: "Spirit", cost: 8, attribute: "赤", family: "緋炎",
+            levels: [{ level: 1, core: 1, bp: 5000 }],
+            effect: "Lv1『這張Spirit召喚時』自己計數值+2。",
+            structuredEffects: [
+              { schema: 28, kind: "TRIGGERED", minLv: 1, events: ["AFTER_SUMMON"], header: "召喚時計數+2", script: { op: "MODIFY_COUNTER", owner: "self", stat: "count", delta: 2 } },
+              { schema: 28, kind: "CONTINUOUS", minLv: 1, header: "常時BP+3000", targetQuery: { card: "$self" }, modifier: { bpDelta: 3000 } }
+            ]
+          };
+          if (window.catalogByNumber) {
+            window.catalogByNumber.set(tNumGod, godCat);
+            window.catalogByNumber.set(tNumSp, spCat);
+          }
+          try {
+            resetSandboxBoard();
+            window.setFullManualMode(true);
+            assertCond(window.isFullManualMode() === true && document.body.classList.contains("bs-full-manual-mode"), "開啟完全手動模式應加上 body.bs-full-manual-mode");
+            assertCond(btn.textContent.includes("ON") && btn.getAttribute("aria-pressed") === "true", `開關文字或狀態異常：${btn.textContent}`);
+
+            // 1) Zero-cost placement even with 0 Reserve & payment bypass OFF
+            window.__bsBypassPlayPayment = false;
+            gameState.p1_reserve = 0;
+            gameState.p1_trash_core = 0;
+            gameState.p1_count = 0;
+            const d1 = makeTestCard("p1", `deck-p1`, tNumSp, { cores: 0 });
+            gameState.p1Deck = [d1.id];
+            const godCard = makeTestCard("p1", "hand-p1", tNumGod, { cores: 0 });
+            const spCard = makeTestCard("p1", "hand-p1", tNumSp, { cores: 0 });
+
+            // Drag/place Grandwalker via triggerGodZoneConfirmForCard -> direct move without confirm modal or Oracle
+            triggerGodZoneConfirmForCard(godCard.id, "p1");
+            assertCond(godCard.zone === "zone-god-p1", `完全手動模式下應免確認直接置入創界神區，實得 ${godCard.zone}`);
+            assertCond(document.getElementById("god-confirm-modal")?.classList.contains("hidden"), "不應彈出設置創界神確認窗");
+            assertCond(document.getElementById("oracle-trigger-confirm-modal")?.classList.contains("hidden"), "不應彈出神託確認窗");
+            assertCond((godCard.cores || 0) === 0, `創界神不應自動加 Core，實得 ${godCard.cores}`);
+
+            // Move Cost 8 Spirit from hand -> field with 0 Reserve -> must succeed directly with 0 payment
+            moveCardToZone(spCard.id, "field-p1");
+            assertCond(spCard.zone === "field-p1", `0 預備區 Core 下高費卡應直接免付費上場，實得 ${spCard.zone}`);
+            assertCond(document.getElementById("play-pay-confirm-modal")?.classList.contains("hidden"), "不應彈出出牌支付確認窗");
+            assertCond(gameState.p1_reserve === 0 && gameState.p1_trash_core === 0, "不應有任何 Core 扣除");
+
+            // Trigger checkFieldSummonOracle & BSGameBus & triggerCardEffects -> must all be no-ops
+            window.checkFieldSummonOracle("p1", spCard);
+            window.triggerCardEffects(spCard.id, "ON_SUMMON");
+            window.BSGameBus.emitAfter("AFTER_SUMMON", { cardId: spCard.id, owner: "p1" });
+            assertCond(window.BSGameBus.getStandbyQueue().length === 0, "完全手動模式下待機佇列應保持為 0");
+            assertCond(gameState.p1_count === 0, `不應觸發任何自動計數效果，實得 ${gameState.p1_count}`);
+            assertCond((godCard.cores || 0) === 0, `召喚匹配系統 Spirit 時創界神不應自動加 Core，實得 ${godCard.cores}`);
+
+            // BSComputedState should return raw printed BP (5000), ignoring +3000 continuous modifier
+            spCard.cores = 1;
+            const effRaw = window.BSComputedState.getEffectiveCard(spCard);
+            assertCond(effRaw.bp === 5000, `完全手動模式下應僅維持原始數值 BP 5000，實得 ${effRaw.bp}`);
+
+            // Pure manual rotation in ATTACK phase (0 -> 90 -> 180 -> 90 -> 0) with NO activeBattle
+            gameState.currentPhase = "ATTACK";
+            gameState.activeTurnPlayer = "p1";
+            gameState.activeBattle = null;
+            rotateCardBySide(spCard.id, true);
+            assertCond(spCard.rotation === 90 && !gameState.activeBattle, "攻擊階段向右旋轉應純手動轉至 90° 且不開啟戰鬥條");
+            rotateCardBySide(spCard.id, true);
+            assertCond(spCard.rotation === 180, "再次向右旋轉應轉至 180°");
+            rotateCardBySide(spCard.id, false);
+            assertCond(spCard.rotation === 90, "向左旋轉應由 180° 回至 90°");
+            rotateCardBySide(spCard.id, false);
+            assertCond(spCard.rotation === 0, "再次向左旋轉應回復 0°");
+
+            // Verify auto hover buttons/badges are cleared on Grandwalker & Hand
+            const godEl = document.getElementById(godCard.id);
+            assertCond(!godEl?.querySelector(".mini-god-skill-wrap"), "創界神在完全手動模式下不應渲染自動神技按鈕列");
+
+            // Turning OFF restores normal state cleanly
+            window.setFullManualMode(false);
+            assertCond(!window.isFullManualMode() && !document.body.classList.contains("bs-full-manual-mode"), "關閉後應移除 body.bs-full-manual-mode");
+            const effAuto = window.BSComputedState.getEffectiveCard(spCard);
+            assertCond(effAuto.bp === 8000, `切回全自動後常時光環應恢復生效 (BP 8000)，實得 ${effAuto.bp}`);
+            return "完全手動模式（免付費上場＋免確認置神＋零神託加Core＋零自動效果＋純手動旋轉＋切回全自動無損）PASS";
+          } finally {
+            window.__bsBypassPlayPayment = origBypassPay;
+            window.setFullManualMode(origManual);
+            if (window.catalogByNumber) {
+              window.catalogByNumber.delete(tNumGod);
+              window.catalogByNumber.delete(tNumSp);
+            }
+          }
+        }
       }
     ];
   }
@@ -32772,11 +32967,13 @@ Lv2『這張Spirit攻擊時』對手1張Spirit返回手牌。",
     const origPromptCores = window.promptReturnCores;
     const origBypassPay = window.__bsBypassPlayPayment;
     const origBypassSoul = window.__bsBypassSoulStatePrompt;
+    const origFullManual = typeof window.isFullManualMode === "function" ? window.isFullManualMode() : false;
 
     const results = [];
     const t0All = performance.now();
 
     try {
+      if (typeof window.setFullManualMode === "function") window.setFullManualMode(false, { skipUI: true });
       window.sendGameState = () => Promise.resolve();
       window.showNotice = () => {};
       window.playCardEffectFeedbackFx = () => {};
@@ -32821,6 +33018,7 @@ Lv2『這張Spirit攻擊時』對手1張Spirit返回手牌。",
       document.querySelectorAll(".bs-phase-cutin-wrap, .your-turn-banner-overlay").forEach(el => el.remove());
       window.__bsBypassPlayPayment = origBypassPay;
       window.__bsBypassSoulStatePrompt = origBypassSoul;
+      if (typeof window.setFullManualMode === "function") window.setFullManualMode(origFullManual, { skipUI: true });
       if (window.BSGameBus) {
         window.BSGameBus.__selfTestSuppressHud = false;
         window.BSGameBus.clearStandbyQueue();
@@ -40777,7 +40975,7 @@ Lv2『這張Spirit攻擊時』對手1張Spirit返回手牌。",
   };
 
   window.dispatchManualFallbackReminder = function (card, reason = "", customMsg = "", eventName = "") {
-    if (!manualFallbackEnabled) return null;
+    if (!manualFallbackEnabled || (window.isFullManualMode && window.isFullManualMode())) return null;
     const cat = card ? (lookupCatalog(card) || {}) : {};
     const cardNumber = String(cat.number || card?.catalogNumber || "").trim();
     const cardName = String(cat.name || cardNumber || "卡牌效果");
@@ -42304,6 +42502,34 @@ Lv2『這張Spirit攻擊時』對手1張Spirit返回手牌。",
 /* 1) 翻譯側欄與預覽層級置頂（確保任何選卡／確認視窗點擊「🔍 譯」皆浮於最上層） */
 #card-translation{z-index:33500!important}
 #card-preview{z-index:33600!important}
+/* v7.4.3.29 完全手動模式（純實體桌遊沙盒）按鈕高亮與自動介面隱藏 */
+#main-top-header #btn-full-manual-toggle.is-active{
+  background:linear-gradient(180deg,#f0d082 0%,#c7963b 100%)!important;
+  border-color:#fef08a!important;
+  color:#0a0908!important;
+  box-shadow:0 0 14px rgba(234,179,8,.48)!important;
+}
+body.bs-full-manual-mode #btn-manual-fallback-toggle{opacity:.48}
+body.bs-full-manual-mode .mini-manifest-btn,
+body.bs-full-manual-mode #preview-manifest-btn,
+body.bs-full-manual-mode .mini-magic-use-btn,
+body.bs-full-manual-mode #preview-magic-use-btn,
+body.bs-full-manual-mode .mini-main-act-btn,
+body.bs-full-manual-mode #preview-main-act-btn,
+body.bs-full-manual-mode .mini-flash-act-btn,
+body.bs-full-manual-mode #preview-flash-act-btn,
+body.bs-full-manual-mode .mini-accel-btn,
+body.bs-full-manual-mode #preview-accel-btn,
+body.bs-full-manual-mode .card-reduced-cost-badge,
+body.bs-full-manual-mode .play-pay-toggle-btn,
+body.bs-full-manual-mode #btn-toggle-autoturn,
+body.bs-full-manual-mode #bs-manual-reminder-stack,
+body.bs-full-manual-mode .bs5-mod-banner,
+body.bs-full-manual-mode #bs-battle-lock-bar,
+body.bs-full-manual-mode #bs-battle-action-bar,
+body.bs-full-manual-mode #bs5-standby-hud,
+body.bs-full-manual-mode #bs5-opponent-mirror-hud,
+body.bs-full-manual-mode .god-domain-inline{display:none!important}
 
 /* 2) 全站 40+ 視窗、彈窗、神託窗、選卡托盤與 HUD 徹底統一：高級半透明磨砂 × 左右開放設計 */
 .god-oracle-window,
